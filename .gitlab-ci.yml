@@ -1291,7 +1291,7 @@ push_anomaly-detection_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_anomaly-detection_to_internal
+    - push_prerelease_anomaly-detection_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1363,7 +1363,7 @@ push_artifactory-cleaner_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_artifactory-cleaner_to_internal
+    - push_prerelease_artifactory-cleaner_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1575,7 +1575,7 @@ push_clickhouse_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_clickhouse_to_internal
+    - push_prerelease_clickhouse_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1647,7 +1647,7 @@ push_common_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_common_to_internal
+    - push_prerelease_common_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1719,7 +1719,7 @@ push_elasticsearch_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_elasticsearch_to_internal
+    - push_prerelease_elasticsearch_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1861,7 +1861,7 @@ push_hbase_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_hbase_to_internal
+    - push_prerelease_hbase_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2003,7 +2003,7 @@ push_kafka_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_kafka_to_internal
+    - push_prerelease_kafka_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2075,7 +2075,7 @@ push_kafkaup-operator_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_kafkaup-operator_to_internal
+    - push_prerelease_kafkaup-operator_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2182,7 +2182,7 @@ push_kubernetes-rbac-agent_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_kubernetes-rbac-agent_to_internal
+    - push_prerelease_kubernetes-rbac-agent_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2350,6 +2350,635 @@ push_petros-d-kubelet-stats-exporter_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/petros-d-kubelet-stats-exporter
+push_prerelease_anomaly-detection_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_anomaly-detection_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/anomaly-detection/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-anomaly-detection]/
+      when: on_success
+    - changes:
+        - stable/anomaly-detection/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^anomaly-detection\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/anomaly-detection
+push_prerelease_artifactory-cleaner_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_artifactory-cleaner_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
+      when: on_success
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^artifactory-cleaner\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/artifactory-cleaner
+push_prerelease_clickhouse_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_clickhouse_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/clickhouse/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-clickhouse]/
+      when: on_success
+    - changes:
+        - stable/clickhouse/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^clickhouse\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/clickhouse
+push_prerelease_common_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_common_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
+      when: on_success
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^common\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/common
+push_prerelease_elasticsearch_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_elasticsearch_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
+      when: on_success
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^elasticsearch\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/elasticsearch
+push_prerelease_hbase_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_hbase_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
+      when: on_success
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^hbase\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/hbase
+push_prerelease_kafka_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_kafka_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/kafka/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafka]/
+      when: on_success
+    - changes:
+        - stable/kafka/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^kafka\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/kafka
+push_prerelease_kafkaup-operator_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_kafkaup-operator_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/kafkaup-operator/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
+      when: on_success
+    - changes:
+        - stable/kafkaup-operator/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^kafkaup-operator\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/kafkaup-operator
+push_prerelease_kubernetes-rbac-agent_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_kubernetes-rbac-agent_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/kubernetes-rbac-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kubernetes-rbac-agent]/
+      when: on_success
+    - changes:
+        - stable/kubernetes-rbac-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^kubernetes-rbac-agent\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/kubernetes-rbac-agent
+push_prerelease_prometheus-elasticsearch-exporter_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_prometheus-elasticsearch-exporter_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-prometheus-elasticsearch-exporter]/
+      when: on_success
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^prometheus-elasticsearch-exporter\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/prometheus-elasticsearch-exporter
+push_prerelease_pull-secret_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_pull-secret_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/pull-secret/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
+      when: on_success
+    - changes:
+        - stable/pull-secret/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^pull-secret\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/pull-secret
+push_prerelease_stackstate-monitoring_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_stackstate-monitoring_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/stackstate-monitoring/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
+      when: on_success
+    - changes:
+        - stable/stackstate-monitoring/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^stackstate-monitoring\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/stackstate-monitoring
+push_prerelease_suse-observability-agent_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_suse-observability-agent_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
+      when: on_success
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/suse-observability-agent
+push_prerelease_suse-observability-values_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_suse-observability-values_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/suse-observability-values/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
+      when: on_success
+    - changes:
+        - stable/suse-observability-values/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^suse-observability-values\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/suse-observability-values
+push_prerelease_trafficmirror_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_trafficmirror_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
+      when: on_success
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^trafficmirror\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/trafficmirror
+push_prerelease_victoria-metrics-single_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_victoria-metrics-single_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/victoria-metrics-single/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-victoria-metrics-single]/
+      when: on_success
+    - changes:
+        - stable/victoria-metrics-single/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^victoria-metrics-single\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/victoria-metrics-single
+push_prerelease_zookeeper_to_public:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_zookeeper_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-zookeeper]/
+      when: on_success
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^zookeeper\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/zookeeper
 push_prometheus-elasticsearch-exporter_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -2394,7 +3023,7 @@ push_prometheus-elasticsearch-exporter_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_prometheus-elasticsearch-exporter_to_internal
+    - push_prerelease_prometheus-elasticsearch-exporter_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2466,7 +3095,7 @@ push_pull-secret_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_pull-secret_to_internal
+    - push_prerelease_pull-secret_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2643,7 +3272,7 @@ push_stackstate-monitoring_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_stackstate-monitoring_to_internal
+    - push_prerelease_stackstate-monitoring_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2671,14 +3300,10 @@ push_stackstate-monitoring_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate-monitoring
-push_stackstate_release_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
+push_suse-observability-agent_prerelease_to_rancher:
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_suse-observability-agent_to_internal
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2690,49 +3315,21 @@ push_stackstate_release_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
-    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)\.rc\.(\d+)$/
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
-    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-rc\.(\d+)$/
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)$/
-      when: on_success
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/stackstate/%
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/stackstate
-push_stackstate_release_to_public:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
       when: on_success
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/stackstate/%
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
+    - .gitlab/publish-suse-agent-to-rancher.sh
+  stage: push-charts-to-rancher
   variables:
-    CHART: stable/stackstate
+    CHART: stable/suse-observability-agent
 push_suse-observability-agent_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -2777,7 +3374,7 @@ push_suse-observability-agent_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_suse-observability-agent_to_internal
+    - push_prerelease_suse-observability-agent_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2808,7 +3405,7 @@ push_suse-observability-agent_to_public:
 push_suse-observability-agent_to_rancher:
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_suse-observability-agent_to_internal
+    - push_suse-observability-agent_prerelease_to_rancher
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2831,7 +3428,7 @@ push_suse-observability-agent_to_rancher:
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
       when: on_success
   script:
-    - .gitlab/publish-suse-agent-to-rancher.sh
+    - .gitlab/publish-suse-agent-to-rancher.sh release
   stage: push-charts-to-rancher
   variables:
     CHART: stable/suse-observability-agent
@@ -2879,7 +3476,7 @@ push_suse-observability-values_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_suse-observability-values_to_internal
+    - push_prerelease_suse-observability-values_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2905,36 +3502,6 @@ push_suse-observability-values_to_public:
     - helm dependencies update --skip-refresh ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
-  variables:
-    CHART: stable/suse-observability-values
-push_suse-observability-values_to_rancher:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  needs:
-    - push_suse-observability-values_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/suse-observability-values/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
-      when: on_success
-    - changes:
-        - stable/suse-observability-values/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-    - if: $CI_COMMIT_TAG =~ /^suse-observability-values\/.*/
-      when: on_success
-  script:
-    - .gitlab/publish-suse-observability-values-to-rancher.sh
-  stage: push-charts-to-rancher
   variables:
     CHART: stable/suse-observability-values
 push_suse-observability_to_internal:
@@ -2974,7 +3541,7 @@ push_suse-observability_to_internal:
     - helm dependencies update --skip-refresh ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
     - .gitlab/tag_sts_chart_pre_release.sh suse-observability
-    - .gitlab/bump_sts_chart_master_version_v2.sh stable/suse-observability
+    - .gitlab/bump_suse_chart_pre_master_version.sh stable/suse-observability
   stage: push-charts-to-internal
   variables:
     CHART: stable/suse-observability
@@ -3127,7 +3694,7 @@ push_trafficmirror_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_trafficmirror_to_internal
+    - push_prerelease_trafficmirror_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -3199,7 +3766,7 @@ push_victoria-metrics-single_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_victoria-metrics-single_to_internal
+    - push_prerelease_victoria-metrics-single_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -3271,7 +3838,7 @@ push_zookeeper_to_public:
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   needs:
-    - push_zookeeper_to_internal
+    - push_prerelease_zookeeper_to_public
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never

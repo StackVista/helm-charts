@@ -113,7 +113,7 @@ local check_chart_version_job(chart) = {
 local check_chart_version_jobs = {
   ['check_%s_version' % chart]: (check_chart_version_job(chart))
   for chart in (charts + public_charts)
-  if chart != 'stackstate' && chart != 'suse-observability'
+  if chart != 'suse-observability'
 };
 
 // Validation jobs for suse-observability-sizing chart (not in charts/public_charts lists)
@@ -249,41 +249,19 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
   );
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
-  (if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
+  (if chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
   + [
     'helm dependencies update --skip-refresh ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ];
 
-local push_stackstate_chart_releases =
-  {
-    push_stackstate_release_to_internal: push_chart_job_if(
-      'stackstate',
-      push_chart_script(
-        'stackstate',
-        '${CHARTMUSEUM_INTERNAL_URL}',
-        '${CHARTMUSEUM_INTERNAL_USERNAME}',
-        '${CHARTMUSEUM_INTERNAL_PASSWORD}',
-      ),
-      variables.rules.tag.all_release_rules,
-    ) {
-      before_script: helm_fetch_dependencies,
-      stage: 'push-charts-to-internal',
-    },
-    push_stackstate_release_to_public: push_chart_job_if(
-      'stackstate',
-      push_chart_script(
-        'stackstate',
-        '${CHARTMUSEUM_URL}',
-        '${CHARTMUSEUM_USERNAME}',
-        '${CHARTMUSEUM_PASSWORD}',
-      ),
-      [variables.rules.tag.release_rule],
-    ) {
-      before_script: helm_fetch_dependencies,
-      stage: 'push-charts-to-public',
-    },
-  };
+local push_prerelease_chart_script(chart, repository_url, repository_username, repository_password) =
+  (if chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
+  + [
+    'helm dependencies update --skip-refresh ${CHART}',
+    '.gitlab/modify_chart_to_prerelease_version.sh ${CHART}',
+    'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
+  ];
 
 local push_charts_to_internal_jobs = {
   ['push_%s_to_internal' % chart]: (push_chart_job(
@@ -295,13 +273,11 @@ local push_charts_to_internal_jobs = {
                                         '${CHARTMUSEUM_INTERNAL_PASSWORD}',
                                       ),
                                       'on_success',
-                                      if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else 'publish-' + chart
+                                      'publish-' + chart
                                     ) + {
                                       stage: 'push-charts-to-internal',
                                     } + (
-                                      if chart == 'stackstate' then
-                                        { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal ' + chart] }
-                                      else if chart == 'suse-observability' then
+                                      if chart == 'suse-observability' then
                                         { before_script: helm_fetch_dependencies + [
                                           '.gitlab/configure_git.sh',
                                           // tags don't have CI_COMMIT_BRANCH, so I fetches the current branch(s) for current HEAD (HEAD points to a detached commit)
@@ -312,11 +288,33 @@ local push_charts_to_internal_jobs = {
                                         ] }
                                         { script+: [
                                           '.gitlab/tag_sts_chart_pre_release.sh ' + chart,
-                                          '.gitlab/bump_sts_chart_master_version_v2.sh stable/' + chart,
+                                          '.gitlab/bump_suse_chart_pre_master_version.sh stable/' + chart,
                                         ] }
                                       else { before_script: helm_fetch_dependencies }
                                     ))
   for chart in (charts + public_charts)
+};
+
+local push_prerelease_charts_to_public_jobs = {
+  ['push_prerelease_%s_to_public' % chart]: (push_chart_job(
+                                    chart,
+                                    push_chart_script(
+                                      chart,
+                                      '${CHARTMUSEUM_URL}',
+                                      '${CHARTMUSEUM_USERNAME}',
+                                      '${CHARTMUSEUM_PASSWORD}',
+                                    ),
+                                    'manual',
+                                    'publish-' + chart
+                                  ) + {
+                                    stage: 'push-charts-to-public',
+
+                                    needs: ['push_%s_to_internal' % chart],
+
+                                    before_script: helm_fetch_dependencies,
+                                  })
+  for chart in public_charts
+  if chart != 'suse-observability'
 };
 
 local push_charts_to_public_jobs = {
@@ -329,43 +327,43 @@ local push_charts_to_public_jobs = {
                                       '${CHARTMUSEUM_PASSWORD}',
                                     ),
                                     'manual',
-                                    if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else 'publish-' + chart
+                                    'publish-' + chart
                                   ) + {
                                     stage: 'push-charts-to-public',
 
-                                    needs: ['push_%s_to_internal' % chart],
-                                  } + (
-                                    if chart == 'stackstate' || chart == 'suse-observability' then
-                                      { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate ' + chart] }
-                                    else { before_script: helm_fetch_dependencies }
-                                  ))
+                                    needs: ['push_prerelease_%s_to_public' % chart],
+
+                                    before_script: helm_fetch_dependencies,
+                                  })
   for chart in public_charts
-  if chart != 'stackstate' && chart != 'suse-observability'
+  if chart != 'suse-observability'
 };
 
 local push_suse_observability_to_rancher_registry = {
+  'push_suse-observability-agent_prerelease_to_rancher': (push_chart_job(
+                                                      'suse-observability-agent',
+                                                      [
+                                                        '.gitlab/publish-suse-agent-to-rancher.sh',
+                                                      ],
+                                                      'manual',
+                                                      'publish-suse-observability-agent',
+                                                    ) + {
+                                                      stage: 'push-charts-to-rancher',
+                                                      needs: [
+                                                      'push_suse-observability-agent_to_internal',
+                                                      ],
+                                                    }),
   'push_suse-observability-agent_to_rancher': (push_chart_job(
                                                  'suse-observability-agent',
                                                  [
-                                                   '.gitlab/publish-suse-agent-to-rancher.sh',
+                                                   '.gitlab/publish-suse-agent-to-rancher.sh release',
                                                  ],
                                                  'manual',
                                                  'publish-suse-observability-agent',
                                                ) + {
                                                  stage: 'push-charts-to-rancher',
-                                                 needs: ['push_suse-observability-agent_to_internal'],
+                                                 needs: ['push_suse-observability-agent_prerelease_to_rancher'],
                                                }),
-  'push_suse-observability-values_to_rancher': (push_chart_job(
-                                                  'suse-observability-values',
-                                                  [
-                                                    '.gitlab/publish-suse-observability-values-to-rancher.sh',
-                                                  ],
-                                                  'manual',
-                                                  'publish-suse-observability-values',
-                                                ) + {
-                                                  stage: 'push-charts-to-rancher',
-                                                  needs: ['push_suse-observability-values_to_internal'],
-                                                }),
 };
 
 local update_sg_version = {
@@ -590,8 +588,8 @@ local beest_triggers = {
 + resource_usage
 
 + push_charts_to_internal_jobs
++ push_prerelease_charts_to_public_jobs
 + push_charts_to_public_jobs
-+ push_stackstate_chart_releases
 + update_sg_version
 + update_aad_chart_version
 + updatecli_job

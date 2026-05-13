@@ -2,8 +2,10 @@
 
 set -e
 
+WORKING_DIR=${CI_PROJECT_DIR:-./}
+
 # shellcheck disable=SC1091
-source "$CI_PROJECT_DIR/.gitlab/gpg_utils.sh"
+source "${WORKING_DIR}/.gitlab/gpg_utils.sh"
 
 function commit_changes() {
   message=${1:?"Please provide a commit message"}

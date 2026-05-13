@@ -7,7 +7,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "$dir/util.sh"
 
 # The script "bumps" helm chart version
-# Usage ./gitlab/bump_sts_chart_master_version_v2.sh chart_name
+# Usage ./gitlab/bump_suse_chart_pre_master_version.sh chart_name
 # - chart_name - name directory with the chart to update
 # The flow:
 #    -  there is "released" version just now then a next "pre" version will be created, e.g. 1.5.2 => 1.5.3-pre.1

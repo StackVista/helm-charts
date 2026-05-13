@@ -1,5 +1,7 @@
 #!/bin/bash
 
+release=${1:-"prerelease"}
+
 set -euo pipefail
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -45,5 +47,12 @@ done < "${image_list_file}"
 ./maintenance/change-image-source.sh -g "$RANCHER_CONTAINER_REGISTRY_URL" -p "$RANCHER_CONTAINER_REGISTRY_NAMESPACE"
 
 cd "${build_root}" || exit
+
+if [[ "$release" = "release" ]]; then
+  echo "Making a public release"
+else
+  echo "Making a prerelease, adding -pre to the chart."
+  .gitlab/modify_chart_to_prerelease_version.sh suse-observability-agent
+fi
 
 .gitlab/package-and-push-chart-for-rancher.sh suse-observability-agent
