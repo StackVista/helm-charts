@@ -14,7 +14,7 @@ Current chart version is `2.10.1-pre.19`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.30 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.22 |
-| file://../hbase/ | hbase | 0.2.155 |
+| file://../hbase/ | hbase | 0.2.156 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.27 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.29 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
@@ -499,7 +499,7 @@ If you encounter issues not covered here:
 | hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.version | string | `"java21-9-6ad43a75-release-390"` | HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli. |
+| hbase.hdfs.version | string | `"java21-9-3361d39f-release-393"` | HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli. |
 | hbase.stackgraph.version | string | `"8.0.1"` |  |
 | hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
