@@ -32,13 +32,23 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
-  clickhouse:
-    name: "clickhouse"
+  clickhouseStable:
+    name: "clickhouse (stable)"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/clickhouse"
       architecture: "linux/amd64"
       tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  clickhouseRebuiltZeroCve:
+    name: "clickhouse (rebuilt zero-CVE)"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/clickhouse"
+      architecture: "linux/amd64"
+      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -52,13 +62,23 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
-  elasticsearch:
-    name: "elasticsearch"
+  elasticsearchStable:
+    name: "elasticsearch (stable)"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/elasticsearch"
       architecture: "linux/amd64"
       tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  elasticsearchRebuiltZeroCve:
+    name: "elasticsearch (rebuilt zero-CVE)"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/elasticsearch"
+      architecture: "linux/amd64"
+      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -126,13 +146,23 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
-  kafka:
-    name: "kafka"
+  kafkaStable:
+    name: "kafka (stable)"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/kafka"
       architecture: "linux/amd64"
       tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  kafkaRebuiltZeroCve:
+    name: "kafka (rebuilt zero-CVE)"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/kafka"
+      architecture: "linux/amd64"
+      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -238,13 +268,23 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: "^[a-f0-9]{8}-([0-9]+)-release$"
-  zookeeper:
-    name: "zookeeper"
+  zookeeperStable:
+    name: "zookeeper (stable)"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/zookeeper"
       architecture: "linux/amd64"
       tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  zookeeperRebuiltZeroCve:
+    name: "zookeeper (rebuilt zero-CVE)"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/zookeeper"
+      architecture: "linux/amd64"
+      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -331,7 +371,7 @@ targets:
     name: "clickhouse"
     kind: yaml
     scmid: "default"
-    sourceid: clickhouse
+    sourceid: "{{ .dockerImages.clickhouse.source }}"
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -369,7 +409,7 @@ targets:
     name: "elasticsearch"
     kind: yaml
     scmid: "default"
-    sourceid: elasticsearch
+    sourceid: "{{ .dockerImages.elasticsearch.source }}"
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.elasticsearch.imageTag"
@@ -429,7 +469,7 @@ targets:
     name: "kafka"
     kind: yaml
     scmid: "default"
-    sourceid: kafka
+    sourceid: "{{ .dockerImages.kafka.source }}"
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -531,7 +571,7 @@ targets:
     name: "zookeeper"
     kind: yaml
     scmid: "default"
-    sourceid: zookeeper
+    sourceid: "{{ .dockerImages.zookeeper.source }}"
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.zookeeper.image.tag"

@@ -1,4 +1,3 @@
-
 scm:
   kind: gitlab
   owner: stackvista
@@ -14,3 +13,18 @@ docker:
   sts:
     usernameEnv: REGISTRY_USER
     passwordEnv: REGISTRY_PASSWORD
+
+dockerImages:
+  # Images with both stable and rebuilt streams keep separate updatecli sources.
+  # Switch one value to <image>Stable to roll that image back without changing
+  # repositories or chart keys. Do not use one regex for both streams: their
+  # workflow run counters are independent, so updatecli must compare one stream
+  # at a time.
+  clickhouse:
+    source: clickhouseRebuiltZeroCve
+  elasticsearch:
+    source: elasticsearchRebuiltZeroCve
+  kafka:
+    source: kafkaRebuiltZeroCve
+  zookeeper:
+    source: zookeeperRebuiltZeroCve
