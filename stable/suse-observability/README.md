@@ -441,7 +441,7 @@ If you encounter issues not covered here:
 | clickhouse.backup.s3.secretName | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials. |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| clickhouse.image.tag | string | `"25.9.6-dc2b5d73-main-84"` | Container image tag for 'clickhouse' containers. |
+| clickhouse.image.tag | string | `"rebuilt_zero_cve_25.9.6-1de43030-main-12"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.persistence.size | string | `nil` | Size of persistent volume for each clickhouse pod |
 | clickhouse.replicaCount | string | `nil` | Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha). |
 | clickhouse.resources | object | `{}` |  |
@@ -449,7 +449,7 @@ If you encounter issues not covered here:
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
 | elasticsearch.esJavaOpts | string | `nil` | JVM options |
-| elasticsearch.imageTag | string | `"8.19.15-dc2b5d73-main-102"` | Elasticsearch image tag. Updated by updatecli. |
+| elasticsearch.imageTag | string | `"rebuilt_zero_cve_8.19.15-e79e95eb-main-12"` | Elasticsearch image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"1.10.0-2369ceb9-main-2"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
 | elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
@@ -510,7 +510,7 @@ If you encounter issues not covered here:
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"3.9.2-7c9dc1f5-main-39"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.image.tag | string | `"rebuilt_zero_cve_3.9.2-0e6c7ad9-main-25"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
 | kafka.metrics.jmx.image.tag | string | `"0.20.0-9b86dabb-main-5"` | Kafka JMX exporter image tag |
@@ -749,7 +749,7 @@ If you encounter issues not covered here:
 | stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy `clickhouseCleanup` containers. |
 | stackstate.components.clickhouseCleanup.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | stackstate.components.clickhouseCleanup.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| stackstate.components.clickhouseCleanup.image.tag | string | `"25.9.6-dc2b5d73-main-84"` | Container image tag for 'clickhouseCleanup' containers. |
+| stackstate.components.clickhouseCleanup.image.tag | string | `"rebuilt_zero_cve_25.9.6-1de43030-main-12"` | Container image tag for 'clickhouseCleanup' containers. |
 | stackstate.components.clickhouseCleanup.jobAnnotations | object | `{}` | Annotations for clickhouseCleanup job. |
 | stackstate.components.clickhouseCleanup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.clickhouseCleanup.podAnnotations | object | `{}` | Extra annotations for clickhouse cleanup job pods. |
@@ -884,7 +884,7 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.9.2-7c9dc1f5-main-39"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"rebuilt_zero_cve_3.9.2-0e6c7ad9-main-25"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.jobAnnotations | object | `{}` | Annotations for KafkaTopicCreate job. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.podAnnotations | object | `{}` | Extra annotations for kafka topic create job pods. |
@@ -1216,7 +1216,7 @@ If you encounter issues not covered here:
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.9.5-7c9dc1f5-main-28"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"rebuilt_zero_cve_3.9.5-79e999cf-main-11"` | ZooKeeper image tag |
 | zookeeper.persistence.size | string | `nil` | Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.replicaCount | string | `nil` | Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.resources | object | `{}` |  |
