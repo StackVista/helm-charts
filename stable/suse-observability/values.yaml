@@ -29,7 +29,7 @@ global:
       # global.wait.image.repository -- Base container image repository for wait containers.
       repository: stackstate/wait
       # global.wait.image.tag -- Container image tag for wait containers.
-      tag: 1.0.12-e9a78b36-main-7
+      tag: 1.0.12-18e7ac19-main-10
       # global.wait.image.pullPolicy -- Image pull policy for wait containers.
       pullPolicy: IfNotPresent
   # global.suseObservability -- Simplified configuration section that allows users to specify high-level settings.
