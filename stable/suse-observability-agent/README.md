@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.30`
+Current chart version is `1.3.31`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -168,14 +168,14 @@ stackstate/suse-observability-agent
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-5138d7f9-main-101"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-18eefcbf-main-103"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxy.image.tag | string | `"7e145b52-482-release"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"7e145b52-482-release"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ddfbfbc4-57-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ddfbfbc4-58-release"` |  |
 | k8sCrdCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
 | k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude | list | `[]` | List of API group patterns to exclude |
 | k8sCrdCollector.crdDiscovery.apiGroupFilters.include | list | `["*"]` | List of API group patterns to watch (supports wildcards like "*.suse.com") |
@@ -225,7 +225,7 @@ stackstate/suse-observability-agent
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"e78c10a7-732-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"e78c10a7-736-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
