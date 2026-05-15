@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.31`
+Current chart version is `1.3.32`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -198,9 +198,8 @@ stackstate/suse-observability-agent
 | k8sCrdCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | k8sCrdCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
 | k8sCrdCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| k8sCrdCollector.otlpProtocol | string | `"http"` | Protocol for OTLP export: "http" (default) or "grpc". Only takes effect when platformOtlpEndpoint is set. The default endpoint (derived from stackstate.url) always uses HTTP. |
 | k8sCrdCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
-| k8sCrdCollector.platformOtlpEndpoint | string | `""` | Override the OTLP endpoint for sending telemetry data. When empty (default), the endpoint is derived by appending /otel to stackstate.url (e.g., https://my-instance.stackstate.io/receiver -> https://my-instance.stackstate.io/receiver/otel). Set this to use a dedicated OTLP ingress (e.g., https://otlp-http-my-instance.stackstate.io for HTTP or otlp-my-instance.stackstate.io:443 for gRPC). |
+| k8sCrdCollector.platformOtlpEndpoint | string | `""` | Override the OTLP endpoint. When empty, derived by appending /otel to stackstate.url. Protocol is inferred from the endpoint shape: a URL with http(s):// uses HTTP (e.g., https://otlp-http-my-instance.stackstate.io); a host:port without scheme uses gRPC (e.g., otlp-my-instance.stackstate.io:443). |
 | k8sCrdCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
 | k8sCrdCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
 | k8sCrdCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |

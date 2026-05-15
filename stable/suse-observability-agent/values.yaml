@@ -676,10 +676,7 @@ k8sCrdCollector:
   # k8sCrdCollector.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
   skipSslValidation: false
 
-  # k8sCrdCollector.otlpProtocol -- Protocol for OTLP export: "http" (default) or "grpc". Only takes effect when platformOtlpEndpoint is set. The default endpoint (derived from stackstate.url) always uses HTTP.
-  otlpProtocol: "http"
-
-  # k8sCrdCollector.platformOtlpEndpoint -- Override the OTLP endpoint for sending telemetry data. When empty (default), the endpoint is derived by appending /otel to stackstate.url (e.g., https://my-instance.stackstate.io/receiver -> https://my-instance.stackstate.io/receiver/otel). Set this to use a dedicated OTLP ingress (e.g., https://otlp-http-my-instance.stackstate.io for HTTP or otlp-my-instance.stackstate.io:443 for gRPC).
+  # k8sCrdCollector.platformOtlpEndpoint -- Override the OTLP endpoint. When empty, derived by appending /otel to stackstate.url. Protocol is inferred from the endpoint shape: a URL with http(s):// uses HTTP (e.g., https://otlp-http-my-instance.stackstate.io); a host:port without scheme uses gRPC (e.g., otlp-my-instance.stackstate.io:443).
   platformOtlpEndpoint: ""
 
   image:

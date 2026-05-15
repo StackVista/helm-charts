@@ -72,7 +72,13 @@ data:
                     cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                     prefix_rewrite: "/api/metrics/"
                 - match:
-                    prefix: "/receiver/otel/"
+                    prefix: "/stsAgent/otel/"
+                  route:
+                    timeout: 0s
+                    cluster: "{{ template "common.fullname.short" . }}-otel-collector"
+                    prefix_rewrite: "/"
+                - match:
+                    prefix: "/receiver/stsAgent/otel/"
                   route:
                     timeout: 0s
                     cluster: "{{ template "common.fullname.short" . }}-otel-collector"

@@ -4,10 +4,10 @@ stackstate:
     name: test-cluster
   url: https://my-suse-observability-instance.com
 
-# Enable cluster collector with gRPC protocol via dedicated OTLP ingress
+# Enable cluster collector with gRPC protocol via dedicated OTLP ingress.
+# Protocol is inferred from the endpoint shape (no http(s):// scheme → gRPC).
 k8sCrdCollector:
   enabled: true
-  otlpProtocol: "grpc"
   platformOtlpEndpoint: "otlp-my-suse-observability-instance.com:443"
   crdDiscovery:
     interval: 15m

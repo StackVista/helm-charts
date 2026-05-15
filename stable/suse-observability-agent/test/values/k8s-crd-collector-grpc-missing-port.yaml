@@ -4,10 +4,9 @@ stackstate:
     name: test-cluster
   url: https://my-suse-observability-instance.com/receiver
 
-# Invalid: gRPC endpoint must include :443 port
+# Invalid: a host:port endpoint without scheme is treated as gRPC and must include :443.
 k8sCrdCollector:
   enabled: true
-  otlpProtocol: "grpc"
   platformOtlpEndpoint: "otlp-my-instance.example.com"
   crdDiscovery:
     interval: 15m

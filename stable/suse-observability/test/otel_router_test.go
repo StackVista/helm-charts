@@ -18,7 +18,15 @@ func TestOtelRouterRouteEnabled(t *testing.T) {
 
 	routerConfigMap, ok := resources.ConfigMaps["suse-observability-router-active"]
 	require.True(t, ok, "Active router configmap should exist")
-	assert.Contains(t, routerConfigMap.Data["listeners.yaml"], "prefix: \"/receiver/otel/\"")
+	listeners := routerConfigMap.Data["listeners.yaml"]
+
+	//   /stsAgent/otel/          — direct stsAgent URL
+	//   /receiver/stsAgent/otel/ — stsAgent URL proxied through /receiver/
+	assert.Contains(t, listeners, "prefix: \"/stsAgent/otel/\"")
+	assert.Contains(t, listeners, "prefix: \"/receiver/stsAgent/otel/\"")
+	assert.NotContains(t, listeners, "prefix: \"/receiver/otel/\"",
+		"old /receiver/otel/ route was based on a non-canonical URL shape and should not be present")
+
 	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "name: \"suse-observability-otel-collector\"")
 	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "port_value: 4318")
 }

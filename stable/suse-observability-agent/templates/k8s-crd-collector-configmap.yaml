@@ -40,8 +40,7 @@ data:
         k8s_leader_elector: k8s_leader_elector
 {{- end }}
 
-{{- $useGrpc := and (ne (.Values.k8sCrdCollector.platformOtlpEndpoint | default "") "") (eq (.Values.k8sCrdCollector.otlpProtocol | default "http") "grpc") }}
-{{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" $useGrpc }}
+{{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" (eq (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) "true") }}
     exporters:
       # Send to SUSE Observability platform
       {{ $exporterName }}:
@@ -50,7 +49,7 @@ data:
         endpoint: ${PLATFORM_OTLP_ENDPOINT}
         tls:
           insecure_skip_verify: ${SKIP_SSL_VALIDATION}
-        compression: snappy
+        compression: gzip
         timeout: 30s
         retry_on_failure:
           enabled: true

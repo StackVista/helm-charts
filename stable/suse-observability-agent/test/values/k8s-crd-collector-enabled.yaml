@@ -2,7 +2,8 @@ stackstate:
   apiKey: test-api-key
   cluster:
     name: test-cluster
-  url: https://my-suse-observability-instance.com/receiver
+  # Canonical URL shape per the kubernetes-v2 stackpack instructions.
+  url: https://my-suse-observability-instance.com/receiver/stsAgent
 
 # Enable cluster collector with default settings (watch all CRDs)
 k8sCrdCollector:

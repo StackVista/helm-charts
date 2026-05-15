@@ -267,10 +267,11 @@ func TestK8sCrdCollectorPlatformOtlpEndpointDerived(t *testing.T) {
 		}
 	}
 
-	// Verify PLATFORM_OTLP_ENDPOINT is derived from stackstate.url by appending /otel
-	// stackstate.url: https://my-suse-observability-instance.com/receiver
-	// Expected derivation: https://my-suse-observability-instance.com/receiver/otel
-	assert.Equal(t, "https://my-suse-observability-instance.com/receiver/otel", envVars["PLATFORM_OTLP_ENDPOINT"])
+	// Verify PLATFORM_OTLP_ENDPOINT is derived from stackstate.url by appending /otel.
+	// stackstate.url: https://my-suse-observability-instance.com/stsAgent
+	// Expected derivation: https://my-suse-observability-instance.com/stsAgent/otel
+	// (matches the platform router's /stsAgent/otel/ route → otel-collector.)
+	assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent/otel", envVars["PLATFORM_OTLP_ENDPOINT"])
 }
 
 func TestK8sCrdCollectorPlatformOtlpEndpointExplicitOverride(t *testing.T) {
@@ -295,6 +296,7 @@ func TestK8sCrdCollectorPlatformOtlpEndpointExplicitOverride(t *testing.T) {
 }
 
 func TestK8sCrdCollectorGrpcProtocol(t *testing.T) {
+	// A platformOtlpEndpoint without an http(s):// scheme is inferred as gRPC.
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-grpc.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -322,36 +324,10 @@ func TestK8sCrdCollectorGrpcProtocol(t *testing.T) {
 	assert.Equal(t, "otlp-my-suse-observability-instance.com:443", envVars["PLATFORM_OTLP_ENDPOINT"])
 }
 
-func TestK8sCrdCollectorGrpcWithoutExplicitEndpointFallsBackToHttp(t *testing.T) {
-	// When otlpProtocol is "grpc" but no platformOtlpEndpoint is set,
-	// the default /otel path only works with HTTP, so exporter should be otlp_http
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-enabled.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-crd-collector-config"]
-	require.True(t, exists, "k8s-crd-collector config map was not found")
-
-	configData := configMap.Data["config.yaml"]
-	assert.Contains(t, configData, "otlp_http/suse-observability:")
-	assert.NotContains(t, configData, "otlp/suse-observability:")
-}
-
-func TestK8sCrdCollectorGrpcEndpointRejectsHttpsScheme(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-grpc-invalid-scheme.yaml")
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "gRPC must not include https:// scheme")
-}
-
 func TestK8sCrdCollectorGrpcEndpointRequiresPort443(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-grpc-missing-port.yaml")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "gRPC must include port :443")
-}
-
-func TestK8sCrdCollectorHttpEndpointRequiresHttpsScheme(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-http-missing-scheme.yaml")
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "HTTP must include https:// scheme")
+	assert.Contains(t, err.Error(), "treated as gRPC and must include port :443")
 }
 
 // TestK8sCrdCollectorMultiNodeAffinityAndPDB asserts the default (replicaCount: 2)
