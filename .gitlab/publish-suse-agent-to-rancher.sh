@@ -52,7 +52,7 @@ if [[ "$release" = "release" ]]; then
   echo "Making a public release"
 else
   echo "Making a prerelease, adding -pre to the chart."
-  .gitlab/modify_chart_to_prerelease_version.sh suse-observability-agent
+  .gitlab/modify_chart_to_prerelease_version.sh stable/suse-observability-agent
 fi
 
 .gitlab/package-and-push-chart-for-rancher.sh suse-observability-agent
