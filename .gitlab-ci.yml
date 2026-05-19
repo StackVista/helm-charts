@@ -7,10 +7,12 @@ beest_agent_trigger:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH
       when: manual
   script:
@@ -24,10 +26,38 @@ beest_stackstate_trigger:
   rules:
     - changes:
         - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
     - changes:
         - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       if: $CI_COMMIT_BRANCH
       when: manual
   script:
@@ -35,27 +65,6 @@ beest_stackstate_trigger:
     - echo "Triggering beest pipeline with STACKSTATE_HELM_CHART_VERSION=${STACKSTATE_HELM_CHART_VERSION}"
     - curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[STACKSTATE_HELM_CHART_VERSION]=${STACKSTATE_HELM_CHART_VERSION}" --form "variables[TRIGGER_AGENT_X86_TESTS]=true" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"
   stage: update
-build_anomaly-detection:
-  artifacts:
-    paths:
-      - stable/anomaly-detection/charts/
-      - stable/anomaly-detection/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/anomaly-detection/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/anomaly-detection/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/anomaly-detection/%
-    - helm dependencies build stable/anomaly-detection
-    - mkdir -p stable/anomaly-detection/build; helm package --destination stable/anomaly-detection/build stable/anomaly-detection
-  stage: build
 build_artifactory-cleaner:
   artifacts:
     paths:
@@ -73,7 +82,7 @@ build_artifactory-cleaner:
         - stable/artifactory-cleaner/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/artifactory-cleaner/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/artifactory-cleaner/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/artifactory-cleaner/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/artifactory-cleaner/%
     - helm dependencies build stable/artifactory-cleaner
     - mkdir -p stable/artifactory-cleaner/build; helm package --destination stable/artifactory-cleaner/build stable/artifactory-cleaner
   stage: build
@@ -94,7 +103,7 @@ build_aws-pod-identity-webhook:
         - stable/aws-pod-identity-webhook/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-pod-identity-webhook/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/aws-pod-identity-webhook/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-pod-identity-webhook/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/aws-pod-identity-webhook/%
     - helm dependencies build stable/aws-pod-identity-webhook
     - mkdir -p stable/aws-pod-identity-webhook/build; helm package --destination stable/aws-pod-identity-webhook/build stable/aws-pod-identity-webhook
   stage: build
@@ -115,7 +124,7 @@ build_beacher-job:
         - stable/beacher-job/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/beacher-job/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/beacher-job/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/beacher-job/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/beacher-job/%
     - helm dependencies build stable/beacher-job
     - mkdir -p stable/beacher-job/build; helm package --destination stable/beacher-job/build stable/beacher-job
   stage: build
@@ -136,7 +145,7 @@ build_chartmuseum:
         - stable/chartmuseum/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/chartmuseum/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/chartmuseum/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/chartmuseum/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/chartmuseum/%
     - helm dependencies build stable/chartmuseum
     - mkdir -p stable/chartmuseum/build; helm package --destination stable/chartmuseum/build stable/chartmuseum
   stage: build
@@ -157,72 +166,9 @@ build_ci-test:
         - stable/ci-test/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/ci-test/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/ci-test/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/ci-test/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/ci-test/%
     - helm dependencies build stable/ci-test
     - mkdir -p stable/ci-test/build; helm package --destination stable/ci-test/build stable/ci-test
-  stage: build
-build_clickhouse:
-  artifacts:
-    paths:
-      - stable/clickhouse/charts/
-      - stable/clickhouse/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/clickhouse/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/clickhouse/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/clickhouse/%
-    - helm dependencies build stable/clickhouse
-    - mkdir -p stable/clickhouse/build; helm package --destination stable/clickhouse/build stable/clickhouse
-  stage: build
-build_common:
-  artifacts:
-    paths:
-      - stable/common/charts/
-      - stable/common/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/common/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/common/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/common/%
-    - helm dependencies build stable/common
-    - mkdir -p stable/common/build; helm package --destination stable/common/build stable/common
-  stage: build
-build_elasticsearch:
-  artifacts:
-    paths:
-      - stable/elasticsearch/charts/
-      - stable/elasticsearch/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/elasticsearch/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/elasticsearch/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/elasticsearch/%
-    - helm dependencies build stable/elasticsearch
-    - mkdir -p stable/elasticsearch/build; helm package --destination stable/elasticsearch/build stable/elasticsearch
   stage: build
 build_gitlab-proxy:
   artifacts:
@@ -241,7 +187,7 @@ build_gitlab-proxy:
         - stable/gitlab-proxy/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-proxy/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/gitlab-proxy/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-proxy/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/gitlab-proxy/%
     - helm dependencies build stable/gitlab-proxy
     - mkdir -p stable/gitlab-proxy/build; helm package --destination stable/gitlab-proxy/build stable/gitlab-proxy
   stage: build
@@ -262,30 +208,9 @@ build_gitlab-steward:
         - stable/gitlab-steward/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-steward/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/gitlab-steward/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-steward/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/gitlab-steward/%
     - helm dependencies build stable/gitlab-steward
     - mkdir -p stable/gitlab-steward/build; helm package --destination stable/gitlab-steward/build stable/gitlab-steward
-  stage: build
-build_hbase:
-  artifacts:
-    paths:
-      - stable/hbase/charts/
-      - stable/hbase/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/hbase/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/hbase/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/hbase/%
-    - helm dependencies build stable/hbase
-    - mkdir -p stable/hbase/build; helm package --destination stable/hbase/build stable/hbase
   stage: build
 build_helm-reaper:
   artifacts:
@@ -304,7 +229,7 @@ build_helm-reaper:
         - stable/helm-reaper/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/helm-reaper/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/helm-reaper/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/helm-reaper/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/helm-reaper/%
     - helm dependencies build stable/helm-reaper
     - mkdir -p stable/helm-reaper/build; helm package --destination stable/helm-reaper/build stable/helm-reaper
   stage: build
@@ -325,51 +250,9 @@ build_k8s-spot-termination-handler:
         - stable/k8s-spot-termination-handler/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-spot-termination-handler/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/k8s-spot-termination-handler/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-spot-termination-handler/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/k8s-spot-termination-handler/%
     - helm dependencies build stable/k8s-spot-termination-handler
     - mkdir -p stable/k8s-spot-termination-handler/build; helm package --destination stable/k8s-spot-termination-handler/build stable/k8s-spot-termination-handler
-  stage: build
-build_kafka:
-  artifacts:
-    paths:
-      - stable/kafka/charts/
-      - stable/kafka/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/kafka/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kafka/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/kafka/%
-    - helm dependencies build stable/kafka
-    - mkdir -p stable/kafka/build; helm package --destination stable/kafka/build stable/kafka
-  stage: build
-build_kafkaup-operator:
-  artifacts:
-    paths:
-      - stable/kafkaup-operator/charts/
-      - stable/kafkaup-operator/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/kafkaup-operator/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kafkaup-operator/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/kafkaup-operator/%
-    - helm dependencies build stable/kafkaup-operator
-    - mkdir -p stable/kafkaup-operator/build; helm package --destination stable/kafkaup-operator/build stable/kafkaup-operator
   stage: build
 build_kommoner-operator:
   artifacts:
@@ -388,15 +271,14 @@ build_kommoner-operator:
         - stable/kommoner-operator/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kommoner-operator/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/kommoner-operator/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kommoner-operator/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/kommoner-operator/%
     - helm dependencies build stable/kommoner-operator
     - mkdir -p stable/kommoner-operator/build; helm package --destination stable/kommoner-operator/build stable/kommoner-operator
   stage: build
-build_kubernetes-rbac-agent:
+build_local_anomaly-detection:
   artifacts:
     paths:
-      - stable/kubernetes-rbac-agent/charts/
-      - stable/kubernetes-rbac-agent/build/
+      - local/anomaly-detection/charts/
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
@@ -406,12 +288,258 @@ build_kubernetes-rbac-agent:
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
-        - stable/kubernetes-rbac-agent/**/*
+        - local/anomaly-detection/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kubernetes-rbac-agent/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/kubernetes-rbac-agent/%
-    - helm dependencies build stable/kubernetes-rbac-agent
-    - mkdir -p stable/kubernetes-rbac-agent/build; helm package --destination stable/kubernetes-rbac-agent/build stable/kubernetes-rbac-agent
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/anomaly-detection/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/anomaly-detection/%
+    - helm dependencies build local/anomaly-detection
+  stage: build
+build_local_clickhouse:
+  artifacts:
+    paths:
+      - local/clickhouse/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/clickhouse/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/clickhouse/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/clickhouse/%
+    - helm dependencies build local/clickhouse
+  stage: build
+build_local_common:
+  artifacts:
+    paths:
+      - local/common/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/common/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/common/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/common/%
+    - helm dependencies build local/common
+  stage: build
+build_local_elasticsearch:
+  artifacts:
+    paths:
+      - local/elasticsearch/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/elasticsearch/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/elasticsearch/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/elasticsearch/%
+    - helm dependencies build local/elasticsearch
+  stage: build
+build_local_hbase:
+  artifacts:
+    paths:
+      - local/hbase/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/hbase/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/hbase/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/hbase/%
+    - helm dependencies build local/hbase
+  stage: build
+build_local_kafka:
+  artifacts:
+    paths:
+      - local/kafka/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/kafka/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/kafka/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/kafka/%
+    - helm dependencies build local/kafka
+  stage: build
+build_local_kafkaup-operator:
+  artifacts:
+    paths:
+      - local/kafkaup-operator/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/kafkaup-operator/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/kafkaup-operator/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/kafkaup-operator/%
+    - helm dependencies build local/kafkaup-operator
+  stage: build
+build_local_kubernetes-rbac-agent:
+  artifacts:
+    paths:
+      - local/kubernetes-rbac-agent/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/kubernetes-rbac-agent/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/kubernetes-rbac-agent/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/kubernetes-rbac-agent/%
+    - helm dependencies build local/kubernetes-rbac-agent
+  stage: build
+build_local_opentelemetry-collector:
+  artifacts:
+    paths:
+      - local/opentelemetry-collector/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/opentelemetry-collector/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/opentelemetry-collector/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/opentelemetry-collector/%
+    - helm dependencies build local/opentelemetry-collector
+  stage: build
+build_local_prometheus-elasticsearch-exporter:
+  artifacts:
+    paths:
+      - local/prometheus-elasticsearch-exporter/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/prometheus-elasticsearch-exporter/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/prometheus-elasticsearch-exporter/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/prometheus-elasticsearch-exporter/%
+    - helm dependencies build local/prometheus-elasticsearch-exporter
+  stage: build
+build_local_pull-secret:
+  artifacts:
+    paths:
+      - local/pull-secret/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/pull-secret/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/pull-secret/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/pull-secret/%
+    - helm dependencies build local/pull-secret
+  stage: build
+build_local_suse-observability-sizing:
+  artifacts:
+    paths:
+      - local/suse-observability-sizing/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/suse-observability-sizing/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/suse-observability-sizing/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/suse-observability-sizing/%
+    - helm dependencies build local/suse-observability-sizing
+  stage: build
+build_local_victoria-metrics-single:
+  artifacts:
+    paths:
+      - local/victoria-metrics-single/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/victoria-metrics-single/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/victoria-metrics-single/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/victoria-metrics-single/%
+    - helm dependencies build local/victoria-metrics-single
+  stage: build
+build_local_zookeeper:
+  artifacts:
+    paths:
+      - local/zookeeper/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/zookeeper/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/zookeeper/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/zookeeper/%
+    - helm dependencies build local/zookeeper
   stage: build
 build_notification-operator:
   artifacts:
@@ -430,30 +558,9 @@ build_notification-operator:
         - stable/notification-operator/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/notification-operator/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/notification-operator/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/notification-operator/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/notification-operator/%
     - helm dependencies build stable/notification-operator
     - mkdir -p stable/notification-operator/build; helm package --destination stable/notification-operator/build stable/notification-operator
-  stage: build
-build_opentelemetry-collector:
-  artifacts:
-    paths:
-      - stable/opentelemetry-collector/charts/
-      - stable/opentelemetry-collector/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/opentelemetry-collector/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/opentelemetry-collector/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/opentelemetry-collector/%
-    - helm dependencies build stable/opentelemetry-collector
-    - mkdir -p stable/opentelemetry-collector/build; helm package --destination stable/opentelemetry-collector/build stable/opentelemetry-collector
   stage: build
 build_otel-demo:
   artifacts:
@@ -472,7 +579,7 @@ build_otel-demo:
         - stable/otel-demo/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/otel-demo/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/otel-demo/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/otel-demo/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/otel-demo/%
     - helm dependencies build stable/otel-demo
     - mkdir -p stable/otel-demo/build; helm package --destination stable/otel-demo/build stable/otel-demo
   stage: build
@@ -493,51 +600,9 @@ build_petros-d-kubelet-stats-exporter:
         - stable/petros-d-kubelet-stats-exporter/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/petros-d-kubelet-stats-exporter/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/petros-d-kubelet-stats-exporter/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/petros-d-kubelet-stats-exporter/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/petros-d-kubelet-stats-exporter/%
     - helm dependencies build stable/petros-d-kubelet-stats-exporter
     - mkdir -p stable/petros-d-kubelet-stats-exporter/build; helm package --destination stable/petros-d-kubelet-stats-exporter/build stable/petros-d-kubelet-stats-exporter
-  stage: build
-build_prometheus-elasticsearch-exporter:
-  artifacts:
-    paths:
-      - stable/prometheus-elasticsearch-exporter/charts/
-      - stable/prometheus-elasticsearch-exporter/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/prometheus-elasticsearch-exporter/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/prometheus-elasticsearch-exporter/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/prometheus-elasticsearch-exporter/%
-    - helm dependencies build stable/prometheus-elasticsearch-exporter
-    - mkdir -p stable/prometheus-elasticsearch-exporter/build; helm package --destination stable/prometheus-elasticsearch-exporter/build stable/prometheus-elasticsearch-exporter
-  stage: build
-build_pull-secret:
-  artifacts:
-    paths:
-      - stable/pull-secret/charts/
-      - stable/pull-secret/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/pull-secret/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/pull-secret/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/pull-secret/%
-    - helm dependencies build stable/pull-secret
-    - mkdir -p stable/pull-secret/build; helm package --destination stable/pull-secret/build stable/pull-secret
   stage: build
 build_receiveramplifier:
   artifacts:
@@ -556,7 +621,7 @@ build_receiveramplifier:
         - stable/receiveramplifier/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/receiveramplifier/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/receiveramplifier/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/receiveramplifier/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/receiveramplifier/%
     - helm dependencies build stable/receiveramplifier
     - mkdir -p stable/receiveramplifier/build; helm package --destination stable/receiveramplifier/build stable/receiveramplifier
   stage: build
@@ -577,7 +642,7 @@ build_redirector:
         - stable/redirector/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/redirector/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/redirector/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/redirector/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/redirector/%
     - helm dependencies build stable/redirector
     - mkdir -p stable/redirector/build; helm package --destination stable/redirector/build stable/redirector
   stage: build
@@ -598,7 +663,7 @@ build_sock-shop:
         - stable/sock-shop/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sock-shop/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/sock-shop/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sock-shop/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/sock-shop/%
     - helm dependencies build stable/sock-shop
     - mkdir -p stable/sock-shop/build; helm package --destination stable/sock-shop/build stable/sock-shop
   stage: build
@@ -619,7 +684,7 @@ build_stackstate-monitoring:
         - stable/stackstate-monitoring/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-monitoring/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/stackstate-monitoring/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-monitoring/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/stackstate-monitoring/%
     - helm dependencies build stable/stackstate-monitoring
     - mkdir -p stable/stackstate-monitoring/build; helm package --destination stable/stackstate-monitoring/build stable/stackstate-monitoring
   stage: build
@@ -638,9 +703,23 @@ build_suse-observability:
   rules:
     - changes:
         - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
     - helm dependencies build stable/suse-observability
     - mkdir -p stable/suse-observability/build; helm package --destination stable/suse-observability/build stable/suse-observability
   stage: build
@@ -659,9 +738,10 @@ build_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-agent/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/suse-observability-agent/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-agent/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability-agent/%
     - helm dependencies build stable/suse-observability-agent
     - mkdir -p stable/suse-observability-agent/build; helm package --destination stable/suse-observability-agent/build stable/suse-observability-agent
   stage: build
@@ -682,7 +762,7 @@ build_suse-observability-values:
         - stable/suse-observability-values/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-values/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/suse-observability-values/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-values/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability-values/%
     - helm dependencies build stable/suse-observability-values
     - mkdir -p stable/suse-observability-values/build; helm package --destination stable/suse-observability-values/build stable/suse-observability-values
   stage: build
@@ -703,7 +783,7 @@ build_tenant-cleanup-controller:
         - stable/tenant-cleanup-controller/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenant-cleanup-controller/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/tenant-cleanup-controller/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenant-cleanup-controller/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/tenant-cleanup-controller/%
     - helm dependencies build stable/tenant-cleanup-controller
     - mkdir -p stable/tenant-cleanup-controller/build; helm package --destination stable/tenant-cleanup-controller/build stable/tenant-cleanup-controller
   stage: build
@@ -724,7 +804,7 @@ build_tenantmanagement:
         - stable/tenantmanagement/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanagement/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/tenantmanagement/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanagement/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/tenantmanagement/%
     - helm dependencies build stable/tenantmanagement
     - mkdir -p stable/tenantmanagement/build; helm package --destination stable/tenantmanagement/build stable/tenantmanagement
   stage: build
@@ -745,7 +825,7 @@ build_tenantprovisioning:
         - stable/tenantprovisioning/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantprovisioning/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/tenantprovisioning/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantprovisioning/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/tenantprovisioning/%
     - helm dependencies build stable/tenantprovisioning
     - mkdir -p stable/tenantprovisioning/build; helm package --destination stable/tenantprovisioning/build stable/tenantprovisioning
   stage: build
@@ -766,63 +846,10 @@ build_trafficmirror:
         - stable/trafficmirror/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/trafficmirror/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/trafficmirror/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/trafficmirror/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/trafficmirror/%
     - helm dependencies build stable/trafficmirror
     - mkdir -p stable/trafficmirror/build; helm package --destination stable/trafficmirror/build stable/trafficmirror
   stage: build
-build_victoria-metrics-single:
-  artifacts:
-    paths:
-      - stable/victoria-metrics-single/charts/
-      - stable/victoria-metrics-single/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/victoria-metrics-single/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/victoria-metrics-single/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/victoria-metrics-single/%
-    - helm dependencies build stable/victoria-metrics-single
-    - mkdir -p stable/victoria-metrics-single/build; helm package --destination stable/victoria-metrics-single/build stable/victoria-metrics-single
-  stage: build
-build_zookeeper:
-  artifacts:
-    paths:
-      - stable/zookeeper/charts/
-      - stable/zookeeper/build/
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/zookeeper/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/zookeeper/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/zookeeper/%
-    - helm dependencies build stable/zookeeper
-    - mkdir -p stable/zookeeper/build; helm package --destination stable/zookeeper/build stable/zookeeper
-  stage: build
-check_anomaly-detection_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/anomaly-detection/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh anomaly-detection
-  stage: validate
 check_artifactory-cleaner_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -878,39 +905,6 @@ check_ci-test_version:
   script:
     - .gitlab/verify_versions_bumped.sh ci-test
   stage: validate
-check_clickhouse_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/clickhouse/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh clickhouse
-  stage: validate
-check_common_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/common/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh common
-  stage: validate
-check_elasticsearch_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/elasticsearch/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh elasticsearch
-  stage: validate
 check_gitlab-proxy_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -932,17 +926,6 @@ check_gitlab-steward_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh gitlab-steward
-  stage: validate
-check_hbase_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/hbase/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh hbase
   stage: validate
 check_helm-reaper_version:
   before_script:
@@ -966,28 +949,6 @@ check_k8s-spot-termination-handler_version:
   script:
     - .gitlab/verify_versions_bumped.sh k8s-spot-termination-handler
   stage: validate
-check_kafka_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/kafka/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh kafka
-  stage: validate
-check_kafkaup-operator_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/kafkaup-operator/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh kafkaup-operator
-  stage: validate
 check_kommoner-operator_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -999,17 +960,6 @@ check_kommoner-operator_version:
   script:
     - .gitlab/verify_versions_bumped.sh kommoner-operator
   stage: validate
-check_kubernetes-rbac-agent_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/kubernetes-rbac-agent/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh kubernetes-rbac-agent
-  stage: validate
 check_notification-operator_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -1020,17 +970,6 @@ check_notification-operator_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh notification-operator
-  stage: validate
-check_opentelemetry-collector_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/opentelemetry-collector/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh opentelemetry-collector
   stage: validate
 check_otel-demo_version:
   before_script:
@@ -1054,28 +993,6 @@ check_petros-d-kubelet-stats-exporter_version:
   script:
     - .gitlab/verify_versions_bumped.sh petros-d-kubelet-stats-exporter
   stage: validate
-check_prometheus-elasticsearch-exporter_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/prometheus-elasticsearch-exporter/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh prometheus-elasticsearch-exporter
-  stage: validate
-check_pull-secret_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/pull-secret/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh pull-secret
-  stage: validate
 check_receiveramplifier_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -1097,19 +1014,6 @@ check_redirector_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh redirector
-  stage: validate
-check_sizing_chart_dependencies:
-  before_script:
-    - pip install pyyaml
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  needs:
-    - check_suse-observability-sizing_version
-  rules:
-    - changes:
-        - stable/suse-observability-sizing/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - python3 scripts/bump-chart-version/bump_chart_version.py --check suse-observability-sizing
   stage: validate
 check_sock-shop_version:
   before_script:
@@ -1143,17 +1047,6 @@ check_suse-observability-agent_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh suse-observability-agent
-  stage: validate
-check_suse-observability-sizing_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/suse-observability-sizing/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh suse-observability-sizing
   stage: validate
 check_suse-observability-values_version:
   before_script:
@@ -1210,28 +1103,6 @@ check_trafficmirror_version:
   script:
     - .gitlab/verify_versions_bumped.sh trafficmirror
   stage: validate
-check_victoria-metrics-single_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/victoria-metrics-single/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh victoria-metrics-single
-  stage: validate
-check_zookeeper_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/zookeeper/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh zookeeper
-  stage: validate
 image: quay.io/helmpack/chart-testing:v3.10.1
 open_updatecli_docker_images_mr:
   before_script:
@@ -1247,41 +1118,6 @@ open_updatecli_docker_images_mr:
   script:
     - .gitlab/open_updatecli_mr.sh updatecli-master-docker-images master "[master] Bump helm chart docker images"
   stage: update
-push_anomaly-detection_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/anomaly-detection/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-anomaly-detection]/
-      when: on_success
-    - changes:
-        - stable/anomaly-detection/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^anomaly-detection\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/anomaly-detection
 push_artifactory-cleaner_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -1457,111 +1293,6 @@ push_ci-test_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/ci-test
-push_clickhouse_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/clickhouse/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-clickhouse]/
-      when: on_success
-    - changes:
-        - stable/clickhouse/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^clickhouse\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/clickhouse
-push_common_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
-      when: on_success
-    - changes:
-        - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^common\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/common
-push_elasticsearch_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
-      when: on_success
-    - changes:
-        - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^elasticsearch\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/elasticsearch
 push_gitlab-proxy_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -1632,41 +1363,6 @@ push_gitlab-steward_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/gitlab-steward
-push_hbase_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
-      when: on_success
-    - changes:
-        - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^hbase\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/hbase
 push_helm-reaper_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -1737,76 +1433,6 @@ push_k8s-spot-termination-handler_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/k8s-spot-termination-handler
-push_kafka_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/kafka/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafka]/
-      when: on_success
-    - changes:
-        - stable/kafka/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^kafka\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/kafka
-push_kafkaup-operator_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
-      when: on_success
-    - changes:
-        - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^kafkaup-operator\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/kafkaup-operator
 push_kommoner-operator_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -1842,41 +1468,6 @@ push_kommoner-operator_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/kommoner-operator
-push_kubernetes-rbac-agent_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/kubernetes-rbac-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kubernetes-rbac-agent]/
-      when: on_success
-    - changes:
-        - stable/kubernetes-rbac-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^kubernetes-rbac-agent\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/kubernetes-rbac-agent
 push_notification-operator_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -1912,41 +1503,6 @@ push_notification-operator_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/notification-operator
-push_opentelemetry-collector_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/opentelemetry-collector/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-opentelemetry-collector]/
-      when: on_success
-    - changes:
-        - stable/opentelemetry-collector/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^opentelemetry-collector\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/opentelemetry-collector
 push_otel-demo_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -2040,10 +1596,12 @@ push_prerelease_suse-observability-agent_to_public:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
@@ -2093,76 +1651,6 @@ push_prerelease_suse-observability-values_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/suse-observability-values
-push_prometheus-elasticsearch-exporter_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/prometheus-elasticsearch-exporter/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-prometheus-elasticsearch-exporter]/
-      when: on_success
-    - changes:
-        - stable/prometheus-elasticsearch-exporter/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^prometheus-elasticsearch-exporter\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/prometheus-elasticsearch-exporter
-push_pull-secret_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
-      when: on_success
-    - changes:
-        - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^pull-secret\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/pull-secret
 push_receiveramplifier_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -2320,10 +1808,12 @@ push_suse-observability-agent_prerelease_to_rancher:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
@@ -2354,10 +1844,12 @@ push_suse-observability-agent_to_internal:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
@@ -2391,10 +1883,12 @@ push_suse-observability-agent_to_public:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
@@ -2422,10 +1916,12 @@ push_suse-observability-agent_to_rancher:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
@@ -2531,16 +2027,44 @@ push_suse-observability_to_internal:
       when: never
     - changes:
         - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability]/
       when: on_success
     - changes:
         - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^suse-observability\/.*/
       when: on_success
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
     - helm dependencies update --skip-refresh ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
     - .gitlab/tag_sts_chart_pre_release.sh suse-observability
@@ -2688,76 +2212,6 @@ push_trafficmirror_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/trafficmirror
-push_victoria-metrics-single_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/victoria-metrics-single/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-victoria-metrics-single]/
-      when: on_success
-    - changes:
-        - stable/victoria-metrics-single/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^victoria-metrics-single\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/victoria-metrics-single
-push_zookeeper_to_internal:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/zookeeper/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-zookeeper]/
-      when: on_success
-    - changes:
-        - stable/zookeeper/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^zookeeper\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/zookeeper
 resource_usage:
   artifacts:
     paths:
@@ -2780,11 +2234,25 @@ resource_usage:
     - changes:
         - test/*.go
         - test/**/*
-        - stable/suse-observability/**/*
         - stable/suse-observability-values/**/*
+        - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
     - helm dependencies build stable/suse-observability
     - helm dependencies build stable/suse-observability-values
     - go mod download
@@ -2804,30 +2272,6 @@ stages:
   - push-charts-to-internal
   - push-charts-to-public
   - push-charts-to-rancher
-test_anomaly-detection:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/anomaly-detection/**/*
-      exists:
-        - stable/anomaly-detection/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/anomaly-detection/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
 test_artifactory-cleaner:
   cache:
     key:
@@ -2948,78 +2392,6 @@ test_ci-test:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
-test_clickhouse:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/clickhouse/**/*
-      exists:
-        - stable/clickhouse/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/clickhouse/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_common:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/common/**/*
-      exists:
-        - stable/common/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/common/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_elasticsearch:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/elasticsearch/**/*
-      exists:
-        - stable/elasticsearch/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/elasticsearch/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
 test_gitlab-proxy:
   cache:
     key:
@@ -3062,30 +2434,6 @@ test_gitlab-steward:
   script:
     - go mod download
     - go test ./stable/gitlab-steward/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_hbase:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/hbase/**/*
-      exists:
-        - stable/hbase/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/hbase/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -3140,54 +2488,6 @@ test_k8s-spot-termination-handler:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
-test_kafka:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/kafka/**/*
-      exists:
-        - stable/kafka/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/kafka/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_kafkaup-operator:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/kafkaup-operator/**/*
-      exists:
-        - stable/kafkaup-operator/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/kafkaup-operator/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
 test_kommoner-operator:
   cache:
     key:
@@ -3212,7 +2512,7 @@ test_kommoner-operator:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
-test_kubernetes-rbac-agent:
+test_local_anomaly-detection:
   cache:
     key:
       files:
@@ -3223,13 +2523,325 @@ test_kubernetes-rbac-agent:
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
-        - stable/kubernetes-rbac-agent/**/*
+        - local/anomaly-detection/**/*
       exists:
-        - stable/kubernetes-rbac-agent/test/*.go
+        - local/anomaly-detection/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go mod download
-    - go test ./stable/kubernetes-rbac-agent/test/...
+    - go test ./local/anomaly-detection/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_clickhouse:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/clickhouse/**/*
+      exists:
+        - local/clickhouse/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/clickhouse/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_common:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/common/**/*
+      exists:
+        - local/common/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/common/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_elasticsearch:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/elasticsearch/**/*
+      exists:
+        - local/elasticsearch/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/elasticsearch/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_hbase:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/hbase/**/*
+      exists:
+        - local/hbase/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/hbase/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_kafka:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/kafka/**/*
+      exists:
+        - local/kafka/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/kafka/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_kafkaup-operator:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/kafkaup-operator/**/*
+      exists:
+        - local/kafkaup-operator/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/kafkaup-operator/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_kubernetes-rbac-agent:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/kubernetes-rbac-agent/**/*
+      exists:
+        - local/kubernetes-rbac-agent/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/kubernetes-rbac-agent/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_opentelemetry-collector:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/opentelemetry-collector/**/*
+      exists:
+        - local/opentelemetry-collector/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/opentelemetry-collector/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_prometheus-elasticsearch-exporter:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/prometheus-elasticsearch-exporter/**/*
+      exists:
+        - local/prometheus-elasticsearch-exporter/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/prometheus-elasticsearch-exporter/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_pull-secret:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/pull-secret/**/*
+      exists:
+        - local/pull-secret/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/pull-secret/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_suse-observability-sizing:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/suse-observability-sizing/**/*
+      exists:
+        - local/suse-observability-sizing/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/suse-observability-sizing/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_victoria-metrics-single:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/victoria-metrics-single/**/*
+      exists:
+        - local/victoria-metrics-single/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/victoria-metrics-single/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_zookeeper:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/zookeeper/**/*
+      exists:
+        - local/zookeeper/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/zookeeper/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -3254,30 +2866,6 @@ test_notification-operator:
   script:
     - go mod download
     - go test ./stable/notification-operator/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_opentelemetry-collector:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/opentelemetry-collector/**/*
-      exists:
-        - stable/opentelemetry-collector/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/opentelemetry-collector/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -3326,54 +2914,6 @@ test_petros-d-kubelet-stats-exporter:
   script:
     - go mod download
     - go test ./stable/petros-d-kubelet-stats-exporter/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_prometheus-elasticsearch-exporter:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/prometheus-elasticsearch-exporter/**/*
-      exists:
-        - stable/prometheus-elasticsearch-exporter/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/prometheus-elasticsearch-exporter/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_pull-secret:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/pull-secret/**/*
-      exists:
-        - stable/pull-secret/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/pull-secret/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -3488,6 +3028,20 @@ test_suse-observability:
   rules:
     - changes:
         - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       exists:
         - stable/suse-observability/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -3512,6 +3066,7 @@ test_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       exists:
         - stable/suse-observability-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -3644,69 +3199,6 @@ test_trafficmirror:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
-test_victoria-metrics-single:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/victoria-metrics-single/**/*
-      exists:
-        - stable/victoria-metrics-single/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/victoria-metrics-single/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_zookeeper:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/zookeeper/**/*
-      exists:
-        - stable/zookeeper/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/zookeeper/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-update_aad_chart_version:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: always
-  script:
-    - .gitlab/update_chart_version.sh stable/suse-observability anomaly-detection $UPDATE_AAD_CHART_VERSION
-    - .gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION
-  stage: update
 update_helm_chart_docker_images:
   before_script:
     - .gitlab/configure_git.sh
@@ -3736,9 +3228,8 @@ update_stackgraph_version:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
   script:
-    - .gitlab/update_sg_version.sh stable/hbase ""
+    - .gitlab/update_sg_version.sh local/hbase ""
     - .gitlab/update_sg_version.sh stable/suse-observability "hbase."
-    - .gitlab/update_chart_version.sh stable/suse-observability hbase local:stable/hbase
     - .gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION
   stage: update
 update_stackpacks_version_to_latest:
@@ -3765,22 +3256,6 @@ update_stackstate_version_to_latest:
   script:
     - .gitlab/suse-observability/update_stackstate_version_to_latest.sh
   stage: update
-validate_anomaly-detection:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/anomaly-detection/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/anomaly-detection/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/anomaly-detection/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/anomaly-detection/values.yaml
-    - if [ -f stable/anomaly-detection/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/anomaly-detection/ci/default-values.yaml; fi
-    - if [ -f stable/anomaly-detection/ci/default-values.yaml ]; then helm lint stable/anomaly-detection --values stable/anomaly-detection/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
 validate_artifactory-cleaner:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -3861,54 +3336,6 @@ validate_ci-test:
     - if [ -f stable/ci-test/ci/default-values.yaml ]; then helm lint stable/ci-test --values stable/ci-test/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
-validate_clickhouse:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/clickhouse/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/clickhouse/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/clickhouse/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/clickhouse/values.yaml
-    - if [ -f stable/clickhouse/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/clickhouse/ci/default-values.yaml; fi
-    - if [ -f stable/clickhouse/ci/default-values.yaml ]; then helm lint stable/clickhouse --values stable/clickhouse/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_common:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/common/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/common/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/common/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/common/values.yaml
-    - if [ -f stable/common/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/common/ci/default-values.yaml; fi
-    - if [ -f stable/common/ci/default-values.yaml ]; then helm lint stable/common --values stable/common/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_elasticsearch:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/elasticsearch/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/elasticsearch/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/values.yaml
-    - if [ -f stable/elasticsearch/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/ci/default-values.yaml; fi
-    - if [ -f stable/elasticsearch/ci/default-values.yaml ]; then helm lint stable/elasticsearch --values stable/elasticsearch/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
 validate_gitlab-proxy:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -3939,22 +3366,6 @@ validate_gitlab-steward:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/values.yaml
     - if [ -f stable/gitlab-steward/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/ci/default-values.yaml; fi
     - if [ -f stable/gitlab-steward/ci/default-values.yaml ]; then helm lint stable/gitlab-steward --values stable/gitlab-steward/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_hbase:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/hbase/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/hbase/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/values.yaml
-    - if [ -f stable/hbase/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/ci/default-values.yaml; fi
-    - if [ -f stable/hbase/ci/default-values.yaml ]; then helm lint stable/hbase --values stable/hbase/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_helm-reaper:
@@ -3989,38 +3400,6 @@ validate_k8s-spot-termination-handler:
     - if [ -f stable/k8s-spot-termination-handler/ci/default-values.yaml ]; then helm lint stable/k8s-spot-termination-handler --values stable/k8s-spot-termination-handler/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
-validate_kafka:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/kafka/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/kafka/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafka/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafka/values.yaml
-    - if [ -f stable/kafka/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/kafka/ci/default-values.yaml; fi
-    - if [ -f stable/kafka/ci/default-values.yaml ]; then helm lint stable/kafka --values stable/kafka/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_kafkaup-operator:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/kafkaup-operator/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/kafkaup-operator/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/values.yaml
-    - if [ -f stable/kafkaup-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/ci/default-values.yaml; fi
-    - if [ -f stable/kafkaup-operator/ci/default-values.yaml ]; then helm lint stable/kafkaup-operator --values stable/kafkaup-operator/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
 validate_kommoner-operator:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -4037,21 +3416,215 @@ validate_kommoner-operator:
     - if [ -f stable/kommoner-operator/ci/default-values.yaml ]; then helm lint stable/kommoner-operator --values stable/kommoner-operator/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
-validate_kubernetes-rbac-agent:
+validate_local_anomaly-detection:
   before_script:
     - .gitlab/validate_before_script.sh
   image: quay.io/helmpack/chart-testing:v3.10.1
   rules:
     - changes:
-        - stable/kubernetes-rbac-agent/**/*
+        - local/anomaly-detection/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/kubernetes-rbac-agent/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kubernetes-rbac-agent/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kubernetes-rbac-agent/values.yaml
-    - if [ -f stable/kubernetes-rbac-agent/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/kubernetes-rbac-agent/ci/default-values.yaml; fi
-    - if [ -f stable/kubernetes-rbac-agent/ci/default-values.yaml ]; then helm lint stable/kubernetes-rbac-agent --values stable/kubernetes-rbac-agent/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
+    - yamale --schema /etc/ct/chart_schema.yaml local/anomaly-detection/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/anomaly-detection/Chart.yaml
+    - if [ -f local/anomaly-detection/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/anomaly-detection/values.yaml; fi
+    - if [ -f local/anomaly-detection/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/anomaly-detection/ci/default-values.yaml; fi
+    - if [ -f local/anomaly-detection/ci/default-values.yaml ]; then helm lint local/anomaly-detection --values local/anomaly-detection/ci/default-values.yaml; fi
+  stage: validate
+validate_local_clickhouse:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/clickhouse/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/clickhouse/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/clickhouse/Chart.yaml
+    - if [ -f local/clickhouse/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/clickhouse/values.yaml; fi
+    - if [ -f local/clickhouse/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/clickhouse/ci/default-values.yaml; fi
+    - if [ -f local/clickhouse/ci/default-values.yaml ]; then helm lint local/clickhouse --values local/clickhouse/ci/default-values.yaml; fi
+  stage: validate
+validate_local_common:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/common/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/common/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/common/Chart.yaml
+    - if [ -f local/common/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/common/values.yaml; fi
+    - if [ -f local/common/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/common/ci/default-values.yaml; fi
+    - if [ -f local/common/ci/default-values.yaml ]; then helm lint local/common --values local/common/ci/default-values.yaml; fi
+  stage: validate
+validate_local_elasticsearch:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/elasticsearch/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/elasticsearch/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/elasticsearch/Chart.yaml
+    - if [ -f local/elasticsearch/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/elasticsearch/values.yaml; fi
+    - if [ -f local/elasticsearch/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/elasticsearch/ci/default-values.yaml; fi
+    - if [ -f local/elasticsearch/ci/default-values.yaml ]; then helm lint local/elasticsearch --values local/elasticsearch/ci/default-values.yaml; fi
+  stage: validate
+validate_local_hbase:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/hbase/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/hbase/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/hbase/Chart.yaml
+    - if [ -f local/hbase/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/hbase/values.yaml; fi
+    - if [ -f local/hbase/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/hbase/ci/default-values.yaml; fi
+    - if [ -f local/hbase/ci/default-values.yaml ]; then helm lint local/hbase --values local/hbase/ci/default-values.yaml; fi
+  stage: validate
+validate_local_kafka:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/kafka/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/kafka/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/kafka/Chart.yaml
+    - if [ -f local/kafka/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafka/values.yaml; fi
+    - if [ -f local/kafka/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafka/ci/default-values.yaml; fi
+    - if [ -f local/kafka/ci/default-values.yaml ]; then helm lint local/kafka --values local/kafka/ci/default-values.yaml; fi
+  stage: validate
+validate_local_kafkaup-operator:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/kafkaup-operator/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/kafkaup-operator/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/kafkaup-operator/Chart.yaml
+    - if [ -f local/kafkaup-operator/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafkaup-operator/values.yaml; fi
+    - if [ -f local/kafkaup-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafkaup-operator/ci/default-values.yaml; fi
+    - if [ -f local/kafkaup-operator/ci/default-values.yaml ]; then helm lint local/kafkaup-operator --values local/kafkaup-operator/ci/default-values.yaml; fi
+  stage: validate
+validate_local_kubernetes-rbac-agent:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/kubernetes-rbac-agent/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/kubernetes-rbac-agent/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/kubernetes-rbac-agent/Chart.yaml
+    - if [ -f local/kubernetes-rbac-agent/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kubernetes-rbac-agent/values.yaml; fi
+    - if [ -f local/kubernetes-rbac-agent/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kubernetes-rbac-agent/ci/default-values.yaml; fi
+    - if [ -f local/kubernetes-rbac-agent/ci/default-values.yaml ]; then helm lint local/kubernetes-rbac-agent --values local/kubernetes-rbac-agent/ci/default-values.yaml; fi
+  stage: validate
+validate_local_opentelemetry-collector:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/opentelemetry-collector/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/opentelemetry-collector/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/opentelemetry-collector/Chart.yaml
+    - if [ -f local/opentelemetry-collector/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/opentelemetry-collector/values.yaml; fi
+    - if [ -f local/opentelemetry-collector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/opentelemetry-collector/ci/default-values.yaml; fi
+    - if [ -f local/opentelemetry-collector/ci/default-values.yaml ]; then helm lint local/opentelemetry-collector --values local/opentelemetry-collector/ci/default-values.yaml; fi
+  stage: validate
+validate_local_prometheus-elasticsearch-exporter:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/prometheus-elasticsearch-exporter/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/prometheus-elasticsearch-exporter/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/prometheus-elasticsearch-exporter/Chart.yaml
+    - if [ -f local/prometheus-elasticsearch-exporter/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/prometheus-elasticsearch-exporter/values.yaml; fi
+    - if [ -f local/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
+    - if [ -f local/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then helm lint local/prometheus-elasticsearch-exporter --values local/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
+  stage: validate
+validate_local_pull-secret:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/pull-secret/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/pull-secret/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/pull-secret/Chart.yaml
+    - if [ -f local/pull-secret/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/pull-secret/values.yaml; fi
+    - if [ -f local/pull-secret/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/pull-secret/ci/default-values.yaml; fi
+    - if [ -f local/pull-secret/ci/default-values.yaml ]; then helm lint local/pull-secret --values local/pull-secret/ci/default-values.yaml; fi
+  stage: validate
+validate_local_suse-observability-sizing:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/suse-observability-sizing/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/suse-observability-sizing/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/suse-observability-sizing/Chart.yaml
+    - if [ -f local/suse-observability-sizing/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/suse-observability-sizing/values.yaml; fi
+    - if [ -f local/suse-observability-sizing/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/suse-observability-sizing/ci/default-values.yaml; fi
+    - if [ -f local/suse-observability-sizing/ci/default-values.yaml ]; then helm lint local/suse-observability-sizing --values local/suse-observability-sizing/ci/default-values.yaml; fi
+  stage: validate
+validate_local_victoria-metrics-single:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/victoria-metrics-single/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/victoria-metrics-single/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/victoria-metrics-single/Chart.yaml
+    - if [ -f local/victoria-metrics-single/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/victoria-metrics-single/values.yaml; fi
+    - if [ -f local/victoria-metrics-single/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/victoria-metrics-single/ci/default-values.yaml; fi
+    - if [ -f local/victoria-metrics-single/ci/default-values.yaml ]; then helm lint local/victoria-metrics-single --values local/victoria-metrics-single/ci/default-values.yaml; fi
+  stage: validate
+validate_local_zookeeper:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - local/zookeeper/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/zookeeper/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/zookeeper/Chart.yaml
+    - if [ -f local/zookeeper/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/zookeeper/values.yaml; fi
+    - if [ -f local/zookeeper/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/zookeeper/ci/default-values.yaml; fi
+    - if [ -f local/zookeeper/ci/default-values.yaml ]; then helm lint local/zookeeper --values local/zookeeper/ci/default-values.yaml; fi
   stage: validate
 validate_notification-operator:
   before_script:
@@ -4067,22 +3640,6 @@ validate_notification-operator:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/notification-operator/values.yaml
     - if [ -f stable/notification-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/notification-operator/ci/default-values.yaml; fi
     - if [ -f stable/notification-operator/ci/default-values.yaml ]; then helm lint stable/notification-operator --values stable/notification-operator/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_opentelemetry-collector:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/opentelemetry-collector/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/opentelemetry-collector/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/opentelemetry-collector/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/opentelemetry-collector/values.yaml
-    - if [ -f stable/opentelemetry-collector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/opentelemetry-collector/ci/default-values.yaml; fi
-    - if [ -f stable/opentelemetry-collector/ci/default-values.yaml ]; then helm lint stable/opentelemetry-collector --values stable/opentelemetry-collector/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_otel-demo:
@@ -4115,38 +3672,6 @@ validate_petros-d-kubelet-stats-exporter:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/values.yaml
     - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
     - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then helm lint stable/petros-d-kubelet-stats-exporter --values stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_prometheus-elasticsearch-exporter:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/prometheus-elasticsearch-exporter/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/prometheus-elasticsearch-exporter/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/prometheus-elasticsearch-exporter/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/prometheus-elasticsearch-exporter/values.yaml
-    - if [ -f stable/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
-    - if [ -f stable/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then helm lint stable/prometheus-elasticsearch-exporter --values stable/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_pull-secret:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/pull-secret/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/pull-secret/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/values.yaml
-    - if [ -f stable/pull-secret/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/ci/default-values.yaml; fi
-    - if [ -f stable/pull-secret/ci/default-values.yaml ]; then helm lint stable/pull-secret --values stable/pull-secret/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_receiveramplifier:
@@ -4220,6 +3745,20 @@ validate_suse-observability:
   rules:
     - changes:
         - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability/Chart.yaml
@@ -4236,6 +3775,7 @@ validate_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability-agent/Chart.yaml
@@ -4345,38 +3885,6 @@ validate_updatecli_diff:
   script:
     - export GITLAB_TOKEN="$gitlab_api_scope_token"
     - updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
-  stage: validate
-validate_victoria-metrics-single:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/victoria-metrics-single/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/victoria-metrics-single/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/values.yaml
-    - if [ -f stable/victoria-metrics-single/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/ci/default-values.yaml; fi
-    - if [ -f stable/victoria-metrics-single/ci/default-values.yaml ]; then helm lint stable/victoria-metrics-single --values stable/victoria-metrics-single/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_zookeeper:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/zookeeper/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/zookeeper/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/zookeeper/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/zookeeper/values.yaml
-    - if [ -f stable/zookeeper/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/zookeeper/ci/default-values.yaml; fi
-    - if [ -f stable/zookeeper/ci/default-values.yaml ]; then helm lint stable/zookeeper --values stable/zookeeper/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
   stage: validate
 variables:
   HELM_VERSION: v3.1.2

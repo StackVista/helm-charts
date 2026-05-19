@@ -10,20 +10,20 @@ Current chart version is `2.10.1-pre.30`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../anomaly-detection/ | anomaly-detection | 5.2.0-snapshot.183 |
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.30 |
-| file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.22 |
-| file://../hbase/ | hbase | 0.2.159 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.27 |
-| file://../kafkaup-operator/ | kafkaup-operator | 0.1.29 |
-| file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.31 |
-| file://../pull-secret/ | pull-secret | * |
-| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.16 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.52 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.52 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.25 |
+| file://../../local/anomaly-detection/ | anomaly-detection | * |
+| file://../../local/clickhouse/ | clickhouse | * |
+| file://../../local/common/ | common | * |
+| file://../../local/elasticsearch/ | elasticsearch | * |
+| file://../../local/hbase/ | hbase | * |
+| file://../../local/kafka/ | kafka | * |
+| file://../../local/kafkaup-operator/ | kafkaup-operator | * |
+| file://../../local/kubernetes-rbac-agent/ | kubernetes-rbac-agent | * |
+| file://../../local/opentelemetry-collector/ | opentelemetry-collector | * |
+| file://../../local/pull-secret/ | pull-secret | * |
+| file://../../local/suse-observability-sizing/ | suse-observability-sizing | * |
+| file://../../local/victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | * |
+| file://../../local/victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | * |
+| file://../../local/zookeeper/ | zookeeper | * |
 
 ## Required Values
 

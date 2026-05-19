@@ -8,6 +8,8 @@ See `AGENTS.md` for detailed code style guidelines, test patterns, and advanced 
 
 Helm charts repository for SUSE Observability. The main product chart is `stable/suse-observability/`. Charts with "stackstate" in the name are deprecated and should be ignored.
 
+Published charts live under `stable/`. Subcharts consumed only as `file://` deps of a published parent live under `local/` and are pinned to `version: "*"` — they do not need version bumps when modified, and changes to them trigger a rebuild + auto pre-release bump of their parent.
+
 ## Common Commands
 
 ### Running Tests (Go + Terratest, from repo root)
@@ -43,9 +45,10 @@ For tasks involving updatecli pipelines — adding/removing tracked images, chan
 
 ## Architecture
 
-- **`stable/`** - All Helm charts. Key charts: `suse-observability` (main), `common` (shared library), plus infrastructure charts (elasticsearch, hbase, kafka, clickhouse, etc.)
+- **`stable/`** - Independently published Helm charts. Key charts: `suse-observability` (main), `suse-observability-agent`, `suse-observability-values`, plus internal operations charts.
+- **`local/`** - Local-only subcharts consumed via `file://` deps by published charts (`common`, `elasticsearch`, `hbase`, `kafka`, `clickhouse`, `zookeeper`, `victoria-metrics-single`, `anomaly-detection`, `opentelemetry-collector`, `prometheus-elasticsearch-exporter`, `pull-secret`, `kafkaup-operator`, `kubernetes-rbac-agent`, `suse-observability-sizing`). Pinned to `version: "*"` by consumers, so their `Chart.yaml` version field does not need to be bumped on changes. The membership of `local/` is enforced by `.jsonnet-libs/extras/helm_chart_repo/variables.libsonnet` (`public_charts` / `internal_charts` maps).
 - **`helmtestutil/`** - Custom Go test utilities wrapping Terratest. Provides `RenderHelmTemplate()`, `RenderHelmTemplateError()`, `RenderHelmTemplateOptsNoError()`, and `NewKubernetesResources()` for parsing rendered output into typed K8s objects (Deployments, StatefulSets, ConfigMaps, Services, etc.)
-- **`.gitlab-ci.jsonnet`** - CI pipeline source. Generates `.gitlab-ci.yml` (auto-generated, never edit manually)
+- **`.gitlab-ci.jsonnet`** - CI pipeline source. Generates `.gitlab-ci.yml` (auto-generated, never edit manually). Build/test/publish jobs are generated only for published charts (`stable/`); local charts get lightweight validate/test jobs but no version-bump check or publish.
 - **`scripts/`** - Build/publish/version-bump scripts
 
 ## Test Structure

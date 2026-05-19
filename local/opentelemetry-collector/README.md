@@ -1,0 +1,299 @@
+# opentelemetry-collector
+
+![Version: 0.108.0](https://img.shields.io/badge/Version-0.108.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.29](https://img.shields.io/badge/AppVersion-0.0.29-informational?style=flat-square)
+
+OpenTelemetry Collector Helm chart for Kubernetes
+
+**Homepage:** <https://opentelemetry.io/>
+
+## Maintainers
+
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Stackstate Ops Team | <ops@stackstate.com> |  |
+
+## Source Code
+
+* <https://github.com/open-telemetry/opentelemetry-collector>
+* <https://github.com/open-telemetry/opentelemetry-collector-contrib>
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| additionalLabels | object | `{}` |  |
+| affinity | object | `{}` |  |
+| alternateConfig | object | `{}` |  |
+| annotations | object | `{}` |  |
+| autoscaling.behavior | object | `{}` |  |
+| autoscaling.enabled | bool | `false` |  |
+| autoscaling.maxReplicas | int | `10` |  |
+| autoscaling.minReplicas | int | `1` |  |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| clusterRole.annotations | object | `{}` |  |
+| clusterRole.clusterRoleBinding.annotations | object | `{}` |  |
+| clusterRole.clusterRoleBinding.name | string | `""` |  |
+| clusterRole.create | bool | `false` |  |
+| clusterRole.name | string | `""` |  |
+| clusterRole.rules | list | `[]` |  |
+| command.extraArgs | list | `[]` |  |
+| command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
+| config.connectors.forward | object | `{}` |  |
+| config.connectors.stsservicegraph.dimensions[0] | string | `"service.namespace"` |  |
+| config.connectors.stsservicegraph.dimensions[1] | string | `"service.instance.id"` |  |
+| config.connectors.stsservicegraph.dimensions[2] | string | `"sts_api_key"` |  |
+| config.connectors.stsservicegraph.dimensions[3] | string | `"peer.service"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[0] | string | `"2ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[10] | string | `"1s"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[11] | string | `"1400ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[12] | string | `"2s"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[13] | string | `"5s"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[14] | string | `"10s"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[15] | string | `"15s"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[16] | string | `"30s"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[1] | string | `"4ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[2] | string | `"6ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[3] | string | `"8ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[4] | string | `"10ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[5] | string | `"50ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[6] | string | `"100ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[7] | string | `"200ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[8] | string | `"400ms"` |  |
+| config.connectors.stsservicegraph.latency_histogram_buckets[9] | string | `"800ms"` |  |
+| config.connectors.stsservicegraph.store.max_items | int | `50000` |  |
+| config.connectors.stsservicegraph.store.ttl | string | `"30s"` |  |
+| config.exporters.clickhousests.create_resources_table | bool | `false` |  |
+| config.exporters.clickhousests.create_traces_table | bool | `false` |  |
+| config.exporters.clickhousests.database | string | `"otel"` |  |
+| config.exporters.clickhousests.endpoint | string | `"tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4"` |  |
+| config.exporters.clickhousests.logs_table_name | string | `"otel_logs"` |  |
+| config.exporters.clickhousests.metrics_table_name | string | `"otel_metrics"` |  |
+| config.exporters.clickhousests.password | string | `"admin"` |  |
+| config.exporters.clickhousests.resources_table_name | string | `"otel_resources"` |  |
+| config.exporters.clickhousests.retry_on_failure.enabled | bool | `true` |  |
+| config.exporters.clickhousests.retry_on_failure.initial_interval | string | `"5s"` |  |
+| config.exporters.clickhousests.retry_on_failure.max_elapsed_time | string | `"300s"` |  |
+| config.exporters.clickhousests.retry_on_failure.max_interval | string | `"30s"` |  |
+| config.exporters.clickhousests.timeout | string | `"5s"` |  |
+| config.exporters.clickhousests.traces_table_name | string | `"otel_traces"` |  |
+| config.exporters.clickhousests.ttl | string | `"72h"` |  |
+| config.exporters.clickhousests.username | string | `"admin"` |  |
+| config.exporters.debug | object | `{}` |  |
+| config.exporters.prometheusremotewrite/victoria-metrics.endpoint | string | `"http://suse-observability-vmagent:8429/api/v1/write"` |  |
+| config.exporters.prometheusremotewrite/victoria-metrics.resource_to_telemetry_conversion.enabled | bool | `true` |  |
+| config.exporters.prometheusremotewrite/victoria-metrics.timeout | string | `"30s"` |  |
+| config.exporters.ststopology.endpoint | string | `"${env:INTAKE_URL}"` |  |
+| config.extensions.health_check.endpoint | string | `"${env:MY_POD_IP}:13133"` |  |
+| config.extensions.service_token_auth.cache.invalid_size | int | `100` |  |
+| config.extensions.service_token_auth.cache.valid_size | int | `100` |  |
+| config.extensions.service_token_auth.cache.valid_ttl | string | `"5m"` |  |
+| config.extensions.service_token_auth.endpoint.url | string | `"${env:API_URL}"` |  |
+| config.extensions.service_token_auth.schema | string | `"SUSEObservability"` |  |
+| config.processors.attributes/removeStsApiKey.actions[0].action | string | `"delete"` |  |
+| config.processors.attributes/removeStsApiKey.actions[0].key | string | `"client_sts_api_key"` |  |
+| config.processors.attributes/removeStsApiKey.actions[1].action | string | `"delete"` |  |
+| config.processors.attributes/removeStsApiKey.actions[1].key | string | `"server_sts_api_key"` |  |
+| config.processors.batch.send_batch_size | int | `10000` |  |
+| config.processors.batch.timeout | string | `"2s"` |  |
+| config.processors.memory_limiter.check_interval | string | `"1s"` |  |
+| config.processors.memory_limiter.limit_percentage | int | `80` |  |
+| config.processors.memory_limiter.spike_limit_percentage | int | `25` |  |
+| config.processors.resource/addDefaultNamespace.attributes[0].action | string | `"insert"` |  |
+| config.processors.resource/addDefaultNamespace.attributes[0].key | string | `"service.namespace"` |  |
+| config.processors.resource/addDefaultNamespace.attributes[0].value | string | `"default"` |  |
+| config.processors.resource/addStsApiKey.attributes[0].action | string | `"upsert"` |  |
+| config.processors.resource/addStsApiKey.attributes[0].from_context | string | `"auth.apiKey"` |  |
+| config.processors.resource/addStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
+| config.processors.resource/removeStsApiKey.attributes[0].action | string | `"delete"` |  |
+| config.processors.resource/removeStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
+| config.processors.stsusage | object | `{}` |  |
+| config.processors.transform/internalMetricsPrefix.metric_statements[0].context | string | `"metric"` |  |
+| config.processors.transform/internalMetricsPrefix.metric_statements[0].statements[0] | string | `"set(name, Concat([\"otelcol_\", name], \"\")) where not HasPrefix(name, \"otelcol\")"` |  |
+| config.processors.transform/semconv.error_mode | string | `"ignore"` |  |
+| config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"service_token_auth"` |  |
+| config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
+| config.receivers.otlp.protocols.http.auth.authenticator | string | `"service_token_auth"` |  |
+| config.receivers.otlp.protocols.http.endpoint | string | `"${env:MY_POD_IP}:4318"` |  |
+| config.receivers.prometheus/internal.config.scrape_configs[0].job_name | string | `"opentelemetry-collector-internal"` |  |
+| config.receivers.prometheus/internal.config.scrape_configs[0].scrape_interval | string | `"10s"` |  |
+| config.receivers.prometheus/internal.config.scrape_configs[0].static_configs[0].targets[0] | string | `"localhost:8888"` |  |
+| config.service.extensions[0] | string | `"health_check"` |  |
+| config.service.extensions[1] | string | `"service_token_auth"` |  |
+| config.service.pipelines.metrics.exporters[0] | string | `"forward"` |  |
+| config.service.pipelines.metrics.processors[0] | string | `"memory_limiter"` |  |
+| config.service.pipelines.metrics.processors[1] | string | `"resource/addDefaultNamespace"` |  |
+| config.service.pipelines.metrics.processors[2] | string | `"resource/addStsApiKey"` |  |
+| config.service.pipelines.metrics.processors[3] | string | `"batch"` |  |
+| config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
+| config.service.pipelines.metrics/internal.exporters[0] | string | `"forward"` |  |
+| config.service.pipelines.metrics/internal.processors[0] | string | `"memory_limiter"` |  |
+| config.service.pipelines.metrics/internal.processors[1] | string | `"transform/internalMetricsPrefix"` |  |
+| config.service.pipelines.metrics/internal.processors[2] | string | `"batch"` |  |
+| config.service.pipelines.metrics/internal.receivers[0] | string | `"prometheus/internal"` |  |
+| config.service.pipelines.metrics/topology.exporters[0] | string | `"ststopology"` |  |
+| config.service.pipelines.metrics/topology.processors[0] | string | `"batch"` |  |
+| config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
+| config.service.pipelines.metrics/topology.receivers[1] | string | `"stsservicegraph"` |  |
+| config.service.pipelines.metrics/victoria-metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
+| config.service.pipelines.metrics/victoria-metrics.processors[0] | string | `"resource/removeStsApiKey"` |  |
+| config.service.pipelines.metrics/victoria-metrics.processors[1] | string | `"attributes/removeStsApiKey"` |  |
+| config.service.pipelines.metrics/victoria-metrics.processors[2] | string | `"batch"` |  |
+| config.service.pipelines.metrics/victoria-metrics.receivers[0] | string | `"forward"` |  |
+| config.service.pipelines.metrics/victoria-metrics.receivers[1] | string | `"stsservicegraph"` |  |
+| config.service.pipelines.traces.exporters[0] | string | `"forward"` |  |
+| config.service.pipelines.traces.exporters[1] | string | `"stsservicegraph"` |  |
+| config.service.pipelines.traces.exporters[2] | string | `"ststopology"` |  |
+| config.service.pipelines.traces.processors[0] | string | `"memory_limiter"` |  |
+| config.service.pipelines.traces.processors[1] | string | `"transform/semconv"` |  |
+| config.service.pipelines.traces.processors[2] | string | `"resource/addDefaultNamespace"` |  |
+| config.service.pipelines.traces.processors[3] | string | `"resource/addStsApiKey"` |  |
+| config.service.pipelines.traces.processors[4] | string | `"batch"` |  |
+| config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
+| config.service.pipelines.traces/clickhouse.exporters[0] | string | `"clickhousests"` |  |
+| config.service.pipelines.traces/clickhouse.processors[0] | string | `"stsusage"` |  |
+| config.service.pipelines.traces/clickhouse.processors[1] | string | `"resource/removeStsApiKey"` |  |
+| config.service.pipelines.traces/clickhouse.processors[2] | string | `"batch"` |  |
+| config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
+| config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.host | string | `"0.0.0.0"` |  |
+| config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.port | int | `8888` |  |
+| configMap.create | bool | `true` |  |
+| configMap.existingName | string | `""` |  |
+| dnsConfig | object | `{}` |  |
+| dnsPolicy | string | `""` |  |
+| extraContainers | list | `[]` |  |
+| extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"suse-observability-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"suse-observability-otel-collector"}}}]` | API_URL/INTAKE_URL come from the parent ConfigMap (`suse-observability-otel-collector`). |
+| extraEnvsFrom | list | `[]` |  |
+| extraVolumeMounts | list | `[]` |  |
+| extraVolumes | list | `[]` |  |
+| fullnameOverride | string | `"suse-observability-otel-collector"` | Name override. Helm v2 limitation; the parent ConfigMap and helpers reference this hardcoded name. |
+| gateway | object | `{"additionalGateways":[],"annotations":{},"enabled":false,"filters":[],"hostnames":[],"kind":"HTTPRoute","parentRefs":[],"path":"/","pathType":"PathPrefix","timeouts":{}}` | Configure Kubernetes Gateway API routes for OpenTelemetry Collector. |
+| gateway.additionalGateways | list | `[]` | Additional gateway routes (e.g. for both HTTP and gRPC). |
+| gateway.annotations | object | `{}` | Annotations for the route resource. |
+| gateway.enabled | bool | `false` | Enable Gateway API routes for OpenTelemetry Collector. |
+| gateway.filters | list | `[]` | Optional filters for the route rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the route. |
+| gateway.kind | string | `"HTTPRoute"` | The type of Gateway API route to create. Valid values: "HTTPRoute" or "GRPCRoute". |
+| gateway.parentRefs | list | `[]` | List of parent Gateway references. |
+| gateway.path | string | `"/"` | Path prefix for HTTPRoute rules. |
+| gateway.pathType | string | `"PathPrefix"` | Path match type for HTTPRoute. |
+| gateway.timeouts | object | `{}` | Optional timeouts for HTTPRoute rules. |
+| global.commonLabels | object | `{}` |  |
+| global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
+| global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
+| global.wait.image.pullPolicy | string | `""` | Image pull policy for wait containers. |
+| global.wait.image.registry | string | `""` | Base container image registry for wait containers. |
+| global.wait.image.repository | string | `""` | Base container image repository for wait containers. |
+| global.wait.image.tag | string | `""` | Container image tag for wait containers. |
+| hostAliases | list | `[]` |  |
+| hostNetwork | bool | `false` |  |
+| image.digest | string | `""` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.registry | string | `"quay.io"` | Base container image registry. SUSE Observability ships its fork from quay.io. |
+| image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Image repository. This subchart is the SUSE Observability fork of OpenTelemetry Collector. |
+| image.tag | string | `""` |  |
+| imagePullSecrets | list | `[]` |  |
+| ingress.additionalIngresses | list | `[]` |  |
+| ingress.enabled | bool | `false` |  |
+| initContainers | list | `[{"command":["sh","-c","/entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300\n"],"image":"{{ include \"opentelemetry-collector.waitImageRegistry\" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}","imagePullPolicy":"IfNotPresent","name":"otel-collector-init"}]` | Wait for ClickHouse, vmagent, and Kafka to be reachable before starting the collector. |
+| lifecycleHooks | object | `{}` |  |
+| livenessProbe.httpGet.path | string | `"/"` |  |
+| livenessProbe.httpGet.port | int | `13133` |  |
+| mode | string | `"statefulset"` |  |
+| nameOverride | string | `""` |  |
+| namespaceOverride | string | `""` |  |
+| networkPolicy.allowIngressFrom | list | `[]` |  |
+| networkPolicy.annotations | object | `{}` |  |
+| networkPolicy.egressRules | list | `[]` |  |
+| networkPolicy.enabled | bool | `false` |  |
+| networkPolicy.extraIngressRules | list | `[]` |  |
+| nodeSelector | object | `{}` |  |
+| podAnnotations | object | `{"ad.stackstate.com/opentelemetry-collector.check_names":"[\"openmetrics\"]","ad.stackstate.com/opentelemetry-collector.init_configs":"[{}]","ad.stackstate.com/opentelemetry-collector.instances":"[ { \"prometheus_url\": \"http://%%host%%:8888/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | SUSE Observability scrape config (Datadog auto-discovery format) — applied to every install. |
+| podDisruptionBudget.enabled | bool | `false` |  |
+| podLabels | object | `{}` |  |
+| podMonitor.enabled | bool | `false` |  |
+| podMonitor.extraLabels | object | `{}` |  |
+| podMonitor.metricsEndpoints[0].port | string | `"metrics"` |  |
+| podSecurityContext | object | `{}` |  |
+| ports.jaeger-compact.containerPort | int | `6831` |  |
+| ports.jaeger-compact.enabled | bool | `false` |  |
+| ports.jaeger-compact.hostPort | int | `6831` |  |
+| ports.jaeger-compact.protocol | string | `"UDP"` |  |
+| ports.jaeger-compact.servicePort | int | `6831` |  |
+| ports.jaeger-grpc.containerPort | int | `14250` |  |
+| ports.jaeger-grpc.enabled | bool | `false` |  |
+| ports.jaeger-grpc.hostPort | int | `14250` |  |
+| ports.jaeger-grpc.protocol | string | `"TCP"` |  |
+| ports.jaeger-grpc.servicePort | int | `14250` |  |
+| ports.jaeger-thrift.containerPort | int | `14268` |  |
+| ports.jaeger-thrift.enabled | bool | `false` |  |
+| ports.jaeger-thrift.hostPort | int | `14268` |  |
+| ports.jaeger-thrift.protocol | string | `"TCP"` |  |
+| ports.jaeger-thrift.servicePort | int | `14268` |  |
+| ports.metrics.containerPort | int | `8888` |  |
+| ports.metrics.enabled | bool | `true` |  |
+| ports.metrics.protocol | string | `"TCP"` |  |
+| ports.metrics.servicePort | int | `8888` |  |
+| ports.otlp-http.containerPort | int | `4318` |  |
+| ports.otlp-http.enabled | bool | `true` |  |
+| ports.otlp-http.hostPort | int | `4318` |  |
+| ports.otlp-http.protocol | string | `"TCP"` |  |
+| ports.otlp-http.servicePort | int | `4318` |  |
+| ports.otlp.appProtocol | string | `"grpc"` | appProtocol for the OTLP gRPC service port. Use `grpc` for nginx ingress or `kubernetes.io/h2c` for Gateway API (e.g. Traefik GRPCRoute). |
+| ports.otlp.containerPort | int | `4317` |  |
+| ports.otlp.enabled | bool | `true` |  |
+| ports.otlp.hostPort | int | `4317` |  |
+| ports.otlp.protocol | string | `"TCP"` |  |
+| ports.otlp.servicePort | int | `4317` |  |
+| ports.zipkin.containerPort | int | `9411` |  |
+| ports.zipkin.enabled | bool | `false` |  |
+| ports.zipkin.hostPort | int | `9411` |  |
+| ports.zipkin.protocol | string | `"TCP"` |  |
+| ports.zipkin.servicePort | int | `9411` |  |
+| presets.clusterMetrics.enabled | bool | `false` |  |
+| presets.hostMetrics.enabled | bool | `false` |  |
+| presets.kubeletMetrics.enabled | bool | `false` |  |
+| presets.kubernetesAttributes.enabled | bool | `false` |  |
+| presets.kubernetesAttributes.extractAllPodAnnotations | bool | `false` |  |
+| presets.kubernetesAttributes.extractAllPodLabels | bool | `false` |  |
+| presets.kubernetesEvents.enabled | bool | `false` |  |
+| presets.logsCollection.enabled | bool | `false` |  |
+| presets.logsCollection.includeCollectorLogs | bool | `false` |  |
+| presets.logsCollection.maxRecombineLogSize | int | `102400` |  |
+| presets.logsCollection.storeCheckpoints | bool | `false` |  |
+| priorityClassName | string | `""` |  |
+| prometheusRule.defaultRules.enabled | bool | `false` |  |
+| prometheusRule.enabled | bool | `false` |  |
+| prometheusRule.extraLabels | object | `{}` |  |
+| prometheusRule.groups | list | `[]` |  |
+| readinessProbe.httpGet.path | string | `"/"` |  |
+| readinessProbe.httpGet.port | int | `13133` |  |
+| replicaCount | int | `1` |  |
+| resources | object | `{}` |  |
+| revisionHistoryLimit | int | `10` |  |
+| rollout.rollingUpdate | object | `{}` |  |
+| rollout.strategy | string | `"RollingUpdate"` |  |
+| securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| securityContext.runAsNonRoot | bool | `true` |  |
+| securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| service.annotations | object | `{}` |  |
+| service.type | string | `"ClusterIP"` |  |
+| serviceAccount.annotations | object | `{}` |  |
+| serviceAccount.create | bool | `true` |  |
+| serviceAccount.name | string | `""` |  |
+| serviceMonitor.enabled | bool | `false` |  |
+| serviceMonitor.extraLabels | object | `{}` |  |
+| serviceMonitor.metricRelabelings | list | `[]` |  |
+| serviceMonitor.metricsEndpoints[0].port | string | `"metrics"` |  |
+| serviceMonitor.relabelings | list | `[]` |  |
+| shareProcessNamespace | bool | `false` |  |
+| startupProbe | object | `{}` |  |
+| statefulset.persistentVolumeClaimRetentionPolicy.enabled | bool | `false` |  |
+| statefulset.persistentVolumeClaimRetentionPolicy.whenDeleted | string | `"Retain"` |  |
+| statefulset.persistentVolumeClaimRetentionPolicy.whenScaled | string | `"Retain"` |  |
+| statefulset.podManagementPolicy | string | `"Parallel"` |  |
+| statefulset.volumeClaimTemplates | list | `[]` |  |
+| tolerations | list | `[]` |  |
+| topologySpreadConstraints | list | `[]` |  |
+| useGOMEMLIMIT | bool | `true` |  |
+

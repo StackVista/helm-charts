@@ -8,19 +8,31 @@ the name are deprecated and should be ignored.
 
 ```
 helm-charts/
-├── stable/                     # All Helm charts
+├── stable/                     # Independently published charts
 │   ├── suse-observability/     # Main product chart
+│   ├── suse-observability-agent/
+│   ├── suse-observability-values/
+│   └── ...                     # Plus internal operations charts
+├── local/                      # Local-only subcharts (consumed via file:// only)
 │   ├── common/                 # Shared chart library
-│   ├── elasticsearch/          # Supporting charts
+│   ├── elasticsearch/
 │   ├── hbase/
 │   ├── kafka/
 │   ├── clickhouse/
-│   └── ...
+│   └── ...                     # Pinned as version: "*" by consumers; no version bumps needed
 ├── helmtestutil/               # Go test utilities
 ├── .gitlab-ci.jsonnet          # CI source (generates .gitlab-ci.yml)
 ├── .pre-commit-config.yaml     # Pre-commit hooks
 └── go.mod                      # Go module for tests
 ```
+
+The split between `stable/` and `local/` is defined in
+`.jsonnet-libs/extras/helm_chart_repo/variables.libsonnet`:
+- Keys of `public_charts` / `internal_charts` are the published chart names (in `stable/`).
+- Values of `public_charts` list each parent's local-dep subchart names (in `local/`).
+
+Changes to any chart under `local/` trigger a rebuild + auto pre-release bump of every
+parent that lists it.
 
 ## Build & Test Commands
 

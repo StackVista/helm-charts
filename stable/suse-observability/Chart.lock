@@ -1,45 +1,45 @@
 dependencies:
 - name: anomaly-detection
-  repository: file://../anomaly-detection/
-  version: 5.2.0-snapshot.183
+  repository: file://../../local/anomaly-detection/
+  version: 5.2.0
 - name: common
-  repository: file://../common/
+  repository: file://../../local/common/
   version: 0.4.28
 - name: suse-observability-sizing
-  repository: file://../suse-observability-sizing/
+  repository: file://../../local/suse-observability-sizing/
   version: 0.1.16
 - name: elasticsearch
-  repository: file://../elasticsearch/
-  version: 8.19.4-stackstate.22
+  repository: file://../../local/elasticsearch/
+  version: 8.19.4
 - name: hbase
-  repository: file://../hbase/
+  repository: file://../../local/hbase/
   version: 0.2.159
 - name: kafka
-  repository: file://../kafka/
-  version: 19.1.3-suse-observability.27
+  repository: file://../../local/kafka/
+  version: 19.1.3
 - name: kafkaup-operator
-  repository: file://../kafkaup-operator/
+  repository: file://../../local/kafkaup-operator/
   version: 0.1.29
 - name: pull-secret
-  repository: file://../pull-secret/
+  repository: file://../../local/pull-secret/
   version: 1.0.3
 - name: zookeeper
-  repository: file://../zookeeper/
-  version: 8.1.2-suse-observability.25
+  repository: file://../../local/zookeeper/
+  version: 8.1.2
 - name: victoria-metrics-single
-  repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.52
+  repository: file://../../local/victoria-metrics-single/
+  version: 0.8.53
 - name: victoria-metrics-single
-  repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.52
+  repository: file://../../local/victoria-metrics-single/
+  version: 0.8.53
 - name: clickhouse
-  repository: file://../clickhouse/
-  version: 3.6.9-suse-observability.30
+  repository: file://../../local/clickhouse/
+  version: 3.6.9
 - name: opentelemetry-collector
-  repository: file://../opentelemetry-collector
-  version: 0.108.0-stackstate.31
+  repository: file://../../local/opentelemetry-collector/
+  version: 0.108.0
 - name: kubernetes-rbac-agent
-  repository: file://../kubernetes-rbac-agent/
+  repository: file://../../local/kubernetes-rbac-agent/
   version: 0.0.27
-digest: sha256:1e5fc667095edde99bb825942e130f447b7918d6c9b015ea16fb8b032c517cd7
-generated: "2026-05-18T11:07:59.55757717Z"
+digest: sha256:8c5af3f189c6c9e529002ce1ea26d74c9f0c64fcadedddaa4fcd9cf0a0125368
+generated: "2026-05-19T15:11:24.341703924+02:00"

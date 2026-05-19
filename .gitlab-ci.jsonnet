@@ -3,13 +3,39 @@ local variables = import '.jsonnet-libs/extras/helm_chart_repo/variables.libsonn
 
 // Shortcuts
 local repositories = variables.helm.repositories;
-local charts = variables.helm.charts;
-local public_charts = variables.helm.public_charts;
+local public_charts = variables.helm.public_charts;  // map: parent -> [local deps]
+local internal_charts = variables.helm.internal_charts;  // map: parent -> [local deps]
+
+// All chart names that are independently published (keys of both maps).
+local public_chart_names = std.objectFields(public_charts);
+local internal_chart_names = std.objectFields(internal_charts);
+local published_charts = public_chart_names + internal_chart_names;
+
+// All local-only chart names (deduped across both maps).
+local local_charts = std.set(std.flattenArrays(
+  [public_charts[p] for p in public_chart_names] +
+  [internal_charts[p] for p in internal_chart_names]
+));
+
+// Local deps for a published chart (empty when the chart has none listed).
+local local_deps_of(chart) =
+  if std.objectHas(public_charts, chart) then public_charts[chart]
+  else if std.objectHas(internal_charts, chart) then internal_charts[chart]
+  else [];
+
+// CI change paths for a published chart: its own tree plus every local dep's tree.
+local change_paths_for_published(chart) =
+  ['stable/' + chart + '/**/*'] +
+  ['local/' + d + '/**/*' for d in local_deps_of(chart)];
 
 local go_cache = { key: { files: ['go.mod', 'go.sum'] }, paths: ['/go/pkg/mod/'] };
 
-// resolving deps with deps, ct lint will not resolve that properly;
-local update_2nd_degree_chart_deps(chart) = ['yq e \'.dependencies[] | select (.repository == "file*").repository | sub("^file://","")\' stable/' + chart + '/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/' + chart + '/%'];
+// Build 2nd-degree file:// chart deps. chartPath is e.g. stable/suse-observability or local/hbase;
+// helm cannot resolve nested file:// deps automatically, so we walk them once.
+local update_2nd_degree_chart_deps(chartPath) = [
+  'yq e \'.dependencies[] | select (.repository == "file*").repository | sub("^file://","")\' ' +
+  chartPath + '/Chart.yaml | xargs -I % helm dependencies build --skip-refresh ' + chartPath + '/%',
+];
 
 local helm_config_dependencies = [
   'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
@@ -40,22 +66,21 @@ local skip_when_dependency_upgrade = {
   }] + super.rules,
 };
 
-// Build a chart with all dependencies and then share it as an artifact with next jobs in the pipepline
-// This step is the most expensive step so we want to execute it only once
+// Build a published chart with all dependencies and then share it as an artifact with next jobs in
+// the pipeline. This is the most expensive step so we want to execute it only once.
 local build_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies,
   script:
-    update_2nd_degree_chart_deps(chart) + [
+    update_2nd_degree_chart_deps('stable/' + chart) + [
       'helm dependencies build stable/' + chart,
-      // To avoid a race condition with index.yaml mondifaction in the push_test_charts_jobs job, I package all modifed charts now and then upload only modified charts to s3
       'mkdir -p stable/' + chart + '/build; helm package --destination stable/' + chart + '/build stable/' + chart,
     ],
   stage: 'build',
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-      changes: ['stable/' + chart + '/**/*'],
+      changes: change_paths_for_published(chart),
     },
   ],
   artifacts: {
@@ -67,10 +92,37 @@ local build_chart_job(chart) = {
 };
 local build_chart_jobs = {
   ['build_%s' % chart]: (build_chart_job(chart))
-  for chart in (charts + public_charts)
+  for chart in published_charts
 };
 
-// Validates modified charts: formats files, execute lint commands
+// Build a local chart's file:// deps so downstream validate/test jobs can resolve subchart
+// templates. No packaging or publishing — only the charts/ directory is shared as an artifact.
+local build_local_chart_job(chart) = {
+  image: variables.images.stackstate_helm_test,
+  before_script: helm_fetch_dependencies,
+  script:
+    update_2nd_degree_chart_deps('local/' + chart) + [
+      'helm dependencies build local/' + chart,
+    ],
+  stage: 'build',
+  rules: [
+    {
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: ['local/' + chart + '/**/*'],
+    },
+  ],
+  artifacts: {
+    paths: [
+      'local/' + chart + '/charts/',
+    ],
+  },
+};
+local build_local_chart_jobs = {
+  ['build_local_%s' % chart]: (build_local_chart_job(chart))
+  for chart in local_charts
+};
+
+// Validates modified published charts: schema check, lint, kubeconform.
 local validate_chart_job(chart) = {
   image: variables.images.chart_testing,
   before_script: ['.gitlab/validate_before_script.sh'],
@@ -86,16 +138,41 @@ local validate_chart_job(chart) = {
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-      changes: ['stable/' + chart + '/**/*'],
+      changes: change_paths_for_published(chart),
     },
   ],
 };
 local validate_chart_jobs = {
   ['validate_%s' % chart]: (validate_chart_job(chart))
-  for chart in (charts + public_charts)
+  for chart in published_charts
 };
 
-// Checks if a chart version has been updated, if not then return an error
+// Lightweight validation for local-only charts: schema + lint. No version check, no publish.
+local validate_local_chart_job(chart) = {
+  image: variables.images.chart_testing,
+  before_script: ['.gitlab/validate_before_script.sh'],
+  script: [
+    'yamale --schema /etc/ct/chart_schema.yaml local/' + chart + '/Chart.yaml',
+    'yamllint --config-file /etc/ct/lintconf.yaml local/' + chart + '/Chart.yaml',
+    'if [ -f local/' + chart + '/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/' + chart + '/values.yaml; fi',
+    'if [ -f local/' + chart + '/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/' + chart + '/ci/default-values.yaml; fi',
+    'if [ -f local/' + chart + '/ci/default-values.yaml ]; then helm lint local/' + chart + ' --values local/' + chart + '/ci/default-values.yaml; fi',
+  ],
+  stage: 'validate',
+  rules: [
+    {
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: ['local/' + chart + '/**/*'],
+    },
+  ],
+};
+local validate_local_chart_jobs = {
+  ['validate_local_%s' % chart]: (validate_local_chart_job(chart))
+  for chart in local_charts
+};
+
+// Checks if a chart version has been updated, if not then return an error.
+// Only runs for published charts — local charts are pinned to "*" and never need version bumps.
 local check_chart_version_job(chart) = {
   image: variables.images.chart_testing,
   before_script: ['.gitlab/validate_before_script.sh'],
@@ -112,49 +189,11 @@ local check_chart_version_job(chart) = {
 };
 local check_chart_version_jobs = {
   ['check_%s_version' % chart]: (check_chart_version_job(chart))
-  for chart in (charts + public_charts)
+  for chart in published_charts
   if chart != 'suse-observability'
 };
 
-// Validation jobs for suse-observability-sizing chart (not in charts/public_charts lists)
-local check_sizing_chart_jobs = {
-  // Checks if suse-observability-sizing version has been bumped.
-  // Adding suse-observability-sizing to the .jsonnet-libs/extras/helm_chart_repo/variables.libsonnet charts list generates
-  // build, validate, test, and push jobs - which is unnecessary overhead for a library chart that's only used as a dependency.
-  'check_suse-observability-sizing_version': {
-    image: variables.images.chart_testing,
-    before_script: ['.gitlab/validate_before_script.sh'],
-    script: [
-      '.gitlab/verify_versions_bumped.sh suse-observability-sizing',
-    ],
-    stage: 'validate',
-    rules: [
-      {
-        @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-        changes: ['stable/suse-observability-sizing/**/*'],
-      },
-    ],
-  },
-  // Validates that all dependent charts have updated their dependency versions.
-  // Runs after version check passes to ensure we're checking against the correct version.
-  check_sizing_chart_dependencies: {
-    image: variables.images.chart_testing,
-    before_script: ['pip install pyyaml'],
-    script: [
-      'python3 scripts/bump-chart-version/bump_chart_version.py --check suse-observability-sizing',
-    ],
-    stage: 'validate',
-    needs: ['check_suse-observability-sizing_version'],
-    rules: [
-      {
-        @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-        changes: ['stable/suse-observability-sizing/**/*'],
-      },
-    ],
-  },
-};
-
-// Runs unit tests on all charts with "test" directory
+// Runs unit tests on a published chart when it or any of its local deps change.
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   tags: ['sts-k8s-xl-runner'],
@@ -166,7 +205,7 @@ local test_chart_job(chart) = {
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-      changes: ['stable/' + chart + '/**/*'],
+      changes: change_paths_for_published(chart),
       exists: ['stable/' + chart + '/test/*.go'],
     },
   ],
@@ -178,7 +217,34 @@ local test_chart_job(chart) = {
 };
 local test_chart_jobs = {
   ['test_%s' % chart]: (test_chart_job(chart))
-  for chart in (charts + public_charts)
+  for chart in published_charts
+};
+
+// Runs unit tests on a local chart in isolation.
+local test_local_chart_job(chart) = {
+  image: variables.images.stackstate_helm_test,
+  tags: ['sts-k8s-xl-runner'],
+  script: [
+    'go mod download',
+    'go test ./local/' + chart + '/test/...',
+  ],
+  stage: 'test',
+  rules: [
+    {
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: ['local/' + chart + '/**/*'],
+      exists: ['local/' + chart + '/test/*.go'],
+    },
+  ],
+  variables: {
+    CGO_ENABLED: 0,
+    GOPATH: '/go',
+  },
+  cache: go_cache,
+};
+local test_local_chart_jobs = {
+  ['test_local_%s' % chart]: (test_local_chart_job(chart))
+  for chart in local_charts
 };
 
 local resource_usage = {
@@ -186,7 +252,7 @@ local resource_usage = {
     image: variables.images.stackstate_helm_test,
     tags: ['sts-k8s-xl-runner'],
     before_script: helm_fetch_dependencies,
-    script: update_2nd_degree_chart_deps('suse-observability') + [
+    script: update_2nd_degree_chart_deps('stable/suse-observability') + [
       'helm dependencies build stable/suse-observability',
       'helm dependencies build stable/suse-observability-values',
       'go mod download',
@@ -199,9 +265,8 @@ local resource_usage = {
         changes: [
           'test/*.go',
           'test/**/*',
-          'stable/suse-observability/**/*',
           'stable/suse-observability-values/**/*',
-        ],
+        ] + change_paths_for_published('suse-observability'),
       },
     ],
     variables: {
@@ -233,12 +298,12 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
     [
       {
         @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[' + autoTriggerOnCommitMsg + ']/',
-        changes: ['stable/' + chart + '/**/*'],
+        changes: change_paths_for_published(chart),
         when: 'on_success',
       },
       {
         @'if': '$CI_COMMIT_BRANCH == "master"',
-        changes: ['stable/' + chart + '/**/*'],
+        changes: change_paths_for_published(chart),
         when: when,
       },
       {
@@ -249,14 +314,14 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
   );
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
-  (if chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
+  (if chart == 'suse-observability' then update_2nd_degree_chart_deps('stable/' + chart) else [])
   + [
     'helm dependencies update --skip-refresh ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ];
 
 local push_prerelease_chart_script(chart, repository_url, repository_username, repository_password) =
-  (if chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
+  (if chart == 'suse-observability' then update_2nd_degree_chart_deps('stable/' + chart) else [])
   + [
     'helm dependencies update --skip-refresh ${CHART}',
     '.gitlab/modify_chart_to_prerelease_version.sh ${CHART}',
@@ -292,7 +357,7 @@ if chart == 'suse-observability' then
                                            ] }
                                          else { before_script: helm_fetch_dependencies }
                                        ))
-  for chart in (charts + public_charts)
+  for chart in published_charts
 };
 
 local push_prerelease_charts_to_public_jobs = {
@@ -313,7 +378,7 @@ local push_prerelease_charts_to_public_jobs = {
 
                                     before_script: helm_fetch_dependencies,
                                   })
-  for chart in public_charts
+  for chart in public_chart_names
   if chart != 'suse-observability'
 };
 
@@ -335,7 +400,7 @@ local push_charts_to_public_jobs = {
 
                                     before_script: helm_fetch_dependencies,
                                   })
-  for chart in public_charts
+  for chart in public_chart_names
   if chart != 'suse-observability'
 };
 
@@ -378,28 +443,9 @@ local update_sg_version = {
       },
     ],
     script: [
-      '.gitlab/update_sg_version.sh stable/hbase ""',
+      '.gitlab/update_sg_version.sh local/hbase ""',
       '.gitlab/update_sg_version.sh stable/suse-observability "hbase."',
-      '.gitlab/update_chart_version.sh stable/suse-observability hbase local:stable/hbase',
       '.gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION',
-    ],
-  },
-};
-
-local update_aad_chart_version = {
-  update_aad_chart_version: {
-    image: variables.images.stackstate_helm_test,
-    stage: 'update',
-    before_script: helm_fetch_dependencies,
-    rules: [
-      {
-        @'if': '$UPDATE_AAD_CHART_VERSION',
-        when: 'always',
-      },
-    ],
-    script: [
-      '.gitlab/update_chart_version.sh stable/suse-observability anomaly-detection $UPDATE_AAD_CHART_VERSION',
-      '.gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION',
     ],
   },
 };
@@ -524,12 +570,12 @@ local beest_triggers = {
     rules: [
       {
         @'if': '$CI_COMMIT_BRANCH == "master"',
-        changes: ['stable/suse-observability-agent/**/*'],
+        changes: change_paths_for_published('suse-observability-agent'),
         when: 'manual',
       },
       {
         @'if': '$CI_COMMIT_BRANCH',
-        changes: ['stable/suse-observability-agent/**/*'],
+        changes: change_paths_for_published('suse-observability-agent'),
         when: 'manual',
       },
     ],
@@ -547,12 +593,12 @@ local beest_triggers = {
     rules: [
       {
         @'if': '$CI_COMMIT_BRANCH == "master"',
-        changes: ['stable/suse-observability/**/*'],
+        changes: change_paths_for_published('suse-observability'),
         when: 'manual',
       },
       {
         @'if': '$CI_COMMIT_BRANCH',
-        changes: ['stable/suse-observability/**/*'],
+        changes: change_paths_for_published('suse-observability'),
         when: 'manual',
       },
     ],
@@ -580,18 +626,19 @@ local beest_triggers = {
   },
 }
 + build_chart_jobs
++ build_local_chart_jobs
 + validate_chart_jobs
++ validate_local_chart_jobs
 + validate_updatecli_config
 + check_chart_version_jobs
-+ check_sizing_chart_jobs
 + test_chart_jobs
++ test_local_chart_jobs
 + resource_usage
 
 + push_charts_to_internal_jobs
 + push_prerelease_charts_to_public_jobs
 + push_charts_to_public_jobs
 + update_sg_version
-+ update_aad_chart_version
 + updatecli_job
 + update_docker_images
 + push_suse_observability_to_rancher_registry

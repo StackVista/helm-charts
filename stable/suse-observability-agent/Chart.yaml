@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 3.71.2
-version: 1.3.36
+version: 1.3.37
 description: Helm chart for the SUSE observability Agent.
 keywords:
 - monitoring
@@ -31,6 +31,6 @@ dependencies:
   version: 0.0.30
   condition: httpHeaderInjectorWebhook.enabled
 - name: kubernetes-rbac-agent
-  repository: file://../kubernetes-rbac-agent/
-  version: 0.0.27
+  repository: file://../../local/kubernetes-rbac-agent/
+  version: "*"
   condition: kubernetes-rbac-agent.enabled

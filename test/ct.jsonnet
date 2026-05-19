@@ -5,7 +5,7 @@ local variables = import '../.jsonnet-libs/extras/helm_chart_repo/variables.libs
 local repositories = variables.helm.repositories;
 
 {
-  'chart-dirs': ['stable'],
+  'chart-dirs': ['stable', 'local'],
   'chart-repos': [
     std.join('=', ['%s' % std.strReplace(name, '_', '-'), repositories[name]])
     for name in std.objectFields(repositories)
