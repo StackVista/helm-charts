@@ -891,7 +891,7 @@ build_trafficmirror:
 check_artifactory-cleaner_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -902,7 +902,7 @@ check_artifactory-cleaner_version:
 check_aws-pod-identity-webhook_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -913,7 +913,7 @@ check_aws-pod-identity-webhook_version:
 check_beacher-job_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -924,7 +924,7 @@ check_beacher-job_version:
 check_chartmuseum_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -935,7 +935,7 @@ check_chartmuseum_version:
 check_ci-test_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/ci-test/**/*
@@ -946,7 +946,7 @@ check_ci-test_version:
 check_gitlab-proxy_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
@@ -957,7 +957,7 @@ check_gitlab-proxy_version:
 check_gitlab-steward_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -968,7 +968,7 @@ check_gitlab-steward_version:
 check_helm-reaper_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -979,7 +979,7 @@ check_helm-reaper_version:
 check_k8s-spot-termination-handler_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -990,7 +990,7 @@ check_k8s-spot-termination-handler_version:
 check_kommoner-operator_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -1001,7 +1001,7 @@ check_kommoner-operator_version:
 check_notification-operator_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/notification-operator/**/*
@@ -1012,7 +1012,7 @@ check_notification-operator_version:
 check_otel-demo_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -1023,7 +1023,7 @@ check_otel-demo_version:
 check_petros-d-kubelet-stats-exporter_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -1034,7 +1034,7 @@ check_petros-d-kubelet-stats-exporter_version:
 check_receiveramplifier_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -1045,7 +1045,7 @@ check_receiveramplifier_version:
 check_redirector_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/redirector/**/*
@@ -1056,7 +1056,7 @@ check_redirector_version:
 check_sock-shop_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -1067,7 +1067,7 @@ check_sock-shop_version:
 check_stackstate-monitoring_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -1078,7 +1078,7 @@ check_stackstate-monitoring_version:
 check_suse-observability-agent_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -1089,7 +1089,7 @@ check_suse-observability-agent_version:
 check_suse-observability-values_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -1100,7 +1100,7 @@ check_suse-observability-values_version:
 check_tenant-cleanup-controller_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
@@ -1111,7 +1111,7 @@ check_tenant-cleanup-controller_version:
 check_tenantmanagement_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -1122,7 +1122,7 @@ check_tenantmanagement_version:
 check_tenantprovisioning_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -1133,7 +1133,7 @@ check_tenantprovisioning_version:
 check_trafficmirror_version:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -1141,7 +1141,7 @@ check_trafficmirror_version:
   script:
     - .gitlab/verify_versions_bumped.sh trafficmirror
   stage: validate
-image: quay.io/helmpack/chart-testing:v3.10.1
+image: quay.io/helmpack/chart-testing:v3.14.0
 open_updatecli_docker_images_mr:
   before_script:
     - .gitlab/configure_git.sh
@@ -3297,7 +3297,7 @@ update_stackstate_version_to_latest:
 validate_artifactory-cleaner:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -3315,7 +3315,7 @@ validate_artifactory-cleaner:
 validate_aws-pod-identity-webhook:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -3333,7 +3333,7 @@ validate_aws-pod-identity-webhook:
 validate_beacher-job:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -3351,7 +3351,7 @@ validate_beacher-job:
 validate_chartmuseum:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -3369,7 +3369,7 @@ validate_chartmuseum:
 validate_ci-test:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/ci-test/**/*
@@ -3387,7 +3387,7 @@ validate_ci-test:
 validate_gitlab-proxy:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
@@ -3405,7 +3405,7 @@ validate_gitlab-proxy:
 validate_gitlab-steward:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -3423,7 +3423,7 @@ validate_gitlab-steward:
 validate_helm-reaper:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -3441,7 +3441,7 @@ validate_helm-reaper:
 validate_k8s-spot-termination-handler:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -3459,7 +3459,7 @@ validate_k8s-spot-termination-handler:
 validate_kommoner-operator:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -3477,7 +3477,7 @@ validate_kommoner-operator:
 validate_local_anomaly-detection:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/anomaly-detection/**/*
@@ -3495,7 +3495,7 @@ validate_local_anomaly-detection:
 validate_local_clickhouse:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/clickhouse/**/*
@@ -3513,7 +3513,7 @@ validate_local_clickhouse:
 validate_local_common:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/common/**/*
@@ -3531,7 +3531,7 @@ validate_local_common:
 validate_local_elasticsearch:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/elasticsearch/**/*
@@ -3549,7 +3549,7 @@ validate_local_elasticsearch:
 validate_local_hbase:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/hbase/**/*
@@ -3567,7 +3567,7 @@ validate_local_hbase:
 validate_local_kafka:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/kafka/**/*
@@ -3585,7 +3585,7 @@ validate_local_kafka:
 validate_local_kafkaup-operator:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/kafkaup-operator/**/*
@@ -3603,7 +3603,7 @@ validate_local_kafkaup-operator:
 validate_local_kubernetes-rbac-agent:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/kubernetes-rbac-agent/**/*
@@ -3621,7 +3621,7 @@ validate_local_kubernetes-rbac-agent:
 validate_local_opentelemetry-collector:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/opentelemetry-collector/**/*
@@ -3639,7 +3639,7 @@ validate_local_opentelemetry-collector:
 validate_local_prometheus-elasticsearch-exporter:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/prometheus-elasticsearch-exporter/**/*
@@ -3657,7 +3657,7 @@ validate_local_prometheus-elasticsearch-exporter:
 validate_local_pull-secret:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/pull-secret/**/*
@@ -3675,7 +3675,7 @@ validate_local_pull-secret:
 validate_local_suse-observability-sizing:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/suse-observability-sizing/**/*
@@ -3693,7 +3693,7 @@ validate_local_suse-observability-sizing:
 validate_local_victoria-metrics-single:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/victoria-metrics-single/**/*
@@ -3711,7 +3711,7 @@ validate_local_victoria-metrics-single:
 validate_local_zookeeper:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - local/zookeeper/**/*
@@ -3729,7 +3729,7 @@ validate_local_zookeeper:
 validate_notification-operator:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/notification-operator/**/*
@@ -3747,7 +3747,7 @@ validate_notification-operator:
 validate_otel-demo:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -3765,7 +3765,7 @@ validate_otel-demo:
 validate_petros-d-kubelet-stats-exporter:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -3783,7 +3783,7 @@ validate_petros-d-kubelet-stats-exporter:
 validate_receiveramplifier:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -3801,7 +3801,7 @@ validate_receiveramplifier:
 validate_redirector:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/redirector/**/*
@@ -3819,7 +3819,7 @@ validate_redirector:
 validate_sock-shop:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -3837,7 +3837,7 @@ validate_sock-shop:
 validate_stackstate-monitoring:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -3855,7 +3855,7 @@ validate_stackstate-monitoring:
 validate_suse-observability:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -3887,7 +3887,7 @@ validate_suse-observability:
 validate_suse-observability-agent:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -3906,7 +3906,7 @@ validate_suse-observability-agent:
 validate_suse-observability-values:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -3924,7 +3924,7 @@ validate_suse-observability-values:
 validate_tenant-cleanup-controller:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
@@ -3942,7 +3942,7 @@ validate_tenant-cleanup-controller:
 validate_tenantmanagement:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -3960,7 +3960,7 @@ validate_tenantmanagement:
 validate_tenantprovisioning:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -3978,7 +3978,7 @@ validate_tenantprovisioning:
 validate_trafficmirror:
   before_script:
     - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -3994,7 +3994,7 @@ validate_trafficmirror:
     - .gitlab/validate_kubeconform.sh stable/trafficmirror
   stage: validate
 validate_updatecli_config:
-  image: quay.io/helmpack/chart-testing:v3.10.1
+  image: quay.io/helmpack/chart-testing:v3.14.0
   rules:
     - changes:
         - updatecli/**/*

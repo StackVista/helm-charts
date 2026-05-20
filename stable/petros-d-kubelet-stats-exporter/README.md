@@ -1,10 +1,10 @@
 # petros-d-kubelet-stats-exporter
 
-![Version: 0.9.4](https://img.shields.io/badge/Version-0.9.4-informational?style=flat-square) ![AppVersion: 0.9.2](https://img.shields.io/badge/AppVersion-0.9.2-informational?style=flat-square)
+![Version: 0.9.5](https://img.shields.io/badge/Version-0.9.5-informational?style=flat-square) ![AppVersion: 0.9.2](https://img.shields.io/badge/AppVersion-0.9.2-informational?style=flat-square)
 
 The kubelet stats exporter for ephemeral storage metrics
 
-Current chart version is `0.9.4`
+Current chart version is `0.9.5`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/docker-petros-d-kubelet-stats-exporter>
 
