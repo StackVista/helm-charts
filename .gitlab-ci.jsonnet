@@ -28,6 +28,11 @@ local change_paths_for_published(chart) =
   ['stable/' + chart + '/**/*'] +
   ['local/' + d + '/**/*' for d in local_deps_of(chart)];
 
+// Files that, when modified, should re-run every chart's build/validate jobs.
+// A change to the generated CI config can change job definitions in non-obvious
+// ways, so we want to revalidate everything to make sure nothing regresses.
+local ci_config_change_paths = ['.gitlab-ci.yml'];
+
 local go_cache = { key: { files: ['go.mod', 'go.sum'] }, paths: ['/go/pkg/mod/'] };
 
 // Build 2nd-degree file:// chart deps. chartPath is e.g. stable/suse-observability or local/hbase;
@@ -80,7 +85,7 @@ local build_chart_job(chart) = {
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-      changes: change_paths_for_published(chart),
+      changes: change_paths_for_published(chart) + ci_config_change_paths,
     },
   ],
   artifacts: {
@@ -108,7 +113,7 @@ local build_local_chart_job(chart) = {
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-      changes: ['local/' + chart + '/**/*'],
+      changes: ['local/' + chart + '/**/*'] + ci_config_change_paths,
     },
   ],
   artifacts: {
@@ -139,7 +144,7 @@ local validate_chart_job(chart) = {
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-      changes: change_paths_for_published(chart),
+      changes: change_paths_for_published(chart) + ci_config_change_paths,
     },
   ],
 };
@@ -165,7 +170,7 @@ local validate_local_chart_job(chart) = {
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-      changes: ['local/' + chart + '/**/*'],
+      changes: ['local/' + chart + '/**/*'] + ci_config_change_paths,
     },
   ],
 };

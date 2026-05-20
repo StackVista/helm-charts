@@ -80,6 +80,7 @@ build_artifactory-cleaner:
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/artifactory-cleaner/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/artifactory-cleaner/%
@@ -101,6 +102,7 @@ build_aws-pod-identity-webhook:
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-pod-identity-webhook/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/aws-pod-identity-webhook/%
@@ -122,6 +124,7 @@ build_beacher-job:
   rules:
     - changes:
         - stable/beacher-job/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/beacher-job/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/beacher-job/%
@@ -143,6 +146,7 @@ build_chartmuseum:
   rules:
     - changes:
         - stable/chartmuseum/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/chartmuseum/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/chartmuseum/%
@@ -164,6 +168,7 @@ build_ci-test:
   rules:
     - changes:
         - stable/ci-test/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/ci-test/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/ci-test/%
@@ -185,6 +190,7 @@ build_gitlab-proxy:
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-proxy/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/gitlab-proxy/%
@@ -206,6 +212,7 @@ build_gitlab-steward:
   rules:
     - changes:
         - stable/gitlab-steward/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-steward/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/gitlab-steward/%
@@ -227,6 +234,7 @@ build_helm-reaper:
   rules:
     - changes:
         - stable/helm-reaper/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/helm-reaper/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/helm-reaper/%
@@ -248,6 +256,7 @@ build_k8s-spot-termination-handler:
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-spot-termination-handler/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/k8s-spot-termination-handler/%
@@ -269,6 +278,7 @@ build_kommoner-operator:
   rules:
     - changes:
         - stable/kommoner-operator/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kommoner-operator/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/kommoner-operator/%
@@ -289,6 +299,7 @@ build_local_anomaly-detection:
   rules:
     - changes:
         - local/anomaly-detection/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/anomaly-detection/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/anomaly-detection/%
@@ -308,6 +319,7 @@ build_local_clickhouse:
   rules:
     - changes:
         - local/clickhouse/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/clickhouse/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/clickhouse/%
@@ -327,6 +339,7 @@ build_local_common:
   rules:
     - changes:
         - local/common/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/common/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/common/%
@@ -346,6 +359,7 @@ build_local_elasticsearch:
   rules:
     - changes:
         - local/elasticsearch/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/elasticsearch/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/elasticsearch/%
@@ -365,6 +379,7 @@ build_local_hbase:
   rules:
     - changes:
         - local/hbase/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/hbase/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/hbase/%
@@ -384,6 +399,7 @@ build_local_kafka:
   rules:
     - changes:
         - local/kafka/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/kafka/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/kafka/%
@@ -403,6 +419,7 @@ build_local_kafkaup-operator:
   rules:
     - changes:
         - local/kafkaup-operator/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/kafkaup-operator/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/kafkaup-operator/%
@@ -422,6 +439,7 @@ build_local_kubernetes-rbac-agent:
   rules:
     - changes:
         - local/kubernetes-rbac-agent/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/kubernetes-rbac-agent/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/kubernetes-rbac-agent/%
@@ -441,6 +459,7 @@ build_local_opentelemetry-collector:
   rules:
     - changes:
         - local/opentelemetry-collector/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/opentelemetry-collector/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/opentelemetry-collector/%
@@ -460,6 +479,7 @@ build_local_prometheus-elasticsearch-exporter:
   rules:
     - changes:
         - local/prometheus-elasticsearch-exporter/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/prometheus-elasticsearch-exporter/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/prometheus-elasticsearch-exporter/%
@@ -479,6 +499,7 @@ build_local_pull-secret:
   rules:
     - changes:
         - local/pull-secret/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/pull-secret/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/pull-secret/%
@@ -498,6 +519,7 @@ build_local_suse-observability-sizing:
   rules:
     - changes:
         - local/suse-observability-sizing/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/suse-observability-sizing/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/suse-observability-sizing/%
@@ -517,6 +539,7 @@ build_local_victoria-metrics-single:
   rules:
     - changes:
         - local/victoria-metrics-single/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/victoria-metrics-single/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/victoria-metrics-single/%
@@ -536,6 +559,7 @@ build_local_zookeeper:
   rules:
     - changes:
         - local/zookeeper/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/zookeeper/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/zookeeper/%
@@ -556,6 +580,7 @@ build_notification-operator:
   rules:
     - changes:
         - stable/notification-operator/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/notification-operator/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/notification-operator/%
@@ -577,6 +602,7 @@ build_otel-demo:
   rules:
     - changes:
         - stable/otel-demo/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/otel-demo/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/otel-demo/%
@@ -598,6 +624,7 @@ build_petros-d-kubelet-stats-exporter:
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/petros-d-kubelet-stats-exporter/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/petros-d-kubelet-stats-exporter/%
@@ -619,6 +646,7 @@ build_receiveramplifier:
   rules:
     - changes:
         - stable/receiveramplifier/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/receiveramplifier/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/receiveramplifier/%
@@ -640,6 +668,7 @@ build_redirector:
   rules:
     - changes:
         - stable/redirector/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/redirector/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/redirector/%
@@ -661,6 +690,7 @@ build_sock-shop:
   rules:
     - changes:
         - stable/sock-shop/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sock-shop/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/sock-shop/%
@@ -682,6 +712,7 @@ build_stackstate-monitoring:
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-monitoring/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/stackstate-monitoring/%
@@ -717,6 +748,7 @@ build_suse-observability:
         - local/suse-observability-sizing/**/*
         - local/victoria-metrics-single/**/*
         - local/zookeeper/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
@@ -739,6 +771,7 @@ build_suse-observability-agent:
     - changes:
         - stable/suse-observability-agent/**/*
         - local/kubernetes-rbac-agent/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-agent/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability-agent/%
@@ -760,6 +793,7 @@ build_suse-observability-values:
   rules:
     - changes:
         - stable/suse-observability-values/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-values/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/suse-observability-values/%
@@ -781,6 +815,7 @@ build_tenant-cleanup-controller:
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenant-cleanup-controller/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/tenant-cleanup-controller/%
@@ -802,6 +837,7 @@ build_tenantmanagement:
   rules:
     - changes:
         - stable/tenantmanagement/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanagement/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/tenantmanagement/%
@@ -823,6 +859,7 @@ build_tenantprovisioning:
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantprovisioning/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/tenantprovisioning/%
@@ -844,6 +881,7 @@ build_trafficmirror:
   rules:
     - changes:
         - stable/trafficmirror/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/trafficmirror/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/trafficmirror/%
@@ -3263,6 +3301,7 @@ validate_artifactory-cleaner:
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/artifactory-cleaner/Chart.yaml
@@ -3280,6 +3319,7 @@ validate_aws-pod-identity-webhook:
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/aws-pod-identity-webhook/Chart.yaml
@@ -3297,6 +3337,7 @@ validate_beacher-job:
   rules:
     - changes:
         - stable/beacher-job/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/beacher-job/Chart.yaml
@@ -3314,6 +3355,7 @@ validate_chartmuseum:
   rules:
     - changes:
         - stable/chartmuseum/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/chartmuseum/Chart.yaml
@@ -3331,6 +3373,7 @@ validate_ci-test:
   rules:
     - changes:
         - stable/ci-test/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/ci-test/Chart.yaml
@@ -3348,6 +3391,7 @@ validate_gitlab-proxy:
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/gitlab-proxy/Chart.yaml
@@ -3365,6 +3409,7 @@ validate_gitlab-steward:
   rules:
     - changes:
         - stable/gitlab-steward/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/gitlab-steward/Chart.yaml
@@ -3382,6 +3427,7 @@ validate_helm-reaper:
   rules:
     - changes:
         - stable/helm-reaper/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/helm-reaper/Chart.yaml
@@ -3399,6 +3445,7 @@ validate_k8s-spot-termination-handler:
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/k8s-spot-termination-handler/Chart.yaml
@@ -3416,6 +3463,7 @@ validate_kommoner-operator:
   rules:
     - changes:
         - stable/kommoner-operator/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/kommoner-operator/Chart.yaml
@@ -3433,6 +3481,7 @@ validate_local_anomaly-detection:
   rules:
     - changes:
         - local/anomaly-detection/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/anomaly-detection/Chart.yaml
@@ -3450,6 +3499,7 @@ validate_local_clickhouse:
   rules:
     - changes:
         - local/clickhouse/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/clickhouse/Chart.yaml
@@ -3467,6 +3517,7 @@ validate_local_common:
   rules:
     - changes:
         - local/common/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/common/Chart.yaml
@@ -3484,6 +3535,7 @@ validate_local_elasticsearch:
   rules:
     - changes:
         - local/elasticsearch/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/elasticsearch/Chart.yaml
@@ -3501,6 +3553,7 @@ validate_local_hbase:
   rules:
     - changes:
         - local/hbase/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/hbase/Chart.yaml
@@ -3518,6 +3571,7 @@ validate_local_kafka:
   rules:
     - changes:
         - local/kafka/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/kafka/Chart.yaml
@@ -3535,6 +3589,7 @@ validate_local_kafkaup-operator:
   rules:
     - changes:
         - local/kafkaup-operator/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/kafkaup-operator/Chart.yaml
@@ -3552,6 +3607,7 @@ validate_local_kubernetes-rbac-agent:
   rules:
     - changes:
         - local/kubernetes-rbac-agent/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/kubernetes-rbac-agent/Chart.yaml
@@ -3569,6 +3625,7 @@ validate_local_opentelemetry-collector:
   rules:
     - changes:
         - local/opentelemetry-collector/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/opentelemetry-collector/Chart.yaml
@@ -3586,6 +3643,7 @@ validate_local_prometheus-elasticsearch-exporter:
   rules:
     - changes:
         - local/prometheus-elasticsearch-exporter/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/prometheus-elasticsearch-exporter/Chart.yaml
@@ -3603,6 +3661,7 @@ validate_local_pull-secret:
   rules:
     - changes:
         - local/pull-secret/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/pull-secret/Chart.yaml
@@ -3620,6 +3679,7 @@ validate_local_suse-observability-sizing:
   rules:
     - changes:
         - local/suse-observability-sizing/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/suse-observability-sizing/Chart.yaml
@@ -3637,6 +3697,7 @@ validate_local_victoria-metrics-single:
   rules:
     - changes:
         - local/victoria-metrics-single/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/victoria-metrics-single/Chart.yaml
@@ -3654,6 +3715,7 @@ validate_local_zookeeper:
   rules:
     - changes:
         - local/zookeeper/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml local/zookeeper/Chart.yaml
@@ -3671,6 +3733,7 @@ validate_notification-operator:
   rules:
     - changes:
         - stable/notification-operator/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/notification-operator/Chart.yaml
@@ -3688,6 +3751,7 @@ validate_otel-demo:
   rules:
     - changes:
         - stable/otel-demo/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/otel-demo/Chart.yaml
@@ -3705,6 +3769,7 @@ validate_petros-d-kubelet-stats-exporter:
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/petros-d-kubelet-stats-exporter/Chart.yaml
@@ -3722,6 +3787,7 @@ validate_receiveramplifier:
   rules:
     - changes:
         - stable/receiveramplifier/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/receiveramplifier/Chart.yaml
@@ -3739,6 +3805,7 @@ validate_redirector:
   rules:
     - changes:
         - stable/redirector/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/redirector/Chart.yaml
@@ -3756,6 +3823,7 @@ validate_sock-shop:
   rules:
     - changes:
         - stable/sock-shop/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/sock-shop/Chart.yaml
@@ -3773,6 +3841,7 @@ validate_stackstate-monitoring:
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-monitoring/Chart.yaml
@@ -3804,6 +3873,7 @@ validate_suse-observability:
         - local/suse-observability-sizing/**/*
         - local/victoria-metrics-single/**/*
         - local/zookeeper/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability/Chart.yaml
@@ -3822,6 +3892,7 @@ validate_suse-observability-agent:
     - changes:
         - stable/suse-observability-agent/**/*
         - local/kubernetes-rbac-agent/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability-agent/Chart.yaml
@@ -3839,6 +3910,7 @@ validate_suse-observability-values:
   rules:
     - changes:
         - stable/suse-observability-values/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability-values/Chart.yaml
@@ -3856,6 +3928,7 @@ validate_tenant-cleanup-controller:
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/tenant-cleanup-controller/Chart.yaml
@@ -3873,6 +3946,7 @@ validate_tenantmanagement:
   rules:
     - changes:
         - stable/tenantmanagement/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/tenantmanagement/Chart.yaml
@@ -3890,6 +3964,7 @@ validate_tenantprovisioning:
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/tenantprovisioning/Chart.yaml
@@ -3907,6 +3982,7 @@ validate_trafficmirror:
   rules:
     - changes:
         - stable/trafficmirror/**/*
+        - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/trafficmirror/Chart.yaml
