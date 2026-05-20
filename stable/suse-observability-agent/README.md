@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.37`
+Current chart version is `1.3.38`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -168,12 +168,12 @@ stackstate/suse-observability-agent
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-18eefcbf-main-103"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-566580fb-main-107"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
-| httpHeaderInjectorWebhook.proxy.image.tag | string | `"7e145b52-482-release"` |  |
+| httpHeaderInjectorWebhook.proxy.image.tag | string | `"7e145b52-487-release"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
-| httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"7e145b52-482-release"` |  |
+| httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"7e145b52-487-release"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ddfbfbc4-58-release"` |  |
 | k8sCrdCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -239,7 +239,7 @@ stackstate/suse-observability-agent
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.10-fd1b75f1-main-65"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.10-566580fb-main-72"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
