@@ -38,7 +38,14 @@ while IFS=$'\t' read -r name repo version; do
   esac
 
   relPath="${repo#file://}"
-  absDepPath=$(realpath -m "${chartPath}/${relPath}")
+  # Busybox `realpath` (used in the chart-testing Alpine image) does not accept
+  # `-m`; relying on plain `realpath` is fine because committed file:// deps
+  # always point to directories that exist on disk.
+  if ! absDepPath=$(realpath "${chartPath}/${relPath}" 2>/dev/null); then
+    echo "ERROR: ${chartPath}/Chart.yaml dependency '${name}' (repository '${repo}') points to a path that does not exist: ${chartPath}/${relPath}" >&2
+    failures=$((failures + 1))
+    continue
+  fi
 
   # Only flag direct children of local/, e.g. local/common. Skip nested paths
   # like local/clickhouse/charts/common (the vendored Bitnami common).
