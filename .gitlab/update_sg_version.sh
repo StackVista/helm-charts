@@ -25,21 +25,11 @@ else
   # Update StackGraph version
   yq e ".${tag_path_prefix}stackgraph.version = \"${sg_version}\"" -i "${values}"
 
-  # update Helm chart versions
-  chart="${chart_path}/Chart.yaml"
-  updated_chart=".chart.yaml"
-
-  gawk 'match($0,/^(version: .*\.)([0-9]+)$/,a) {a[2]++; $0=a[1] a[2]} { print }' "${chart}" > "${updated_chart}"
-  mv -f "${updated_chart}" "${chart}"
-
   # update Readme
   readme="${chart_path}/README.md"
   new_readme=".readme.md"
-  chart_version=$(yq e .version "${chart}" )
-  sed -E "s/^Current chart version is .*$/Current chart version is \`${chart_version}\`/" "${readme}" | \
   sed -E "s/${tag_path_prefix}stackgraph\.version \| string \| \`.*\` \|/${tag_path_prefix}stackgraph.version | string | \`\"${sg_version}\"\` |/" > "${new_readme}"
-
   mv "${new_readme}" "${readme}"
 
-  git add "${values}" "${chart_path}" "${readme}"
+  git add "${values}" "${readme}"
 fi
