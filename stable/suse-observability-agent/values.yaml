@@ -811,7 +811,7 @@ httpHeaderInjectorWebhook:
       # proxy.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy"
       # proxy.image.tag - Tag for the docker image
-      tag: 7e145b52-482-release
+      tag: 7e145b52-487-release
 
   # proxyInit -- InitContainer within pod which redirects traffic to the proxy container.
   proxyInit:
@@ -845,12 +845,10 @@ kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent.
   enabled: true
   url:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name" . }}'
 
   clusterName:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name" . }}'
 
   roleType: 'scope'
   containers:
