@@ -3270,6 +3270,7 @@ validate_artifactory-cleaner:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/values.yaml
     - if [ -f stable/artifactory-cleaner/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/ci/default-values.yaml; fi
     - if [ -f stable/artifactory-cleaner/ci/default-values.yaml ]; then helm lint stable/artifactory-cleaner --values stable/artifactory-cleaner/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/artifactory-cleaner
     - .gitlab/validate_kubeconform.sh stable/artifactory-cleaner
   stage: validate
 validate_aws-pod-identity-webhook:
@@ -3286,6 +3287,7 @@ validate_aws-pod-identity-webhook:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/values.yaml
     - if [ -f stable/aws-pod-identity-webhook/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/ci/default-values.yaml; fi
     - if [ -f stable/aws-pod-identity-webhook/ci/default-values.yaml ]; then helm lint stable/aws-pod-identity-webhook --values stable/aws-pod-identity-webhook/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/aws-pod-identity-webhook
     - .gitlab/validate_kubeconform.sh stable/aws-pod-identity-webhook
   stage: validate
 validate_beacher-job:
@@ -3302,6 +3304,7 @@ validate_beacher-job:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/values.yaml
     - if [ -f stable/beacher-job/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/ci/default-values.yaml; fi
     - if [ -f stable/beacher-job/ci/default-values.yaml ]; then helm lint stable/beacher-job --values stable/beacher-job/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/beacher-job
     - .gitlab/validate_kubeconform.sh stable/beacher-job
   stage: validate
 validate_chartmuseum:
@@ -3318,6 +3321,7 @@ validate_chartmuseum:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/values.yaml
     - if [ -f stable/chartmuseum/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/ci/default-values.yaml; fi
     - if [ -f stable/chartmuseum/ci/default-values.yaml ]; then helm lint stable/chartmuseum --values stable/chartmuseum/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/chartmuseum
     - .gitlab/validate_kubeconform.sh stable/chartmuseum
   stage: validate
 validate_ci-test:
@@ -3334,6 +3338,7 @@ validate_ci-test:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/ci-test/values.yaml
     - if [ -f stable/ci-test/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/ci-test/ci/default-values.yaml; fi
     - if [ -f stable/ci-test/ci/default-values.yaml ]; then helm lint stable/ci-test --values stable/ci-test/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/ci-test
     - .gitlab/validate_kubeconform.sh stable/ci-test
   stage: validate
 validate_gitlab-proxy:
@@ -3350,6 +3355,7 @@ validate_gitlab-proxy:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-proxy/values.yaml
     - if [ -f stable/gitlab-proxy/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-proxy/ci/default-values.yaml; fi
     - if [ -f stable/gitlab-proxy/ci/default-values.yaml ]; then helm lint stable/gitlab-proxy --values stable/gitlab-proxy/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/gitlab-proxy
     - .gitlab/validate_kubeconform.sh stable/gitlab-proxy
   stage: validate
 validate_gitlab-steward:
@@ -3366,6 +3372,7 @@ validate_gitlab-steward:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/values.yaml
     - if [ -f stable/gitlab-steward/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/ci/default-values.yaml; fi
     - if [ -f stable/gitlab-steward/ci/default-values.yaml ]; then helm lint stable/gitlab-steward --values stable/gitlab-steward/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/gitlab-steward
     - .gitlab/validate_kubeconform.sh stable/gitlab-steward
   stage: validate
 validate_helm-reaper:
@@ -3382,6 +3389,7 @@ validate_helm-reaper:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/values.yaml
     - if [ -f stable/helm-reaper/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/ci/default-values.yaml; fi
     - if [ -f stable/helm-reaper/ci/default-values.yaml ]; then helm lint stable/helm-reaper --values stable/helm-reaper/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/helm-reaper
     - .gitlab/validate_kubeconform.sh stable/helm-reaper
   stage: validate
 validate_k8s-spot-termination-handler:
@@ -3398,6 +3406,7 @@ validate_k8s-spot-termination-handler:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/values.yaml
     - if [ -f stable/k8s-spot-termination-handler/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/ci/default-values.yaml; fi
     - if [ -f stable/k8s-spot-termination-handler/ci/default-values.yaml ]; then helm lint stable/k8s-spot-termination-handler --values stable/k8s-spot-termination-handler/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/k8s-spot-termination-handler
     - .gitlab/validate_kubeconform.sh stable/k8s-spot-termination-handler
   stage: validate
 validate_kommoner-operator:
@@ -3414,6 +3423,7 @@ validate_kommoner-operator:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/values.yaml
     - if [ -f stable/kommoner-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/ci/default-values.yaml; fi
     - if [ -f stable/kommoner-operator/ci/default-values.yaml ]; then helm lint stable/kommoner-operator --values stable/kommoner-operator/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/kommoner-operator
     - .gitlab/validate_kubeconform.sh stable/kommoner-operator
   stage: validate
 validate_local_anomaly-detection:
@@ -3430,6 +3440,7 @@ validate_local_anomaly-detection:
     - if [ -f local/anomaly-detection/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/anomaly-detection/values.yaml; fi
     - if [ -f local/anomaly-detection/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/anomaly-detection/ci/default-values.yaml; fi
     - if [ -f local/anomaly-detection/ci/default-values.yaml ]; then helm lint local/anomaly-detection --values local/anomaly-detection/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/anomaly-detection
     - .gitlab/validate_kubeconform.sh local/anomaly-detection
   stage: validate
 validate_local_clickhouse:
@@ -3446,6 +3457,7 @@ validate_local_clickhouse:
     - if [ -f local/clickhouse/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/clickhouse/values.yaml; fi
     - if [ -f local/clickhouse/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/clickhouse/ci/default-values.yaml; fi
     - if [ -f local/clickhouse/ci/default-values.yaml ]; then helm lint local/clickhouse --values local/clickhouse/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/clickhouse
     - .gitlab/validate_kubeconform.sh local/clickhouse
   stage: validate
 validate_local_common:
@@ -3462,6 +3474,7 @@ validate_local_common:
     - if [ -f local/common/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/common/values.yaml; fi
     - if [ -f local/common/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/common/ci/default-values.yaml; fi
     - if [ -f local/common/ci/default-values.yaml ]; then helm lint local/common --values local/common/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/common
     - .gitlab/validate_kubeconform.sh local/common
   stage: validate
 validate_local_elasticsearch:
@@ -3478,6 +3491,7 @@ validate_local_elasticsearch:
     - if [ -f local/elasticsearch/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/elasticsearch/values.yaml; fi
     - if [ -f local/elasticsearch/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/elasticsearch/ci/default-values.yaml; fi
     - if [ -f local/elasticsearch/ci/default-values.yaml ]; then helm lint local/elasticsearch --values local/elasticsearch/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/elasticsearch
     - .gitlab/validate_kubeconform.sh local/elasticsearch
   stage: validate
 validate_local_hbase:
@@ -3494,6 +3508,7 @@ validate_local_hbase:
     - if [ -f local/hbase/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/hbase/values.yaml; fi
     - if [ -f local/hbase/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/hbase/ci/default-values.yaml; fi
     - if [ -f local/hbase/ci/default-values.yaml ]; then helm lint local/hbase --values local/hbase/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/hbase
     - .gitlab/validate_kubeconform.sh local/hbase
   stage: validate
 validate_local_kafka:
@@ -3510,6 +3525,7 @@ validate_local_kafka:
     - if [ -f local/kafka/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafka/values.yaml; fi
     - if [ -f local/kafka/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafka/ci/default-values.yaml; fi
     - if [ -f local/kafka/ci/default-values.yaml ]; then helm lint local/kafka --values local/kafka/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/kafka
     - .gitlab/validate_kubeconform.sh local/kafka
   stage: validate
 validate_local_kafkaup-operator:
@@ -3526,6 +3542,7 @@ validate_local_kafkaup-operator:
     - if [ -f local/kafkaup-operator/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafkaup-operator/values.yaml; fi
     - if [ -f local/kafkaup-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kafkaup-operator/ci/default-values.yaml; fi
     - if [ -f local/kafkaup-operator/ci/default-values.yaml ]; then helm lint local/kafkaup-operator --values local/kafkaup-operator/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/kafkaup-operator
     - .gitlab/validate_kubeconform.sh local/kafkaup-operator
   stage: validate
 validate_local_kubernetes-rbac-agent:
@@ -3542,6 +3559,7 @@ validate_local_kubernetes-rbac-agent:
     - if [ -f local/kubernetes-rbac-agent/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kubernetes-rbac-agent/values.yaml; fi
     - if [ -f local/kubernetes-rbac-agent/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/kubernetes-rbac-agent/ci/default-values.yaml; fi
     - if [ -f local/kubernetes-rbac-agent/ci/default-values.yaml ]; then helm lint local/kubernetes-rbac-agent --values local/kubernetes-rbac-agent/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/kubernetes-rbac-agent
     - .gitlab/validate_kubeconform.sh local/kubernetes-rbac-agent
   stage: validate
 validate_local_opentelemetry-collector:
@@ -3558,6 +3576,7 @@ validate_local_opentelemetry-collector:
     - if [ -f local/opentelemetry-collector/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/opentelemetry-collector/values.yaml; fi
     - if [ -f local/opentelemetry-collector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/opentelemetry-collector/ci/default-values.yaml; fi
     - if [ -f local/opentelemetry-collector/ci/default-values.yaml ]; then helm lint local/opentelemetry-collector --values local/opentelemetry-collector/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/opentelemetry-collector
     - .gitlab/validate_kubeconform.sh local/opentelemetry-collector
   stage: validate
 validate_local_prometheus-elasticsearch-exporter:
@@ -3574,6 +3593,7 @@ validate_local_prometheus-elasticsearch-exporter:
     - if [ -f local/prometheus-elasticsearch-exporter/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/prometheus-elasticsearch-exporter/values.yaml; fi
     - if [ -f local/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
     - if [ -f local/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then helm lint local/prometheus-elasticsearch-exporter --values local/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/prometheus-elasticsearch-exporter
     - .gitlab/validate_kubeconform.sh local/prometheus-elasticsearch-exporter
   stage: validate
 validate_local_pull-secret:
@@ -3590,6 +3610,7 @@ validate_local_pull-secret:
     - if [ -f local/pull-secret/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/pull-secret/values.yaml; fi
     - if [ -f local/pull-secret/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/pull-secret/ci/default-values.yaml; fi
     - if [ -f local/pull-secret/ci/default-values.yaml ]; then helm lint local/pull-secret --values local/pull-secret/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/pull-secret
     - .gitlab/validate_kubeconform.sh local/pull-secret
   stage: validate
 validate_local_suse-observability-sizing:
@@ -3606,6 +3627,7 @@ validate_local_suse-observability-sizing:
     - if [ -f local/suse-observability-sizing/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/suse-observability-sizing/values.yaml; fi
     - if [ -f local/suse-observability-sizing/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/suse-observability-sizing/ci/default-values.yaml; fi
     - if [ -f local/suse-observability-sizing/ci/default-values.yaml ]; then helm lint local/suse-observability-sizing --values local/suse-observability-sizing/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/suse-observability-sizing
     - .gitlab/validate_kubeconform.sh local/suse-observability-sizing
   stage: validate
 validate_local_victoria-metrics-single:
@@ -3622,6 +3644,7 @@ validate_local_victoria-metrics-single:
     - if [ -f local/victoria-metrics-single/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/victoria-metrics-single/values.yaml; fi
     - if [ -f local/victoria-metrics-single/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/victoria-metrics-single/ci/default-values.yaml; fi
     - if [ -f local/victoria-metrics-single/ci/default-values.yaml ]; then helm lint local/victoria-metrics-single --values local/victoria-metrics-single/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/victoria-metrics-single
     - .gitlab/validate_kubeconform.sh local/victoria-metrics-single
   stage: validate
 validate_local_zookeeper:
@@ -3638,6 +3661,7 @@ validate_local_zookeeper:
     - if [ -f local/zookeeper/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/zookeeper/values.yaml; fi
     - if [ -f local/zookeeper/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/zookeeper/ci/default-values.yaml; fi
     - if [ -f local/zookeeper/ci/default-values.yaml ]; then helm lint local/zookeeper --values local/zookeeper/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/zookeeper
     - .gitlab/validate_kubeconform.sh local/zookeeper
   stage: validate
 validate_notification-operator:
@@ -3654,6 +3678,7 @@ validate_notification-operator:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/notification-operator/values.yaml
     - if [ -f stable/notification-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/notification-operator/ci/default-values.yaml; fi
     - if [ -f stable/notification-operator/ci/default-values.yaml ]; then helm lint stable/notification-operator --values stable/notification-operator/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/notification-operator
     - .gitlab/validate_kubeconform.sh stable/notification-operator
   stage: validate
 validate_otel-demo:
@@ -3670,6 +3695,7 @@ validate_otel-demo:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/values.yaml
     - if [ -f stable/otel-demo/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/ci/default-values.yaml; fi
     - if [ -f stable/otel-demo/ci/default-values.yaml ]; then helm lint stable/otel-demo --values stable/otel-demo/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/otel-demo
     - .gitlab/validate_kubeconform.sh stable/otel-demo
   stage: validate
 validate_petros-d-kubelet-stats-exporter:
@@ -3686,6 +3712,7 @@ validate_petros-d-kubelet-stats-exporter:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/values.yaml
     - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
     - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then helm lint stable/petros-d-kubelet-stats-exporter --values stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/petros-d-kubelet-stats-exporter
     - .gitlab/validate_kubeconform.sh stable/petros-d-kubelet-stats-exporter
   stage: validate
 validate_receiveramplifier:
@@ -3702,6 +3729,7 @@ validate_receiveramplifier:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/values.yaml
     - if [ -f stable/receiveramplifier/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/ci/default-values.yaml; fi
     - if [ -f stable/receiveramplifier/ci/default-values.yaml ]; then helm lint stable/receiveramplifier --values stable/receiveramplifier/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/receiveramplifier
     - .gitlab/validate_kubeconform.sh stable/receiveramplifier
   stage: validate
 validate_redirector:
@@ -3718,6 +3746,7 @@ validate_redirector:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/values.yaml
     - if [ -f stable/redirector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/ci/default-values.yaml; fi
     - if [ -f stable/redirector/ci/default-values.yaml ]; then helm lint stable/redirector --values stable/redirector/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/redirector
     - .gitlab/validate_kubeconform.sh stable/redirector
   stage: validate
 validate_sock-shop:
@@ -3734,6 +3763,7 @@ validate_sock-shop:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/values.yaml
     - if [ -f stable/sock-shop/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/ci/default-values.yaml; fi
     - if [ -f stable/sock-shop/ci/default-values.yaml ]; then helm lint stable/sock-shop --values stable/sock-shop/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/sock-shop
     - .gitlab/validate_kubeconform.sh stable/sock-shop
   stage: validate
 validate_stackstate-monitoring:
@@ -3750,6 +3780,7 @@ validate_stackstate-monitoring:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/values.yaml
     - if [ -f stable/stackstate-monitoring/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/ci/default-values.yaml; fi
     - if [ -f stable/stackstate-monitoring/ci/default-values.yaml ]; then helm lint stable/stackstate-monitoring --values stable/stackstate-monitoring/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/stackstate-monitoring
     - .gitlab/validate_kubeconform.sh stable/stackstate-monitoring
   stage: validate
 validate_suse-observability:
@@ -3780,6 +3811,7 @@ validate_suse-observability:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/values.yaml
     - if [ -f stable/suse-observability/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/ci/default-values.yaml; fi
     - if [ -f stable/suse-observability/ci/default-values.yaml ]; then helm lint stable/suse-observability --values stable/suse-observability/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/suse-observability
     - .gitlab/validate_kubeconform.sh stable/suse-observability
   stage: validate
 validate_suse-observability-agent:
@@ -3797,6 +3829,7 @@ validate_suse-observability-agent:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/values.yaml
     - if [ -f stable/suse-observability-agent/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/ci/default-values.yaml; fi
     - if [ -f stable/suse-observability-agent/ci/default-values.yaml ]; then helm lint stable/suse-observability-agent --values stable/suse-observability-agent/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/suse-observability-agent
     - .gitlab/validate_kubeconform.sh stable/suse-observability-agent
   stage: validate
 validate_suse-observability-values:
@@ -3813,6 +3846,7 @@ validate_suse-observability-values:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/values.yaml
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/ci/default-values.yaml; fi
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/suse-observability-values
     - .gitlab/validate_kubeconform.sh stable/suse-observability-values
   stage: validate
 validate_tenant-cleanup-controller:
@@ -3829,6 +3863,7 @@ validate_tenant-cleanup-controller:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/tenant-cleanup-controller/values.yaml
     - if [ -f stable/tenant-cleanup-controller/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenant-cleanup-controller/ci/default-values.yaml; fi
     - if [ -f stable/tenant-cleanup-controller/ci/default-values.yaml ]; then helm lint stable/tenant-cleanup-controller --values stable/tenant-cleanup-controller/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/tenant-cleanup-controller
     - .gitlab/validate_kubeconform.sh stable/tenant-cleanup-controller
   stage: validate
 validate_tenantmanagement:
@@ -3845,6 +3880,7 @@ validate_tenantmanagement:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanagement/values.yaml
     - if [ -f stable/tenantmanagement/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanagement/ci/default-values.yaml; fi
     - if [ -f stable/tenantmanagement/ci/default-values.yaml ]; then helm lint stable/tenantmanagement --values stable/tenantmanagement/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/tenantmanagement
     - .gitlab/validate_kubeconform.sh stable/tenantmanagement
   stage: validate
 validate_tenantprovisioning:
@@ -3861,6 +3897,7 @@ validate_tenantprovisioning:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantprovisioning/values.yaml
     - if [ -f stable/tenantprovisioning/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenantprovisioning/ci/default-values.yaml; fi
     - if [ -f stable/tenantprovisioning/ci/default-values.yaml ]; then helm lint stable/tenantprovisioning --values stable/tenantprovisioning/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/tenantprovisioning
     - .gitlab/validate_kubeconform.sh stable/tenantprovisioning
   stage: validate
 validate_trafficmirror:
@@ -3877,6 +3914,7 @@ validate_trafficmirror:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/values.yaml
     - if [ -f stable/trafficmirror/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/ci/default-values.yaml; fi
     - if [ -f stable/trafficmirror/ci/default-values.yaml ]; then helm lint stable/trafficmirror --values stable/trafficmirror/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/trafficmirror
     - .gitlab/validate_kubeconform.sh stable/trafficmirror
   stage: validate
 validate_updatecli_config:
