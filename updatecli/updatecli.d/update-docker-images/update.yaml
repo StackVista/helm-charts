@@ -7,7 +7,7 @@ scms:
     spec:
       owner: "{{ .scm.owner }}"
       repository: "{{ .scm.repository }}"
-      branch: "{{ .scm.branch }}"
+      branch: '{{ requiredEnv .scm.branchEnv }}'
 {{- if .scm.directory }}
       directory: "{{ .scm.directory }}"
 {{- end }}
@@ -675,7 +675,7 @@ targets:
         set -e
 
         VALUES_FILE="stable/suse-observability/values.yaml"
-        BASE_REF="origin/{{ .scm.branch }}"
+        BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
 
         # If the suse-observability values file did not change vs the base ref
         # updatecli started from, skip the helm-docs regeneration.
@@ -714,7 +714,7 @@ targets:
 
         VALUES_FILE="stable/suse-observability-agent/values.yaml"
         CHART_YAML="stable/suse-observability-agent/Chart.yaml"
-        BASE_REF="origin/{{ .scm.branch }}"
+        BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
 
         # If neither the agent values file nor Chart.yaml changed compared to
         # the base ref updatecli started from, skip the chart bump.

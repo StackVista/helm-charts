@@ -2,12 +2,22 @@ scm:
   kind: gitlab
   owner: stackvista
   repository: devops/helm-charts
-  branch: master
+  branchEnv: TARGET_BRANCH
   userEnv: UPDATE_CLI_USER
   emailEnv: UPDATE_CLI_EMAIL
   tokenEnv: GITLAB_TOKEN
   gpgKeyEnv: UPDATE_CLI_PGP_KEY
   gpgKeyPassEnv: UPDATE_CLI_PGP_PASSPHRASE
+
+# Source of truth for the StackGraph version consumed by the
+# update-stackstate pipeline (read via the GitLab raw-file API).
+stackstate:
+  branchEnv: STACKSTATE_SOURCE_BRANCH
+
+# Branch segment expected in stackpacks docker tags
+# (e.g. `<ts>-master-<sha>-prime-selfhosted`).
+stackpacks:
+  branchEnv: STACKPACKS_SOURCE_BRANCH
 
 docker:
   sts:

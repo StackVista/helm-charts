@@ -68,5 +68,5 @@ cd helm-charts
 source .env
 docker run --rm -v $(pwd):/workspace -w /workspace -e GITLAB_TOKEN \
   quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4 \
-  updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
+  updatecli pipeline diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
 ```

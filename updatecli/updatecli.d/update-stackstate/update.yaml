@@ -1,0 +1,150 @@
+name: Update StackState and StackGraph versions
+pipelineid: stackstate
+
+scms:
+  default:
+    kind: gitlab
+    spec:
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository }}"
+      branch: '{{ requiredEnv .scm.branchEnv }}'
+{{- if .scm.directory }}
+      directory: "{{ .scm.directory }}"
+{{- end }}
+      user: "{{ env .scm.userEnv }}"
+      email: "{{ env .scm.emailEnv }}"
+      token: "{{ requiredEnv .scm.tokenEnv }}"
+      workingbranchseparator: "-"
+      # workingbranch defaults to true: updatecli creates
+      # updatecli-<branch>-<pipelineid> based on TARGET_BRANCH and force-pushes
+      # its per-target commits there. The CI follow-up job either opens an MR
+      # from that working branch into TARGET_BRANCH, or squash-merges it via
+      # .gitlab/updatecli_squash_push.sh. We rely on workingbranch=true
+      # because workingbranch=false in updatecli's gitlab SCM initialises the
+      # working tree from the repo's default HEAD (master) instead of
+      # `branch:`, which produces wrong file contents when TARGET_BRANCH
+      # diverges from master.
+      type: ""
+      gpg:
+        signingkey: |-
+{{ env .scm.gpgKeyEnv | nindent 10 }}
+        passphrase: "{{ env .scm.gpgKeyPassEnv }}"
+
+sources:
+  stackstateReceiver:
+    name: "stackstate-receiver from {{ requiredEnv .stackstate.branchEnv }}"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/stackstate-receiver"
+      architecture: "linux/amd64"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.[0-9]+-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+$"
+      versionfilter:
+        kind: regex/time
+        regex: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.([0-9]+)-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+$"
+        pattern: "20060102150405"
+  stackgraphVersion:
+    name: "stackgraph version (stackvista/stackstate {{ requiredEnv .stackstate.branchEnv }})"
+    kind: shell
+    spec:
+      # Updatecli's shell resource does not inherit custom env vars by default;
+      # GITLAB_TOKEN has to be passed through explicitly.
+      environments:
+        - name: GITLAB_TOKEN
+      command: |
+        set -euo pipefail
+        curl -fsS \
+          --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+          "https://gitlab.com/api/v4/projects/stackvista%2Fstackstate/repository/files/stackgraph_version/raw?ref={{ requiredEnv .stackstate.branchEnv }}" \
+          | tr -d '[:space:]'
+
+targets:
+  stackstateAppVersion:
+    name: "stackstate appVersion (suse-observability Chart.yaml)"
+    kind: yaml
+    scmid: "default"
+    sourceid: stackstateReceiver
+    spec:
+      file: "stable/suse-observability/Chart.yaml"
+      key: "$.appVersion"
+  stackstateImageTag:
+    name: "stackstate image tag (suse-observability values.yaml)"
+    kind: yaml
+    scmid: "default"
+    sourceid: stackstateReceiver
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.components.all.image.tag"
+  stackgraphVersionHbase:
+    name: "stackgraph version (local/hbase values.yaml)"
+    kind: yaml
+    scmid: "default"
+    sourceid: stackgraphVersion
+    spec:
+      file: "local/hbase/values.yaml"
+      key: "$.stackgraph.version"
+  stackgraphVersionSuseObservability:
+    name: "stackgraph version (suse-observability values.yaml)"
+    kind: yaml
+    scmid: "default"
+    sourceid: stackgraphVersion
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.hbase.stackgraph.version"
+  suseObservabilityHelmDocs:
+    name: "suse-observability README.md (helm-docs)"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#stackstateAppVersion"
+      - "target#stackstateImageTag"
+      - "target#stackgraphVersionSuseObservability"
+    spec:
+      command: |
+        set -e
+
+        VALUES_FILE="stable/suse-observability/values.yaml"
+        CHART_YAML="stable/suse-observability/Chart.yaml"
+        BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
+
+        # Skip regen when neither values.yaml nor Chart.yaml changed vs the base ref.
+        if git diff --quiet "$BASE_REF" -- "$VALUES_FILE" "$CHART_YAML"; then
+          echo "suse-observability values/Chart unchanged vs $BASE_REF; skipping helm-docs"
+          exit 0
+        fi
+
+        echo "suse-observability values/Chart changed vs $BASE_REF; regenerating README.md with helm-docs"
+        helm-docs --chart-search-root stable/suse-observability
+        echo "Regenerated suse-observability README.md"
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability/README.md
+  hbaseHelmDocs:
+    name: "local/hbase README.md (helm-docs)"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#stackgraphVersionHbase"
+    spec:
+      command: |
+        set -e
+
+        VALUES_FILE="local/hbase/values.yaml"
+        BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
+
+        if git diff --quiet "$BASE_REF" -- "$VALUES_FILE"; then
+          echo "hbase values unchanged vs $BASE_REF; skipping helm-docs"
+          exit 0
+        fi
+
+        echo "hbase values changed vs $BASE_REF; regenerating README.md with helm-docs"
+        helm-docs --chart-search-root local/hbase
+        echo "Regenerated local/hbase README.md"
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - local/hbase/README.md

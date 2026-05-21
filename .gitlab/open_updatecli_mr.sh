@@ -4,9 +4,9 @@
 # the finalize pipeline pushed (updatecli's action only runs when it pushes).
 set -euo pipefail
 
-SOURCE_BRANCH="${1:-updatecli-master-docker-images}"
-TARGET_BRANCH="${2:-master}"
-TITLE="${3:-[master] Bump helm chart docker images}"
+SOURCE_BRANCH="${1:-unset-source}"
+TARGET_BRANCH="${2:-unset-target}"
+TITLE="${3:-Bump helm chart docker images}"
 
 if [ -z "${GITLAB_TOKEN:-}" ]; then
   echo "ERROR: GITLAB_TOKEN not set"
@@ -48,7 +48,7 @@ RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
   --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
   --header "Content-Type: application/json" \
   "${API_URL}" \
-  --data "{\"source_branch\":\"${SOURCE_BRANCH}\",\"target_branch\":\"${TARGET_BRANCH}\",\"title\":\"${TITLE}\"}")
+  --data "{\"source_branch\":\"${SOURCE_BRANCH}\",\"target_branch\":\"${TARGET_BRANCH}\",\"title\":\"[${TARGET_BRANCH}] ${TITLE}\"}")
 
 HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 BODY=$(echo "$RESPONSE" | sed '$d')

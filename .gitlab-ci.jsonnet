@@ -68,6 +68,12 @@ local skip_when_dependency_upgrade = {
   }, {
     @'if': '$RUN_UPDATECLI',
     when: 'never',
+  }, {
+    @'if': '$RUN_UPDATECLI_STACKSTATE',
+    when: 'never',
+  }, {
+    @'if': '$RUN_UPDATECLI_STACKPACKS',
+    when: 'never',
   }] + super.rules,
 };
 
@@ -458,55 +464,125 @@ local update_sg_version = {
   },
 };
 
-local updatecli_job = {
-  update_helm_chart_docker_images: {
-    image: variables.images.container_tools_dev,
-    stage: 'update',
-    variables: {
+// These variables are actually explicitly unset in a default pipeline. The reason for this is that we want to be very specific in a triggered job what
+// we want as source and target, to aovid accidentally pushing/manipulating master when doing work/testing on these pipelines
+local updatecli_variables = {
+  TARGET_BRANCH: 'unset',
+  STACKSTATE_SOURCE_BRANCH: 'unset',
+  STACKPACKS_SOURCE_BRANCH: 'unset',
+};
+
+// updatecli pipelines that have a CI job (apply, plus optional open-MR).
+// Adding an entry here also extends validate_updatecli_config /
+// validate_updatecli_diff to cover the new pipeline.
+//
+// directPush: how to land updatecli's changes after the (uniform) apply job:
+//   true  -> .gitlab/updatecli_squash_push.sh squash-merges UPDATECLI_BRANCH
+//            into TARGET_BRANCH as one signed commit, then deletes the
+//            working branch. No MR; `title` is unused, `commitMessage`
+//            is required.
+//   false -> .gitlab/open_updatecli_mr.sh opens an MR from UPDATECLI_BRANCH
+//            into TARGET_BRANCH using `title`. `commitMessage` is unused.
+local updatecli_pipelines = [
+  {
+    // id is used in the GitLab job name (underscored); pipelineid must match
+    // the `pipelineid:` field in the corresponding updatecli yaml because
+    // that's what updatecli uses to build its working branch name.
+    id: 'docker_images',
+    pipelineid: 'docker-images',
+    dir: 'update-docker-images',
+    triggerVar: 'RUN_UPDATECLI',
+    directPush: false,
+    title: 'Bump helm chart docker images',
+  },
+  {
+    id: 'stackstate',
+    pipelineid: 'stackstate',
+    dir: 'update-stackstate',
+    triggerVar: 'RUN_UPDATECLI_STACKSTATE',
+    directPush: true,
+    commitMessage: 'Bump StackState and StackGraph versions',
+  },
+  {
+    id: 'stackpacks',
+    pipelineid: 'stackpacks',
+    dir: 'update-stackpacks',
+    triggerVar: 'RUN_UPDATECLI_STACKPACKS',
+    directPush: true,
+    commitMessage: 'Bump StackPacks version',
+  },
+];
+
+// Common skeleton for both apply and follow-up jobs in the updatecli flow.
+local updatecli_job_base(p) = {
+  image: variables.images.container_tools_dev,
+  stage: 'update',
+  variables: updatecli_variables {
+    // Updatecli's gitlab SCM names its working branch
+    //   updatecli-<branch>-<pipelineid>
+    // (the dash separator comes from workingbranchseparator in the pipeline
+    // yaml). The follow-up job needs this name to open the MR or to
+    // squash-merge it into TARGET_BRANCH.
+    UPDATECLI_BRANCH: 'updatecli-${TARGET_BRANCH}-' + p.pipelineid,
+  },
+  before_script: [
+    '.gitlab/configure_git.sh',
+    'export GITLAB_TOKEN="$HELM_CHARTS_PAT"',
+  ],
+  rules: [
+    {
+      @'if': '$' + p.triggerVar,
+      when: 'always',
+    },
+    {
+      when: 'never',
+    },
+  ],
+};
+
+local updatecli_job_pair(p) = {
+  // Uniform apply job for every pipeline: updatecli runs normally and pushes
+  // its per-target commits to UPDATECLI_BRANCH (working branch correctly
+  // based on TARGET_BRANCH because workingbranch defaults to true).
+  ['update_helm_chart_' + p.id]: updatecli_job_base(p) + {
+    variables+: {
       UPDATE_CLI_EMAIL: '$STACKSTATE_SYSTEM_USER_EMAIL',
       UPDATE_CLI_USER: '$STACKSTATE_SYSTEM_USER_NAME',
     },
-    before_script: [
-      '.gitlab/configure_git.sh',
-      'export GITLAB_TOKEN="$HELM_CHARTS_PAT"',
+    before_script+: [
       'export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"',
       'export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"',
     ],
-    rules: [
-      {
-        @'if': '$RUN_UPDATECLI',
-        when: 'always',
-      },
-      {
-        when: 'never',
-      },
-    ],
     script: [
-      'updatecli apply -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml',
+      'updatecli pipeline apply -c updatecli/updatecli.d/' + p.dir + '/ -v updatecli/values.d/values.yaml',
     ],
   },
-  open_updatecli_docker_images_mr: {
-    image: variables.images.container_tools_dev,
-    stage: 'update',
-    before_script: [
-      '.gitlab/configure_git.sh',
-      'export GITLAB_TOKEN="$HELM_CHARTS_PAT"',
-    ],
-    rules: [
-      {
-        @'if': '$RUN_UPDATECLI',
-        when: 'always',
-      },
-      {
-        when: 'never',
-      },
-    ],
-    needs: ['update_helm_chart_docker_images'],
-    script: [
-      '.gitlab/open_updatecli_mr.sh updatecli-master-docker-images master "[master] Bump helm chart docker images"',
-    ],
-  },
-};
+} + (
+  if p.directPush then {
+    // Follow-up: squash-merge UPDATECLI_BRANCH into TARGET_BRANCH as a single
+    // signed commit, then delete the working branch.
+    ['squash_push_updatecli_' + p.id]: updatecli_job_base(p) + {
+      needs: ['update_helm_chart_' + p.id],
+      script: [
+        '.gitlab/updatecli_squash_push.sh "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "' + p.commitMessage + '"',
+      ],
+    },
+  } else {
+    // Follow-up: open an MR from UPDATECLI_BRANCH into TARGET_BRANCH.
+    ['open_updatecli_' + p.id + '_mr']: updatecli_job_base(p) + {
+      needs: ['update_helm_chart_' + p.id],
+      script: [
+        '.gitlab/open_updatecli_mr.sh "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "' + p.title + '"',
+      ],
+    },
+  }
+);
+
+local updatecli_job = std.foldl(
+  function(acc, p) acc + updatecli_job_pair(p),
+  updatecli_pipelines,
+  {},
+);
 
 local update_docker_images = {
   local job(requiredEnvName, scripts) = {
@@ -538,10 +614,14 @@ local validate_updatecli_config = {
   validate_updatecli_config: {
     image: variables.images.chart_testing,
     stage: 'validate',
+    variables: updatecli_variables,
     script: [
       'echo "Updatecli config changes detected — validating file structure"',
       'test -f updatecli/values.d/values.yaml',
       'yamllint -d "{rules: {document-start: disable, line-length: disable}}" updatecli/values.d/values.yaml',
+    ] + [
+      'test -f updatecli/updatecli.d/' + p.dir + '/update.yaml'
+      for p in updatecli_pipelines
     ],
     rules: [
       {
@@ -553,9 +633,21 @@ local validate_updatecli_config = {
   validate_updatecli_diff: {
     image: variables.images.container_tools_dev,
     stage: 'validate',
+    // diff needs real branch values so updatecli can clone and run the
+    // sources. TARGET_BRANCH follows the MR's actual target so the diff is
+    // computed against the helm-charts branch that would receive the change;
+    // source branches stay on master since that's where the upstream tags
+    // we validate against live.
+    variables: {
+      TARGET_BRANCH: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME',
+      STACKSTATE_SOURCE_BRANCH: 'master',
+      STACKPACKS_SOURCE_BRANCH: 'master',
+    },
     script: [
       'export GITLAB_TOKEN="$HELM_CHARTS_PAT"',
-      'updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml',
+    ] + [
+      'updatecli pipeline diff --config updatecli/updatecli.d/' + p.dir + '/ --values updatecli/values.d/values.yaml'
+      for p in updatecli_pipelines
     ],
     rules: [
       {
@@ -623,6 +715,8 @@ local beest_triggers = {
       { @'if': '$CI_COMMIT_TAG' },
       { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
       { @'if': '$RUN_UPDATECLI' },
+      { @'if': '$RUN_UPDATECLI_STACKSTATE' },
+      { @'if': '$RUN_UPDATECLI_STACKPACKS' },
     ],
   },
   image: variables.images.chart_testing,

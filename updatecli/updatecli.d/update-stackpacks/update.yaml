@@ -1,0 +1,90 @@
+name: Update StackPacks version
+pipelineid: stackpacks
+
+scms:
+  default:
+    kind: gitlab
+    spec:
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository }}"
+      branch: '{{ requiredEnv .scm.branchEnv }}'
+{{- if .scm.directory }}
+      directory: "{{ .scm.directory }}"
+{{- end }}
+      user: "{{ env .scm.userEnv }}"
+      email: "{{ env .scm.emailEnv }}"
+      token: "{{ requiredEnv .scm.tokenEnv }}"
+      workingbranchseparator: "-"
+      # workingbranch defaults to true: updatecli creates
+      # updatecli-<branch>-<pipelineid> based on TARGET_BRANCH and force-pushes
+      # its per-target commits there. The CI follow-up job either opens an MR
+      # from that working branch into TARGET_BRANCH, or squash-merges it via
+      # .gitlab/updatecli_squash_push.sh. We rely on workingbranch=true
+      # because workingbranch=false in updatecli's gitlab SCM initialises the
+      # working tree from the repo's default HEAD (master) instead of
+      # `branch:`, which produces wrong file contents when TARGET_BRANCH
+      # diverges from master.
+      type: ""
+      gpg:
+        signingkey: |-
+{{ env .scm.gpgKeyEnv | nindent 10 }}
+        passphrase: "{{ env .scm.gpgKeyPassEnv }}"
+
+sources:
+  stackpacks:
+    name: "stackpacks from {{ requiredEnv .stackpacks.branchEnv }}"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/stackpacks"
+      architecture: "linux/amd64"
+      # Match 1.x builds for the configured branch across prime/community +
+      # selfhosted/saas variants. Excludes versioned variants like `-2_0-`
+      # so we don't pick up 2.x while 1.x remains the default StackPack version.
+      tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.branchEnv }}-[0-9a-f]+-(prime|community)-(selfhosted|saas)$"
+      versionfilter:
+        kind: regex/time
+        regex: "^([0-9]+)-{{ requiredEnv .stackpacks.branchEnv }}-[0-9a-f]+-(prime|community)-(selfhosted|saas)$"
+        pattern: "20060102150405"
+
+targets:
+  stackpacksImageVersion:
+    name: "stackpacks image version (suse-observability values.yaml)"
+    kind: yaml
+    scmid: "default"
+    sourceid: stackpacks
+    # The chart value is the version-only portion; the variant suffix is
+    # appended at render time from stackstate edition + deployment mode.
+    transformers:
+      - findsubmatch:
+          pattern: '^([0-9]+-{{ requiredEnv .stackpacks.branchEnv }}-[0-9a-f]+)-(prime|community)-(selfhosted|saas)$'
+          captureindex: 1
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.stackpacks.image.version"
+  suseObservabilityHelmDocs:
+    name: "suse-observability README.md (helm-docs)"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#stackpacksImageVersion"
+    spec:
+      command: |
+        set -e
+
+        VALUES_FILE="stable/suse-observability/values.yaml"
+        BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
+
+        if git diff --quiet "$BASE_REF" -- "$VALUES_FILE"; then
+          echo "suse-observability values unchanged vs $BASE_REF; skipping helm-docs"
+          exit 0
+        fi
+
+        echo "suse-observability values changed vs $BASE_REF; regenerating README.md with helm-docs"
+        helm-docs --chart-search-root stable/suse-observability
+        echo "Regenerated suse-observability README.md"
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability/README.md

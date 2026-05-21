@@ -1154,8 +1154,13 @@ open_updatecli_docker_images_mr:
       when: always
     - when: never
   script:
-    - .gitlab/open_updatecli_mr.sh updatecli-master-docker-images master "[master] Bump helm chart docker images"
+    - .gitlab/open_updatecli_mr.sh "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "Bump helm chart docker images"
   stage: update
+  variables:
+    STACKPACKS_SOURCE_BRANCH: unset
+    STACKSTATE_SOURCE_BRANCH: unset
+    TARGET_BRANCH: unset
+    UPDATECLI_BRANCH: updatecli-${TARGET_BRANCH}-docker-images
 push_artifactory-cleaner_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -1174,6 +1179,10 @@ push_artifactory-cleaner_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -1210,6 +1219,10 @@ push_aws-pod-identity-webhook_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-pod-identity-webhook]/
@@ -1244,6 +1257,10 @@ push_beacher-job_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/beacher-job/**/*
@@ -1280,6 +1297,10 @@ push_chartmuseum_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/chartmuseum/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-chartmuseum]/
@@ -1314,6 +1335,10 @@ push_ci-test_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/ci-test/**/*
@@ -1350,6 +1375,10 @@ push_gitlab-proxy_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/gitlab-proxy/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-gitlab-proxy]/
@@ -1384,6 +1413,10 @@ push_gitlab-steward_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/gitlab-steward/**/*
@@ -1420,6 +1453,10 @@ push_helm-reaper_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/helm-reaper/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-helm-reaper]/
@@ -1454,6 +1491,10 @@ push_k8s-spot-termination-handler_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -1490,6 +1531,10 @@ push_kommoner-operator_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/kommoner-operator/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kommoner-operator]/
@@ -1524,6 +1569,10 @@ push_notification-operator_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/notification-operator/**/*
@@ -1560,6 +1609,10 @@ push_otel-demo_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/otel-demo/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-otel-demo]/
@@ -1594,6 +1647,10 @@ push_petros-d-kubelet-stats-exporter_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -1631,6 +1688,10 @@ push_prerelease_suse-observability-agent_to_public:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
@@ -1672,6 +1733,10 @@ push_prerelease_suse-observability-values_to_public:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/suse-observability-values/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
@@ -1708,6 +1773,10 @@ push_receiveramplifier_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/receiveramplifier/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-receiveramplifier]/
@@ -1742,6 +1811,10 @@ push_redirector_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/redirector/**/*
@@ -1778,6 +1851,10 @@ push_sock-shop_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/sock-shop/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sock-shop]/
@@ -1813,6 +1890,10 @@ push_stackstate-monitoring_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/stackstate-monitoring/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
@@ -1843,6 +1924,10 @@ push_suse-observability-agent_prerelease_to_rancher:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
@@ -1879,6 +1964,10 @@ push_suse-observability-agent_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
@@ -1919,6 +2008,10 @@ push_suse-observability-agent_to_public:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/suse-observability-agent/**/*
         - local/kubernetes-rbac-agent/**/*
@@ -1951,6 +2044,10 @@ push_suse-observability-agent_to_rancher:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
@@ -1987,6 +2084,10 @@ push_suse-observability-values_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/suse-observability-values/**/*
@@ -2025,6 +2126,10 @@ push_suse-observability-values_to_public:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/suse-observability-values/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
@@ -2062,6 +2167,10 @@ push_suse-observability_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/suse-observability/**/*
@@ -2129,6 +2238,10 @@ push_tenant-cleanup-controller_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/tenant-cleanup-controller/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenant-cleanup-controller]/
@@ -2163,6 +2276,10 @@ push_tenantmanagement_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/tenantmanagement/**/*
@@ -2199,6 +2316,10 @@ push_tenantprovisioning_to_internal:
       when: never
     - if: $RUN_UPDATECLI
       when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
     - changes:
         - stable/tenantprovisioning/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantprovisioning]/
@@ -2233,6 +2354,10 @@ push_trafficmirror_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
       when: never
     - changes:
         - stable/trafficmirror/**/*
@@ -2301,6 +2426,44 @@ resource_usage:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
+squash_push_updatecli_stackpacks:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  needs:
+    - update_helm_chart_stackpacks
+  rules:
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: always
+    - when: never
+  script:
+    - .gitlab/updatecli_squash_push.sh "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "Bump StackPacks version"
+  stage: update
+  variables:
+    STACKPACKS_SOURCE_BRANCH: unset
+    STACKSTATE_SOURCE_BRANCH: unset
+    TARGET_BRANCH: unset
+    UPDATECLI_BRANCH: updatecli-${TARGET_BRANCH}-stackpacks
+squash_push_updatecli_stackstate:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  needs:
+    - update_helm_chart_stackstate
+  rules:
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: always
+    - when: never
+  script:
+    - .gitlab/updatecli_squash_push.sh "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "Bump StackState and StackGraph versions"
+  stage: update
+  variables:
+    STACKPACKS_SOURCE_BRANCH: unset
+    STACKSTATE_SOURCE_BRANCH: unset
+    TARGET_BRANCH: unset
+    UPDATECLI_BRANCH: updatecli-${TARGET_BRANCH}-stackstate
 stages:
   - build
   - push-charts-to-test
@@ -3249,9 +3412,55 @@ update_helm_chart_docker_images:
       when: always
     - when: never
   script:
-    - updatecli apply -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml
+    - updatecli pipeline apply -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml
   stage: update
   variables:
+    STACKPACKS_SOURCE_BRANCH: unset
+    STACKSTATE_SOURCE_BRANCH: unset
+    TARGET_BRANCH: unset
+    UPDATECLI_BRANCH: updatecli-${TARGET_BRANCH}-docker-images
+    UPDATE_CLI_EMAIL: $STACKSTATE_SYSTEM_USER_EMAIL
+    UPDATE_CLI_USER: $STACKSTATE_SYSTEM_USER_NAME
+update_helm_chart_stackpacks:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
+    - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
+    - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  rules:
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: always
+    - when: never
+  script:
+    - updatecli pipeline apply -c updatecli/updatecli.d/update-stackpacks/ -v updatecli/values.d/values.yaml
+  stage: update
+  variables:
+    STACKPACKS_SOURCE_BRANCH: unset
+    STACKSTATE_SOURCE_BRANCH: unset
+    TARGET_BRANCH: unset
+    UPDATECLI_BRANCH: updatecli-${TARGET_BRANCH}-stackpacks
+    UPDATE_CLI_EMAIL: $STACKSTATE_SYSTEM_USER_EMAIL
+    UPDATE_CLI_USER: $STACKSTATE_SYSTEM_USER_NAME
+update_helm_chart_stackstate:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
+    - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
+    - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  rules:
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: always
+    - when: never
+  script:
+    - updatecli pipeline apply -c updatecli/updatecli.d/update-stackstate/ -v updatecli/values.d/values.yaml
+  stage: update
+  variables:
+    STACKPACKS_SOURCE_BRANCH: unset
+    STACKSTATE_SOURCE_BRANCH: unset
+    TARGET_BRANCH: unset
+    UPDATECLI_BRANCH: updatecli-${TARGET_BRANCH}-stackstate
     UPDATE_CLI_EMAIL: $STACKSTATE_SYSTEM_USER_EMAIL
     UPDATE_CLI_USER: $STACKSTATE_SYSTEM_USER_NAME
 update_stackgraph_version:
@@ -4003,7 +4212,14 @@ validate_updatecli_config:
     - echo "Updatecli config changes detected — validating file structure"
     - test -f updatecli/values.d/values.yaml
     - 'yamllint -d "{rules: {document-start: disable, line-length: disable}}" updatecli/values.d/values.yaml'
+    - test -f updatecli/updatecli.d/update-docker-images/update.yaml
+    - test -f updatecli/updatecli.d/update-stackstate/update.yaml
+    - test -f updatecli/updatecli.d/update-stackpacks/update.yaml
   stage: validate
+  variables:
+    STACKPACKS_SOURCE_BRANCH: unset
+    STACKSTATE_SOURCE_BRANCH: unset
+    TARGET_BRANCH: unset
 validate_updatecli_diff:
   image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
   rules:
@@ -4012,8 +4228,14 @@ validate_updatecli_diff:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
-    - updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
+    - updatecli pipeline diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
+    - updatecli pipeline diff --config updatecli/updatecli.d/update-stackstate/ --values updatecli/values.d/values.yaml
+    - updatecli pipeline diff --config updatecli/updatecli.d/update-stackpacks/ --values updatecli/values.d/values.yaml
   stage: validate
+  variables:
+    STACKPACKS_SOURCE_BRANCH: master
+    STACKSTATE_SOURCE_BRANCH: master
+    TARGET_BRANCH: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
 variables:
   HELM_VERSION: v3.1.2
   PROMOTION_DRY_RUN: "no"
@@ -4023,3 +4245,5 @@ workflow:
     - if: $CI_COMMIT_TAG
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $RUN_UPDATECLI
+    - if: $RUN_UPDATECLI_STACKSTATE
+    - if: $RUN_UPDATECLI_STACKPACKS
