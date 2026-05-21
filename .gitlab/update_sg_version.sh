@@ -28,7 +28,7 @@ else
   # update Readme
   readme="${chart_path}/README.md"
   new_readme=".readme.md"
-  sed -E "s/${tag_path_prefix}stackgraph\.version \| string \| \`.*\` \|/${tag_path_prefix}stackgraph.version | string | \`\"${sg_version}\"\` |/" > "${new_readme}"
+  sed -E "s/${tag_path_prefix}stackgraph\.version \| string \| \`.*\` \|/${tag_path_prefix}stackgraph.version | string | \`\"${sg_version}\"\` |/" "${readme}" > "${new_readme}"
   mv "${new_readme}" "${readme}"
 
   git add "${values}" "${readme}"
