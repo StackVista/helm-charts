@@ -5,7 +5,7 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver
 
 # Invalid: a host:port endpoint without scheme is treated as gRPC and must include :443.
-k8sCrdCollector:
+k8sResourceCollector:
   enabled: true
   platformOtlpEndpoint: "otlp-my-instance.example.com"
   crdDiscovery:

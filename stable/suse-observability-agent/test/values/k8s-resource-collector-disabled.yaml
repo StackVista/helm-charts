@@ -5,5 +5,5 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver
 
 # Cluster collector explicitly disabled
-k8sCrdCollector:
+k8sResourceCollector:
   enabled: false

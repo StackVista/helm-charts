@@ -4,11 +4,12 @@ stackstate:
     name: test-cluster
   url: https://my-suse-observability-instance.com/receiver
 
-# Enable cluster collector with "all" discovery mode (watch everything - no filters)
-k8sCrdCollector:
+# Enable cluster collector with explicit OTLP endpoint override
+k8sResourceCollector:
   enabled: true
+  platformOtlpEndpoint: "https://custom-otlp.example.com:4318"
   crdDiscovery:
-    snapshotInterval: 5m
+    interval: 15m
     discoveryMode: all
   rbac:
     useWildcard: true

@@ -75,11 +75,11 @@ Override: platformOtlpEndpoint points at a dedicated OTLP ingress. Protocol is i
 from the endpoint shape — see stackstate-k8s-agent.platform.otlp.useGrpc.
 */}}
 {{- define "stackstate-k8s-agent.platform.otlp.endpoint" -}}
-{{- if .Values.k8sCrdCollector.platformOtlpEndpoint -}}
-  {{- $endpoint := .Values.k8sCrdCollector.platformOtlpEndpoint -}}
+{{- if .Values.k8sResourceCollector.platformOtlpEndpoint -}}
+  {{- $endpoint := .Values.k8sResourceCollector.platformOtlpEndpoint -}}
   {{- if include "stackstate-k8s-agent.platform.otlp.useGrpc" . -}}
     {{- if not (hasSuffix ":443" $endpoint) -}}
-      {{- fail "k8sCrdCollector.platformOtlpEndpoint without an http(s):// scheme is treated as gRPC and must include port :443 (e.g. otlp-my-instance.example.com:443)" -}}
+      {{- fail "k8sResourceCollector.platformOtlpEndpoint without an http(s):// scheme is treated as gRPC and must include port :443 (e.g. otlp-my-instance.example.com:443)" -}}
     {{- end -}}
   {{- end -}}
   {{- $endpoint -}}
@@ -98,7 +98,7 @@ when gRPC should be used (no http(s):// scheme), empty otherwise. Empty endpoint
 defaults to HTTP (the derived /otel URL is HTTPS).
 */}}
 {{- define "stackstate-k8s-agent.platform.otlp.useGrpc" -}}
-{{- $endpoint := .Values.k8sCrdCollector.platformOtlpEndpoint | default "" -}}
+{{- $endpoint := .Values.k8sResourceCollector.platformOtlpEndpoint | default "" -}}
 {{- if and (ne $endpoint "") (not (or (hasPrefix "http://" $endpoint) (hasPrefix "https://" $endpoint))) -}}
 true
 {{- end -}}
@@ -360,8 +360,8 @@ true
 Determine whether the cluster collector should be deployed.
 True when explicitly enabled OR when the experimentalStackpacks feature flag is set.
 */}}
-{{- define "stackstate-k8s-agent.k8sCrdCollector.enabled" -}}
-{{- if or .Values.k8sCrdCollector.enabled (default false ((.Values.global).features).experimentalStackpacks) }}
+{{- define "stackstate-k8s-agent.k8sResourceCollector.enabled" -}}
+{{- if or .Values.k8sResourceCollector.enabled (default false ((.Values.global).features).experimentalStackpacks) }}
 true
 {{- end }}
 {{- end -}}
@@ -369,6 +369,6 @@ true
 {{/*
 Headless Service DNS for peer-to-peer cache sync between cluster collector replicas.
 */}}
-{{- define "stackstate-k8s-agent.k8sCrdCollector.peerSync.dns" -}}
-{{- printf "%s-k8s-crd-collector-headless.%s.svc.cluster.local" .Release.Name .Release.Namespace -}}
+{{- define "stackstate-k8s-agent.k8sResourceCollector.peerSync.dns" -}}
+{{- printf "%s-k8s-resource-collector-headless.%s.svc.cluster.local" .Release.Name .Release.Namespace -}}
 {{- end -}}

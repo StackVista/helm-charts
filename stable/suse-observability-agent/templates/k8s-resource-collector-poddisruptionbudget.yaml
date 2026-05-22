@@ -1,4 +1,4 @@
-{{- if and (include "stackstate-k8s-agent.k8sCrdCollector.enabled" .) (gt (.Values.k8sCrdCollector.replicaCount | int) 1) }}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) (gt (.Values.k8sResourceCollector.replicaCount | int) 1) }}
 {{- if .Capabilities.APIVersions.Has "policy/v1/PodDisruptionBudget" }}
 apiVersion: policy/v1
 {{- else }}
@@ -6,18 +6,18 @@ apiVersion: policy/v1beta1
 {{- end }}
 kind: PodDisruptionBudget
 metadata:
-  name: {{ .Release.Name }}-k8s-crd-collector
+  name: {{ .Release.Name }}-k8s-resource-collector
   labels:
 {{ include "stackstate-k8s-agent.labels" . | indent 4 }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
-    app.kubernetes.io/component: k8s-crd-collector
+    app.kubernetes.io/component: k8s-resource-collector
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/component: k8s-crd-collector
+      app.kubernetes.io/component: k8s-resource-collector
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
 {{- end }}

@@ -5,7 +5,7 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver
 
 # Enable cluster collector with restricted RBAC (specific API groups)
-k8sCrdCollector:
+k8sResourceCollector:
   enabled: true
   crdDiscovery:
     snapshotInterval: 5m

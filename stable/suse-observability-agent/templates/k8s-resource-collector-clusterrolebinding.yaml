@@ -1,20 +1,20 @@
-{{- if include "stackstate-k8s-agent.k8sCrdCollector.enabled" . }}
+{{- if include "stackstate-k8s-agent.k8sResourceCollector.enabled" . }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ .Release.Name }}-k8s-crd-collector
+  name: {{ .Release.Name }}-k8s-resource-collector
   labels:
 {{ include "stackstate-k8s-agent.labels" . | indent 4 }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
-    app.kubernetes.io/component: k8s-crd-collector
+    app.kubernetes.io/component: k8s-resource-collector
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ .Release.Name }}-k8s-crd-collector
+  name: {{ .Release.Name }}-k8s-resource-collector
 subjects:
   - kind: ServiceAccount
-    name: {{ .Release.Name }}-k8s-crd-collector
+    name: {{ .Release.Name }}-k8s-resource-collector
     namespace: {{ .Release.Namespace }}
 {{- end }}

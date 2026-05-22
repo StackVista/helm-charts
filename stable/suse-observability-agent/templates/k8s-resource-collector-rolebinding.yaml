@@ -1,20 +1,20 @@
-{{- if and (include "stackstate-k8s-agent.k8sCrdCollector.enabled" .) .Values.k8sCrdCollector.leaderElection.enabled }}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.k8sResourceCollector.leaderElection.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ .Release.Name }}-k8s-crd-collector-leader-election
+  name: {{ .Release.Name }}-k8s-resource-collector-leader-election
   labels:
 {{ include "stackstate-k8s-agent.labels" . | indent 4 }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
-    app.kubernetes.io/component: k8s-crd-collector
+    app.kubernetes.io/component: k8s-resource-collector
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ .Release.Name }}-k8s-crd-collector-leader-election
+  name: {{ .Release.Name }}-k8s-resource-collector-leader-election
 subjects:
   - kind: ServiceAccount
-    name: {{ .Release.Name }}-k8s-crd-collector
+    name: {{ .Release.Name }}-k8s-resource-collector
     namespace: {{ .Release.Namespace }}
 {{- end }}

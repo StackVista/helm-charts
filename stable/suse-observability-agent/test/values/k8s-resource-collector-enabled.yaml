@@ -6,7 +6,7 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver/stsAgent
 
 # Enable cluster collector with default settings (watch all CRDs)
-k8sCrdCollector:
+k8sResourceCollector:
   enabled: true
   crdDiscovery:
     snapshotInterval: 5m

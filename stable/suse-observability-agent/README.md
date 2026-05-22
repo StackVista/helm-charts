@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.38`
+Current chart version is `1.3.39`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -176,50 +176,50 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"7e145b52-487-release"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ddfbfbc4-58-release"` |  |
-| k8sCrdCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
-| k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude | list | `[]` | List of API group patterns to exclude |
-| k8sCrdCollector.crdDiscovery.apiGroupFilters.include | list | `["*"]` | List of API group patterns to watch (supports wildcards like "*.suse.com") |
-| k8sCrdCollector.crdDiscovery.discoveryMode | string | `"api_groups"` | CRD discovery mode: "api_groups" (filtered) or "all" (watch everything) |
-| k8sCrdCollector.crdDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
-| k8sCrdCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
-| k8sCrdCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| k8sCrdCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| k8sCrdCollector.image.tag | string | `"v0.0.35"` | Container image tag for 'opentelemetry-collector' containers. |
-| k8sCrdCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
-| k8sCrdCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
-| k8sCrdCollector.leaderElection.leaseName | string | `"k8scrdreceiver"` | Name of the Lease object. Must be unique per collector deployment. |
-| k8sCrdCollector.leaderElection.renewDeadline | string | `"10s"` | Deadline for the leader to renew the lease. Must be less than leaseDuration. |
-| k8sCrdCollector.leaderElection.retryPeriod | string | `"2s"` | How often non-leaders retry acquiring the lease. Must be less than renewDeadline. |
-| k8sCrdCollector.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
-| k8sCrdCollector.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
-| k8sCrdCollector.livenessProbe.initialDelaySeconds | int | `10` | `initialDelaySeconds` for the liveness probe. |
-| k8sCrdCollector.livenessProbe.periodSeconds | int | `10` | `periodSeconds` for the liveness probe. |
-| k8sCrdCollector.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
-| k8sCrdCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
-| k8sCrdCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
-| k8sCrdCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| k8sCrdCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
-| k8sCrdCollector.platformOtlpEndpoint | string | `""` | Override the OTLP endpoint. When empty, derived by appending /otel to stackstate.url. Protocol is inferred from the endpoint shape: a URL with http(s):// uses HTTP (e.g., https://otlp-http-my-instance.stackstate.io); a host:port without scheme uses gRPC (e.g., otlp-my-instance.stackstate.io:443). |
-| k8sCrdCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
-| k8sCrdCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
-| k8sCrdCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
-| k8sCrdCollector.rbac.apiGroups | list | `[]` | List of specific API groups to grant permissions for (only used when useWildcard=false). Example: ["policies.kubewarden.io", "longhorn.io"] |
-| k8sCrdCollector.rbac.useWildcard | bool | `true` | Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups |
-| k8sCrdCollector.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
-| k8sCrdCollector.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
-| k8sCrdCollector.readinessProbe.initialDelaySeconds | int | `5` | `initialDelaySeconds` for the readiness probe. |
-| k8sCrdCollector.readinessProbe.periodSeconds | int | `5` | `periodSeconds` for the readiness probe. |
-| k8sCrdCollector.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
-| k8sCrdCollector.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
-| k8sCrdCollector.replicaCount | int | `2` | Number of cluster collector pods to schedule. Use 2+ with leaderElection for HA. |
-| k8sCrdCollector.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
-| k8sCrdCollector.resources.limits.memory | string | `"512Mi"` | Memory resource limits. |
-| k8sCrdCollector.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
-| k8sCrdCollector.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
-| k8sCrdCollector.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster collector pods |
-| k8sCrdCollector.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
-| k8sCrdCollector.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
-| k8sCrdCollector.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
+| k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude | list | `[]` | List of API group patterns to exclude |
+| k8sResourceCollector.crdDiscovery.apiGroupFilters.include | list | `["*"]` | List of API group patterns to watch (supports wildcards like "*.suse.com") |
+| k8sResourceCollector.crdDiscovery.discoveryMode | string | `"api_groups"` | CRD discovery mode: "api_groups" (filtered) or "all" (watch everything) |
+| k8sResourceCollector.crdDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
+| k8sResourceCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
+| k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
+| k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
+| k8sResourceCollector.image.tag | string | `"v0.0.35"` | Container image tag for 'opentelemetry-collector' containers. |
+| k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
+| k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
+| k8sResourceCollector.leaderElection.leaseName | string | `"k8scrdreceiver"` | Name of the Lease object. Must be unique per collector deployment. |
+| k8sResourceCollector.leaderElection.renewDeadline | string | `"10s"` | Deadline for the leader to renew the lease. Must be less than leaseDuration. |
+| k8sResourceCollector.leaderElection.retryPeriod | string | `"2s"` | How often non-leaders retry acquiring the lease. Must be less than renewDeadline. |
+| k8sResourceCollector.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
+| k8sResourceCollector.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
+| k8sResourceCollector.livenessProbe.initialDelaySeconds | int | `10` | `initialDelaySeconds` for the liveness probe. |
+| k8sResourceCollector.livenessProbe.periodSeconds | int | `10` | `periodSeconds` for the liveness probe. |
+| k8sResourceCollector.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
+| k8sResourceCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
+| k8sResourceCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
+| k8sResourceCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
+| k8sResourceCollector.platformOtlpEndpoint | string | `""` | Override the OTLP endpoint. When empty, derived by appending /otel to stackstate.url. Protocol is inferred from the endpoint shape: a URL with http(s):// uses HTTP (e.g., https://otlp-http-my-instance.stackstate.io); a host:port without scheme uses gRPC (e.g., otlp-my-instance.stackstate.io:443). |
+| k8sResourceCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
+| k8sResourceCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
+| k8sResourceCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
+| k8sResourceCollector.rbac.apiGroups | list | `[]` | List of specific API groups to grant permissions for (only used when useWildcard=false). Example: ["policies.kubewarden.io", "longhorn.io"] |
+| k8sResourceCollector.rbac.useWildcard | bool | `true` | Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups |
+| k8sResourceCollector.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
+| k8sResourceCollector.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
+| k8sResourceCollector.readinessProbe.initialDelaySeconds | int | `5` | `initialDelaySeconds` for the readiness probe. |
+| k8sResourceCollector.readinessProbe.periodSeconds | int | `5` | `periodSeconds` for the readiness probe. |
+| k8sResourceCollector.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
+| k8sResourceCollector.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
+| k8sResourceCollector.replicaCount | int | `2` | Number of cluster collector pods to schedule. Use 2+ with leaderElection for HA. |
+| k8sResourceCollector.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
+| k8sResourceCollector.resources.limits.memory | string | `"512Mi"` | Memory resource limits. |
+| k8sResourceCollector.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
+| k8sResourceCollector.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
+| k8sResourceCollector.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster collector pods |
+| k8sResourceCollector.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
+| k8sResourceCollector.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
+| k8sResourceCollector.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |

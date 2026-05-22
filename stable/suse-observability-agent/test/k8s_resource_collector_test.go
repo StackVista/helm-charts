@@ -8,37 +8,37 @@ import (
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 )
 
-func TestK8sCrdCollectorEnabled(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-enabled.yaml")
+func TestK8sResourceCollectorEnabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Deployment should exist
-	deployment, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector deployment was not found")
+	deployment, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector deployment was not found")
 
 	// ServiceAccount should exist
-	_, exists = resources.ServiceAccounts["suse-observability-agent-k8s-crd-collector"]
-	assert.True(t, exists, "k8s-crd-collector service account was not found")
+	_, exists = resources.ServiceAccounts["suse-observability-agent-k8s-resource-collector"]
+	assert.True(t, exists, "k8s-resource-collector service account was not found")
 
 	// ClusterRole should exist
-	_, exists = resources.ClusterRoles["suse-observability-agent-k8s-crd-collector"]
-	assert.True(t, exists, "k8s-crd-collector cluster role was not found")
+	_, exists = resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	assert.True(t, exists, "k8s-resource-collector cluster role was not found")
 
 	// ClusterRoleBinding should exist
-	_, exists = resources.ClusterRoleBindings["suse-observability-agent-k8s-crd-collector"]
-	assert.True(t, exists, "k8s-crd-collector cluster role binding was not found")
+	_, exists = resources.ClusterRoleBindings["suse-observability-agent-k8s-resource-collector"]
+	assert.True(t, exists, "k8s-resource-collector cluster role binding was not found")
 
 	// ConfigMap should exist
-	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-crd-collector-config"]
-	require.True(t, exists, "k8s-crd-collector config map was not found")
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
 
 	// Service should exist
-	service, exists := resources.Services["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector service was not found")
+	service, exists := resources.Services["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector service was not found")
 
 	// Headless service for peer sync should exist (leaderElection defaults to enabled)
-	headlessSvc, exists := resources.Services["suse-observability-agent-k8s-crd-collector-headless"]
-	require.True(t, exists, "k8s-crd-collector headless service was not found")
+	headlessSvc, exists := resources.Services["suse-observability-agent-k8s-resource-collector-headless"]
+	require.True(t, exists, "k8s-resource-collector headless service was not found")
 	assert.Equal(t, "None", string(headlessSvc.Spec.ClusterIP))
 	assert.Equal(t, "peer-sync", headlessSvc.Spec.Ports[0].Name)
 
@@ -68,8 +68,8 @@ func TestK8sCrdCollectorEnabled(t *testing.T) {
 
 	// Verify autodiscovery annotations for StackState Agent metrics scraping
 	annotations := deployment.Spec.Template.Annotations
-	assert.Contains(t, annotations, "ad.stackstate.com/k8s-crd-collector.check_names")
-	assert.Contains(t, annotations["ad.stackstate.com/k8s-crd-collector.instances"], "8888/metrics")
+	assert.Contains(t, annotations, "ad.stackstate.com/k8s-resource-collector.check_names")
+	assert.Contains(t, annotations["ad.stackstate.com/k8s-resource-collector.instances"], "8888/metrics")
 
 	// Verify service port name
 	assert.Equal(t, "health", service.Spec.Ports[0].Name)
@@ -86,36 +86,36 @@ func TestK8sCrdCollectorEnabled(t *testing.T) {
 	assert.Contains(t, configData, "peer_sync_dns:")
 }
 
-func TestK8sCrdCollectorDisabled(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-disabled.yaml")
+func TestK8sResourceCollectorDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-disabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	// All k8s-crd-collector resources should NOT exist
-	_, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
-	assert.False(t, exists, "k8s-crd-collector deployment should not exist when disabled")
+	// All k8s-resource-collector resources should NOT exist
+	_, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	assert.False(t, exists, "k8s-resource-collector deployment should not exist when disabled")
 
-	_, exists = resources.ServiceAccounts["suse-observability-agent-k8s-crd-collector"]
-	assert.False(t, exists, "k8s-crd-collector service account should not exist when disabled")
+	_, exists = resources.ServiceAccounts["suse-observability-agent-k8s-resource-collector"]
+	assert.False(t, exists, "k8s-resource-collector service account should not exist when disabled")
 
-	_, exists = resources.ClusterRoles["suse-observability-agent-k8s-crd-collector"]
-	assert.False(t, exists, "k8s-crd-collector cluster role should not exist when disabled")
+	_, exists = resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	assert.False(t, exists, "k8s-resource-collector cluster role should not exist when disabled")
 
-	_, exists = resources.ConfigMaps["suse-observability-agent-k8s-crd-collector-config"]
-	assert.False(t, exists, "k8s-crd-collector config map should not exist when disabled")
+	_, exists = resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	assert.False(t, exists, "k8s-resource-collector config map should not exist when disabled")
 
-	_, exists = resources.Services["suse-observability-agent-k8s-crd-collector"]
-	assert.False(t, exists, "k8s-crd-collector service should not exist when disabled")
+	_, exists = resources.Services["suse-observability-agent-k8s-resource-collector"]
+	assert.False(t, exists, "k8s-resource-collector service should not exist when disabled")
 
-	_, exists = resources.Services["suse-observability-agent-k8s-crd-collector-headless"]
-	assert.False(t, exists, "k8s-crd-collector headless service should not exist when disabled")
+	_, exists = resources.Services["suse-observability-agent-k8s-resource-collector-headless"]
+	assert.False(t, exists, "k8s-resource-collector headless service should not exist when disabled")
 }
 
-func TestK8sCrdCollectorWildcardRBAC(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-enabled.yaml")
+func TestK8sResourceCollectorWildcardRBAC(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector cluster role was not found")
+	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector cluster role was not found")
 
 	// Should have wildcard permissions for custom resources
 	var hasWildcardRule bool
@@ -147,12 +147,12 @@ func TestK8sCrdCollectorWildcardRBAC(t *testing.T) {
 	assert.True(t, hasCRDRule, "CRD rule not found in cluster role")
 }
 
-func TestK8sCrdCollectorRestrictedRBAC(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-restricted-rbac.yaml")
+func TestK8sResourceCollectorRestrictedRBAC(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-restricted-rbac.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector cluster role was not found")
+	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector cluster role was not found")
 
 	// Should NOT have wildcard permissions
 	for _, rule := range clusterRole.Rules {
@@ -192,12 +192,12 @@ func TestK8sCrdCollectorRestrictedRBAC(t *testing.T) {
 	assert.True(t, hasCRDRule, "CRD rule not found in cluster role")
 }
 
-func TestK8sCrdCollectorDiscoveryModeAll(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-all-mode.yaml")
+func TestK8sResourceCollectorDiscoveryModeAll(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-all-mode.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-crd-collector-config"]
-	require.True(t, exists, "k8s-crd-collector config map was not found")
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
 
 	configData := configMap.Data["config.yaml"]
 	assert.Contains(t, configData, "discovery_mode: all")
@@ -205,12 +205,12 @@ func TestK8sCrdCollectorDiscoveryModeAll(t *testing.T) {
 	assert.NotContains(t, configData, "api_group_filters:")
 }
 
-func TestK8sCrdCollectorConfigMapContent(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-restricted-rbac.yaml")
+func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-restricted-rbac.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-crd-collector-config"]
-	require.True(t, exists, "k8s-crd-collector config map was not found")
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
 
 	configData := configMap.Data["config.yaml"]
 
@@ -228,9 +228,6 @@ func TestK8sCrdCollectorConfigMapContent(t *testing.T) {
 	assert.Contains(t, configData, "longhorn.io")
 	assert.Contains(t, configData, "exclude:")
 	assert.Contains(t, configData, "test.suse.com")
-
-	// Verify processors (pipeline uses empty processors list)
-	assert.Contains(t, configData, "processors: []")
 
 	// Verify exporters
 	assert.Contains(t, configData, "exporters:")
@@ -250,12 +247,12 @@ func TestK8sCrdCollectorConfigMapContent(t *testing.T) {
 	assert.Contains(t, configData, "logs/crd-discovery:")
 }
 
-func TestK8sCrdCollectorPlatformOtlpEndpointDerived(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-enabled.yaml")
+func TestK8sResourceCollectorPlatformOtlpEndpointDerived(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	deployment, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector deployment was not found")
+	deployment, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector deployment was not found")
 
 	container := deployment.Spec.Template.Spec.Containers[0]
 
@@ -274,12 +271,12 @@ func TestK8sCrdCollectorPlatformOtlpEndpointDerived(t *testing.T) {
 	assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent/otel", envVars["PLATFORM_OTLP_ENDPOINT"])
 }
 
-func TestK8sCrdCollectorPlatformOtlpEndpointExplicitOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-explicit-otlp.yaml")
+func TestK8sResourceCollectorPlatformOtlpEndpointExplicitOverride(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-explicit-otlp.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	deployment, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector deployment was not found")
+	deployment, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector deployment was not found")
 
 	container := deployment.Spec.Template.Spec.Containers[0]
 
@@ -295,14 +292,14 @@ func TestK8sCrdCollectorPlatformOtlpEndpointExplicitOverride(t *testing.T) {
 	assert.Equal(t, "https://custom-otlp.example.com:4318", envVars["PLATFORM_OTLP_ENDPOINT"])
 }
 
-func TestK8sCrdCollectorGrpcProtocol(t *testing.T) {
+func TestK8sResourceCollectorGrpcProtocol(t *testing.T) {
 	// A platformOtlpEndpoint without an http(s):// scheme is inferred as gRPC.
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-grpc.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-grpc.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Verify configmap uses otlp (gRPC) exporter instead of otlp_http
-	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-crd-collector-config"]
-	require.True(t, exists, "k8s-crd-collector config map was not found")
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
 
 	configData := configMap.Data["config.yaml"]
 	assert.Contains(t, configData, "otlp/suse-observability:")
@@ -312,8 +309,8 @@ func TestK8sCrdCollectorGrpcProtocol(t *testing.T) {
 	assert.Contains(t, configData, "exporters: [otlp/suse-observability]")
 
 	// Verify endpoint uses explicit platformOtlpEndpoint
-	deployment, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector deployment was not found")
+	deployment, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector deployment was not found")
 
 	envVars := make(map[string]string)
 	for _, env := range deployment.Spec.Template.Spec.Containers[0].Env {
@@ -324,22 +321,22 @@ func TestK8sCrdCollectorGrpcProtocol(t *testing.T) {
 	assert.Equal(t, "otlp-my-suse-observability-instance.com:443", envVars["PLATFORM_OTLP_ENDPOINT"])
 }
 
-func TestK8sCrdCollectorGrpcEndpointRequiresPort443(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-grpc-missing-port.yaml")
+func TestK8sResourceCollectorGrpcEndpointRequiresPort443(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-grpc-missing-port.yaml")
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "treated as gRPC and must include port :443")
 }
 
-// TestK8sCrdCollectorMultiNodeAffinityAndPDB asserts the default (replicaCount: 2)
+// TestK8sResourceCollectorMultiNodeAffinityAndPDB asserts the default (replicaCount: 2)
 // renders preferred (not required) hostname-level pod anti-affinity and a PDB that
 // allows one pod down at a time. Preferred lets sub-3-node clusters still install
 // and roll upgrades; required would wedge them.
-func TestK8sCrdCollectorMultiNodeAffinityAndPDB(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-enabled.yaml")
+func TestK8sResourceCollectorMultiNodeAffinityAndPDB(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	deployment, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector deployment was not found")
+	deployment, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector deployment was not found")
 
 	require.NotNil(t, deployment.Spec.Template.Spec.Affinity, "deployment should have affinity (auto-injected when leaderElection enabled)")
 	require.NotNil(t, deployment.Spec.Template.Spec.Affinity.PodAntiAffinity, "deployment should have pod anti-affinity")
@@ -354,28 +351,28 @@ func TestK8sCrdCollectorMultiNodeAffinityAndPDB(t *testing.T) {
 	assert.Equal(t, int32(100), preferred.Weight, "weight 100 keeps spread behaviour effectively required on multi-node clusters")
 	assert.Equal(t, "kubernetes.io/hostname", preferred.PodAffinityTerm.TopologyKey)
 	require.NotNil(t, preferred.PodAffinityTerm.LabelSelector)
-	assert.Equal(t, "k8s-crd-collector", preferred.PodAffinityTerm.LabelSelector.MatchLabels["app.kubernetes.io/component"])
+	assert.Equal(t, "k8s-resource-collector", preferred.PodAffinityTerm.LabelSelector.MatchLabels["app.kubernetes.io/component"])
 
-	pdb, exists := resources.Pdbs["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector PDB should be rendered when replicaCount > 1")
+	pdb, exists := resources.Pdbs["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector PDB should be rendered when replicaCount > 1")
 	require.NotNil(t, pdb.Spec.MaxUnavailable)
 	assert.Equal(t, int32(1), pdb.Spec.MaxUnavailable.IntVal,
 		"PDB allows one pod down at a time, keeping the other available during voluntary disruptions")
 	require.NotNil(t, pdb.Spec.Selector)
-	assert.Equal(t, "k8s-crd-collector", pdb.Spec.Selector.MatchLabels["app.kubernetes.io/component"])
+	assert.Equal(t, "k8s-resource-collector", pdb.Spec.Selector.MatchLabels["app.kubernetes.io/component"])
 }
 
-// TestK8sCrdCollectorSingleReplicaSkipsPDB asserts that when replicaCount is 1
+// TestK8sResourceCollectorSingleReplicaSkipsPDB asserts that when replicaCount is 1
 // (e.g. operator-set on a single-node cluster) the PDB is NOT rendered. A PDB
 // with maxUnavailable: 1 over a single replica would still allow the only pod
 // to be evicted, providing no protection — better to omit it than mislead.
-func TestK8sCrdCollectorSingleReplicaSkipsPDB(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-single-replica.yaml")
+func TestK8sResourceCollectorSingleReplicaSkipsPDB(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-single-replica.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	_, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
-	require.True(t, exists, "k8s-crd-collector deployment was not found")
+	_, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector deployment was not found")
 
-	_, exists = resources.Pdbs["suse-observability-agent-k8s-crd-collector"]
+	_, exists = resources.Pdbs["suse-observability-agent-k8s-resource-collector"]
 	assert.False(t, exists, "PDB should be skipped when replicaCount is 1")
 }

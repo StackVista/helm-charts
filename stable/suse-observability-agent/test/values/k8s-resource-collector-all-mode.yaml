@@ -4,9 +4,11 @@ stackstate:
     name: test-cluster
   url: https://my-suse-observability-instance.com/receiver
 
-# Single-replica deployment: PDB should be skipped, no anti-affinity needed.
-k8sCrdCollector:
+# Enable cluster collector with "all" discovery mode (watch everything - no filters)
+k8sResourceCollector:
   enabled: true
-  replicaCount: 1
+  crdDiscovery:
+    snapshotInterval: 5m
+    discoveryMode: all
   rbac:
     useWildcard: true

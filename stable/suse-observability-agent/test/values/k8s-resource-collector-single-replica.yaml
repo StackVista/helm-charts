@@ -1,0 +1,12 @@
+stackstate:
+  apiKey: test-api-key
+  cluster:
+    name: test-cluster
+  url: https://my-suse-observability-instance.com/receiver
+
+# Single-replica deployment: PDB should be skipped, no anti-affinity needed.
+k8sResourceCollector:
+  enabled: true
+  replicaCount: 1
+  rbac:
+    useWildcard: true

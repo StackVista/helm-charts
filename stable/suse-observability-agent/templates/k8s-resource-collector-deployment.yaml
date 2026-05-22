@@ -1,0 +1,157 @@
+{{- if include "stackstate-k8s-agent.k8sResourceCollector.enabled" . }}
+{{- if and (gt (.Values.k8sResourceCollector.replicaCount | int) 1) (not .Values.k8sResourceCollector.leaderElection.enabled) }}
+{{- fail "k8sResourceCollector.leaderElection.enabled must be true when k8sResourceCollector.replicaCount > 1 — otherwise every replica collects independently and the platform receives duplicate emissions" }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-k8s-resource-collector
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: k8s-resource-collector
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  replicas: {{ .Values.k8sResourceCollector.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: k8s-resource-collector
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
+{{- with .Values.k8sResourceCollector.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/k8s-resource-collector-configmap.yaml") . | sha256sum }}
+        {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
+        ad.stackstate.com/k8s-resource-collector.check_names: '["openmetrics"]'
+        ad.stackstate.com/k8s-resource-collector.init_configs: '[{}]'
+        ad.stackstate.com/k8s-resource-collector.instances: '[{"prometheus_url":"http://%%host%%:8888/metrics","namespace":"stackstate","metrics":["*"]}]'
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
+      {{- with .Values.k8sResourceCollector.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: k8s-resource-collector
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
+      {{- with .Values.k8sResourceCollector.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.k8sResourceCollector.image .Values.all.image) "context" $) | nindent 6 }}
+      {{- if .Values.k8sResourceCollector.priorityClassName }}
+      priorityClassName: {{ .Values.k8sResourceCollector.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ .Release.Name }}-k8s-resource-collector
+      containers:
+        - name: k8s-resource-collector
+          image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.k8sResourceCollector.image.repository }}:{{ .Values.k8sResourceCollector.image.tag }}"
+          imagePullPolicy: "{{ .Values.k8sResourceCollector.image.pullPolicy }}"
+          args:
+            - --config=/etc/otel/config.yaml
+          env:
+          {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
+          - name: PLATFORM_OTLP_ENDPOINT
+            value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
+          - name: K8S_CLUSTER_NAME
+            value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: SKIP_SSL_VALIDATION
+            value: {{ or .Values.global.skipSslValidation .Values.k8sResourceCollector.skipSslValidation | quote }}
+          {{- if .Values.k8sResourceCollector.leaderElection.enabled }}
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel
+            {{- if .Values.global.customCertificates.enabled }}
+            - name: custom-certificates
+              mountPath: /etc/ssl/certs/custom
+              readOnly: true
+            {{- end }}
+          ports:
+            - containerPort: 13133
+              name: health
+              protocol: TCP
+            - containerPort: 8888
+              name: metrics
+              protocol: TCP
+            {{- if .Values.k8sResourceCollector.leaderElection.enabled }}
+            - containerPort: {{ .Values.k8sResourceCollector.peerSync.port }}
+              name: peer-sync
+              protocol: TCP
+            {{- end }}
+          {{- if .Values.k8sResourceCollector.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+            failureThreshold: {{ .Values.k8sResourceCollector.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.k8sResourceCollector.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.k8sResourceCollector.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.k8sResourceCollector.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.k8sResourceCollector.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.k8sResourceCollector.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+            failureThreshold: {{ .Values.k8sResourceCollector.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.k8sResourceCollector.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.k8sResourceCollector.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.k8sResourceCollector.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.k8sResourceCollector.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.k8sResourceCollector.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-k8s-resource-collector-config
+        {{- if .Values.global.customCertificates.enabled }}
+        - name: custom-certificates
+          configMap:
+            name: {{ include "stackstate-k8s-agent.customCertificates.configmap.name" . }}
+        {{- end }}
+      {{- with .Values.k8sResourceCollector.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.k8sResourceCollector.affinity .Values.k8sResourceCollector.leaderElection.enabled }}
+      affinity:
+        {{- if .Values.k8sResourceCollector.leaderElection.enabled }}
+        # preferred (not required) so 1- and 2-node clusters can still install and roll
+        # upgrades. Multi-node clusters with capacity still spread normally; sub-3-node
+        # clusters fall back to colocation, giving upgrade-time HA via leader handoff.
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: k8s-resource-collector
+                    app.kubernetes.io/instance: {{ .Release.Name }}
+                topologyKey: kubernetes.io/hostname
+        {{- end }}
+        {{- with .Values.k8sResourceCollector.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.k8sResourceCollector.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

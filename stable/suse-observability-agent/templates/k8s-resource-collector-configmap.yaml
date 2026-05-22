@@ -1,12 +1,12 @@
-{{- if include "stackstate-k8s-agent.k8sCrdCollector.enabled" . }}
+{{- if include "stackstate-k8s-agent.k8sResourceCollector.enabled" . }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-k8s-crd-collector-config
+  name: {{ .Release.Name }}-k8s-resource-collector-config
   labels:
 {{ include "stackstate-k8s-agent.labels" . | indent 4 }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
-    app.kubernetes.io/component: k8s-crd-collector
+    app.kubernetes.io/component: k8s-resource-collector
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 data:
@@ -16,27 +16,27 @@ data:
       k8scrd:
         auth_type: serviceAccount
         cluster_name: {{ .Values.stackstate.cluster.name | quote }}
-        snapshot_interval: {{ .Values.k8sCrdCollector.crdDiscovery.snapshotInterval }}
-        discovery_mode: {{ .Values.k8sCrdCollector.crdDiscovery.discoveryMode }}
-{{- if eq .Values.k8sCrdCollector.crdDiscovery.discoveryMode "api_groups" }}
-{{- if not .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.include }}
-{{- fail "k8sCrdCollector.crdDiscovery.apiGroupFilters.include must be a non-empty list when discoveryMode is 'api_groups' (use [\"*\"] to match all)" }}
+        snapshot_interval: {{ .Values.k8sResourceCollector.crdDiscovery.snapshotInterval }}
+        discovery_mode: {{ .Values.k8sResourceCollector.crdDiscovery.discoveryMode }}
+{{- if eq .Values.k8sResourceCollector.crdDiscovery.discoveryMode "api_groups" }}
+{{- if not .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.include }}
+{{- fail "k8sResourceCollector.crdDiscovery.apiGroupFilters.include must be a non-empty list when discoveryMode is 'api_groups' (use [\"*\"] to match all)" }}
 {{- end }}
         api_group_filters:
           include:
-{{- range .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.include }}
+{{- range .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.include }}
             - {{ . | quote }}
 {{- end }}
-{{- if .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude }}
+{{- if .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude }}
           exclude:
-{{- range .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude }}
+{{- range .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude }}
             - {{ . | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
-        peer_sync_port: {{ .Values.k8sCrdCollector.peerSync.port }}
-{{- if .Values.k8sCrdCollector.leaderElection.enabled }}
-        peer_sync_dns: {{ include "stackstate-k8s-agent.k8sCrdCollector.peerSync.dns" . | quote }}
+        peer_sync_port: {{ .Values.k8sResourceCollector.peerSync.port }}
+{{- if .Values.k8sResourceCollector.leaderElection.enabled }}
+        peer_sync_dns: {{ include "stackstate-k8s-agent.k8sResourceCollector.peerSync.dns" . | quote }}
         k8s_leader_elector: k8s_leader_elector
 {{- end }}
 
@@ -63,21 +63,21 @@ data:
       bearertokenauth:
         scheme: SUSEObservability
         token: "${STS_API_KEY}"
-{{- if .Values.k8sCrdCollector.leaderElection.enabled }}
+{{- if .Values.k8sResourceCollector.leaderElection.enabled }}
       k8s_leader_elector:
         auth_type: serviceAccount
-        lease_name: {{ .Values.k8sCrdCollector.leaderElection.leaseName | quote }}
+        lease_name: {{ .Values.k8sResourceCollector.leaderElection.leaseName | quote }}
         lease_namespace: ${POD_NAMESPACE}
-        lease_duration: {{ .Values.k8sCrdCollector.leaderElection.leaseDuration }}
-        renew_deadline: {{ .Values.k8sCrdCollector.leaderElection.renewDeadline }}
-        retry_period: {{ .Values.k8sCrdCollector.leaderElection.retryPeriod }}
+        lease_duration: {{ .Values.k8sResourceCollector.leaderElection.leaseDuration }}
+        renew_deadline: {{ .Values.k8sResourceCollector.leaderElection.renewDeadline }}
+        retry_period: {{ .Values.k8sResourceCollector.leaderElection.retryPeriod }}
 {{- end }}
 
     service:
       telemetry:
         logs:
-          level: {{ .Values.k8sCrdCollector.logLevel }}
-      extensions: [health_check, bearertokenauth{{ if .Values.k8sCrdCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
+          level: {{ .Values.k8sResourceCollector.logLevel }}
+      extensions: [health_check, bearertokenauth{{ if .Values.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
       pipelines:
         # CRD discovery - real-time watch of CRDs and custom resources
         logs/crd-discovery:
