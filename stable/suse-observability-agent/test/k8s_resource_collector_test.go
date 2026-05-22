@@ -74,10 +74,10 @@ func TestK8sResourceCollectorEnabled(t *testing.T) {
 	// Verify service port name
 	assert.Equal(t, "health", service.Spec.Ports[0].Name)
 
-	// Verify ConfigMap contains k8scrd receiver configuration
+	// Verify ConfigMap contains k8sresource receiver configuration
 	assert.Contains(t, configMap.Data, "config.yaml")
 	configData := configMap.Data["config.yaml"]
-	assert.Contains(t, configData, "k8scrd:")
+	assert.Contains(t, configData, "k8sresource:")
 	assert.Contains(t, configData, "snapshot_interval: 5m")
 	assert.Contains(t, configData, "discovery_mode: api_groups")
 
@@ -216,7 +216,7 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 
 	// Verify receiver configuration
 	assert.Contains(t, configData, "receivers:")
-	assert.Contains(t, configData, "k8scrd:")
+	assert.Contains(t, configData, "k8sresource:")
 	assert.Contains(t, configData, "auth_type: serviceAccount")
 	assert.Contains(t, configData, "snapshot_interval: 5m")
 	assert.Contains(t, configData, "discovery_mode: api_groups")
@@ -244,7 +244,7 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 	// Verify service pipeline
 	assert.Contains(t, configData, "service:")
 	assert.Contains(t, configData, "pipelines:")
-	assert.Contains(t, configData, "logs/crd-discovery:")
+	assert.Contains(t, configData, "logs/k8s-resource:")
 }
 
 func TestK8sResourceCollectorPlatformOtlpEndpointDerived(t *testing.T) {

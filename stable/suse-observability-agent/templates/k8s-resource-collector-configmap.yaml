@@ -12,8 +12,8 @@ metadata:
 data:
   config.yaml: |
     receivers:
-      # K8s CRD Receiver - dynamically discovers CRDs and watches custom resources
-      k8scrd:
+      # K8s Resource Receiver - dynamically discovers CRDs and watches custom resources
+      k8sresource:
         auth_type: serviceAccount
         cluster_name: {{ .Values.stackstate.cluster.name | quote }}
         snapshot_interval: {{ .Values.k8sResourceCollector.crdDiscovery.snapshotInterval }}
@@ -79,9 +79,9 @@ data:
           level: {{ .Values.k8sResourceCollector.logLevel }}
       extensions: [health_check, bearertokenauth{{ if .Values.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
       pipelines:
-        # CRD discovery - real-time watch of CRDs and custom resources
-        logs/crd-discovery:
-          receivers: [k8scrd]
+        # Kubernetes resource discovery - real-time watch of CRDs and custom resources
+        logs/k8s-resource:
+          receivers: [k8sresource]
           processors: []
           exporters: [{{ $exporterName }}]
 {{- end }}

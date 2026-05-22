@@ -714,7 +714,7 @@ k8sResourceCollector:
     # k8sResourceCollector.leaderElection.enabled -- Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover.
     enabled: true
     # k8sResourceCollector.leaderElection.leaseName -- Name of the Lease object. Must be unique per collector deployment.
-    leaseName: "k8scrdreceiver"
+    leaseName: "k8sresourcereceiver"
     # k8sResourceCollector.leaderElection.leaseDuration -- Duration a leader holds the lease before it must renew.
     leaseDuration: 15s
     # k8sResourceCollector.leaderElection.renewDeadline -- Deadline for the leader to renew the lease. Must be less than leaseDuration.
