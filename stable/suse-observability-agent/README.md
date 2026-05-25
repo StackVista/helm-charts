@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.39`
+Current chart version is `1.3.40`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -61,7 +61,7 @@ stackstate/suse-observability-agent
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | checksAgent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| checksAgent.image.tag | string | `"fc58e9ec"` | Default container image tag. |
+| checksAgent.image.tag | string | `"84fdad6f"` | Default container image tag. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | checksAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -123,7 +123,7 @@ stackstate/suse-observability-agent
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-k8s-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"fc58e9ec"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"84fdad6f"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -261,7 +261,7 @@ stackstate/suse-observability-agent
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| nodeAgent.containers.agent.image.tag | string | `"fc58e9ec"` | Default container image tag. |
+| nodeAgent.containers.agent.image.tag | string | `"84fdad6f"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -284,7 +284,7 @@ stackstate/suse-observability-agent
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
 | nodeAgent.containers.processAgent.image.registry | string | `nil` |  |
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
-| nodeAgent.containers.processAgent.image.tag | string | `"e504bc51"` | Default process-agent container image tag. |
+| nodeAgent.containers.processAgent.image.tag | string | `"f9ba81a8"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
 | nodeAgent.containers.processAgent.procVolumeReadOnly | bool | `true` | Configure whether /host/proc is read only for the process agent container |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | CPU resource limits. |
