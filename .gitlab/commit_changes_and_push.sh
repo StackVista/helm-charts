@@ -13,5 +13,5 @@ if git diff --cached --exit-code; then
   echo "No changes, not committing anything"
 else
   git commit -m "chore(stackstate): Upgrade ${COMPONENT} to version ${COMPONENT_VERSION}."
-  git push "https://gitlab-ci-token:${gitlab_api_scope_token:?}@gitlab.com/stackvista/devops/helm-charts.git" HEAD:"${CI_COMMIT_BRANCH}"
+  git push "https://gitlab-ci-token:${CI_JOB_TOKEN:?}@gitlab.com/stackvista/devops/helm-charts.git" HEAD:"${CI_COMMIT_BRANCH}"
 fi
