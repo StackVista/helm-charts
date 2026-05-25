@@ -354,6 +354,12 @@ sources:
       name: http-header-injector
       versionfilter:
         kind: semver
+  processAgentHash:
+    name: "stackstate-process-agent latest commit hash"
+    kind: shell
+    spec:
+      command: |
+        curl -sf "https://api.github.com/repos/StackVista/stackstate-process-agent/commits/master" | jq -r '.sha[0:8]'
 
 # Single pipeline: each target reads from its own sourceid.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
@@ -639,6 +645,14 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.s3proxy.image.tag"
+  processAgentTag:
+    name: "process-agent (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: processAgentHash
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.nodeAgent.containers.processAgent.image.tag"
   suseObservabilityHelmDocs:
     name: "suse-observability README.md (helm-docs)"
     kind: shell
@@ -705,6 +719,7 @@ targets:
       - "target#genericSidecarInjector"
       - "target#promtail"
       - "target#httpHeaderInjectorChartVersion"
+      - "target#processAgentTag"
     spec:
       command: |
         set -e
