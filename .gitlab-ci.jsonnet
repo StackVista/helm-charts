@@ -445,25 +445,6 @@ local push_suse_observability_to_rancher_registry = {
                                                }),
 };
 
-local update_sg_version = {
-  update_stackgraph_version: {
-    image: variables.images.stackstate_helm_test,
-    stage: 'update',
-    before_script: helm_fetch_dependencies,
-    rules: [
-      {
-        @'if': '$UPDATE_STACKGRAPH_VERSION',
-        when: 'always',
-      },
-    ],
-    script: [
-      '.gitlab/update_sg_version.sh local/hbase ""',
-      '.gitlab/update_sg_version.sh stable/suse-observability "hbase."',
-      '.gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION',
-    ],
-  },
-};
-
 // These variables are actually explicitly unset in a default pipeline. The reason for this is that we want to be very specific in a triggered job what
 // we want as source and target, to aovid accidentally pushing/manipulating master when doing work/testing on these pipelines
 local updatecli_variables = {
@@ -583,32 +564,6 @@ local updatecli_job = std.foldl(
   updatecli_pipelines,
   {},
 );
-
-local update_docker_images = {
-  local job(requiredEnvName, scripts) = {
-    image: variables.images.stackstate_devops,
-    stage: 'update',
-    before_script: [
-      '.gitlab/configure_git.sh',
-      // tags don't have CI_COMMIT_BRANCH, so fetch the current branch(s) for current HEAD (HEAD points to a detached commit)
-      // but there may be multiple branches so iterate all of them and push a commit to each branch
-      'export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" \'$1==branch && $2!="origin" {print $2}\' | sed -E "s/^origin\\/(.*)$/\\1/")}',
-    ],
-    rules: [
-      {
-        @'if': '$' + requiredEnvName,
-        when: 'always',
-      },
-      {
-        when: 'never',
-      },
-    ],
-    script: scripts,
-  },
-
-  update_stackstate_version_to_latest: job('UPDATE_STACKSTATE_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackstate_version_to_latest.sh']),
-  update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackpacks_version_to_latest.sh']),
-};
 
 local validate_updatecli_config = {
   validate_updatecli_config: {
@@ -740,8 +695,6 @@ local beest_triggers = {
 + push_charts_to_internal_jobs
 + push_prerelease_charts_to_public_jobs
 + push_charts_to_public_jobs
-+ update_sg_version
 + updatecli_job
-+ update_docker_images
 + push_suse_observability_to_rancher_registry
 + beest_triggers

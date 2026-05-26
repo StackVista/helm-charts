@@ -3463,46 +3463,6 @@ update_helm_chart_stackstate:
     UPDATECLI_BRANCH: updatecli-${TARGET_BRANCH}-stackstate
     UPDATE_CLI_EMAIL: $STACKSTATE_SYSTEM_USER_EMAIL
     UPDATE_CLI_USER: $STACKSTATE_SYSTEM_USER_NAME
-update_stackgraph_version:
-  before_script:
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: always
-  script:
-    - .gitlab/update_sg_version.sh local/hbase ""
-    - .gitlab/update_sg_version.sh stable/suse-observability "hbase."
-    - .gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION
-  stage: update
-update_stackpacks_version_to_latest:
-  before_script:
-    - .gitlab/configure_git.sh
-    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: always
-    - when: never
-  script:
-    - .gitlab/suse-observability/update_stackpacks_version_to_latest.sh
-  stage: update
-update_stackstate_version_to_latest:
-  before_script:
-    - .gitlab/configure_git.sh
-    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: always
-    - when: never
-  script:
-    - .gitlab/suse-observability/update_stackstate_version_to_latest.sh
-  stage: update
 validate_artifactory-cleaner:
   before_script:
     - .gitlab/validate_before_script.sh
