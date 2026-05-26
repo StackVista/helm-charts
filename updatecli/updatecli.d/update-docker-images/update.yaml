@@ -598,7 +598,7 @@ targets:
     sourceid: stsOpentelemetryCollector
     spec:
       file: "stable/suse-observability-agent/values.yaml"
-      key: "$.k8sCrdCollector.image.tag"
+      key: "$.k8sResourceCollector.image.tag"
   genericSidecarInjector:
     name: "generic-sidecar-injector"
     kind: yaml
