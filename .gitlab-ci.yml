@@ -2155,7 +2155,7 @@ push_suse-observability_to_internal:
     - helm repo update
     - .gitlab/configure_git.sh
     - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
-    - .gitlab/set_sts_chart_master_version.sh stable/suse-observability $(echo $CI_COMMIT_TAG | sed -E 's/^suse-observability\/(.*)$/\1/')
+    - .gitlab/set_chart_release_version.sh stable/suse-observability $(echo $CI_COMMIT_TAG | sed -E 's/^suse-observability\/(.*)$/\1/')
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
