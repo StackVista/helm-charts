@@ -12,7 +12,7 @@ installDependencies() {
 
 installGitRemotes() {
   # shellcheck disable=SC2154
-  git remote add helm "https://oauth2:${gitlab_api_scope_token}@gitlab.com/stackvista/devops/helm-charts" || true
+  git remote add helm "https://gitlab-ci-token:${HELM_CHARTS_PAT}@gitlab.com/stackvista/devops/helm-charts" || true
   git fetch helm
 }
 
