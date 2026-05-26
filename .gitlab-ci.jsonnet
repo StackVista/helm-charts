@@ -468,7 +468,7 @@ local updatecli_job = {
     },
     before_script: [
       '.gitlab/configure_git.sh',
-      'export GITLAB_TOKEN="$CI_JOB_TOKEN"',
+      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
       'export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"',
       'export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"',
     ],
@@ -490,7 +490,7 @@ local updatecli_job = {
     stage: 'update',
     before_script: [
       '.gitlab/configure_git.sh',
-      'export GITLAB_TOKEN="$CI_JOB_TOKEN"',
+      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
     ],
     rules: [
       {
@@ -554,7 +554,7 @@ local validate_updatecli_config = {
     image: variables.images.container_tools_dev,
     stage: 'validate',
     script: [
-      'export GITLAB_TOKEN="$CI_JOB_TOKEN"',
+      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
       'updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml',
     ],
     rules: [
