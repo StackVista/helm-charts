@@ -683,7 +683,7 @@ k8sResourceCollector:
     # k8sResourceCollector.image.repository -- Base container image repository.
     repository: stackstate/sts-opentelemetry-collector
     # k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.35
+    tag: v0.0.36
     # k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
