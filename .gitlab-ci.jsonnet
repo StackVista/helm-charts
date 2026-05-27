@@ -159,6 +159,26 @@ local validate_chart_jobs = {
   for chart in published_charts
 };
 
+// Validates that every docker image referenced by a chart resolves in its
+// registry. Image enumeration is delegated to the chart's
+// installation/o11y-*-get-images.sh; only the charts that ship one are wired up.
+local charts_with_image_validation = ['suse-observability', 'suse-observability-agent'];
+local validate_chart_images_job(chart) = {
+  image: variables.images.stackstate_devops,
+  script: ['.gitlab/validate_chart_images.sh stable/' + chart],
+  stage: 'validate',
+  rules: [
+    {
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: change_paths_for_published(chart) + ci_config_change_paths,
+    },
+  ],
+};
+local validate_chart_images_jobs = {
+  ['validate_%s_images' % chart]: (validate_chart_images_job(chart))
+  for chart in charts_with_image_validation
+};
+
 // Lightweight validation for local-only charts: schema + lint. No version check, no publish.
 local validate_local_chart_job(chart) = {
   image: variables.images.chart_testing,
@@ -686,6 +706,7 @@ local beest_triggers = {
 + build_chart_jobs
 + build_local_chart_jobs
 + validate_chart_jobs
++ validate_chart_images_jobs
 + validate_local_chart_jobs
 + validate_updatecli_config
 + check_chart_version_jobs

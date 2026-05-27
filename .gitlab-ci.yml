@@ -4072,6 +4072,17 @@ validate_suse-observability-agent:
     - .gitlab/validate_local_dep_versions.sh stable/suse-observability-agent
     - .gitlab/validate_kubeconform.sh stable/suse-observability-agent
   stage: validate
+validate_suse-observability-agent_images:
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - changes:
+        - stable/suse-observability-agent/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/validate_chart_images.sh stable/suse-observability-agent
+  stage: validate
 validate_suse-observability-values:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -4089,6 +4100,30 @@ validate_suse-observability-values:
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml; fi
     - .gitlab/validate_local_dep_versions.sh stable/suse-observability-values
     - .gitlab/validate_kubeconform.sh stable/suse-observability-values
+  stage: validate
+validate_suse-observability_images:
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - changes:
+        - stable/suse-observability/**/*
+        - local/anomaly-detection/**/*
+        - local/clickhouse/**/*
+        - local/common/**/*
+        - local/elasticsearch/**/*
+        - local/hbase/**/*
+        - local/kafka/**/*
+        - local/kafkaup-operator/**/*
+        - local/kubernetes-rbac-agent/**/*
+        - local/opentelemetry-collector/**/*
+        - local/pull-secret/**/*
+        - local/prometheus-elasticsearch-exporter/**/*
+        - local/suse-observability-sizing/**/*
+        - local/victoria-metrics-single/**/*
+        - local/zookeeper/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/validate_chart_images.sh stable/suse-observability
   stage: validate
 validate_tenant-cleanup-controller:
   before_script:
