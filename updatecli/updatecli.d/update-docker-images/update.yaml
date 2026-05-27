@@ -22,76 +22,113 @@ scms:
         passphrase: "{{ env .scm.gpgKeyPassEnv }}"
 
 sources:
+  ###################
+  # All images with tag x.y.z-soN
+  ###################
   clickhouseBackup:
     name: "clickhouse-backup"
     kind: dockerimage
-    spec:
+    spec: &dockerSoSpec
       image: "quay.io/stackstate/clickhouse-backup"
       architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-so[0-9]+$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
-  clickhouseStable:
-    name: "clickhouse (stable)"
+        regex: "^([0-9]+\\.[0-9]+\\.[0-9]+-so[0-9]+)$"
+        pattern: ">=0.0.0-0"
+  clickhouse:
+    name: "clickhouse"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/clickhouse"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  clickhouseRebuiltZeroCve:
-    name: "clickhouse (rebuilt zero-CVE)"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/clickhouse"
-      architecture: "linux/amd64"
-      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   containerTools:
     name: "container-tools"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/container-tools"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  elasticsearchStable:
-    name: "elasticsearch (stable)"
+  elasticsearch:
+    name: "elasticsearch"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/elasticsearch"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  elasticsearchRebuiltZeroCve:
-    name: "elasticsearch (rebuilt zero-CVE)"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/elasticsearch"
-      architecture: "linux/amd64"
-      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   elasticsearchExporter:
     name: "elasticsearch-exporter"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/elasticsearch-exporter"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
+  jmxExporter:
+    name: "jmx-exporter"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/jmx-exporter"
+  kafka:
+    name: "kafka"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/kafka"
+  nginxPrometheusExporter:
+    name: "nginx-prometheus-exporter"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/nginx-prometheus-exporter"
+  promtail:
+    name: "promtail"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/promtail"
+  s3proxy:
+    name: "s3proxy"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/s3proxy"
+  victoriaMetrics:
+    name: "victoria-metrics"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/victoria-metrics"
+  vmagent:
+    name: "vmagent"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/vmagent"
+  vmbackup:
+    name: "vmbackup"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/vmbackup"
+  vmrestore:
+    name: "vmrestore"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/vmrestore"
+  wait:
+    name: "wait"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/wait"
+  zookeeper:
+    name: "zookeeper"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/zookeeper"
+  ###################
+  # Images with other tags
+  ###################
   envoy:
     name: "envoy"
     kind: dockerimage
@@ -136,36 +173,6 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
-  jmxExporter:
-    name: "jmx-exporter"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/jmx-exporter"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  kafkaStable:
-    name: "kafka (stable)"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/kafka"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  kafkaRebuiltZeroCve:
-    name: "kafka (rebuilt zero-CVE)"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/kafka"
-      architecture: "linux/amd64"
-      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   kubernetesRbacAgent:
     name: "kubernetes-rbac-agent"
     kind: dockerimage
@@ -176,16 +183,6 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: "^[a-f0-9]{8}-([0-9]+)-release$"
-  nginxPrometheusExporter:
-    name: "nginx-prometheus-exporter"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/nginx-prometheus-exporter"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   suseObservabilityMcp:
     name: "suse-observability-mcp"
     kind: dockerimage
@@ -208,56 +205,6 @@ sources:
         kind: regex/time
         regex: "^([0-9]{14})-[0-9a-f]{8}$"
         pattern: "20060102150405"
-  victoriaMetrics:
-    name: "victoria-metrics"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/victoria-metrics"
-      architecture: "linux/amd64"
-      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  vmagent:
-    name: "vmagent"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/vmagent"
-      architecture: "linux/amd64"
-      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  vmbackup:
-    name: "vmbackup"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/vmbackup"
-      architecture: "linux/amd64"
-      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  vmrestore:
-    name: "vmrestore"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/vmrestore"
-      architecture: "linux/amd64"
-      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  wait:
-    name: "wait"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/wait"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   workloadObserver:
     name: "workload-observer"
     kind: dockerimage
@@ -268,26 +215,6 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: "^[a-f0-9]{8}-([0-9]+)-release$"
-  zookeeperStable:
-    name: "zookeeper (stable)"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/zookeeper"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  zookeeperRebuiltZeroCve:
-    name: "zookeeper (rebuilt zero-CVE)"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/zookeeper"
-      architecture: "linux/amd64"
-      tagfilter: "^rebuilt_zero_cve_[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   kafkaupOperator:
     name: "kafkaup-operator"
     kind: dockerimage
@@ -326,26 +253,6 @@ sources:
       versionfilter:
         kind: semver
         pattern: ">=0.0.0-0"
-  promtail:
-    name: "promtail"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/promtail"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  s3proxy:
-    name: "s3proxy"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/s3proxy"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   httpHeaderInjectorChart:
     name: "http-header-injector chart"
     kind: helmchart
@@ -383,7 +290,7 @@ targets:
     name: "clickhouse"
     kind: yaml
     scmid: "default"
-    sourceid: "{{ .dockerImages.clickhouse.source }}"
+    sourceid: clickhouse
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -421,7 +328,7 @@ targets:
     name: "elasticsearch"
     kind: yaml
     scmid: "default"
-    sourceid: "{{ .dockerImages.elasticsearch.source }}"
+    sourceid: elasticsearch
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.elasticsearch.imageTag"
@@ -481,7 +388,7 @@ targets:
     name: "kafka"
     kind: yaml
     scmid: "default"
-    sourceid: "{{ .dockerImages.kafka.source }}"
+    sourceid: kafka
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -583,7 +490,7 @@ targets:
     name: "zookeeper"
     kind: yaml
     scmid: "default"
-    sourceid: "{{ .dockerImages.zookeeper.source }}"
+    sourceid: zookeeper
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.zookeeper.image.tag"
