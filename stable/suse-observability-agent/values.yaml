@@ -593,7 +593,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
-    tag: "84fdad6f"
+    tag: efe6afa5
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
