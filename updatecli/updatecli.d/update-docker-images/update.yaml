@@ -360,6 +360,12 @@ sources:
     spec:
       command: |
         curl -sf "https://api.github.com/repos/StackVista/stackstate-process-agent/commits/master" | jq -r '.sha[0:8]'
+  agentHash:
+    name: "stackstate-agent latest commit hash"
+    kind: shell
+    spec:
+      command: |
+        curl -sf "https://api.github.com/repos/StackVista/stackstate-agent/commits/stackstate-7.71.2" | jq -r '.sha[0:8]'
 
 # Single pipeline: each target reads from its own sourceid.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
@@ -653,6 +659,30 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.nodeAgent.containers.processAgent.image.tag"
+  nodeAgentTag:
+    name: "node-agent (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: agentHash
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.nodeAgent.containers.agent.image.tag"
+  clusterAgentTag:
+    name: "cluster-agent (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: agentHash
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.clusterAgent.image.tag"
+  checksAgentTag:
+    name: "checks-agent (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: agentHash
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.checksAgent.image.tag"
   suseObservabilityHelmDocs:
     name: "suse-observability README.md (helm-docs)"
     kind: shell
@@ -720,6 +750,9 @@ targets:
       - "target#promtail"
       - "target#httpHeaderInjectorChartVersion"
       - "target#processAgentTag"
+      - "target#nodeAgentTag"
+      - "target#clusterAgentTag"
+      - "target#checksAgentTag"
     spec:
       command: |
         set -e
