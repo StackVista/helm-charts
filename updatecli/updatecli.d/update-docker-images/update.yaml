@@ -60,6 +60,12 @@ sources:
     spec:
       <<: *dockerSoSpec
       image: "quay.io/stackstate/elasticsearch-exporter"
+  hadoop:
+    name: "hadoop"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/hadoop"
   jmxExporter:
     name: "jmx-exporter"
     kind: dockerimage
@@ -163,16 +169,6 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: "^[a-f0-9]{8}-([0-9]+)-release$"
-  hadoop:
-    name: "hadoop"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/hadoop"
-      architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   kubernetesRbacAgent:
     name: "kubernetes-rbac-agent"
     kind: dockerimage
@@ -370,6 +366,9 @@ targets:
     scmid: "default"
     sourceid: hadoop
     transformers:
+      # The hbase chart renders the full image tag as
+      # "<hadoop version>-<hbase.hdfs.version>". Docker-images publishes the
+      # full tag, so keep only the suffix here (for example: 3.4.3-so1 -> so1).
       - findsubmatch:
           pattern: '^\d+\.\d+\.\d+-(.+)$'
           captureindex: 1
