@@ -3,9 +3,8 @@
 
   images: {
     stackstate_helm_test: '${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa',
-    stackstate_devops: '${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a',
+    stackstate_devops: '${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284',
     chart_testing: 'quay.io/helmpack/chart-testing:v3.14.0',
-    container_tools_dev: 'quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4',
   },
   helm: {
     repositories: {

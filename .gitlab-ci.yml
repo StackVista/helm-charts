@@ -3,7 +3,7 @@
 ################################################################
 beest_agent_trigger:
   allow_failure: true
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -22,7 +22,7 @@ beest_agent_trigger:
   stage: update
 beest_stackstate_trigger:
   allow_failure: true
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -1146,7 +1146,7 @@ open_updatecli_docker_images_mr:
   before_script:
     - .gitlab/configure_git.sh
     - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - update_helm_chart_docker_images
   rules:
@@ -1168,7 +1168,7 @@ push_artifactory-cleaner_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1207,7 +1207,7 @@ push_aws-pod-identity-webhook_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1246,7 +1246,7 @@ push_beacher-job_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1285,7 +1285,7 @@ push_chartmuseum_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1324,7 +1324,7 @@ push_ci-test_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1363,7 +1363,7 @@ push_gitlab-proxy_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1402,7 +1402,7 @@ push_gitlab-steward_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1441,7 +1441,7 @@ push_helm-reaper_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1480,7 +1480,7 @@ push_k8s-spot-termination-handler_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1519,7 +1519,7 @@ push_kommoner-operator_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1558,7 +1558,7 @@ push_notification-operator_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1597,7 +1597,7 @@ push_otel-demo_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1636,7 +1636,7 @@ push_petros-d-kubelet-stats-exporter_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1675,7 +1675,7 @@ push_prerelease_suse-observability-agent_to_public:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - push_suse-observability-agent_to_internal
   rules:
@@ -1719,7 +1719,7 @@ push_prerelease_suse-observability-values_to_public:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - push_suse-observability-values_to_internal
   rules:
@@ -1761,7 +1761,7 @@ push_receiveramplifier_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1800,7 +1800,7 @@ push_redirector_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1839,7 +1839,7 @@ push_sock-shop_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1878,7 +1878,7 @@ push_stackstate-monitoring_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1911,7 +1911,7 @@ push_stackstate-monitoring_to_internal:
   variables:
     CHART: stable/stackstate-monitoring
 push_suse-observability-agent_prerelease_to_rancher:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - push_suse-observability-agent_to_internal
   rules:
@@ -1953,7 +1953,7 @@ push_suse-observability-agent_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1994,7 +1994,7 @@ push_suse-observability-agent_to_public:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - push_prerelease_suse-observability-agent_to_public
   rules:
@@ -2031,7 +2031,7 @@ push_suse-observability-agent_to_public:
   variables:
     CHART: stable/suse-observability-agent
 push_suse-observability-agent_to_rancher:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - push_suse-observability-agent_prerelease_to_rancher
   rules:
@@ -2073,7 +2073,7 @@ push_suse-observability-values_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2112,7 +2112,7 @@ push_suse-observability-values_to_public:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - push_prerelease_suse-observability-values_to_public
   rules:
@@ -2156,7 +2156,7 @@ push_suse-observability_to_internal:
     - .gitlab/configure_git.sh
     - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
     - .gitlab/set_chart_release_version.sh stable/suse-observability $(echo $CI_COMMIT_TAG | sed -E 's/^suse-observability\/(.*)$/\1/')
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2226,7 +2226,7 @@ push_tenant-cleanup-controller_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2265,7 +2265,7 @@ push_tenantmanagement_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2304,7 +2304,7 @@ push_tenantprovisioning_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2343,7 +2343,7 @@ push_trafficmirror_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2430,7 +2430,7 @@ squash_push_updatecli_stackpacks:
   before_script:
     - .gitlab/configure_git.sh
     - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - update_helm_chart_stackpacks
   rules:
@@ -2449,7 +2449,7 @@ squash_push_updatecli_stackstate:
   before_script:
     - .gitlab/configure_git.sh
     - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   needs:
     - update_helm_chart_stackstate
   rules:
@@ -3406,7 +3406,7 @@ update_helm_chart_docker_images:
     - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
     - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
     - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $RUN_UPDATECLI
       when: always
@@ -3427,7 +3427,7 @@ update_helm_chart_stackpacks:
     - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
     - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
     - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $RUN_UPDATECLI_STACKPACKS
       when: always
@@ -3448,7 +3448,7 @@ update_helm_chart_stackstate:
     - export GITLAB_TOKEN="$HELM_CHARTS_PAT"
     - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
     - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - if: $RUN_UPDATECLI_STACKSTATE
       when: always
@@ -4216,7 +4216,7 @@ validate_updatecli_config:
     STACKSTATE_SOURCE_BRANCH: unset
     TARGET_BRANCH: unset
 validate_updatecli_diff:
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - changes:
         - updatecli/**/*

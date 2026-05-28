@@ -517,7 +517,7 @@ local updatecli_pipelines = [
 
 // Common skeleton for both apply and follow-up jobs in the updatecli flow.
 local updatecli_job_base(p) = {
-  image: variables.images.container_tools_dev,
+  image: variables.images.stackstate_devops,
   stage: 'update',
   variables: updatecli_variables {
     // Updatecli's gitlab SCM names its working branch
@@ -607,7 +607,7 @@ local validate_updatecli_config = {
     ],
   },
   validate_updatecli_diff: {
-    image: variables.images.container_tools_dev,
+    image: variables.images.stackstate_devops,
     stage: 'validate',
     // diff needs real branch values so updatecli can clone and run the
     // sources. TARGET_BRANCH follows the MR's actual target so the diff is
