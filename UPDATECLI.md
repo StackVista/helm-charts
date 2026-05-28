@@ -72,7 +72,7 @@ Targets are `yaml` kind with `scmid: default`. Key fields:
 
 ### Special Cases
 
-- **hadoop**: Docker-images publishes full tags such as `3.4.3-so1`. The HBase chart can derive a tag from `<hadoop version>-<hdfs.version>`, but updatecli writes the full selected tag to `hbase.hdfs.image.tag` so Helm pulls the exact image updatecli selected.
+- **hadoop**: Docker-images publishes full tags such as `3.4.3-so1`. The HBase chart stores only the suffix in `hbase.hdfs.version` and renders the final tag as `<hadoop version>-<hdfs.version>`. For HBase 2.5, the chart derives Hadoop `3.4.3`, so updatecli filters to `3.4.3-so<release_increment>` and writes only the suffix, such as `so1`.
 - **container-tools**: Updates 5 keys across 3 targets (suse-observability, victoria-metrics backup cron, suse-observability-agent). Matches only standard `main` tags; `1.8.6_dev-*` tags are CI/dev images and must not be used in customer-runtime chart defaults.
 - **kubernetes-rbac-agent (suse-observability target)**: May need to be temporarily disabled if the tag key doesn't exist on master yet (updatecli clones from remote).
 
