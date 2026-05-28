@@ -31,11 +31,11 @@ scms:
         passphrase: "{{ env .scm.gpgKeyPassEnv }}"
 
 sources:
-  stackstateReceiver:
-    name: "stackstate-receiver from {{ requiredEnv .stackstate.branchEnv }}"
+  stackstateServer:
+    name: "stackstate-server from {{ requiredEnv .stackstate.branchEnv }}"
     kind: dockerimage
     spec:
-      image: "quay.io/stackstate/stackstate-receiver"
+      image: "quay.io/stackstate/stackstate-server"
       architecture: "linux/amd64"
       tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.[0-9]+-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+$"
       versionfilter:
@@ -43,26 +43,31 @@ sources:
         regex: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.([0-9]+)-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+$"
         pattern: "20060102150405"
   stackgraphVersion:
-    name: "stackgraph version (stackvista/stackstate {{ requiredEnv .stackstate.branchEnv }})"
+    name: "stackgraph version (com.stackstate.stackgraph.version label on stackstate-server, {{ requiredEnv .stackstate.branchEnv }})"
     kind: shell
+    # Read the version from the same build whose server tag we just resolved,
+    # so the stackgraph version written to values.yaml is pinned to that exact
+    # image rather than whatever currently sits on the stackstate branch HEAD.
+    dependson:
+      - source#stackstateServer
     spec:
-      # Updatecli's shell resource does not inherit custom env vars by default;
-      # GITLAB_TOKEN has to be passed through explicitly.
-      environments:
-        - name: GITLAB_TOKEN
       command: |
         set -euo pipefail
-        curl -fsS \
-          --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
-          "https://gitlab.com/api/v4/projects/stackvista%2Fstackstate/repository/files/stackgraph_version/raw?ref={{ requiredEnv .stackstate.branchEnv }}" \
-          | tr -d '[:space:]'
+        VERSION="$(skopeo inspect \
+          "docker://quay.io/stackstate/stackstate-server:{{ source "stackstateServer" }}" \
+          | jq -r '.Labels["com.stackstate.stackgraph.version"]')"
+        if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+          echo "com.stackstate.stackgraph.version label missing on stackstate-server image" >&2
+          exit 1
+        fi
+        printf '%s' "$VERSION"
 
 targets:
   stackstateAppVersion:
     name: "stackstate appVersion (suse-observability Chart.yaml)"
     kind: yaml
     scmid: "default"
-    sourceid: stackstateReceiver
+    sourceid: stackstateServer
     spec:
       file: "stable/suse-observability/Chart.yaml"
       key: "$.appVersion"
@@ -70,7 +75,7 @@ targets:
     name: "stackstate image tag (suse-observability values.yaml)"
     kind: yaml
     scmid: "default"
-    sourceid: stackstateReceiver
+    sourceid: stackstateServer
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.all.image.tag"
