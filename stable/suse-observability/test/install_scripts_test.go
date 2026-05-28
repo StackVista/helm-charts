@@ -26,7 +26,7 @@ func TestGetImages(t *testing.T) {
 	), images)
 }
 
-func TestChangeImageRepo(t *testing.T) {
+func TestChangeImageSourceScriptRewritesImages(t *testing.T) {
 	curDir, err := os.Getwd()
 	require.NoError(t, err)
 
@@ -45,6 +45,8 @@ func TestChangeImageRepo(t *testing.T) {
 	expectedImages := strings.ReplaceAll(currentImages, "quay.io/stackstate", fmt.Sprintf("%s/%s", targetReg, targetRepo))
 	RunChangeImageScript(t, helmDir, targetReg, targetRepo)
 	renamedImages := RunGetImagesScript(t, helmDir)
+
+	require.NotContains(t, renamedImages, fmt.Sprintf("%s/stackstate/", targetReg))
 	require.Equal(t, expectedImages, renamedImages)
 }
 
