@@ -8,11 +8,15 @@ NO_COLOR='\033[0m'
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# if Macos, use gsed
-sed_bin="sed"
+# If macOS has GNU sed, use it. Otherwise use BSD sed's in-place syntax.
+sed_inplace=(sed -i)
 if [ "$(uname)" == "Darwin" ] ;
 then
-  sed_bin="gsed"
+  if command -v gsed >/dev/null 2>&1; then
+    sed_inplace=(gsed -i)
+  else
+    sed_inplace=(sed -i '')
+  fi
 fi
 
 function usage() {
@@ -73,10 +77,10 @@ fi
 
 function updateDockerImagesInValues() {
   echo "Updating values.yaml to use new docker images"
-  ${sed_bin} -i "s#registry: [^/:]\+\$#registry: $docker_registry_to#g" "$helm_chart_dir/values.yaml"
-  ${sed_bin} -i "s#repository: [^/:]\+\/[^/:]\+\/\([^/:]\+\)\$#repository: $docker_registry_to/$docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
-  ${sed_bin} -i "s#repository: [^/:]\+\/\([^/:]\+\)\$#repository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
-  ${sed_bin} -i "s#spotlightRepository: [^/:]\+\/\([^/:]\+\)\$#spotlightRepository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
+  "${sed_inplace[@]}" "s#registry: [^/:]\{1,\}\$#registry: $docker_registry_to#g" "$helm_chart_dir/values.yaml"
+  "${sed_inplace[@]}" "s#repository: [^/:]\{1,\}\/[^/:]\{1,\}\/\([^/:]\{1,\}\)\$#repository: $docker_registry_to/$docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
+  "${sed_inplace[@]}" "s#repository: [^/:]\{1,\}\/\([^/:]\{1,\}\)\$#repository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
+  "${sed_inplace[@]}" "s#spotlightRepository: [^/:]\{1,\}\/\([^/:]\{1,\}\)\$#spotlightRepository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
 
   # Set the global image registry
   DOCKER_REGISTRY_TO="$docker_registry_to" yq -i -e  '.global.imageRegistry = env(DOCKER_REGISTRY_TO)' "$helm_chart_dir/values.yaml"
