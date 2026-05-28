@@ -18,7 +18,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | elasticsearch | stable/suse-observability/values.yaml | $.elasticsearch.imageTag | Tag format `<semver>-so<release_increment>` |
 | elasticsearch-exporter | stable/suse-observability/values.yaml | $.elasticsearch.prometheus-elasticsearch-exporter.image.tag | Tag format: `<semver>-so<release_increment>` |
 | envoy | stable/suse-observability/values.yaml | $.stackstate.components.router.image.tag | |
-| hadoop | stable/suse-observability/values.yaml | $.hbase.hdfs.version | Tag format `<semver>-so<release_increment>`; transformer strips the semver prefix so the chart stores only the suffix (for example, `so1`) |
+| hadoop | stable/suse-observability/values.yaml | $.hbase.hdfs.image.tag | Tag format `<semver>-so<release_increment>`; writes the full tag so the chart pulls exactly the image selected by updatecli |
 | jmx-exporter | stable/suse-observability/values.yaml | $.kafka.metrics.jmx.image.tag | Tag format: `<semver>-so<release_increment>` |
 | kafka | stable/suse-observability/values.yaml | $.kafka.image.tag, $.stackstate.components.kafkaTopicCreate.image.tag | Tag format `<semver>-so<release_increment>` |
 | kubernetes-rbac-agent | stable/suse-observability/values.yaml | $.kubernetes-rbac-agent.containers.rbacAgent.image.tag | **Disabled:** tag key must be merged to master first (updatecli clones from remote) |

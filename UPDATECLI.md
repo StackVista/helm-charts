@@ -56,17 +56,10 @@ Every source is a `dockerimage` kind pulling from `quay.io/stackstate/<name>` wi
 
 ### Tag Filter Patterns
 
-Images use a small set of tag formats. When adding a new image, pick the matching `tagfilter` and `versionfilter`:
-
-| Format | Example Tag | `tagfilter` | `versionfilter` regex |
-|--------|-------------|-------------|----------------------|
-| Docker-images semver | `3.4.3-so1` | `^[0-9]+\.[0-9]+\.[0-9]+-so[0-9]+$` | `^([0-9]+\.[0-9]+\.[0-9]+-so[0-9]+)$` |
-| Standard | `v1.109.0-614527d8-release-138` | `.*-[a-f0-9]{8}-release-[0-9]+$` | `.*-(\d+)$` |
-| Reversed | `f40221cf-76-release` | `^[a-f0-9]{8}-[0-9]+-release$` | `^[a-f0-9]{8}-([0-9]+)-release$` |
-| GitHub main | `1.8.6-fa52bb17-main-4` | `^[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$` | `.*-(\d+)$` |
-| Semver build | `1.8.3-573` | `^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+$` | `.*-(\d+)$` |
-
-Most use `versionfilter.kind: regex/semver`. Docker-images semver streams use the full tag for ordering; older release streams usually extract a build number.
+Images use a small set of tag formats. Keep the source entry in
+`updatecli/updatecli.d/update-docker-images/update.yaml` close to the image it
+tracks, and keep the reference table in
+[`updatecli-image-mapping.md`](updatecli/updatecli-image-mapping.md).
 
 ## Target Configuration
 
@@ -79,7 +72,7 @@ Targets are `yaml` kind with `scmid: default`. Key fields:
 
 ### Special Cases
 
-- **hadoop**: Docker-images publishes full tags such as `3.4.3-so1`. The HBase chart still renders the final HDFS image tag as `<hadoop version>-<hbase.hdfs.version>`, so a `transformers.findsubmatch` strips the semver prefix and writes only the suffix, such as `so1`.
+- **hadoop**: Docker-images publishes full tags such as `3.4.3-so1`. The HBase chart can derive a tag from `<hadoop version>-<hdfs.version>`, but updatecli writes the full selected tag to `hbase.hdfs.image.tag` so Helm pulls the exact image updatecli selected.
 - **container-tools**: Updates 5 keys across 3 targets (suse-observability, victoria-metrics backup cron, suse-observability-agent). Matches only standard `main` tags; `1.8.6_dev-*` tags are CI/dev images and must not be used in customer-runtime chart defaults.
 - **kubernetes-rbac-agent (suse-observability target)**: May need to be temporarily disabled if the tag key doesn't exist on master yet (updatecli clones from remote).
 

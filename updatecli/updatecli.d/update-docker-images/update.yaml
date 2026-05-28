@@ -365,16 +365,12 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: hadoop
-    transformers:
-      # The hbase chart renders the full image tag as
-      # "<hadoop version>-<hbase.hdfs.version>". Docker-images publishes the
-      # full tag, so keep only the suffix here (for example: 3.4.3-so1 -> so1).
-      - findsubmatch:
-          pattern: '^\d+\.\d+\.\d+-(.+)$'
-          captureindex: 1
     spec:
       file: "stable/suse-observability/values.yaml"
-      key: "$.hbase.hdfs.version"
+      # hdfs.image.tag overrides the hbase chart's derived
+      # "<hadoop version>-<hdfs.version>" fallback, so keep the exact Docker
+      # tag selected by updatecli.
+      key: "$.hbase.hdfs.image.tag"
   jmxExporter:
     name: "jmx-exporter"
     kind: yaml
