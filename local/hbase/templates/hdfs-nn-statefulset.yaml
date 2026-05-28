@@ -24,9 +24,8 @@ volumeMounts:
 {{- end -}}
 
 {{- define "hbase.hdfs.namenode.container.main" -}}
-{{- $hdfsVersion := include "hdfs.version" . -}}
 name: namenode
-image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hdfs.image.repository }}:{{ default (printf "%s-%s" $hdfsVersion .Values.hdfs.version) .Values.hdfs.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hdfs.image.repository }}:{{ default .Values.hdfs.version .Values.hdfs.image.tag }}"
 imagePullPolicy: {{ .Values.hdfs.image.pullPolicy }}
 args:
 - /entrypoint.sh

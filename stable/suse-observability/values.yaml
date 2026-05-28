@@ -1793,8 +1793,8 @@ hbase:
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
   hdfs:
-    # hbase.hdfs.version -- HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli.
-    version: java21-9-16889a20-release-402
+    # hbase.hdfs.version -- Full HDFS image tag. Updated by updatecli.
+    version: 3.4.3-so1
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null

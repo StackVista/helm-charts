@@ -64,15 +64,8 @@ sources:
     name: "hadoop"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/hadoop"
-      architecture: "linux/amd64"
-      # The HBase 2.5 chart derives Hadoop 3.4.3 in local/hbase/templates/_helpers.yaml.
-      # Keep this filter aligned with that helper while hbase.hdfs.version stores only
-      # the suffix appended to the derived version.
-      tagfilter: "^3\\.4\\.3-so[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: "^3\\.4\\.3-so([0-9]+)$"
   jmxExporter:
     name: "jmx-exporter"
     kind: dockerimage
@@ -372,10 +365,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: hadoop
-    transformers:
-      - findsubmatch:
-          pattern: '^3\.4\.3-(.+)$'
-          captureindex: 1
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.hbase.hdfs.version"

@@ -262,17 +262,6 @@ Console extra environment variables for all processes inherited through `console
 {{- end -}}
 
 {{/*
-Derive hadoop version
-*/}}
-{{- define "hdfs.version" -}}
-{{- if eq .Values.version "2.5" }}
-{{- "3.4.3" }}
-{{- else }}
-{{- fail "Only HBase version 2.5 is supported at the moment" }}
-{{- end }}
-{{- end -}}
-
-{{/*
 Return the proper HBase common labels for StatefulSets and Deployments.
 Uses global.commonLabels only.
 */}}
