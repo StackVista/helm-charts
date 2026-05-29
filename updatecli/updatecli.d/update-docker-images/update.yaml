@@ -656,8 +656,14 @@ targets:
       command: |
         set -e
 
+        PYTHON_BIN="$(command -v python3.11 || command -v python3 || true)"
+        if [ -z "$PYTHON_BIN" ]; then
+          echo "python3 is required to bump the suse-observability-agent chart version" >&2
+          exit 1
+        fi
+
         # Ensure PyYAML is available for bump_chart_version.py
-        python3.11 -m pip install --quiet pyyaml
+        "$PYTHON_BIN" -m pip install --quiet pyyaml
 
         VALUES_FILE="stable/suse-observability-agent/values.yaml"
         CHART_YAML="stable/suse-observability-agent/Chart.yaml"
@@ -676,7 +682,7 @@ targets:
         helm repo add stackstate https://helm.stackstate.io >/dev/null 2>&1 || true
         helm repo update >/dev/null 2>&1 || true
 
-        python3.11 scripts/bump-chart-version/bump_chart_version.py suse-observability-agent
+        "$PYTHON_BIN" scripts/bump-chart-version/bump_chart_version.py suse-observability-agent
         echo "Bumped suse-observability-agent chart version"
       changedif:
         kind: file/checksum
