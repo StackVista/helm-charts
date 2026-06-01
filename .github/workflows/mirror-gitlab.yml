@@ -47,7 +47,7 @@ concurrency:
 
 jobs:
   mirror:
-    runs-on: github-runner-small
+    runs-on: small
     steps:
       - name: Generate GitHub App token
         id: app-token
