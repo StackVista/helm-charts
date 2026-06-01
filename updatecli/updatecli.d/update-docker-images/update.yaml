@@ -132,23 +132,16 @@ sources:
     spec:
       <<: *dockerSoSpec
       image: "quay.io/stackstate/zookeeper"
-  ###################
-  # Images with other tags
-  ###################
   envoy:
     name: "envoy"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/envoy"
-      architecture: "linux/amd64"
-      # this regex support the format `1.38.0-1.1-release`
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+-release$"
-      versionfilter:
-        kind: regex/semver
-        # with `*` updatecli excludes pre-releases
-        pattern: ">=0.0.0-0"
-        # here the captured group is just `1.38.0-1.1`
-        regex: "^([0-9]+\\.[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+)-release$"
+
+  ###################
+  # Images with other tags
+  ###################
   httpHeaderInjectorProxy:
     name: "http-header-injector-proxy"
     kind: dockerimage
