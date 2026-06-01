@@ -1,0 +1,136 @@
+# Mirror GitLab → GitHub
+#
+# Temporary workflow for the GitLab-to-GitHub migration period. Syncs all
+# branches and tags from the GitLab helm-charts repo to this GitHub repo.
+# Will be removed after the full cutover to GitHub.
+#
+# Why not `git push --mirror`?
+#   The GitLab repo has many internal refs (merge requests, pipelines,
+#   keep-around) that cause `--mirror` push to fail with internal errors.
+#   Instead, we clone normally (which skips those refs) and push branches
+#   and tags separately.
+#
+# Why rebase master?
+#   GitHub-only files (like this workflow under .github/) live on master
+#   but don't exist in GitLab. We can't commit them to GitLab either,
+#   because a separate public GitHub mirror of the same GitLab repo would
+#   pick them up and trigger unwanted workflows. So we rebase GitHub-only
+#   commits on top of GitLab's master each sync, preserving both sides.
+#
+# Change detection:
+#   Before cloning, we run `git ls-remote` against GitLab and hash the
+#   output (filtered to refs/heads/ and refs/tags/ only — ignoring GitLab
+#   internal refs that churn frequently). The hash is used as a cache key
+#   via actions/cache (stored in GitHub's hosted cache service, not the
+#   S3 runner cache). A cache hit means nothing changed — skip the clone.
+#   Cache auto-evicts after 7 days; a stale cache just means one extra
+#   full sync, no harm done.
+#
+# Branch naming caveat:
+#   This workflow force-pushes all GitLab branches to GitHub. Branches
+#   created directly on GitHub are safe (they don't exist in GitLab, so
+#   they won't be touched). However, if a GitHub-only branch has the same
+#   name as a GitLab branch, it will be overwritten. Use a prefix like
+#   `gh/` for GitHub-only branches to avoid collisions.
+#
+
+name: Mirror GitLab
+
+on:
+  # schedule:
+  #   - cron: '0 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: mirror-gitlab
+  cancel-in-progress: true
+
+jobs:
+  mirror:
+    runs-on: github-runner-small
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Check for GitLab changes
+        id: check-changes
+        env:
+          GITLAB_URL: https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/stackvista/devops/helm-charts.git
+        run: |
+          REFS_HASH=$(git ls-remote "$GITLAB_URL" \
+            | grep -E '^\S+\s+refs/(heads|tags)/' \
+            | sort \
+            | sha256sum \
+            | cut -d' ' -f1)
+          echo "refs_hash=$REFS_HASH" >> "$GITHUB_OUTPUT"
+          mkdir -p /tmp/cache
+          echo "$REFS_HASH" > /tmp/cache/refs-hash.txt
+
+      - name: Check cache for previous sync
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/cache
+          key: gitlab-mirror-lsremote-${{ steps.check-changes.outputs.refs_hash }}
+
+      - name: No changes detected
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: echo "::notice::No changes detected in GitLab refs since last sync. Skipping."
+
+      - name: Clone from GitLab
+        if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          GITLAB_URL: https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/stackvista/devops/helm-charts.git
+        run: git clone "$GITLAB_URL" gitlab-repo
+
+      - name: Add GitHub remote and fetch master
+        id: fetch-github
+        if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          GITHUB_REPO_URL: https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/StackVista/helm-charts-internal.git
+        working-directory: gitlab-repo
+        run: |
+          git remote add github "$GITHUB_REPO_URL"
+          if git fetch github master; then
+            echo "has_github_master=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::GitHub master branch not found (first run?). Will push GitLab master directly."
+            echo "has_github_master=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push non-master branches
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: gitlab-repo
+        run: |
+          for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin/ \
+            | grep -v HEAD \
+            | grep -v '^origin/master$'); do
+            branch="${ref#origin/}"
+            echo "Pushing branch: $branch"
+            git push github "refs/remotes/origin/$branch:refs/heads/$branch" --force
+          done
+
+      - name: Push tags
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: gitlab-repo
+        run: git push github --tags --force
+
+      - name: Rebase GitHub master onto GitLab master
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: gitlab-repo
+        run: |
+          if [ "${{ steps.fetch-github.outputs.has_github_master }}" = "true" ]; then
+            git checkout -b github-master github/master
+            if ! git rebase origin/master; then
+              echo "::error::Rebase of GitHub-only commits onto GitLab master failed due to conflicts. Manual intervention required."
+              git rebase --abort
+              exit 1
+            fi
+            git push github github-master:refs/heads/master --force
+          else
+            git push github origin/master:refs/heads/master --force
+          fi
