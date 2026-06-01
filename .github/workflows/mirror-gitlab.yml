@@ -87,6 +87,13 @@ jobs:
           GITLAB_URL: https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/stackvista/devops/helm-charts.git
         run: git clone "$GITLAB_URL" gitlab-repo
 
+      - name: Configure git identity
+        if: steps.cache.outputs.cache-hit != 'true'
+        working-directory: gitlab-repo
+        run: |
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+
       - name: Add GitHub remote and fetch master
         id: fetch-github
         if: steps.cache.outputs.cache-hit != 'true'
