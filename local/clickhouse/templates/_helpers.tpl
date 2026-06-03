@@ -226,6 +226,18 @@ Precedence order: .Values.commonLabels (higher) -> .Values.global.commonLabels (
 {{- end -}}
 
 {{/*
+Backup-related pod annotations for the ClickHouse StatefulSet.
+Emitted only when global.backup.enabled is true.
+*/}}
+{{- define "clickhouse.backup.podAnnotations" -}}
+{{- if .Values.global.backup.enabled }}
+ad.stackstate.com/backup.check_names: '["openmetrics"]'
+ad.stackstate.com/backup.init_configs: "[{}]"
+ad.stackstate.com/backup.instances: '[ { "prometheus_url": "http://%%host%%:7171/metrics", "namespace": "stackstate", "metrics": ["clickhouse_backup_*"] } ]'
+{{- end }}
+{{- end -}}
+
+{{/*
 Return the proper ClickHouse pod labels
 Merges clickhouse.commonLabels with podLabels, with podLabels taking precedence
 Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
