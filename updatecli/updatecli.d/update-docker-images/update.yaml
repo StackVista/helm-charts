@@ -3,7 +3,7 @@ pipelineid: docker-images
 
 scms:
   default:
-    kind: gitlab
+    kind: github
     spec:
       owner: "{{ .scm.owner }}"
       repository: "{{ .scm.repository }}"
@@ -14,12 +14,8 @@ scms:
       user: "{{ env .scm.userEnv }}"
       email: "{{ env .scm.emailEnv }}"
       token: "{{ requiredEnv .scm.tokenEnv }}"
+      username: "x-access-token"
       workingbranchseparator: "-"
-      type: ""
-      gpg:
-        signingkey: |-
-{{ env .scm.gpgKeyEnv | nindent 10 }}
-        passphrase: "{{ env .scm.gpgKeyPassEnv }}"
 
 sources:
   ###################

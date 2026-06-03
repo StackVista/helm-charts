@@ -1,0 +1,240 @@
+# Updatecli
+#
+# All updatecli-related CI in one file. Two trigger modes:
+#
+#  1. `push` to any branch where `updatecli/**` changed — runs the read-only `validate_config`
+#     and `validate_diff` jobs to give reviewers fast feedback on updatecli config edits before
+#     they're merged. Replaces GitLab's `validate_updatecli_config` / `validate_updatecli_diff`
+#     jobs from `.gitlab-ci.jsonnet`.
+#
+#  2. `workflow_dispatch` — manually runs one of three updatecli pipelines (`docker_images`,
+#     `stackstate`, `stackpacks`). Each lives under `updatecli/updatecli.d/<dir>/`; the `apply`
+#     job runs `updatecli pipeline apply`, the `follow_up` job either squash-pushes directly to
+#     the target branch (stackstate/stackpacks) or opens a PR (docker_images). Replaces GitLab's
+#     `RUN_UPDATECLI*` pipeline-trigger variable model + the `update_helm_chart_X` +
+#     `squash_push_updatecli_X` / `open_updatecli_X_mr` job families. The squash-push vs PR
+#     decision was generated as separate jobs per pipeline in GitLab; here it's a single
+#     `follow_up` job that branches at runtime on the `direct_push` output. PRs are opened via
+#     `gh` instead of `glab`.
+#
+# Gating:
+#   - validate jobs are read-only and always run on push (no `PUBLISH_ENABLED` check).
+#   - apply / follow_up are gated on `vars.PUBLISH_ENABLED == 'true'` (side-effecting).
+#
+# Per-job triggers use `github.event_name` to route push events to validate-only and dispatch
+# events to apply/follow_up, so the workflow file describes the full lifecycle in one place.
+name: Updatecli
+
+on:
+  push:
+    paths:
+      - 'updatecli/**'
+  workflow_dispatch:
+    inputs:
+      pipeline:
+        description: Updatecli pipeline to run
+        type: choice
+        required: true
+        options: [docker_images, stackstate, stackpacks]
+      target_branch:
+        description: Branch updatecli should commit/push to
+        type: string
+        required: true
+      stackstate_source_branch:
+        description: Source branch for stackstate pipeline
+        type: string
+        default: master
+      stackpacks_source_branch:
+        description: Source branch for stackpacks pipeline
+        type: string
+        default: master
+
+jobs:
+  # What: yamllint on `updatecli/values.d/values.yaml` and existence check on each pipeline's
+  # `updatecli/updatecli.d/<dir>/update.yaml`. Read-only.
+  # Why: catches typos / missing pipeline files before the manual apply runs.
+  # GitLab equivalent: `validate_updatecli_config` job in `.gitlab-ci.jsonnet`.
+  # Trigger: push events where `updatecli/**` changed (workflow-level path filter handles the
+  # gating; we additionally check event_name so this job is never matched by workflow_dispatch).
+  validate_config:
+    if: github.event_name == 'push'
+    runs-on: docker
+    container:
+      image: quay.io/helmpack/chart-testing:v3.14.0
+      # Run as root inside the container — avoids EACCES on /__w/_temp where
+      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
+      options: --user 0:0
+    steps:
+      - uses: actions/checkout@v5
+      - run: |
+          test -f updatecli/values.d/values.yaml
+          yamllint -d "{rules: {document-start: disable, line-length: disable}}" updatecli/values.d/values.yaml
+          for dir in update-docker-images update-stackstate update-stackpacks; do
+            test -f "updatecli/updatecli.d/$dir/update.yaml"
+          done
+
+  # What: runs `updatecli pipeline diff` against each updatecli pipeline so changes to the
+  # update.yaml configs surface in CI as a planned diff.
+  # Why: lets reviewers see what an updatecli config change would actually do before merging.
+  # GitLab equivalent: `validate_updatecli_diff` job in `.gitlab-ci.jsonnet`. The updatecli
+  # configs read auth from `$HELM_CHARTS_PAT` (per `updatecli/values.d/values.yaml` tokenEnv:);
+  # for the read-only `diff` action we populate it from the auto-provisioned `github.token`,
+  # which has the workflow's default `contents: read` permission on this repo.
+  validate_diff:
+    if: github.event_name == 'push'
+    runs-on: docker
+    container:
+      image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+      # Run as root inside the container — avoids EACCES on /__w/_temp where
+      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
+      options: --user 0:0
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    env:
+      TARGET_BRANCH: ${{ github.base_ref || 'master' }}
+      STACKSTATE_SOURCE_BRANCH: master
+      STACKPACKS_SOURCE_BRANCH: master
+    steps:
+      - uses: actions/checkout@v5
+      - env:
+          HELM_CHARTS_PAT: ${{ github.token }}
+        run: |
+          for dir in update-docker-images update-stackstate update-stackpacks; do
+            updatecli pipeline diff --config "updatecli/updatecli.d/$dir/" --values updatecli/values.d/values.yaml
+          done
+
+  # What: configures git as the GitHub App bot, then runs `updatecli pipeline apply` against the
+  # selected pipeline's config. Exposes 6 outputs the follow-up job needs (`pipelineid`, `dir`,
+  # `direct_push`, `commit_msg`, `pr_title`, `working_branch`); `working_branch` follows
+  # updatecli's `updatecli-<target>-<pipelineid>` naming convention.
+  # Why: actually performs the version bumps on a working branch (commits land via updatecli's own
+  # SCM logic).
+  # GitLab equivalent: `update_helm_chart_X` jobs (X = docker_images/stackstate/stackpacks)
+  # generated in `.gitlab-ci.jsonnet`.
+  apply:
+    if: github.event_name == 'workflow_dispatch' && vars.PUBLISH_ENABLED == 'true'
+    runs-on: docker
+    container:
+      image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+      # Run as root inside the container — avoids EACCES on /__w/_temp where
+      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
+      options: --user 0:0
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    outputs:
+      pipelineid:     ${{ steps.meta.outputs.pipelineid }}
+      dir:            ${{ steps.meta.outputs.dir }}
+      direct_push:    ${{ steps.meta.outputs.direct_push }}
+      commit_msg:     ${{ steps.meta.outputs.commit_msg }}
+      pr_title:       ${{ steps.meta.outputs.pr_title }}
+      working_branch: ${{ steps.meta.outputs.working_branch }}
+    env:
+      TARGET_BRANCH:            ${{ inputs.target_branch }}
+      STACKSTATE_SOURCE_BRANCH: ${{ inputs.stackstate_source_branch }}
+      STACKPACKS_SOURCE_BRANCH: ${{ inputs.stackpacks_source_branch }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - id: meta
+        env:
+          PIPELINE: ${{ inputs.pipeline }}
+          TARGET: ${{ inputs.target_branch }}
+        run: |
+          case "$PIPELINE" in
+            docker_images)
+              pipelineid="docker-images"
+              dir="update-docker-images"
+              direct_push="false"
+              pr_title="Bump helm chart docker images"
+              commit_msg=""
+              ;;
+            stackstate)
+              pipelineid="stackstate"
+              dir="update-stackstate"
+              direct_push="true"
+              pr_title=""
+              commit_msg="Bump StackState and StackGraph versions"
+              ;;
+            stackpacks)
+              pipelineid="stackpacks"
+              dir="update-stackpacks"
+              direct_push="true"
+              pr_title=""
+              commit_msg="Bump StackPacks version"
+              ;;
+          esac
+          {
+            echo "pipelineid=$pipelineid"
+            echo "dir=$dir"
+            echo "direct_push=$direct_push"
+            echo "pr_title=$pr_title"
+            echo "commit_msg=$commit_msg"
+            echo "working_branch=updatecli-${TARGET}-${pipelineid}"
+          } >> "$GITHUB_OUTPUT"
+      - name: Apply updatecli pipeline
+        env:
+          GH_APP_SLUG:      ${{ steps.app-token.outputs.app-slug }}
+          GH_TOKEN:         ${{ steps.app-token.outputs.token }}
+          HELM_CHARTS_PAT:  ${{ steps.app-token.outputs.token }}
+          UPDATE_CLI_USER:  ${{ steps.app-token.outputs.app-slug }}[bot]
+          UPDATE_CLI_EMAIL: ${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com
+        run: |
+          ./scripts/ci/configure_git.sh
+          updatecli pipeline apply \
+            -c "updatecli/updatecli.d/${{ steps.meta.outputs.dir }}/" \
+            -v updatecli/values.d/values.yaml
+
+  # What: branches on the `apply` job's `direct_push` output. If true, squash-pushes the working
+  # branch onto the target branch via `updatecli_squash_push.sh` (stackstate/stackpacks). If false,
+  # opens a PR via `open_updatecli_pr.sh` (docker_images), which uses `gh pr create`.
+  # Why: GitLab generated either `squash_push_updatecli_X` or `open_updatecli_X_mr` per pipeline;
+  # on GitHub we collapse both into one job that branches at runtime.
+  # GitLab equivalent: `squash_push_updatecli_X` (when `directPush=true`) or
+  # `open_updatecli_X_mr` (when `directPush=false`) jobs from `.gitlab-ci.jsonnet`. PRs are now
+  # created via `gh pr create` rather than `glab mr create`.
+  follow_up:
+    needs: apply
+    if: github.event_name == 'workflow_dispatch' && vars.PUBLISH_ENABLED == 'true'
+    runs-on: docker
+    container:
+      image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+      # Run as root inside the container — avoids EACCES on /__w/_temp where
+      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
+      options: --user 0:0
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    env:
+      TARGET_BRANCH:    ${{ inputs.target_branch }}
+      UPDATECLI_BRANCH: ${{ needs.apply.outputs.working_branch }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - name: Configure git
+        env:
+          GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GH_TOKEN:    ${{ steps.app-token.outputs.token }}
+        run: ./scripts/ci/configure_git.sh
+      - name: Squash-push (direct) OR open PR
+        env:
+          GH_TOKEN:   ${{ steps.app-token.outputs.token }}
+          COMMIT_MSG: ${{ needs.apply.outputs.commit_msg }}
+          PR_TITLE:   ${{ needs.apply.outputs.pr_title }}
+        run: |
+          if [ "${{ needs.apply.outputs.direct_push }}" = "true" ]; then
+            ./scripts/ci/updatecli_squash_push.sh \
+              "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "$COMMIT_MSG"
+          else
+            ./scripts/ci/open_updatecli_pr.sh \
+              "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "$PR_TITLE"
+          fi

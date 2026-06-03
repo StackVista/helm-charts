@@ -1,13 +1,11 @@
 scm:
-  kind: gitlab
-  owner: stackvista
-  repository: devops/helm-charts
+  kind: github
+  owner: StackVista
+  repository: helm-charts-internal
   branchEnv: TARGET_BRANCH
   userEnv: UPDATE_CLI_USER
   emailEnv: UPDATE_CLI_EMAIL
-  tokenEnv: GITLAB_TOKEN
-  gpgKeyEnv: UPDATE_CLI_PGP_KEY
-  gpgKeyPassEnv: UPDATE_CLI_PGP_PASSPHRASE
+  tokenEnv: HELM_CHARTS_PAT
 
 # Source of truth for the StackGraph version consumed by the
 # update-stackstate pipeline (read via the GitLab raw-file API).

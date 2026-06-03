@@ -4073,7 +4073,7 @@ validate_suse-observability-agent:
     - .gitlab/validate_kubeconform.sh stable/suse-observability-agent
   stage: validate
 validate_suse-observability-agent_images:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -4102,7 +4102,7 @@ validate_suse-observability-values:
     - .gitlab/validate_kubeconform.sh stable/suse-observability-values
   stage: validate
 validate_suse-observability_images:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
   rules:
     - changes:
         - stable/suse-observability/**/*

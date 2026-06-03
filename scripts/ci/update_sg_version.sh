@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+chart_path=$1
+tag_path_prefix=$2
+
+sg_version="${UPDATE_STACKGRAPH_VERSION}"
+values="${chart_path}/values.yaml"
+
+# Check if version changed
+current_version=$(yq e ".${tag_path_prefix}stackgraph.version" "${values}")
+
+echo "Current StackGraph version: ${current_version}."
+echo "New StackGraph version: ${sg_version}."
+
+if ! [[ "${sg_version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Failed to get valid stackgraph version."
+  exit 1
+fi
+
+if [ "${sg_version}" == "${current_version}" ]; then
+  echo "No change in StackGraph version, skipping update."
+else
+  # Update StackGraph version
+  yq e ".${tag_path_prefix}stackgraph.version = \"${sg_version}\"" -i "${values}"
+
+  # update Readme
+  readme="${chart_path}/README.md"
+  new_readme=".readme.md"
+  sed -E "s/${tag_path_prefix}stackgraph\.version \| string \| \`.*\` \|/${tag_path_prefix}stackgraph.version | string | \`\"${sg_version}\"\` |/" "${readme}" > "${new_readme}"
+  mv "${new_readme}" "${readme}"
+
+  git add "${values}" "${readme}"
+fi

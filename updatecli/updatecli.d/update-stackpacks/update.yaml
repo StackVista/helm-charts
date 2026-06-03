@@ -3,7 +3,7 @@ pipelineid: stackpacks
 
 scms:
   default:
-    kind: gitlab
+    kind: github
     spec:
       owner: "{{ .scm.owner }}"
       repository: "{{ .scm.repository }}"
@@ -14,21 +14,17 @@ scms:
       user: "{{ env .scm.userEnv }}"
       email: "{{ env .scm.emailEnv }}"
       token: "{{ requiredEnv .scm.tokenEnv }}"
+      username: "x-access-token"
       workingbranchseparator: "-"
       # workingbranch defaults to true: updatecli creates
       # updatecli-<branch>-<pipelineid> based on TARGET_BRANCH and force-pushes
-      # its per-target commits there. The CI follow-up job either opens an MR
+      # its per-target commits there. The CI follow-up job either opens a PR
       # from that working branch into TARGET_BRANCH, or squash-merges it via
-      # .gitlab/updatecli_squash_push.sh. We rely on workingbranch=true
-      # because workingbranch=false in updatecli's gitlab SCM initialises the
+      # scripts/ci/updatecli_squash_push.sh. We rely on workingbranch=true
+      # because workingbranch=false in updatecli's github SCM initialises the
       # working tree from the repo's default HEAD (master) instead of
       # `branch:`, which produces wrong file contents when TARGET_BRANCH
       # diverges from master.
-      type: ""
-      gpg:
-        signingkey: |-
-{{ env .scm.gpgKeyEnv | nindent 10 }}
-        passphrase: "{{ env .scm.gpgKeyPassEnv }}"
 
 sources:
   stackpacks:

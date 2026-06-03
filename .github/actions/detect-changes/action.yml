@@ -1,0 +1,21 @@
+name: Detect changed charts
+description: Computes the per-chart matrix from the current diff.
+outputs:
+  stable:
+    description: JSON array of affected chart names under `stable/` (independently published)
+    value: ${{ steps.run.outputs.stable }}
+  local:
+    description: JSON array of affected chart names under `local/` (consumed only as file:// deps)
+    value: ${{ steps.run.outputs.local }}
+  resource_usage_changed:
+    description: "true if test/, suse-observability-values, or suse-observability was touched"
+    value: ${{ steps.run.outputs.resource_usage_changed }}
+runs:
+  using: composite
+  steps:
+    # Caller is responsible for `actions/checkout@v5` with `fetch-depth: 0`
+    # BEFORE invoking this composite action — the runner can't load
+    # `./.github/actions/detect-changes/action.yml` until the repo is on disk.
+    - id: run
+      shell: bash
+      run: ./scripts/ci/detect-changes.sh

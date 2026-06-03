@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Create backup scripts zip file
         run: |
           tar czf backup-scripts-${GITHUB_REF_NAME#suse-observability/}.tar.gz -C stable/suse-observability restore

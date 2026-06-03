@@ -52,7 +52,8 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 ```bash
 cd helm-charts
 source .env
-docker run --rm -v $(pwd):/workspace -w /workspace -e GITLAB_TOKEN \
+# HELM_CHARTS_PAT — env var name preserved from the GitLab era; the value is now a GitHub App token.
+docker run --rm -v $(pwd):/workspace -w /workspace -e HELM_CHARTS_PAT \
   quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4 \
   updatecli pipeline diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
 ```

@@ -1,0 +1,5 @@
+self-hosted-runner:
+  labels:
+    - docker
+    - small
+    - xlarge

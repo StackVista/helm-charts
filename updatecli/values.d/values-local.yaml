@@ -3,7 +3,8 @@
 #
 # Usage (from helm-charts root):
 #   source .env
-#   docker run --rm --network host -v $(pwd):/workspace:z -w /workspace -e GITLAB_TOKEN \
+#   # HELM_CHARTS_PAT — env var name preserved from the GitLab era; the value is now a GitHub App token.
+#   docker run --rm --network host -v $(pwd):/workspace:z -w /workspace -e HELM_CHARTS_PAT \
 #     quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4 \
 #     updatecli apply --commit=false --push=false --clean=false \
 #     -c updatecli/updatecli.d/update-docker-images/ \
