@@ -655,9 +655,6 @@ targets:
           exit 1
         fi
 
-        # Ensure PyYAML is available for bump_chart_version.py
-        "$PYTHON_BIN" -m pip install --quiet pyyaml
-
         VALUES_FILE="stable/suse-observability-agent/values.yaml"
         CHART_YAML="stable/suse-observability-agent/Chart.yaml"
         BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
