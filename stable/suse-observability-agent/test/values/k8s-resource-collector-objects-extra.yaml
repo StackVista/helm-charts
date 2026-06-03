@@ -1,0 +1,11 @@
+# Extra values file layered on top of k8s-resource-collector-objects.yaml to
+# prove dict values merge per-key across `-f` overrides (the reviewer ask).
+k8sResourceCollector:
+  rbac:
+    crdApiGroups:
+      # New group added on top of the base file's "policies.kubewarden.io".
+      "longhorn.io": true
+  objects:
+    # New resource added on top of the base file's pods/deployments/statefulsets.
+    services:
+      group: ""

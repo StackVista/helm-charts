@@ -13,7 +13,7 @@ k8sResourceCollector:
     discoveryMode: api_groups
     apiGroupFilters:
       include:
-        - "*"
-      exclude: []
+        "*": true
+      exclude: {}
   rbac:
     useWildcard: true

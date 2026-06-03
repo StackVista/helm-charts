@@ -1,0 +1,7 @@
+# Override layered on top of k8s-resource-collector-restricted-rbac.yaml to
+# prove that setting a default dict key to `false` removes it from the
+# rendered output (per-key disable semantics).
+k8sResourceCollector:
+  rbac:
+    crdApiGroups:
+      "longhorn.io": false

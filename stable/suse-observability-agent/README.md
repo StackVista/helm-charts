@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.44`
+Current chart version is `1.3.45`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -177,14 +177,15 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"0522e5e9-61-release"` |  |
 | k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
-| k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude | list | `[]` | List of API group patterns to exclude |
-| k8sResourceCollector.crdDiscovery.apiGroupFilters.include | list | `["*"]` | List of API group patterns to watch (supports wildcards like "*.suse.com") |
+| k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
+| k8sResourceCollector.crdDiscovery.apiGroupFilters.include | object | `{"*":true}` | Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups". |
 | k8sResourceCollector.crdDiscovery.discoveryMode | string | `"api_groups"` | CRD discovery mode: "api_groups" (filtered) or "all" (watch everything) |
 | k8sResourceCollector.crdDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
+| k8sResourceCollector.deniedObjects | object | `{}` | Map of resource name (plural, used as the key) -> spec extending the built-in denylist (core Secrets, ConfigMaps). Spec needs only `group`. Resources listed here must not appear under k8sResourceCollector.objects. Use to block third-party resources with sensitive contents. |
 | k8sResourceCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
 | k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| k8sResourceCollector.image.tag | string | `"v0.0.36"` | Container image tag for 'opentelemetry-collector' containers. |
+| k8sResourceCollector.image.tag | string | `"v0.0.37"` | Container image tag for 'opentelemetry-collector' containers. |
 | k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
 | k8sResourceCollector.leaderElection.leaseName | string | `"k8sresourcereceiver"` | Name of the Lease object. Must be unique per collector deployment. |
@@ -198,12 +199,13 @@ stackstate/suse-observability-agent
 | k8sResourceCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | k8sResourceCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
 | k8sResourceCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by crd_api_group_filters are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
 | k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
 | k8sResourceCollector.platformOtlpEndpoint | string | `""` | Override the OTLP endpoint. When empty, derived by appending /otel to stackstate.url. Protocol is inferred from the endpoint shape: a URL with http(s):// uses HTTP (e.g., https://otlp-http-my-instance.stackstate.io); a host:port without scheme uses gRPC (e.g., otlp-my-instance.stackstate.io:443). |
 | k8sResourceCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
 | k8sResourceCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
 | k8sResourceCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
-| k8sResourceCollector.rbac.apiGroups | list | `[]` | List of specific API groups to grant permissions for (only used when useWildcard=false). Example: ["policies.kubewarden.io", "longhorn.io"] |
+| k8sResourceCollector.rbac.crdApiGroups | object | `{}` | Map of API group (key) -> bool (enabled) for CRD-discovered custom resources to grant get/list/watch on all resources in the group (only used when useWildcard=false). Set a key to false in an override to disable a default. k8sResourceCollector.objects entries derive their own resource-scoped RBAC and do not need an entry here. |
 | k8sResourceCollector.rbac.useWildcard | bool | `true` | Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups |
 | k8sResourceCollector.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | k8sResourceCollector.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |

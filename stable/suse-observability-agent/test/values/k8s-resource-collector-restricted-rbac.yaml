@@ -12,14 +12,17 @@ k8sResourceCollector:
     discoveryMode: api_groups
     apiGroupFilters:
       include:
-        - "policies.kubewarden.io"
-        - "longhorn.io"
-        - "*.suse.com"
+        # Disable the chart default `"*": true` so this scenario is truly restricted
+        # to the patterns below.
+        "*": false
+        "policies.kubewarden.io": true
+        "longhorn.io": true
+        "*.suse.com": true
       exclude:
-        - "test.suse.com"
+        "test.suse.com": true
   rbac:
     useWildcard: false
-    apiGroups:
-      - "policies.kubewarden.io"
-      - "longhorn.io"
-      - "cert-manager.io"
+    crdApiGroups:
+      "policies.kubewarden.io": true
+      "longhorn.io": true
+      "cert-manager.io": true

@@ -683,7 +683,7 @@ k8sResourceCollector:
     # k8sResourceCollector.image.repository -- Base container image repository.
     repository: stackstate/sts-opentelemetry-collector
     # k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.36
+    tag: v0.0.37
     # k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -693,18 +693,40 @@ k8sResourceCollector:
     # k8sResourceCollector.crdDiscovery.discoveryMode -- CRD discovery mode: "api_groups" (filtered) or "all" (watch everything)
     discoveryMode: api_groups
     apiGroupFilters:
-      # k8sResourceCollector.crdDiscovery.apiGroupFilters.include -- List of API group patterns to watch (supports wildcards like "*.suse.com")
+      # k8sResourceCollector.crdDiscovery.apiGroupFilters.include -- Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups".
       include:
-      # Watch all API groups by default
-      - "*"
-      # k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude -- List of API group patterns to exclude
-      exclude: []
+        # Watch all API groups by default
+        "*": true
+      # k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude -- Map of API group patterns (key) -> bool (enabled). Empty by default.
+      exclude: {}
 
   rbac:
     # k8sResourceCollector.rbac.useWildcard -- Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups
     useWildcard: true
-    # k8sResourceCollector.rbac.apiGroups -- List of specific API groups to grant permissions for (only used when useWildcard=false). Example: ["policies.kubewarden.io", "longhorn.io"]
-    apiGroups: []
+    # k8sResourceCollector.rbac.crdApiGroups -- Map of API group (key) -> bool (enabled) for CRD-discovered custom resources to grant get/list/watch on all resources in the group (only used when useWildcard=false). Set a key to false in an override to disable a default. k8sResourceCollector.objects entries derive their own resource-scoped RBAC and do not need an entry here.
+    crdApiGroups: {}
+    # Example:
+    # crdApiGroups:
+    #   "policies.kubewarden.io": true
+    #   "longhorn.io": true
+
+  # k8sResourceCollector.objects -- Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by crd_api_group_filters are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group).
+  objects: {}
+  # Example:
+  # objects:
+  #   pods:
+  #     group: ""
+  #     namespaces: ["kube-system"]
+  #   deployments:
+  #     group: apps
+  #     labelSelector: "app=foo"
+
+  # k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec extending the built-in denylist (core Secrets, ConfigMaps). Spec needs only `group`. Resources listed here must not appear under k8sResourceCollector.objects. Use to block third-party resources with sensitive contents.
+  deniedObjects: {}
+  # Example:
+  # deniedObjects:
+  #   certificates:
+  #     group: cert-manager.io
 
   peerSync:
     # k8sResourceCollector.peerSync.port -- Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port.

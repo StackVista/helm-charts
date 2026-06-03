@@ -192,6 +192,135 @@ func TestK8sResourceCollectorRestrictedRBAC(t *testing.T) {
 	assert.True(t, hasCRDRule, "CRD rule not found in cluster role")
 }
 
+// TestK8sResourceCollectorObjects verifies that k8sResourceCollector.objects and
+// deniedObjects are rendered into the ConfigMap (with snake_case keys), and that
+// auto-derived RBAC rules in useWildcard=false mode group by API group and dedupe
+// resource names (uniq) when the same resource is declared multiple times.
+func TestK8sResourceCollectorObjects(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-objects.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// ---- ConfigMap: objects + denied_objects render ----
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	configData := configMap.Data["config.yaml"]
+
+	assert.Contains(t, configData, "objects:")
+	assert.Contains(t, configData, "denied_objects:")
+	// Snake-case keys produced from camelCase values.
+	assert.Contains(t, configData, "label_selector:")
+	assert.Contains(t, configData, "field_selector:")
+	assert.Contains(t, configData, "namespaces:")
+	// Sampled resource names from the override.
+	assert.Contains(t, configData, "pods")
+	assert.Contains(t, configData, "deployments")
+	assert.Contains(t, configData, "statefulsets")
+	assert.Contains(t, configData, "certificates")
+
+	// ---- ClusterRole: auto-derived rules ----
+	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector cluster role was not found")
+
+	for _, rule := range clusterRole.Rules {
+		for _, apiGroup := range rule.APIGroups {
+			assert.NotEqual(t, "*", apiGroup, "should not have wildcard RBAC when restricted mode is enabled")
+		}
+	}
+
+	// Index rules by API group → set of resource names.
+	rulesByGroup := map[string]map[string]int{}
+	for _, rule := range clusterRole.Rules {
+		for _, g := range rule.APIGroups {
+			if _, ok := rulesByGroup[g]; !ok {
+				rulesByGroup[g] = map[string]int{}
+			}
+			for _, r := range rule.Resources {
+				rulesByGroup[g][r]++
+			}
+		}
+	}
+
+	// Core group rule: must include pods.
+	coreResources, hasCore := rulesByGroup[""]
+	require.True(t, hasCore, "expected an auto-derived rule for the core API group")
+	assert.Contains(t, coreResources, "pods", "pods should appear under core group")
+
+	// apps group rule: must include deployments AND statefulsets — proves
+	// multiple object entries with the same group end up in the same rule.
+	appsResources, hasApps := rulesByGroup["apps"]
+	require.True(t, hasApps, "expected an auto-derived rule for the apps API group")
+	assert.Contains(t, appsResources, "deployments", "deployments should appear under apps group")
+	assert.Contains(t, appsResources, "statefulsets", "statefulsets should appear under apps group")
+}
+
+// TestK8sResourceCollectorObjectsMergeAcrossValues proves that the dict-shaped
+// objects / crdApiGroups values merge per-key when an operator layers extra
+// values via `-f extra.yaml`. With list-shaped values the second file would
+// override the first entirely; with dict-shaped values both sets coexist.
+func TestK8sResourceCollectorObjectsMergeAcrossValues(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(
+		t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-objects.yaml",
+		"values/k8s-resource-collector-objects-extra.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	configData := configMap.Data["config.yaml"]
+
+	// Base file's objects.
+	assert.Contains(t, configData, "name: \"pods\"", "base 'pods' object should survive override")
+	assert.Contains(t, configData, "name: \"deployments\"", "base 'deployments' object should survive override")
+	assert.Contains(t, configData, "name: \"statefulsets\"", "base 'statefulsets' object should survive override")
+	// Extra file's object — only present if dict merge worked.
+	assert.Contains(t, configData, "name: \"services\"", "extra 'services' object proves per-key merge across -f files")
+
+	// ClusterRole: both base group and extra group rules must be present.
+	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector cluster role was not found")
+
+	apiGroups := map[string]bool{}
+	for _, rule := range clusterRole.Rules {
+		for _, g := range rule.APIGroups {
+			apiGroups[g] = true
+		}
+	}
+	assert.True(t, apiGroups["policies.kubewarden.io"], "base crdApiGroups entry should survive override")
+	assert.True(t, apiGroups["longhorn.io"], "extra crdApiGroups entry proves per-key merge across -f files")
+}
+
+// TestK8sResourceCollectorApiGroupDisableViaOverride proves that setting a
+// default dict key to `false` in an override values file removes the entry
+// from the rendered output (the disable semantics for dict-shaped values).
+func TestK8sResourceCollectorApiGroupDisableViaOverride(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(
+		t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-restricted-rbac.yaml",
+		"values/k8s-resource-collector-disable-override.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector cluster role was not found")
+
+	apiGroups := map[string]bool{}
+	for _, rule := range clusterRole.Rules {
+		for _, g := range rule.APIGroups {
+			apiGroups[g] = true
+		}
+	}
+	// Disabled by override — must NOT appear.
+	assert.False(t, apiGroups["longhorn.io"], "longhorn.io was set to false in override and should not render")
+	// Other base entries must still be present.
+	assert.True(t, apiGroups["policies.kubewarden.io"], "policies.kubewarden.io should still render")
+	assert.True(t, apiGroups["cert-manager.io"], "cert-manager.io should still render")
+}
+
 func TestK8sResourceCollectorDiscoveryModeAll(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-all-mode.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -201,8 +330,8 @@ func TestK8sResourceCollectorDiscoveryModeAll(t *testing.T) {
 
 	configData := configMap.Data["config.yaml"]
 	assert.Contains(t, configData, "discovery_mode: all")
-	// When mode is "all", api_group_filters should not be present
-	assert.NotContains(t, configData, "api_group_filters:")
+	// When mode is "all", crd_api_group_filters should not be present
+	assert.NotContains(t, configData, "crd_api_group_filters:")
 }
 
 func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
@@ -222,7 +351,7 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 	assert.Contains(t, configData, "discovery_mode: api_groups")
 
 	// Verify API group filters
-	assert.Contains(t, configData, "api_group_filters:")
+	assert.Contains(t, configData, "crd_api_group_filters:")
 	assert.Contains(t, configData, "include:")
 	assert.Contains(t, configData, "policies.kubewarden.io")
 	assert.Contains(t, configData, "longhorn.io")

@@ -19,17 +19,25 @@ data:
         snapshot_interval: {{ .Values.k8sResourceCollector.crdDiscovery.snapshotInterval }}
         discovery_mode: {{ .Values.k8sResourceCollector.crdDiscovery.discoveryMode }}
 {{- if eq .Values.k8sResourceCollector.crdDiscovery.discoveryMode "api_groups" }}
-{{- if not .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.include }}
-{{- fail "k8sResourceCollector.crdDiscovery.apiGroupFilters.include must be a non-empty list when discoveryMode is 'api_groups' (use [\"*\"] to match all)" }}
+{{- $includes := list }}
+{{- range $pattern, $enabled := .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.include }}
+{{- if $enabled }}{{ $includes = append $includes $pattern }}{{ end }}
 {{- end }}
-        api_group_filters:
+{{- if not $includes }}
+{{- fail "k8sResourceCollector.crdDiscovery.apiGroupFilters.include must have at least one truthy entry when discoveryMode is 'api_groups' (e.g. \"*\": true)" }}
+{{- end }}
+        crd_api_group_filters:
           include:
-{{- range .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.include }}
+{{- range $includes }}
             - {{ . | quote }}
 {{- end }}
-{{- if .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude }}
+{{- $excludes := list }}
+{{- range $pattern, $enabled := .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude }}
+{{- if $enabled }}{{ $excludes = append $excludes $pattern }}{{ end }}
+{{- end }}
+{{- if $excludes }}
           exclude:
-{{- range .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude }}
+{{- range $excludes }}
             - {{ . | quote }}
 {{- end }}
 {{- end }}
@@ -38,6 +46,43 @@ data:
 {{- if .Values.k8sResourceCollector.leaderElection.enabled }}
         peer_sync_dns: {{ include "stackstate-k8s-agent.k8sResourceCollector.peerSync.dns" . | quote }}
         k8s_leader_elector: k8s_leader_elector
+{{- end }}
+{{- $objects := dict }}
+{{- range $name, $obj := .Values.k8sResourceCollector.objects }}
+{{- if $obj }}{{ $_ := set $objects $name $obj }}{{ end }}
+{{- end }}
+{{- if $objects }}
+        objects:
+{{- range $name, $obj := $objects }}
+          - name: {{ $name | quote }}
+            group: {{ $obj.group | default "" | quote }}
+{{- if $obj.version }}
+            version: {{ $obj.version | quote }}
+{{- end }}
+{{- if $obj.namespaces }}
+            namespaces:
+{{- range $obj.namespaces }}
+              - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- if $obj.labelSelector }}
+            label_selector: {{ $obj.labelSelector | quote }}
+{{- end }}
+{{- if $obj.fieldSelector }}
+            field_selector: {{ $obj.fieldSelector | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- $denied := dict }}
+{{- range $name, $obj := .Values.k8sResourceCollector.deniedObjects }}
+{{- if $obj }}{{ $_ := set $denied $name $obj }}{{ end }}
+{{- end }}
+{{- if $denied }}
+        denied_objects:
+{{- range $name, $obj := $denied }}
+          - name: {{ $name | quote }}
+            group: {{ $obj.group | default "" | quote }}
+{{- end }}
 {{- end }}
 
 {{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" (eq (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) "true") }}
