@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 7.0.0-snapshot.20260604140725-master-4d53517
-version: 2.10.2-pre.32
+version: 2.10.2-pre.33
 description: Helm chart for SUSE Observability
 keywords:
   - kubernetes
