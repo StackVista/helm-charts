@@ -841,7 +841,7 @@ httpHeaderInjectorWebhook:
       # proxyInit.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy-init"
       # proxyInit.image.tag - Tag for the docker image
-      tag: 9c58e521-569-release
+      tag: 9c58e521-574-release
 
   # sidecarInjector -- Service for injecting the proxy sidecar into pods
   sidecarInjector:
