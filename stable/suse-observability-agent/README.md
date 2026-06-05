@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.47`
+Current chart version is `1.3.48`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -175,7 +175,7 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"9c58e521-574-release"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ffd91cef-64-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ffd91cef-65-release"` |  |
 | k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
 | k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
 | k8sResourceCollector.crdDiscovery.apiGroupFilters.include | object | `{"*":true}` | Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups". |
@@ -185,7 +185,7 @@ stackstate/suse-observability-agent
 | k8sResourceCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
 | k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| k8sResourceCollector.image.tag | string | `"v0.0.37"` | Container image tag for 'opentelemetry-collector' containers. |
+| k8sResourceCollector.image.tag | string | `"v0.0.38"` | Container image tag for 'opentelemetry-collector' containers. |
 | k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
 | k8sResourceCollector.leaderElection.leaseName | string | `"k8sresourcereceiver"` | Name of the Lease object. Must be unique per collector deployment. |
