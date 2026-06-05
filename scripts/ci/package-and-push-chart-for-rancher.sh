@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# DRY_RUN=true (default) skips the destructive S3 upload + CloudFront invalidation so the
+# helm package + index regeneration still exercise end-to-end. Set DRY_RUN=false to actually
+# ship to the Rancher S3 bucket.
+
 set -euo pipefail
 
 chart="$1"
@@ -28,7 +32,15 @@ echo "Updating the index.yaml"
 helm repo index --merge upstream-index.yaml "${build_dir}"
 
 echo "Uploading chart"
-AWS_ACCESS_KEY_ID="${RANCHER_HELM_REGISTRY_USERNAME}" AWS_SECRET_ACCESS_KEY="${RANCHER_HELM_REGISTRY_PASSWORD}" aws s3 cp --recursive "${build_dir}" "${chart_repo_s3}"
+if [[ "${DRY_RUN:-true}" == "false" ]]; then
+  AWS_ACCESS_KEY_ID="${RANCHER_HELM_REGISTRY_USERNAME}" AWS_SECRET_ACCESS_KEY="${RANCHER_HELM_REGISTRY_PASSWORD}" aws s3 cp --recursive "${build_dir}" "${chart_repo_s3}"
+else
+  echo "[DRY_RUN] skipping aws s3 cp → ${chart_repo_s3}"
+fi
 
 echo "Invalidating CloudFront Distribution"
-AWS_ACCESS_KEY_ID="${RANCHER_HELM_REGISTRY_USERNAME}" AWS_SECRET_ACCESS_KEY="${RANCHER_HELM_REGISTRY_PASSWORD}" aws cloudfront create-invalidation --distribution-id "${RANCHER_HELM_REGISTRY_DISTRIBUTION_ID}" --paths "/*"
+if [[ "${DRY_RUN:-true}" == "false" ]]; then
+  AWS_ACCESS_KEY_ID="${RANCHER_HELM_REGISTRY_USERNAME}" AWS_SECRET_ACCESS_KEY="${RANCHER_HELM_REGISTRY_PASSWORD}" aws cloudfront create-invalidation --distribution-id "${RANCHER_HELM_REGISTRY_DISTRIBUTION_ID}" --paths "/*"
+else
+  echo "[DRY_RUN] skipping cloudfront create-invalidation"
+fi

@@ -18,8 +18,16 @@
 #     `gh` instead of `glab`.
 #
 # Gating:
-#   - validate jobs are read-only and always run on push (no `PUBLISH_ENABLED` check).
-#   - apply / follow_up are gated on `vars.PUBLISH_ENABLED == 'true'` (side-effecting).
+#   - validate jobs are read-only and always run on push (no DRY_RUN check).
+#   - apply / follow_up are job-level-gated on `!inputs.dry_run` (env context is unavailable
+#     at job-level `if:`, so the boolean input is checked directly). Job-level (not
+#     step-level) because the destructive action — `updatecli pipeline apply` — does its own
+#     commits + pushes from inside updatecli; there is no clean "exercise the setup without
+#     publishing" form. The push-triggered `validate_diff` job already exercises the same
+#     container / config / auth path read-only via `updatecli pipeline diff`.
+#   - DRY_RUN resolution: workflow_dispatch honors `inputs.dry_run` (default `true` —
+#     operator must explicitly opt in). Push events resolve to `'true'` (validate-only jobs
+#     ignore it).
 #
 # Per-job triggers use `github.event_name` to route push events to validate-only and dispatch
 # events to apply/follow_up, so the workflow file describes the full lifecycle in one place.
@@ -48,6 +56,20 @@ on:
         description: Source branch for stackpacks pipeline
         type: string
         default: master
+      dry_run:
+        description: "Skip `updatecli pipeline apply` + follow_up (squash-push / open PR)"
+        type: boolean
+        default: true
+
+env:
+  # workflow_dispatch with the input → use it. Push events fall through to 'true' (which the
+  # validate-only jobs ignore anyway).
+  # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the inner
+  # `(inputs.dry_run && 'true' || 'false')` coercion.
+  DRY_RUN: >-
+    ${{ github.event_name == 'workflow_dispatch'
+        && (inputs.dry_run && 'true' || 'false')
+        || 'true' }}
 
 jobs:
   # What: yamllint on `updatecli/values.d/values.yaml` and existence check on each pipeline's
@@ -113,7 +135,10 @@ jobs:
   # GitLab equivalent: `update_helm_chart_X` jobs (X = docker_images/stackstate/stackpacks)
   # generated in `.gitlab-ci.jsonnet`.
   apply:
-    if: github.event_name == 'workflow_dispatch' && vars.PUBLISH_ENABLED == 'true'
+    # Job-level `if:` cannot reference `env.DRY_RUN` (env context unavailable at this scope —
+    # see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability),
+    # so check the boolean input directly. Only reached on workflow_dispatch anyway.
+    if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -200,7 +225,10 @@ jobs:
   # created via `gh pr create` rather than `glab mr create`.
   follow_up:
     needs: apply
-    if: github.event_name == 'workflow_dispatch' && vars.PUBLISH_ENABLED == 'true'
+    # Job-level `if:` cannot reference `env.DRY_RUN` (env context unavailable at this scope —
+    # see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability),
+    # so check the boolean input directly. Only reached on workflow_dispatch anyway.
+    if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284

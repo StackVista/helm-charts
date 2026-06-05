@@ -5,6 +5,7 @@
 # Inputs (env):
 #   BASE_SHA              optional override for the diff base
 #   GITHUB_EVENT_BEFORE   set by GH Actions on push events
+#   GITHUB_REF            set by GH Actions; used to special-case tag pushes
 #   GITHUB_OUTPUT         set by GH Actions; receives the four outputs
 #
 # Outputs:
@@ -14,6 +15,13 @@
 #
 # Note: updatecli changes are detected at the workflow level instead (via a
 # `push: paths: ['updatecli/**']` filter in .github/workflows/updatecli.yml).
+#
+# Tag-push special case: when invoked on a `refs/tags/<chart>/<semver>` ref, the
+# diff-based logic is bypassed and exactly ONE stable chart (the one named by the
+# tag prefix) is emitted. Mirrors GitLab's per-job `$CI_COMMIT_TAG =~ /^<chart>\/.*/`
+# rule and prevents `publish-internal.yml` from republishing every chart when a
+# single chart-version tag is pushed (the empty diff against master would
+# otherwise hit the over-fire fallback).
 
 set -euo pipefail
 
@@ -118,6 +126,24 @@ done
 for c in "${affected_stable[@]}"; do
   [[ "$c" == "suse-observability" ]] && resource_usage_changed=true
 done
+
+# --- 6.5. Tag-push override (chart-version tag → single-chart matrix) ---
+# A chart-version tag fires `publish-internal.yml`. The tagged commit is normally
+# already on master, so the diff above would be empty and the over-fire fallback
+# would put EVERY stable chart into the matrix — causing `helm cm-push` to
+# republish each one. Replace the diff-derived matrix with exactly the chart
+# named by the tag prefix. Local matrix and ancillary scopes are cleared.
+if [[ "${GITHUB_REF:-}" =~ ^refs/tags/([^/]+)/[^/]+$ ]]; then
+  tag_chart="${BASH_REMATCH[1]}"
+  if printf '%s\n' "${all_stable[@]}" | grep -qxF "$tag_chart"; then
+    affected_stable=("$tag_chart")
+  else
+    echo "Tag ${GITHUB_REF#refs/tags/} prefix '${tag_chart}' is not a known stable chart; emitting empty matrix" >&2
+    affected_stable=()
+  fi
+  affected_local=()
+  resource_usage_changed=false
+fi
 
 # --- 7. Emit outputs ---
 # Convert bash arrays -> JSON arrays. jq -R reads raw lines, jq -s slurps to array,
