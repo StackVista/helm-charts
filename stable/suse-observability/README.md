@@ -436,7 +436,7 @@ If you encounter issues not covered here:
 | backup.storage.settingsPvc.storageClass | string | `""` | Storage class for the settings PVC |
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.6.43-so2"` | Container image tag for 'clickhouse' backup containers. |
+| clickhouse.backup.image.tag | string | `"2.7.0-so1"` | Container image tag for 'clickhouse' backup containers. |
 | clickhouse.backup.s3.endpoint | string | `"{{ include \"stackstate.s3proxy.endpoint\" . }}"` | S3-compatible endpoint for backup storage (resolved from s3proxy). |
 | clickhouse.backup.s3.secretName | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials. |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
@@ -450,7 +450,7 @@ If you encounter issues not covered here:
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
 | elasticsearch.esJavaOpts | string | `nil` | JVM options |
 | elasticsearch.imageTag | string | `"8.19.15-so2"` | Elasticsearch image tag. Updated by updatecli. |
-| elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"1.10.0-so2"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
+| elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"1.10.0-so3"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
 | elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{}` | Override Elasticsearch resources |
@@ -495,7 +495,7 @@ If you encounter issues not covered here:
 | global.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | global.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | global.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| global.wait.image.tag | string | `"1.0.12-so2"` | Container image tag for wait containers. |
+| global.wait.image.tag | string | `"1.0.12-so3"` | Container image tag for wait containers. |
 | hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
@@ -527,7 +527,7 @@ If you encounter issues not covered here:
 | kafkaup-operator.image.pullPolicy | string | `""` |  |
 | kafkaup-operator.image.registry | string | `"quay.io"` |  |
 | kafkaup-operator.image.repository | string | `"stackstate/kafkaup-operator"` |  |
-| kafkaup-operator.image.tag | string | `"0.0.9"` |  |
+| kafkaup-operator.image.tag | string | `"0.0.10"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
 | kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |
@@ -536,7 +536,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"e460efff-761-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"2a5a7485-770-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -633,7 +633,7 @@ If you encounter issues not covered here:
 | stackstate.components.aiAssistant.image.imageRegistry | string | `""` | `imageRegistry` used for the `ai-assistant` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.aiAssistant.image.pullPolicy | string | `""` | `pullPolicy` used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.aiAssistant.image.repository | string | `"stackstate/suse-observability-borg"` | Repository of the ai-assistant component Docker image. |
-| stackstate.components.aiAssistant.image.tag | string | `"20260602050937-45510412"` | Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.aiAssistant.image.tag | string | `"20260605082330-12e1aadb"` | Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.aiAssistant.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.aiAssistant.persistence | object | `{"size":"1Gi","storageClass":""}` | Persistence settings for the SQLite database. |
 | stackstate.components.aiAssistant.persistence.size | string | `"1Gi"` | Size of the PVC for the SQLite database. |
@@ -775,7 +775,7 @@ If you encounter issues not covered here:
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.8.6-so2"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.8.6-so4"` | Container image tag for container-tools containers. |
 | stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -903,7 +903,7 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
-| stackstate.components.mcp.image.tag | string | `"20260602045858-ce870052"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.mcp.image.tag | string | `"20260605082311-6be531a0"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mcp` pods. |
@@ -913,7 +913,7 @@ If you encounter issues not covered here:
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
-| stackstate.components.nginxPrometheusExporter.image.tag | string | `"1.5.1-so2"` | Container image tag for nginx-prometheus-exporter containers. |
+| stackstate.components.nginxPrometheusExporter.image.tag | string | `"1.5.1-so3"` | Container image tag for nginx-prometheus-exporter containers. |
 | stackstate.components.notification.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.notification.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.notification.config | string | `""` | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -997,7 +997,7 @@ If you encounter issues not covered here:
 | stackstate.components.router.mode.image.pullPolicy | string | `nil` | Image pull policy for router mode containers. |
 | stackstate.components.router.mode.image.registry | string | `"quay.io"` | Base container image registry for router mode containers. |
 | stackstate.components.router.mode.image.repository | string | `"stackstate/container-tools"` | Base container image repository for router mode containers. |
-| stackstate.components.router.mode.image.tag | string | `"1.8.6-so2"` | Container image tag for router mode containers. |
+| stackstate.components.router.mode.image.tag | string | `"1.8.6-so4"` | Container image tag for router mode containers. |
 | stackstate.components.router.mode.jobAnnotations | object | `{}` | Annotations for the router mode jobs. |
 | stackstate.components.router.mode.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.mode.podAnnotations | object | `{}` | Extra annotations for router mode job pods. |
@@ -1116,7 +1116,7 @@ If you encounter issues not covered here:
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
 | stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
-| stackstate.components.vmagent.image.tag | string | `"1.143.0-so2"` |  |
+| stackstate.components.vmagent.image.tag | string | `"1.144.0-so1"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `vmagent` pods. |
@@ -1127,7 +1127,7 @@ If you encounter issues not covered here:
 | stackstate.components.workloadObserver.image.imageRegistry | string | `""` | `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.workloadObserver.image.pullPolicy | string | `""` | `pullPolicy` used for the `workloadObserver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.workloadObserver.image.repository | string | `"stackstate/workload-observer"` | Repository of the workloadObserver component Docker image. |
-| stackstate.components.workloadObserver.image.tag | string | `"39b2eaa4-216-release"` | Tag used for the `workloadObserver` component Docker image.. |
+| stackstate.components.workloadObserver.image.tag | string | `"7df1768a-224-release"` | Tag used for the `workloadObserver` component Docker image.. |
 | stackstate.components.workloadObserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.workloadObserver.persistence.size | string | `"1Gi"` |  |
 | stackstate.components.workloadObserver.persistence.storageClass | string | `nil` |  |
@@ -1183,11 +1183,11 @@ If you encounter issues not covered here:
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-0.backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.6-so2"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-0.backup.vmbackup.image.tag | string | `"1.143.0-so2"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.6-so4"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-0.backup.vmbackup.image.tag | string | `"1.144.0-so2"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
-| victoria-metrics-0.server.image.tag | string | `"1.143.0-so2"` | Victoria Metrics server image tag. Updated by updatecli. |
+| victoria-metrics-0.server.image.tag | string | `"1.144.0-so1"` | Victoria Metrics server image tag. Updated by updatecli. |
 | victoria-metrics-0.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-0.server.resources | object | `{}` |  |
 | victoria-metrics-1.backup.awsSecrets | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials (resolved from s3proxy). |
@@ -1198,17 +1198,17 @@ If you encounter issues not covered here:
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.daily | string | `"5 1 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-1.backup.scheduled.hourly | string | `"35 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.6-so2"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-1.backup.vmbackup.image.tag | string | `"1.143.0-so2"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.6-so4"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-1.backup.vmbackup.image.tag | string | `"1.144.0-so2"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |
-| victoria-metrics-1.server.image.tag | string | `"1.143.0-so2"` | Victoria Metrics server image tag. Updated by updatecli. |
+| victoria-metrics-1.server.image.tag | string | `"1.144.0-so1"` | Victoria Metrics server image tag. Updated by updatecli. |
 | victoria-metrics-1.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-1.server.resources | object | `{}` |  |
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
 | victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
 | victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
-| victoria-metrics.restore.image.tag | string | `"1.143.0-so2"` | Container image tag for 'vmrestore' containers. |
+| victoria-metrics.restore.image.tag | string | `"1.144.0-so1"` | Container image tag for 'vmrestore' containers. |
 | victoria-metrics.restore.securityContext.enabled | bool | `true` |  |
 | victoria-metrics.restore.securityContext.fsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |
