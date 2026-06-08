@@ -1256,14 +1256,14 @@ Usage: {{ include "common.sizing.stackstate.receiver.env" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
 {{- if eq $profile "4000-ha" }}
-CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "384"
+CONFIG_FORCE_pekko_http_host__connection__pool_max__open__requests: "384"
 CONFIG_FORCE_stackstate_receiver_countBufferSize: "3000000"
 CONFIG_FORCE_zstd__decompress__dispatcher_fork__join__executor_parallelism__factor: "4.0"
 CONFIG_FORCE_zstd__decompress__dispatcher_fork__join__executor_parallelism__max: "64"
-CONFIG_FORCE_akka_actor_default__dispatcher_fork__join__executor_parallelism__min: "16"
-CONFIG_FORCE_akka_actor_default__dispatcher_fork__join__executor_parallelism__factor: "4.0"
-CONFIG_FORCE_akka_actor_default__dispatcher_fork__join__executor_parallelism__max: "64"
-CONFIG_FORCE_akka_actor_default__blocking__io__dispatcher_thread__pool__executor_fixed__pool__size: "64"
+CONFIG_FORCE_pekko_actor_default__dispatcher_fork__join__executor_parallelism__min: "16"
+CONFIG_FORCE_pekko_actor_default__dispatcher_fork__join__executor_parallelism__factor: "4.0"
+CONFIG_FORCE_pekko_actor_default__dispatcher_fork__join__executor_parallelism__max: "64"
+CONFIG_FORCE_pekko_actor_default__blocking__io__dispatcher_thread__pool__executor_fixed__pool__size: "64"
 CONFIG_FORCE_stackstate_receiver_kafkaProducerConfig_max_request_size: "4194304"
 {{- end }}
 {{- end }}

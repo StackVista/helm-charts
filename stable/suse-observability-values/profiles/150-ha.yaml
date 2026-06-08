@@ -198,7 +198,7 @@ stackstate:
               cpu: "2000m"
       extraEnv:
         open:
-          CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "256"
+          CONFIG_FORCE_pekko_http_host__connection__pool_max__open__requests: "256"
     vmagent:
       resources:
         limits:

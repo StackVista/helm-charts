@@ -26,7 +26,7 @@ Internal constants — values that are fixed by the application and not user-con
 {{- define "stackstate.aiAssistant.port" -}}8081{{- end -}}
 {{- define "stackstate.cache.backend" -}}mapdb{{- end -}}
 {{- define "stackstate.metricStore.remoteWritePath" -}}/api/v1/write{{- end -}}
-{{- define "stackstate.metrics.defaultAgentMetricsFilter" -}}["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]{{- end -}}
+{{- define "stackstate.metrics.defaultAgentMetricsFilter" -}}["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "pekko_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]{{- end -}}
 {{- define "stackstate.vmagent.agentMetricsFilter" -}}["vm*", "go*"]{{- end -}}
 {{- define "stackstate.vmagent.fullname" -}}suse-observability-vmagent{{- end -}}
 {{- define "stackstate.kafka.fullname" -}}suse-observability-kafka{{- end -}}
