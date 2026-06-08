@@ -1,36 +1,12 @@
-# Updatecli
+# Updatecli: all updatecli-related CI in one file.
 #
-# All updatecli-related CI in one file. Two trigger modes:
+# Push (paths: updatecli/**) → validate_config + validate_diff (read-only, surface what an
+# updatecli config edit WOULD do before it merges).
 #
-#  1. `push` to any branch where `updatecli/**` changed — runs the read-only `validate_config`
-#     and `validate_diff` jobs to give reviewers fast feedback on updatecli config edits before
-#     they're merged. Replaces GitLab's `validate_updatecli_config` / `validate_updatecli_diff`
-#     jobs from `.gitlab-ci.jsonnet`.
-#
-#  2. `workflow_dispatch` — manually runs one of three updatecli pipelines (`docker_images`,
-#     `stackstate`, `stackpacks`). Each lives under `updatecli/updatecli.d/<dir>/`; the `apply`
-#     job runs `updatecli pipeline apply`, the `follow_up` job either squash-pushes directly to
-#     the target branch (stackstate/stackpacks) or opens a PR (docker_images). Replaces GitLab's
-#     `RUN_UPDATECLI*` pipeline-trigger variable model + the `update_helm_chart_X` +
-#     `squash_push_updatecli_X` / `open_updatecli_X_mr` job families. The squash-push vs PR
-#     decision was generated as separate jobs per pipeline in GitLab; here it's a single
-#     `follow_up` job that branches at runtime on the `direct_push` output. PRs are opened via
-#     `gh` instead of `glab`.
-#
-# Gating:
-#   - validate jobs are read-only and always run on push (no DRY_RUN check).
-#   - apply / follow_up are job-level-gated on `!inputs.dry_run` (env context is unavailable
-#     at job-level `if:`, so the boolean input is checked directly). Job-level (not
-#     step-level) because the destructive action — `updatecli pipeline apply` — does its own
-#     commits + pushes from inside updatecli; there is no clean "exercise the setup without
-#     publishing" form. The push-triggered `validate_diff` job already exercises the same
-#     container / config / auth path read-only via `updatecli pipeline diff`.
-#   - DRY_RUN resolution: workflow_dispatch honors `inputs.dry_run` (default `true` —
-#     operator must explicitly opt in). Push events resolve to `'true'` (validate-only jobs
-#     ignore it).
-#
-# Per-job triggers use `github.event_name` to route push events to validate-only and dispatch
-# events to apply/follow_up, so the workflow file describes the full lifecycle in one place.
+# workflow_dispatch → apply + follow_up. apply runs `updatecli pipeline apply` for the chosen
+# pipeline (docker_images / stackstate / stackpacks). follow_up branches on the apply output:
+# direct squash-push to target branch (stackstate, stackpacks) OR open a PR (docker_images).
+# apply + follow_up are job-level-gated on `!inputs.dry_run` — operator must explicitly opt in.
 name: Updatecli
 
 on:
@@ -62,30 +38,21 @@ on:
         default: true
 
 env:
-  # workflow_dispatch with the input → use it. Push events fall through to 'true' (which the
-  # validate-only jobs ignore anyway).
-  # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the inner
-  # `(inputs.dry_run && 'true' || 'false')` coercion.
+  # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the coercion.
+  # Validate-only jobs ignore DRY_RUN; only the apply + follow_up jobs check the input directly.
   DRY_RUN: >-
     ${{ github.event_name == 'workflow_dispatch'
         && (inputs.dry_run && 'true' || 'false')
         || 'true' }}
 
 jobs:
-  # What: yamllint on `updatecli/values.d/values.yaml` and existence check on each pipeline's
-  # `updatecli/updatecli.d/<dir>/update.yaml`. Read-only.
-  # Why: catches typos / missing pipeline files before the manual apply runs.
-  # GitLab equivalent: `validate_updatecli_config` job in `.gitlab-ci.jsonnet`.
-  # Trigger: push events where `updatecli/**` changed (workflow-level path filter handles the
-  # gating; we additionally check event_name so this job is never matched by workflow_dispatch).
+  # yamllint + existence check for each pipeline's update.yaml. Read-only.
   validate_config:
     if: github.event_name == 'push'
     runs-on: docker
     container:
       image: quay.io/helmpack/chart-testing:v3.14.0
-      # Run as root inside the container — avoids EACCES on /__w/_temp where
-      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
-      options: --user 0:0
+      options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
     steps:
       - uses: actions/checkout@v5
       - run: |
@@ -95,21 +62,14 @@ jobs:
             test -f "updatecli/updatecli.d/$dir/update.yaml"
           done
 
-  # What: runs `updatecli pipeline diff` against each updatecli pipeline so changes to the
-  # update.yaml configs surface in CI as a planned diff.
-  # Why: lets reviewers see what an updatecli config change would actually do before merging.
-  # GitLab equivalent: `validate_updatecli_diff` job in `.gitlab-ci.jsonnet`. The updatecli
-  # configs read auth from `$HELM_CHARTS_PAT` (per `updatecli/values.d/values.yaml` tokenEnv:);
-  # for the read-only `diff` action we populate it from the auto-provisioned `github.token`,
-  # which has the workflow's default `contents: read` permission on this repo.
+  # `updatecli pipeline diff` for each pipeline — shows reviewers the planned changes.
+  # Uses the auto-provisioned github.token for HELM_CHARTS_PAT (contents: read is enough for diff).
   validate_diff:
     if: github.event_name == 'push'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
-      # Run as root inside the container — avoids EACCES on /__w/_temp where
-      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
-      options: --user 0:0
+      options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
       credentials:
         username: ${{ vars.REGISTRY_USER }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
@@ -126,25 +86,17 @@ jobs:
             updatecli pipeline diff --config "updatecli/updatecli.d/$dir/" --values updatecli/values.d/values.yaml
           done
 
-  # What: configures git as the GitHub App bot, then runs `updatecli pipeline apply` against the
-  # selected pipeline's config. Exposes 6 outputs the follow-up job needs (`pipelineid`, `dir`,
-  # `direct_push`, `commit_msg`, `pr_title`, `working_branch`); `working_branch` follows
-  # updatecli's `updatecli-<target>-<pipelineid>` naming convention.
-  # Why: actually performs the version bumps on a working branch (commits land via updatecli's own
-  # SCM logic).
-  # GitLab equivalent: `update_helm_chart_X` jobs (X = docker_images/stackstate/stackpacks)
-  # generated in `.gitlab-ci.jsonnet`.
+  # Runs `updatecli pipeline apply` against the chosen pipeline. Outputs feed follow_up.
+  # `working_branch` follows updatecli's `updatecli-<target>-<pipelineid>` naming convention.
   apply:
-    # Job-level `if:` cannot reference `env.DRY_RUN` (env context unavailable at this scope —
-    # see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability),
-    # so check the boolean input directly. Only reached on workflow_dispatch anyway.
+    # Job-level `if:` can't reference `env.DRY_RUN` (env context unavailable at job scope —
+    # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability),
+    # so check the boolean input directly.
     if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
-      # Run as root inside the container — avoids EACCES on /__w/_temp where
-      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
-      options: --user 0:0
+      options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
       credentials:
         username: ${{ vars.REGISTRY_USER }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
@@ -215,26 +167,16 @@ jobs:
             -c "updatecli/updatecli.d/${{ steps.meta.outputs.dir }}/" \
             -v updatecli/values.d/values.yaml
 
-  # What: branches on the `apply` job's `direct_push` output. If true, squash-pushes the working
-  # branch onto the target branch via `updatecli_squash_push.sh` (stackstate/stackpacks). If false,
-  # opens a PR via `open_updatecli_pr.sh` (docker_images), which uses `gh pr create`.
-  # Why: GitLab generated either `squash_push_updatecli_X` or `open_updatecli_X_mr` per pipeline;
-  # on GitHub we collapse both into one job that branches at runtime.
-  # GitLab equivalent: `squash_push_updatecli_X` (when `directPush=true`) or
-  # `open_updatecli_X_mr` (when `directPush=false`) jobs from `.gitlab-ci.jsonnet`. PRs are now
-  # created via `gh pr create` rather than `glab mr create`.
+  # Branches on apply's `direct_push` output: squash-push for stackstate/stackpacks, or open PR
+  # via `gh pr create` for docker_images.
   follow_up:
     needs: apply
-    # Job-level `if:` cannot reference `env.DRY_RUN` (env context unavailable at this scope —
-    # see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability),
-    # so check the boolean input directly. Only reached on workflow_dispatch anyway.
+    # See `apply` job for why we check `!inputs.dry_run` here instead of env.DRY_RUN.
     if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
-      # Run as root inside the container — avoids EACCES on /__w/_temp where
-      # actions/checkout writes state (runner pod fsGroup 1001 ≠ image's default user).
-      options: --user 0:0
+      options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
       credentials:
         username: ${{ vars.REGISTRY_USER }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
