@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.48`
+Current chart version is `1.3.49`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -168,14 +168,14 @@ stackstate/suse-observability-agent
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so4"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so5"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
-| httpHeaderInjectorWebhook.proxy.image.tag | string | `"9c58e521-574-release"` |  |
+| httpHeaderInjectorWebhook.proxy.image.tag | string | `"84c82e1d-591-release"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
-| httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"9c58e521-574-release"` |  |
+| httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"84c82e1d-591-release"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ffd91cef-65-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"bf983f56-67-release"` |  |
 | k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
 | k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
 | k8sResourceCollector.crdDiscovery.apiGroupFilters.include | object | `{"*":true}` | Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups". |
