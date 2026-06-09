@@ -116,8 +116,8 @@ jobs:
       - id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
       - id: meta
         env:
           PIPELINE: ${{ inputs.pipeline }}
@@ -188,8 +188,8 @@ jobs:
       - id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
       - name: Configure git
         env:
           GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}

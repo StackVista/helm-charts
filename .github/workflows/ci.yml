@@ -421,8 +421,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ secrets.GH_APP_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
 
       # GitLab equivalent: `before_script: helm_fetch_dependencies` on push_chart_job —
       # each job gets its own container, so helm repo state from build_stable doesn't carry over.
