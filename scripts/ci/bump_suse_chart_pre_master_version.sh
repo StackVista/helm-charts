@@ -43,12 +43,6 @@ fi
 new_version=$(yq ".version" "$chart_path")
 update_chart_version_in_readme_file "$chart"
 
-# Read the two file contents we want to commit. Base64 them per GraphQL Base64String input
-# requirements. `-w0` keeps each blob on a single line (no line wrapping); fine on Linux,
-# unavailable on macOS — but this script only runs in CI on Linux containers.
-chart_b64=$(base64 -w0 "$chart_path")
-readme_b64=$(base64 -w0 "$readme_path")
-
 # expectedHeadOid gives optimistic-concurrency: if master moves between this read and the
 # mutation, the API rejects with a clear error rather than overwriting. Re-run the job to
 # retry; in practice the only thing pushing to master is this job itself, so collisions are
@@ -82,17 +76,22 @@ mutation(
   }) { commit { url oid } }
 }'
 
+# Pass the file contents via `--rawfile` (read from disk) rather than `--arg` so we don't blow
+# past ARG_MAX on large READMEs. jq base64-encodes them inline to satisfy GraphQL's Base64String
+# input type.
 payload=$(jq -n \
   --arg query       "$graphql_query" \
   --arg repo        "${GITHUB_REPOSITORY:-StackVista/helm-charts-internal}" \
   --arg branch      "${BRANCHES:-master}" \
   --arg message     "Updating '$chart' helm chart version to $new_version [skip ci]" \
   --arg sha         "$head_sha" \
-  --arg chart_path  "$chart_path"  --arg chart_b64  "$chart_b64" \
-  --arg readme_path "$readme_path" --arg readme_b64 "$readme_b64" \
+  --arg chart_path  "$chart_path" \
+  --arg readme_path "$readme_path" \
+  --rawfile chart_content  "$chart_path" \
+  --rawfile readme_content "$readme_path" \
   '{query: $query, variables: {repo: $repo, branch: $branch, message: $message, sha: $sha,
-    chart_path: $chart_path, chart_b64: $chart_b64,
-    readme_path: $readme_path, readme_b64: $readme_b64}}')
+    chart_path: $chart_path, chart_b64: ($chart_content | @base64),
+    readme_path: $readme_path, readme_b64: ($readme_content | @base64)}}')
 
 response=$(curl -sS -w "\n%{http_code}" -X POST \
   -H "Authorization: Bearer ${GH_TOKEN}" \
