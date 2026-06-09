@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2](https://img.shields.io/badge/Version-8.1.2-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.3](https://img.shields.io/badge/Version-8.1.3-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 **Homepage:** <https://github.com/bitnami/charts/tree/master/bitnami/zookeeper>
 ## Maintainers
@@ -153,7 +153,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | podAffinityPreset | string | `""` |  |
 | podAnnotations."ad.stackstate.com/zookeeper.check_names" | string | `"[\"openmetrics\"]"` |  |
 | podAnnotations."ad.stackstate.com/zookeeper.init_configs" | string | `"[{}]"` |  |
-| podAnnotations."ad.stackstate.com/zookeeper.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| podAnnotations."ad.stackstate.com/zookeeper.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"], \"text_filter_blacklist\": [\"synced_observers\"] } ]"` |  |
 | podAntiAffinityPreset | string | `"soft"` |  |
 | podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | podManagementPolicy | string | `"Parallel"` |  |

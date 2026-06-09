@@ -367,7 +367,17 @@ podLabels:
 podAnnotations:
   ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
   ad.stackstate.com/zookeeper.init_configs: "[{}]"
-  ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+  ## STAC-24699: text_filter_blacklist drops the listed substrings from the raw
+  ## exposition payload BEFORE Prometheus parsing. The ZooKeeper Prometheus
+  ## metrics provider serializes a null Long as the literal string "null" on
+  ## Follower replicas (synced_observers is only tracked on the Leader), and
+  ## the prometheus parser correctly rejects "null" as not-a-float — aborting
+  ## the entire scrape and losing every metric emitted after the bad line.
+  ## Filtering pre-parse keeps the rest of the payload flowing. The option is
+  ## forward-compatible: older agent versions that don't recognise the key
+  ## silently ignore it. See ZOOKEEPER-3929 for an adjacent upstream bug
+  ## (Prometheus summary quantiles as NaN — same code area, different symptom).
+  ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"], "text_filter_blacklist": ["synced_observers"] } ]'
 ## @param podAffinityPreset Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
 ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 ##
