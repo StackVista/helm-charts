@@ -93,12 +93,15 @@ payload=$(jq -n \
     chart_path: $chart_path, chart_b64: ($chart_content | @base64),
     readme_path: $readme_path, readme_b64: ($readme_content | @base64)}}')
 
-response=$(curl -sS -w "\n%{http_code}" -X POST \
+# Stream the body to curl over stdin via `--data-binary @-` rather than `--data "$payload"`. The
+# payload embeds the base64-encoded README inline, so passing it as an argv argument blows
+# past ARG_MAX on large READMEs ("curl: Argument list too long"). stdin has no such limit.
+response=$(printf '%s' "$payload" | curl -sS -w "\n%{http_code}" -X POST \
   -H "Authorization: Bearer ${GH_TOKEN}" \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
   -H "Content-Type: application/json" \
-  --data "$payload" \
+  --data-binary @- \
   https://api.github.com/graphql)
 
 http_code=$(printf '%s\n' "$response" | tail -n1)
