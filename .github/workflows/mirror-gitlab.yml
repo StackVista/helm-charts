@@ -36,9 +36,15 @@
 
 name: Mirror GitLab
 
+# Mirroring disabled for the GitLab→GitHub cutover. GitHub is now the source of
+# truth; re-enabling the schedule would force-push GitLab refs back over
+# GitHub-authored work. The cron trigger is commented out (not deleted) so the
+# workflow body stays as reference until the post-cutover cleanup removes the
+# file entirely. `workflow_dispatch` is kept so the file remains a valid
+# workflow and can still be run manually for one-off resyncs if needed.
 on:
-  schedule:
-    - cron: '0 * * * *'
+  # schedule:
+  #   - cron: '0 * * * *'
   workflow_dispatch:
 
 concurrency:

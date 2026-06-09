@@ -1,9 +1,10 @@
 # CI: build / validate / test for every push; publish-to-internal on master + chart-tag pushes.
 # Pipeline: detect_changes → build → validate + test → push_to_internal (gated; idempotent).
 #
-# DRY_RUN env-default is currently 'true' — cutover deferred, GitLab CI is sole publisher.
-# Flip the trailing literal to 'false' to enable GitHub-side auto-publish; coordinate with
-# disabling GitLab CI's push-charts-to-internal in the same change to avoid double-publish.
+# Cutover complete: GitHub is the sole publisher. Push-event DRY_RUN default is 'false';
+# workflow_dispatch still defaults to dry-run so operators can re-run safely without
+# accidentally re-publishing. GitLab CI's push-charts-to-internal must be disabled to
+# avoid double-publish.
 name: CI
 
 on:
@@ -24,7 +25,7 @@ env:
   DRY_RUN: >-
     ${{ github.event_name == 'workflow_dispatch'
         && (inputs.dry_run && 'true' || 'false')
-        || 'true' }}
+        || 'false' }}
 
 jobs:
   # Emits per-chart matrices (stable, local) + the `resource_usage_changed` flag — single

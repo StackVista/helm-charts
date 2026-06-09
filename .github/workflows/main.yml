@@ -7,9 +7,6 @@ on:
 
 jobs:
   build:
-    # Skip tag pushes coming from the GitLab mirror bot — GitLab CI already
-    # publishes those releases; running here would create duplicates.
-    if: github.actor != 'helm-charts-internal[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
