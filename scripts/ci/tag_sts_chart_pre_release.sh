@@ -20,10 +20,17 @@ current_version=$(yq ".version" "$chart_path")
 
 # There is "pre" version like `x.y.z-pre.v` so the new version will be `x.y.z-pre.(v+1)`
 if [[ "$current_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+-pre\.[0-9]+$ ]]; then
-  echo "Found pre-release version '$current_version', tagging.."
   tag="prerelease/$chart_name/$current_version"
-  git tag -a "$tag" -m "$tag"
-  push_tag_skip_ci "$tag"
+  # Remote check (not local): CI runs in a fresh container that hasn't fetched tags.
+  # Lets the after-script re-run safely if a prior run died after this tag was pushed
+  # but before bump_suse_chart_pre_master_version.sh advanced Chart.yaml.
+  if git ls-remote --exit-code --tags "$REPO_PUSH_URL" "refs/tags/$tag" >/dev/null; then
+    echo "Tag '$tag' already exists on remote; skipping."
+  else
+    echo "Found pre-release version '$current_version', tagging.."
+    git tag -a "$tag" -m "$tag"
+    push_tag_skip_ci "$tag"
+  fi
 # There is "released" version like `x.y.z` so the new version will be `x.y.(z+1)-pre.1`
 elif [[ "$current_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Published release version, not need to tag"

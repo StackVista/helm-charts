@@ -500,9 +500,12 @@ jobs:
 
       - name: suse-observability — extra after-script (master path)
         # Pushes commits + tags back to master via the helm-charts-internal[bot] App
-        # (bypasses branch protection per pulumi-infra). Gated on chart_exists so re-runs
-        # of an already-published version don't try to re-tag the same commit.
-        if: env.DRY_RUN == 'false' && steps.chart_exists.outputs.exists == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master'
+        # (bypasses branch protection per pulumi-infra). NOT gated on chart_exists: each
+        # sub-step is individually idempotent so the after-script can self-heal if a
+        # previous run died between cm-push and the bump. tag_sts_chart_pre_release.sh
+        # no-ops when the tag already exists on the remote; bump_suse_chart_pre_master_version.sh
+        # always advances whatever's currently in Chart.yaml.
+        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master'
         env:
           GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
