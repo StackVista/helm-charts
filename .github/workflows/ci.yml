@@ -49,8 +49,8 @@ jobs:
       - id: d
         uses: ./.github/actions/detect-changes
 
-  # Builds + packages each affected stable chart; uploads `charts/` + `build/` as the
-  # `build-<chart>` artifact reused by validate / test / push downstream.
+  # Builds each affected stable chart dependencies, runs a package smoke test in /tmp,
+  # and uploads `charts/` as the `build-<chart>` artifact reused downstream.
   build_stable:
     needs: detect_changes
     if: needs.detect_changes.outputs.stable != '[]'
@@ -82,14 +82,14 @@ jobs:
       - name: Build chart
         run: |
           helm dependencies build stable/${{ matrix.chart }}
-          mkdir -p stable/${{ matrix.chart }}/build
-          helm package --destination stable/${{ matrix.chart }}/build stable/${{ matrix.chart }}
+          pkg_tmp_dir="$(mktemp -d)"
+          helm package --destination "$pkg_tmp_dir" stable/${{ matrix.chart }}
       - uses: actions/upload-artifact@v6
         with:
           name: build-${{ matrix.chart }}
           path: |
             stable/${{ matrix.chart }}/charts/
-            stable/${{ matrix.chart }}/build/
+            stable/${{ matrix.chart }}/Chart.yaml
 
   # Same shape as `build_stable` for charts under `local/` — consumed only as `file://`
   # deps of stable parents, never published, so no `helm package`.
