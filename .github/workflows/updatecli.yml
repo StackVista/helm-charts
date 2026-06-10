@@ -5,7 +5,8 @@
 #
 # workflow_dispatch → apply + follow_up. apply runs `updatecli pipeline apply` for the chosen
 # pipeline (docker_images / stackstate / stackpacks). follow_up branches on the apply output:
-# direct squash-push to target branch (stackstate, stackpacks) OR open a PR (docker_images).
+# direct squash-push to target branch (stackstate, stackpacks) OR signed squash-commit
+# onto the updatecli branch and open a PR (docker_images).
 # apply + follow_up are job-level-gated on `!inputs.dry_run` — operator must explicitly opt in.
 name: Updatecli
 
@@ -37,6 +38,9 @@ on:
         type: boolean
         default: true
 
+permissions:
+  contents: read
+
 env:
   # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the coercion.
   # Validate-only jobs ignore DRY_RUN; only the apply + follow_up jobs check the input directly.
@@ -54,7 +58,9 @@ jobs:
       image: quay.io/helmpack/chart-testing:v3.14.0
       options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
       - run: |
           test -f updatecli/values.d/values.yaml
           yamllint -d "{rules: {document-start: disable, line-length: disable}}" updatecli/values.d/values.yaml
@@ -78,7 +84,9 @@ jobs:
       STACKSTATE_SOURCE_BRANCH: master
       STACKPACKS_SOURCE_BRANCH: master
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
       - env:
           HELM_CHARTS_PAT: ${{ github.token }}
         run: |
@@ -112,12 +120,15 @@ jobs:
       STACKSTATE_SOURCE_BRANCH: ${{ inputs.stackstate_source_branch }}
       STACKPACKS_SOURCE_BRANCH: ${{ inputs.stackpacks_source_branch }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
       - id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
+          permission-contents: write
       - id: meta
         env:
           PIPELINE: ${{ inputs.pipeline }}
@@ -129,7 +140,7 @@ jobs:
               dir="update-docker-images"
               direct_push="false"
               pr_title="Bump helm chart docker images"
-              commit_msg=""
+              commit_msg="Bump helm chart docker images"
               ;;
             stackstate)
               pipelineid="stackstate"
@@ -161,14 +172,16 @@ jobs:
           HELM_CHARTS_PAT:  ${{ steps.app-token.outputs.token }}
           UPDATE_CLI_USER:  ${{ steps.app-token.outputs.app-slug }}[bot]
           UPDATE_CLI_EMAIL: ${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com
+          UPDATECLI_DIR:    ${{ steps.meta.outputs.dir }}
         run: |
           ./scripts/ci/configure_git.sh
           updatecli pipeline apply \
-            -c "updatecli/updatecli.d/${{ steps.meta.outputs.dir }}/" \
+            -c "updatecli/updatecli.d/${UPDATECLI_DIR}/" \
             -v updatecli/values.d/values.yaml
 
-  # Branches on apply's `direct_push` output: squash-push for stackstate/stackpacks, or open PR
-  # via `gh pr create` for docker_images.
+  # Branches on apply's `direct_push` output: squash-push for stackstate/stackpacks,
+  # or rewrite the updatecli branch to a signed squash commit before opening a PR
+  # for docker_images.
   follow_up:
     needs: apply
     # See `apply` job for why we check `!inputs.dry_run` here instead of env.DRY_RUN.
@@ -183,13 +196,18 @@ jobs:
     env:
       TARGET_BRANCH:    ${{ inputs.target_branch }}
       UPDATECLI_BRANCH: ${{ needs.apply.outputs.working_branch }}
+      DIRECT_PUSH:      ${{ needs.apply.outputs.direct_push }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
       - id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
       - name: Configure git
         env:
           GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
@@ -201,10 +219,12 @@ jobs:
           COMMIT_MSG: ${{ needs.apply.outputs.commit_msg }}
           PR_TITLE:   ${{ needs.apply.outputs.pr_title }}
         run: |
-          if [ "${{ needs.apply.outputs.direct_push }}" = "true" ]; then
+          if [ "$DIRECT_PUSH" = "true" ]; then
             ./scripts/ci/updatecli_squash_push.sh \
               "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "$COMMIT_MSG"
           else
+            ./scripts/ci/updatecli_squash_push.sh \
+              "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "$COMMIT_MSG" "$UPDATECLI_BRANCH"
             ./scripts/ci/open_updatecli_pr.sh \
               "$UPDATECLI_BRANCH" "$TARGET_BRANCH" "$PR_TITLE"
           fi

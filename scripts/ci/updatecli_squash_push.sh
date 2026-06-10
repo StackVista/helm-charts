@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Squash-merge an updatecli working branch into TARGET_BRANCH as a single
-# commit, then delete the working branch on origin.
+# Squash-merge an updatecli working branch into a single GitHub-signed commit.
+# By default the commit lands on TARGET_BRANCH and the working branch is deleted.
+# When OUTPUT_BRANCH is provided, the commit lands on OUTPUT_BRANCH instead;
+# this is used for review PRs that still need signed commits.
 #
 # Runs as a follow-up to a CI job that invoked `updatecli apply` and pushed
 # its per-target commits to <working-branch> (default behaviour of updatecli's
@@ -17,7 +19,7 @@
 # because we need git to compute the squashed file set; the resulting staged
 # diff is then translated into GraphQL fileChanges (additions + deletions).
 #
-# Usage: updatecli_squash_push.sh <working-branch> <target-branch> <commit-message>
+# Usage: updatecli_squash_push.sh <working-branch> <target-branch> <commit-message> [output-branch]
 #
 # Required env: GH_TOKEN (GitHub App installation token with contents:write).
 # Optional env: PUSH_CLONE_DIRECTORY (defaults to /tmp/updatecli-push),
@@ -27,6 +29,7 @@ set -euo pipefail
 WORKING_BRANCH="${1:?working branch required}"
 TARGET_BRANCH="${2:?target branch required}"
 COMMIT_MESSAGE="${3:?commit message required}"
+OUTPUT_BRANCH="${4:-$TARGET_BRANCH}"
 
 : "${GH_TOKEN:?GH_TOKEN must be set}"
 
@@ -57,6 +60,14 @@ fi
 # this read and the mutation, the API rejects with a clear error rather than
 # overwriting. Re-run the job to retry.
 head_sha=$(git rev-parse HEAD)
+
+if [ "$OUTPUT_BRANCH" != "$TARGET_BRANCH" ]; then
+  # Create or reset the review branch to the target head before asking GitHub
+  # to create the signed commit there. The unsigned updatecli commits are only
+  # an intermediate transport format; they must not remain in PR history when
+  # branch protection requires verified signatures.
+  git push origin "HEAD:refs/heads/${OUTPUT_BRANCH}" --force
+fi
 
 # Translate the staged diff into GraphQL fileChanges. `-z` makes name-status
 # records NUL-terminated and per-field NUL-separated, so paths with spaces or
@@ -145,7 +156,7 @@ mutation(
 jq -n \
   --arg       query     "$graphql_query" \
   --arg       repo      "$REPO" \
-  --arg       branch    "$TARGET_BRANCH" \
+  --arg       branch    "$OUTPUT_BRANCH" \
   --arg       message   "$COMMIT_MESSAGE" \
   --arg       sha       "$head_sha" \
   --slurpfile additions "$tmp/additions.json" \
@@ -184,8 +195,11 @@ fi
 commit_url=$(echo "$body" | jq -r '.data.createCommitOnBranch.commit.url')
 echo "Created commit: ${commit_url}"
 
-# Clean up the working branch on origin. Non-fatal: if it fails (race with
-# another run, perms, etc.) the next updatecli run will just force-push over
-# it anyway. Branch deletion isn't signed, so plain `git push --delete` over
-# the App token works fine even with `require_signed_commits` enabled.
-git push origin --delete "$WORKING_BRANCH" || true
+# Clean up the raw working branch on origin when it is no longer the output
+# branch. Non-fatal: if it fails (race with another run, perms, etc.) the next
+# updatecli run will just force-push over it anyway. Branch deletion is not a
+# commit, so plain `git push --delete` over the App token works fine even with
+# `require_signed_commits` enabled.
+if [ "$OUTPUT_BRANCH" != "$WORKING_BRANCH" ]; then
+  git push origin --delete "$WORKING_BRANCH" || true
+fi
