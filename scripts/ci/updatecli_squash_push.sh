@@ -62,8 +62,32 @@ head_sha=$(git rev-parse HEAD)
 # records NUL-terminated and per-field NUL-separated, so paths with spaces or
 # newlines survive intact. Rename/copy records carry TWO paths
 # (oldpath NUL newpath NUL); plain A/M/D records carry one (path NUL).
-additions='[]'
-deletions='[]'
+#
+# Each per-file addition/deletion JSON object is written to its own file under
+# $tmp, then assembled into arrays via `jq -s` and consumed below via
+# `jq --slurpfile`. Carrying the JSON in shell variables (and passing it via
+# `--argjson`) hits ARG_MAX as soon as one file's base64 content + earlier
+# accumulated entries exceed ~128KB — the auto-generated README.md alone is
+# enough. `--rawfile` and `--slurpfile` read from disk, so jq never sees the
+# bulk content via argv.
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+mkdir -p "$tmp/add" "$tmp/del"
+add_count=0
+del_count=0
+
+emit_add() {
+  jq -n --arg p "$1" --rawfile c "$1" \
+        '{path: $p, contents: ($c | @base64)}' \
+        > "$tmp/add/$(printf '%06d' "$add_count").json"
+  add_count=$((add_count + 1))
+}
+emit_del() {
+  jq -n --arg p "$1" '{path: $p}' \
+        > "$tmp/del/$(printf '%06d' "$del_count").json"
+  del_count=$((del_count + 1))
+}
+
 while IFS= read -r -d '' status; do
   IFS= read -r -d '' path1
   case "$status" in
@@ -71,35 +95,30 @@ while IFS= read -r -d '' status; do
     *)     path2='' ;;
   esac
   case "$status" in
-    A|M|T)
-      # `--rawfile` reads the file from disk into a jq var; @base64 encodes it
-      # inline. Going via argv would blow past ARG_MAX on large files.
-      add=$(jq -n --arg p "$path1" --rawfile c "$path1" \
-            '{path: $p, contents: ($c | @base64)}')
-      additions=$(jq --argjson a "$add" '. + [$a]' <<<"$additions")
-      ;;
-    D)
-      del=$(jq -n --arg p "$path1" '{path: $p}')
-      deletions=$(jq --argjson d "$del" '. + [$d]' <<<"$deletions")
-      ;;
-    R*)
-      add=$(jq -n --arg p "$path2" --rawfile c "$path2" \
-            '{path: $p, contents: ($c | @base64)}')
-      additions=$(jq --argjson a "$add" '. + [$a]' <<<"$additions")
-      del=$(jq -n --arg p "$path1" '{path: $p}')
-      deletions=$(jq --argjson d "$del" '. + [$d]' <<<"$deletions")
-      ;;
-    C*)
-      add=$(jq -n --arg p "$path2" --rawfile c "$path2" \
-            '{path: $p, contents: ($c | @base64)}')
-      additions=$(jq --argjson a "$add" '. + [$a]' <<<"$additions")
-      ;;
+    A|M|T) emit_add "$path1" ;;
+    D)     emit_del "$path1" ;;
+    R*)    emit_add "$path2"; emit_del "$path1" ;;
+    C*)    emit_add "$path2" ;;
     *)
       echo "ERROR: unsupported git diff status '$status' for path '$path1'" >&2
       exit 1
       ;;
   esac
 done < <(git diff --cached --name-status -z)
+
+# `jq -s` (slurp) reads all argument files and emits a single array containing
+# each file's parsed JSON value. With no input files jq emits nothing, so
+# branch on the counter and fall back to an empty array literal.
+if [ "$add_count" -gt 0 ]; then
+  jq -s '.' "$tmp"/add/*.json > "$tmp/additions.json"
+else
+  echo '[]' > "$tmp/additions.json"
+fi
+if [ "$del_count" -gt 0 ]; then
+  jq -s '.' "$tmp"/del/*.json > "$tmp/deletions.json"
+else
+  echo '[]' > "$tmp/deletions.json"
+fi
 
 # Uses curl + jq instead of `gh api graphql` because the stackstate-devops CI
 # container does not ship `gh`. $-variables in the query string are GraphQL
@@ -118,26 +137,31 @@ mutation(
   }) { commit { url oid } }
 }'
 
-payload=$(jq -n \
-  --arg     query     "$graphql_query" \
-  --arg     repo      "$REPO" \
-  --arg     branch    "$TARGET_BRANCH" \
-  --arg     message   "$COMMIT_MESSAGE" \
-  --arg     sha       "$head_sha" \
-  --argjson additions "$additions" \
-  --argjson deletions "$deletions" \
+# `--slurpfile` binds the variable to the array of JSON values read from the
+# file; additions.json / deletions.json each contain ONE value (an array), so
+# the result is wrapped one level extra — peel it back with `$additions[0]`.
+# Writing the assembled payload to disk (rather than capturing it in a shell
+# variable) keeps the base64 content off the next command line.
+jq -n \
+  --arg       query     "$graphql_query" \
+  --arg       repo      "$REPO" \
+  --arg       branch    "$TARGET_BRANCH" \
+  --arg       message   "$COMMIT_MESSAGE" \
+  --arg       sha       "$head_sha" \
+  --slurpfile additions "$tmp/additions.json" \
+  --slurpfile deletions "$tmp/deletions.json" \
   '{query: $query, variables: {repo: $repo, branch: $branch, message: $message,
-    sha: $sha, additions: $additions, deletions: $deletions}}')
+    sha: $sha, additions: $additions[0], deletions: $deletions[0]}}' \
+  > "$tmp/payload.json"
 
-# Stream the body over stdin via `--data-binary @-` rather than `--data "$payload"`.
-# The payload embeds base64-encoded file contents inline, so passing it as argv
-# blows past ARG_MAX on large diffs ("curl: Argument list too long").
-response=$(printf '%s' "$payload" | curl -sS -w "\n%{http_code}" -X POST \
+# Feed the payload to curl from disk (`--data-binary @path`) — never via argv
+# or a shell variable expansion that would blow past ARG_MAX on large diffs.
+response=$(curl -sS -w "\n%{http_code}" -X POST \
   -H "Authorization: Bearer ${GH_TOKEN}" \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
   -H "Content-Type: application/json" \
-  --data-binary @- \
+  --data-binary "@$tmp/payload.json" \
   https://api.github.com/graphql)
 
 http_code=$(printf '%s\n' "$response" | tail -n1)
