@@ -100,6 +100,9 @@ createOrUpdateTopic "sts_health_sync_settings" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_topology_stream" "10" "${ephemeralRetention}" &
 PIDS+=($!)
+# Compact-only: metadata must survive restarts indefinitely (one record per mapping).
+createOrUpdateTopic "sts_topology_stream_metadata" "1" "cleanup.policy=compact|min.cleanable.dirty.ratio=0.1|max.compaction.lag.ms=86400000" &
+PIDS+=($!)
 
 # Topic configuration for aggressive compaction and retention
 # - cleanup.policy=compact,delete: Enable both log compaction (deduplication) and time-based deletion
