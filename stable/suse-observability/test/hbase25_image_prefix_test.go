@@ -3,6 +3,7 @@ package test
 import (
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	appsv1 "k8s.io/api/apps/v1"
@@ -61,14 +62,19 @@ func TestRegularImageSplit(t *testing.T) {
 }
 
 func TestHbaseHdfsUsesFullImageTag(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/hbase12_enabled.yaml")
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml", "values/hbase12_enabled.yaml"},
+		SetValues: map[string]string{
+			"hbase.hdfs.version": "3.4.3-test-tag",
+		},
+	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	expectedStatefulSets := map[string]string{
-		"suse-observability-hbase-hdfs-dn":  "my.registry.com/stackstate/hadoop:3.4.3-so1",
-		"suse-observability-hbase-hdfs-nn":  "my.registry.com/stackstate/hadoop:3.4.3-so1",
-		"suse-observability-hbase-hdfs-snn": "my.registry.com/stackstate/hadoop:3.4.3-so1",
+		"suse-observability-hbase-hdfs-dn":  "my.registry.com/stackstate/hadoop:3.4.3-test-tag",
+		"suse-observability-hbase-hdfs-nn":  "my.registry.com/stackstate/hadoop:3.4.3-test-tag",
+		"suse-observability-hbase-hdfs-snn": "my.registry.com/stackstate/hadoop:3.4.3-test-tag",
 	}
 
 	for statefulSetName, expectedImage := range expectedStatefulSets {

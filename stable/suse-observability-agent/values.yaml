@@ -162,7 +162,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-k8s-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: cb4d9ce2
+        tag: 02f4adaa
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.agent.env -- Additional environment variables for the agent container
@@ -217,7 +217,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: f1075fdf
+        tag: 34a0a151
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
@@ -450,7 +450,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: cb4d9ce2
+    tag: 02f4adaa
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -593,7 +593,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
-    tag: cb4d9ce2
+    tag: 02f4adaa
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -833,7 +833,7 @@ httpHeaderInjectorWebhook:
       # proxy.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy"
       # proxy.image.tag - Tag for the docker image
-      tag: 84c82e1d-591-release
+      tag: 7fa7b86b-621-release
 
   # proxyInit -- InitContainer within pod which redirects traffic to the proxy container.
   proxyInit:
@@ -841,7 +841,7 @@ httpHeaderInjectorWebhook:
       # proxyInit.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy-init"
       # proxyInit.image.tag - Tag for the docker image
-      tag: 84c82e1d-591-release
+      tag: 7fa7b86b-621-release
 
   # sidecarInjector -- Service for injecting the proxy sidecar into pods
   sidecarInjector:
@@ -849,7 +849,7 @@ httpHeaderInjectorWebhook:
       # sidecarInjector.image.repository - Repository for the docker image
       repository: "stackstate/generic-sidecar-injector"
       # sidecarInjector.image.tag - Tag for the docker image
-      tag: bf983f56-67-release
+      tag: aa5309e4-72-release
 
   # certificatePrehook -- Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook
   certificatePrehook:
@@ -883,7 +883,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: 2a5a7485-770-release
+        tag: 41bc549e-791-release
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
