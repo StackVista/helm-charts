@@ -3,10 +3,17 @@
 [ -n "${TRACE+x}" ] && set -x
 
 set -e
+# Without pipefail, a failed curl in `curl | tar` is masked by tar's exit
+# status, letting transient download truncation slip through as a tar
+# segfault. Probe first because POSIX sh doesn't define pipefail.
+# shellcheck disable=SC3040
+( set -o pipefail ) 2>/dev/null && set -o pipefail
 
 installDependencies() {
   apk -Uuv add bash curl groff less openssl yq
-  curl -fSL "https://github.com/yannh/kubeconform/releases/download/v0.4.12/kubeconform-linux-amd64.tar.gz" | tar -C /usr/local/bin -xvz
+  curl --fail --show-error --location --retry 5 --retry-delay 2 --retry-all-errors \
+    "https://github.com/yannh/kubeconform/releases/download/v0.4.12/kubeconform-linux-amd64.tar.gz" \
+    | tar -C /usr/local/bin -xvz kubeconform
   chmod +x /usr/local/bin/kubeconform
 }
 
