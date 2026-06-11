@@ -4,9 +4,9 @@ StackState curated applications for Kubernetes.
 
 ## CI/CD
 
-GitHub Actions workflows live under `.github/workflows/`. See [docs/CI.md](docs/CI.md) for the workflow map, runner labels, secrets, and cutover-gate procedure.
+GitHub Actions workflows live under `.github/workflows/`.
 
-During the parallel-run period the legacy GitLab CI (`.gitlab-ci.yml`, generated from `.gitlab-ci.jsonnet`) also runs against this repo via the [mirror workflow](.github/workflows/mirror-gitlab.yml).
+The public [`StackVista/helm-charts`](https://github.com/StackVista/helm-charts) repository is kept in sync from this internal repository by the [public sync workflow](.github/workflows/sync-public.yml).
 
 ## Pre-commit hooks
 

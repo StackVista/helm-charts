@@ -1,0 +1,52 @@
+# Sync Public: mirrors refs from the internal GitHub repository to the public
+# StackVista/helm-charts repository. GitHub is the source of truth; this workflow
+# does not rewrite commits, signatures, or tag objects.
+name: Sync Public
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '**'
+  workflow_dispatch:
+
+concurrency:
+  group: sync-public
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    if: github.repository == 'StackVista/helm-charts-internal'
+    runs-on: small
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Generate public repository App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.HELM_CHARTS_PUBLIC_GH_APP_CLIENT_ID }}
+          private-key: ${{ secrets.HELM_CHARTS_PUBLIC_GH_APP_PRIVATE_KEY }}
+          owner: StackVista
+          repositories: helm-charts
+          permission-contents: write
+          permission-workflows: write
+
+      - name: Add public remote
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: git remote add public "https://x-access-token:${GH_TOKEN}@github.com/StackVista/helm-charts.git"
+
+      - name: Sync master
+        if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+        run: git push --force public refs/remotes/origin/master:refs/heads/master
+
+      - name: Sync all tags
+        run: git push --force public 'refs/tags/*:refs/tags/*'
