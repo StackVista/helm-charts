@@ -1,0 +1,18 @@
+# Integration overlay for the SUSE Virtualization (KubeVirt) stackpack.
+#
+# Pre-configures the k8sResourceCollector with the API groups consumed by the
+# SUSE Virtualization stackpack's component- and relation-mappings.
+#
+# Usage — enable the flag in your values:
+#   k8sResourceCollector:
+#     integrations:
+#       suseVirtualization: true
+k8sResourceCollector:
+  crdDiscovery:
+    apiGroupFilters:
+      include:
+        "kubevirt.io": true
+  rbac:
+    # Only consulted when k8sResourceCollector.rbac.useWildcard is false.
+    crdApiGroups:
+      "kubevirt.io": true

@@ -1,0 +1,49 @@
+# Convenience bundle that combines every SUSE integration overlay shipped
+# with this chart. Use this when a cluster runs (or may run) any of the
+# bundled SUSE products and you want a single flag rather than enabling each
+# integration individually.
+#
+# Usage — enable all integrations at once in your values:
+#   k8sResourceCollector:
+#     integrations:
+#       suseRuntimeEnforcer: true
+#       suseAdmissionController: true
+#       suseVirtualization: true
+#       suseSbomScanner: true
+#
+# Bundled integrations:
+#   - suse-runtime-enforcer
+#   - suse-admission-controller (Kubewarden)
+#   - suse-virtualization (KubeVirt)
+#   - suse-sbom-scanner
+#
+# Listing an API group on a cluster that does not have the corresponding CRDs
+# installed is harmless — the receiver only watches resources that actually
+# exist, and Kubernetes accepts ClusterRoles referencing absent groups.
+k8sResourceCollector:
+  crdDiscovery:
+    apiGroupFilters:
+      include:
+        # suse-runtime-enforcer
+        "security.rancher.io": true
+        # suse-admission-controller (Kubewarden)
+        "policies.kubewarden.io": true
+        "wgpolicyk8s.io": true
+        "openreports.io": true
+        # suse-virtualization (KubeVirt)
+        "kubevirt.io": true
+        # suse-sbom-scanner
+        "sbomscanner.kubewarden.io": true
+        "storage.sbomscanner.kubewarden.io": true
+        "postgresql.cnpg.io": true
+  rbac:
+    # Only consulted when k8sResourceCollector.rbac.useWildcard is false.
+    crdApiGroups:
+      "security.rancher.io": true
+      "policies.kubewarden.io": true
+      "wgpolicyk8s.io": true
+      "openreports.io": true
+      "kubevirt.io": true
+      "sbomscanner.kubewarden.io": true
+      "storage.sbomscanner.kubewarden.io": true
+      "postgresql.cnpg.io": true

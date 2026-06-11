@@ -1,4 +1,5 @@
 {{- if include "stackstate-k8s-agent.k8sResourceCollector.enabled" . }}
+{{- $rcfg := include "stackstate-k8s-agent.k8sResourceCollector.mergedValues" . | fromYaml }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -20,7 +21,7 @@ data:
         discovery_mode: {{ .Values.k8sResourceCollector.crdDiscovery.discoveryMode }}
 {{- if eq .Values.k8sResourceCollector.crdDiscovery.discoveryMode "api_groups" }}
 {{- $includes := list }}
-{{- range $pattern, $enabled := .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.include }}
+{{- range $pattern, $enabled := $rcfg.crdDiscovery.apiGroupFilters.include }}
 {{- if $enabled }}{{ $includes = append $includes $pattern }}{{ end }}
 {{- end }}
 {{- if not $includes }}
@@ -32,7 +33,7 @@ data:
             - {{ . | quote }}
 {{- end }}
 {{- $excludes := list }}
-{{- range $pattern, $enabled := .Values.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude }}
+{{- range $pattern, $enabled := $rcfg.crdDiscovery.apiGroupFilters.exclude }}
 {{- if $enabled }}{{ $excludes = append $excludes $pattern }}{{ end }}
 {{- end }}
 {{- if $excludes }}

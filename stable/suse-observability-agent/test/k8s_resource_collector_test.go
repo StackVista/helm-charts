@@ -505,3 +505,96 @@ func TestK8sResourceCollectorSingleReplicaSkipsPDB(t *testing.T) {
 	_, exists = resources.Pdbs["suse-observability-agent-k8s-resource-collector"]
 	assert.False(t, exists, "PDB should be skipped when replicaCount is 1")
 }
+
+// TestK8sResourceCollectorIntegrationFlags verifies that enabling integration
+// flags merges the corresponding API groups into the rendered ConfigMap
+// (crd_api_group_filters.include). All four flags are set in a single values
+// file so one render covers every integration's groups.
+func TestK8sResourceCollectorIntegrationFlags(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-integrations.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	configData := configMap.Data["config.yaml"]
+
+	require.Contains(t, configData, "crd_api_group_filters:")
+	require.Contains(t, configData, "include:")
+
+	allGroups := []string{
+		// suseRuntimeEnforcer
+		"security.rancher.io",
+		// suseAdmissionController — includes both current and successor report groups
+		"policies.kubewarden.io", "wgpolicyk8s.io", "openreports.io",
+		// suseVirtualization
+		"kubevirt.io",
+		// suseSbomScanner
+		"sbomscanner.kubewarden.io", "storage.sbomscanner.kubewarden.io", "postgresql.cnpg.io",
+	}
+	for _, g := range allGroups {
+		assert.Contains(t, configData, g, "expected integration group %q in include filter", g)
+	}
+
+	// Base operator-supplied wildcard must also survive the merge.
+	assert.Contains(t, configData, `"*"`, "operator-supplied wildcard should survive integration merge")
+}
+
+// TestK8sResourceCollectorIntegrationFlagsRestrictedRBAC verifies that
+// integration flags also populate the ClusterRole under restricted RBAC
+// (useWildcard=false), and that they merge with operator-supplied crdApiGroups
+// rather than replacing them.
+func TestK8sResourceCollectorIntegrationFlagsRestrictedRBAC(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-integrations-restricted-rbac.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector cluster role was not found")
+
+	apiGroups := map[string]bool{}
+	for _, rule := range clusterRole.Rules {
+		for _, g := range rule.APIGroups {
+			apiGroups[g] = true
+		}
+	}
+
+	// Integration-added groups must appear.
+	for _, g := range []string{"sbomscanner.kubewarden.io", "storage.sbomscanner.kubewarden.io", "postgresql.cnpg.io"} {
+		assert.True(t, apiGroups[g], "integration group %q should appear in ClusterRole under restricted RBAC", g)
+	}
+
+	// Operator-supplied base entry must survive the merge.
+	assert.True(t, apiGroups["policies.kubewarden.io"], "operator-supplied crdApiGroups entry should survive integration merge")
+}
+
+// TestK8sResourceCollectorIntegrationFlagsDisabledByDefault verifies that when
+// all integration flags are explicitly set to false, no integration groups appear
+// in the rendered output. Uses a dedicated values file rather than relying on
+// chart defaults (which ship three flags enabled out of the box).
+func TestK8sResourceCollectorIntegrationFlagsDisabledByDefault(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-integrations-disabled.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	configData := configMap.Data["config.yaml"]
+
+	integrationGroups := []string{
+		"security.rancher.io", "policies.kubewarden.io", "wgpolicyk8s.io",
+		"kubevirt.io", "sbomscanner.kubewarden.io", "storage.sbomscanner.kubewarden.io", "postgresql.cnpg.io",
+	}
+	for _, g := range integrationGroups {
+		assert.NotContains(t, configData, g, "integration group %q should not appear when flags are disabled", g)
+	}
+}

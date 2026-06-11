@@ -1,0 +1,23 @@
+stackstate:
+  apiKey: test-api-key
+  cluster:
+    name: test-cluster
+  url: https://my-suse-observability-instance.com/receiver
+
+# All four integration flags enabled alongside the default wildcard filter.
+# Exercises the mergedValues helper: integration groups are merged in alongside
+# the operator-supplied "*": true entry.
+k8sResourceCollector:
+  enabled: true
+  crdDiscovery:
+    discoveryMode: api_groups
+    apiGroupFilters:
+      include:
+        "*": true
+  rbac:
+    useWildcard: true
+  integrations:
+    suseRuntimeEnforcer: true
+    suseAdmissionController: true
+    suseVirtualization: true
+    suseSbomScanner: true

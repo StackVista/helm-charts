@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.50`
+Current chart version is `1.3.51`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -47,6 +47,32 @@ helm install \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
 stackstate/suse-observability-agent
 ```
+
+## Integration overlays
+
+The `integrations/` directory contains opt-in values overlays that pre-configure the `k8sResourceCollector` for individual SUSE stackpacks. Each overlay enables the API groups consumed by that stackpack's component- and relation-mappings under both `crdDiscovery.apiGroupFilters.include` and `rbac.crdApiGroups` (the latter only matters when `rbac.useWildcard: false`).
+
+Available overlays:
+
+* `integrations/suse-runtime-enforcer.yaml`
+* `integrations/suse-admission-controller.yaml`
+* `integrations/suse-virtualization.yaml`
+* `integrations/suse-sbom-scanner.yaml`
+* `integrations/suse-bundle.yaml` — convenience overlay combining all of the above
+
+Apply one or more with `-f`:
+
+```shell
+helm install \
+--set-string 'stackstate.apiKey'='<your-api-key>' \
+--set-string 'stackstate.cluster.name'='<your-cluster-name>' \
+--set-string 'stackstate.url'='<your-stackstate-url>' \
+-f integrations/suse-runtime-enforcer.yaml \
+-f integrations/suse-admission-controller.yaml \
+stackstate/suse-observability-agent
+```
+
+Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
 
 ## Values
 
@@ -186,6 +212,10 @@ stackstate/suse-observability-agent
 | k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
 | k8sResourceCollector.image.tag | string | `"v0.0.38"` | Container image tag for 'opentelemetry-collector' containers. |
+| k8sResourceCollector.integrations.suseAdmissionController | bool | `true` | Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack. |
+| k8sResourceCollector.integrations.suseRuntimeEnforcer | bool | `true` | Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack. |
+| k8sResourceCollector.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |
+| k8sResourceCollector.integrations.suseVirtualization | bool | `true` | Enable pre-configured API group filters for the SUSE Virtualization (KubeVirt) stackpack. |
 | k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
 | k8sResourceCollector.leaderElection.leaseName | string | `"k8sresourcereceiver"` | Name of the Lease object. Must be unique per collector deployment. |

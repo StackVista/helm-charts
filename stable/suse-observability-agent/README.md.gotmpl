@@ -42,4 +42,30 @@ helm install \
 stackstate/suse-observability-agent
 ```
 
+## Integration overlays
+
+The `integrations/` directory contains opt-in values overlays that pre-configure the `k8sResourceCollector` for individual SUSE stackpacks. Each overlay enables the API groups consumed by that stackpack's component- and relation-mappings under both `crdDiscovery.apiGroupFilters.include` and `rbac.crdApiGroups` (the latter only matters when `rbac.useWildcard: false`).
+
+Available overlays:
+
+* `integrations/suse-runtime-enforcer.yaml`
+* `integrations/suse-admission-controller.yaml`
+* `integrations/suse-virtualization.yaml`
+* `integrations/suse-sbom-scanner.yaml`
+* `integrations/suse-bundle.yaml` — convenience overlay combining all of the above
+
+Apply one or more with `-f`:
+
+```shell
+helm install \
+--set-string 'stackstate.apiKey'='<your-api-key>' \
+--set-string 'stackstate.cluster.name'='<your-cluster-name>' \
+--set-string 'stackstate.url'='<your-stackstate-url>' \
+-f integrations/suse-runtime-enforcer.yaml \
+-f integrations/suse-admission-controller.yaml \
+stackstate/suse-observability-agent
+```
+
+Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
+
 {{ template "chart.valuesSection" . }}

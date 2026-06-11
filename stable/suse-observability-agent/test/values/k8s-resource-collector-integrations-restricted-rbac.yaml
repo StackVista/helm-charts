@@ -1,0 +1,22 @@
+stackstate:
+  apiKey: test-api-key
+  cluster:
+    name: test-cluster
+  url: https://my-suse-observability-instance.com/receiver
+
+# Integration flags with restricted RBAC — exercises that merged crdApiGroups
+# from the overlay appear in the ClusterRole alongside operator-supplied entries.
+k8sResourceCollector:
+  enabled: true
+  crdDiscovery:
+    discoveryMode: api_groups
+    apiGroupFilters:
+      include:
+        "*": false
+        "policies.kubewarden.io": true
+  rbac:
+    useWildcard: false
+    crdApiGroups:
+      "policies.kubewarden.io": true
+  integrations:
+    suseSbomScanner: true

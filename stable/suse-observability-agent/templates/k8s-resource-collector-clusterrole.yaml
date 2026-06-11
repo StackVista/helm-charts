@@ -1,4 +1,5 @@
 {{- if include "stackstate-k8s-agent.k8sResourceCollector.enabled" . }}
+{{- $rcfg := include "stackstate-k8s-agent.k8sResourceCollector.mergedValues" . | fromYaml }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -25,7 +26,7 @@ rules:
   # Restricted permissions for specific API groups.
   # rbac.crdApiGroups grants group-wide access for CRD-discovered resources.
   # k8sResourceCollector.objects entries derive resource-scoped rules from objects[].group/name.
-{{- range $group, $enabled := .Values.k8sResourceCollector.rbac.crdApiGroups }}
+{{- range $group, $enabled := $rcfg.rbac.crdApiGroups }}
 {{- if $enabled }}
   - apiGroups: [{{ $group | quote }}]
     resources: ["*"]

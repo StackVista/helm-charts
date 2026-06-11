@@ -372,3 +372,38 @@ Headless Service DNS for peer-to-peer cache sync between cluster collector repli
 {{- define "stackstate-k8s-agent.k8sResourceCollector.peerSync.dns" -}}
 {{- printf "%s-k8s-resource-collector-headless.%s.svc.cluster.local" .Release.Name .Release.Namespace -}}
 {{- end -}}
+
+{{/*
+Merge enabled integration overlays into k8sResourceCollector values.
+
+Each integrations/<name>.yaml file is loaded via .Files.Get, parsed, and deep-merged
+over the base k8sResourceCollector values using mustMergeOverwrite. The merge is
+additive: integration API groups are added to crdDiscovery.apiGroupFilters.include and
+rbac.crdApiGroups alongside any operator-supplied entries.
+
+Returns a dict equivalent to .Values.k8sResourceCollector with integration groups merged in.
+*/}}
+{{- define "stackstate-k8s-agent.k8sResourceCollector.mergedValues" -}}
+{{- $vals := deepCopy .Values.k8sResourceCollector }}
+{{- $integrations := $vals.integrations | default dict }}
+{{- $files := .Files }}
+{{- $overlays := list }}
+{{- if index $integrations "suseRuntimeEnforcer" }}
+  {{- $overlays = append $overlays "integrations/suse-runtime-enforcer.yaml" }}
+{{- end }}
+{{- if index $integrations "suseAdmissionController" }}
+  {{- $overlays = append $overlays "integrations/suse-admission-controller.yaml" }}
+{{- end }}
+{{- if index $integrations "suseVirtualization" }}
+  {{- $overlays = append $overlays "integrations/suse-virtualization.yaml" }}
+{{- end }}
+{{- if index $integrations "suseSbomScanner" }}
+  {{- $overlays = append $overlays "integrations/suse-sbom-scanner.yaml" }}
+{{- end }}
+{{- range $overlays }}
+  {{- $overlay := $files.Get . | fromYaml }}
+  {{- $overlayVals := index $overlay "k8sResourceCollector" | default dict }}
+  {{- $vals = mustMergeOverwrite $vals $overlayVals }}
+{{- end }}
+{{- $vals | toYaml }}
+{{- end -}}

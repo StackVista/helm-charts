@@ -1,0 +1,24 @@
+# Integration overlay for the SUSE SBOM Scanner stackpack.
+#
+# Pre-configures the k8sResourceCollector with the API groups consumed by the
+# SUSE SBOM Scanner stackpack's component- and relation-mappings.
+#
+# Usage — enable the flag in your values:
+#   k8sResourceCollector:
+#     integrations:
+#       suseSbomScanner: true
+k8sResourceCollector:
+  crdDiscovery:
+    apiGroupFilters:
+      include:
+        "sbomscanner.kubewarden.io": true
+        "storage.sbomscanner.kubewarden.io": true
+        # CloudNativePG — sbomscanner stackpack maps the Postgres CRs that
+        # back its storage layer.
+        "postgresql.cnpg.io": true
+  rbac:
+    # Only consulted when k8sResourceCollector.rbac.useWildcard is false.
+    crdApiGroups:
+      "sbomscanner.kubewarden.io": true
+      "storage.sbomscanner.kubewarden.io": true
+      "postgresql.cnpg.io": true

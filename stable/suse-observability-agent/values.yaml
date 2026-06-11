@@ -710,6 +710,16 @@ k8sResourceCollector:
     #   "policies.kubewarden.io": true
     #   "longhorn.io": true
 
+  integrations:
+    # k8sResourceCollector.integrations.suseRuntimeEnforcer -- Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack.
+    suseRuntimeEnforcer: true
+    # k8sResourceCollector.integrations.suseAdmissionController -- Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack.
+    suseAdmissionController: true
+    # k8sResourceCollector.integrations.suseVirtualization -- Enable pre-configured API group filters for the SUSE Virtualization (KubeVirt) stackpack.
+    suseVirtualization: true
+    # k8sResourceCollector.integrations.suseSbomScanner -- Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack.
+    suseSbomScanner: false
+
   # k8sResourceCollector.objects -- Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by crd_api_group_filters are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group).
   objects: {}
   # Example:
