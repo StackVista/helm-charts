@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.51`
+Current chart version is `1.3.52`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -211,7 +211,7 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 | k8sResourceCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
 | k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| k8sResourceCollector.image.tag | string | `"v0.0.38"` | Container image tag for 'opentelemetry-collector' containers. |
+| k8sResourceCollector.image.tag | string | `"v0.0.39"` | Container image tag for 'opentelemetry-collector' containers. |
 | k8sResourceCollector.integrations.suseAdmissionController | bool | `true` | Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack. |
 | k8sResourceCollector.integrations.suseRuntimeEnforcer | bool | `true` | Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack. |
 | k8sResourceCollector.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |
@@ -256,7 +256,7 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"41bc549e-791-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"41bc549e-795-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -316,7 +316,7 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
 | nodeAgent.containers.processAgent.image.registry | string | `nil` |  |
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
-| nodeAgent.containers.processAgent.image.tag | string | `"34a0a151"` | Default process-agent container image tag. |
+| nodeAgent.containers.processAgent.image.tag | string | `"3c8e3d26"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
 | nodeAgent.containers.processAgent.procVolumeReadOnly | bool | `true` | Configure whether /host/proc is read only for the process agent container |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | CPU resource limits. |

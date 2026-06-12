@@ -217,7 +217,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: 34a0a151
+        tag: 3c8e3d26
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
@@ -683,7 +683,7 @@ k8sResourceCollector:
     # k8sResourceCollector.image.repository -- Base container image repository.
     repository: stackstate/sts-opentelemetry-collector
     # k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.38
+    tag: v0.0.39
     # k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -893,7 +893,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: 41bc549e-791-release
+        tag: 41bc549e-795-release
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
