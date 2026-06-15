@@ -48,6 +48,8 @@ spec:
               fieldRef:
                 fieldPath: "spec.nodeName"
           securityContext:
+            seLinuxOptions:
+              type: spc_t # Allow reading log files on seLinux enabled systems.
             privileged: false
         {{- with .Values.logsAgent.resources }}
           resources:
