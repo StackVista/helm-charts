@@ -22,7 +22,7 @@ jobs:
   trigger:
     # Job-level `if:` can't reference `env.X` (env context unavailable at job scope), so
     # check the boolean input directly.
-    if: ${{ !inputs.dry_run }}
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (!inputs.dry_run) }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284

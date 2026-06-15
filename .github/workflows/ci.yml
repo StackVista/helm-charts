@@ -31,6 +31,7 @@ jobs:
   # Emits per-chart matrices (stable, local) + the `resource_usage_changed` flag — single
   # up-front diff, downstream jobs fan out from its outputs.
   detect_changes:
+    if: github.repository == 'StackVista/helm-charts-internal'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -53,7 +54,7 @@ jobs:
   # and uploads `charts/` as the `build-<chart>` artifact reused downstream.
   build_stable:
     needs: detect_changes
-    if: needs.detect_changes.outputs.stable != '[]'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.stable != '[]') }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -95,7 +96,7 @@ jobs:
   # deps of stable parents, never published, so no `helm package`.
   build_local:
     needs: detect_changes
-    if: needs.detect_changes.outputs.local != '[]'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.local != '[]') }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -140,7 +141,7 @@ jobs:
   # against each stable chart's `build_stable` artifact.
   validate_stable:
     needs: [detect_changes, build_stable]
-    if: needs.detect_changes.outputs.stable != '[]'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.stable != '[]') }}
     runs-on: docker
     container:
       image: quay.io/helmpack/chart-testing:v3.14.0
@@ -173,7 +174,7 @@ jobs:
   # isn't in the current diff.
   validate_stable_images:
     needs: [detect_changes, build_stable]
-    if: contains(needs.detect_changes.outputs.stable, '"suse-observability"') || contains(needs.detect_changes.outputs.stable, '"suse-observability-agent"')
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (contains(needs.detect_changes.outputs.stable, '"suse-observability"') || contains(needs.detect_changes.outputs.stable, '"suse-observability-agent"')) }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -201,7 +202,7 @@ jobs:
   # check — local charts are pinned to `version: "*"` by consumers and never bumped on their own.
   validate_local:
     needs: [detect_changes, build_local]
-    if: needs.detect_changes.outputs.local != '[]'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.local != '[]') }}
     runs-on: docker
     container:
       image: quay.io/helmpack/chart-testing:v3.14.0
@@ -237,7 +238,7 @@ jobs:
   # not by humans (step-level `if:` skips it; otherwise chartmuseum would 409 the push).
   check_chart_version:
     needs: detect_changes
-    if: needs.detect_changes.outputs.stable != '[]'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.stable != '[]') }}
     runs-on: docker
     container:
       image: quay.io/helmpack/chart-testing:v3.14.0
@@ -261,7 +262,7 @@ jobs:
   # with a notice for charts without a `test/` directory.
   test_stable:
     needs: [detect_changes, build_stable]
-    if: needs.detect_changes.outputs.stable != '[]'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.stable != '[]') }}
     runs-on: xlarge
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -299,7 +300,7 @@ jobs:
   # Same as `test_stable`, scoped to `./local/<chart>/test/...`.
   test_local:
     needs: [detect_changes, build_local]
-    if: needs.detect_changes.outputs.local != '[]'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.local != '[]') }}
     runs-on: xlarge
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -335,7 +336,7 @@ jobs:
   # Gated on `resource_usage_changed` from `detect_changes`.
   resource_usage:
     needs: detect_changes
-    if: needs.detect_changes.outputs.resource_usage_changed == 'true'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.resource_usage_changed == 'true') }}
     runs-on: xlarge
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -385,6 +386,7 @@ jobs:
     # `always()` lets us treat `validate_stable_images: skipped` as OK (it correctly skips when
     # neither suse-observability nor agent is in the diff). The rest must have succeeded.
     if: |
+      github.repository == 'StackVista/helm-charts-internal' &&
       always() &&
       needs.build_stable.result == 'success' &&
       needs.validate_stable.result == 'success' &&

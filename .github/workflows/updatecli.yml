@@ -52,7 +52,7 @@ env:
 jobs:
   # yamllint + existence check for each pipeline's update.yaml. Read-only.
   validate_config:
-    if: github.event_name == 'push'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'push') }}
     runs-on: docker
     container:
       image: quay.io/helmpack/chart-testing:v3.14.0
@@ -71,7 +71,7 @@ jobs:
   # `updatecli pipeline diff` for each pipeline — shows reviewers the planned changes.
   # Uses the auto-provisioned github.token for HELM_CHARTS_PAT (contents: read is enough for diff).
   validate_diff:
-    if: github.event_name == 'push'
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'push') }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -100,7 +100,7 @@ jobs:
     # Job-level `if:` can't reference `env.DRY_RUN` (env context unavailable at job scope —
     # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability),
     # so check the boolean input directly.
-    if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'workflow_dispatch' && !inputs.dry_run) }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -185,7 +185,7 @@ jobs:
   follow_up:
     needs: apply
     # See `apply` job for why we check `!inputs.dry_run` here instead of env.DRY_RUN.
-    if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'workflow_dispatch' && !inputs.dry_run) }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284

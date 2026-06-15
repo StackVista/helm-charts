@@ -30,6 +30,7 @@ env:
 jobs:
   # Prerelease: rewrites Chart.yaml version to `-pre.N`, then cm-pushes.
   push_prerelease_to_public:
+    if: github.repository == 'StackVista/helm-charts-internal'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -71,6 +72,7 @@ jobs:
   # Release: plain cm-push of whatever's in Chart.yaml (no rewriting).
   push_to_public:
     needs: push_prerelease_to_public
+    if: github.repository == 'StackVista/helm-charts-internal'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284

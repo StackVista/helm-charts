@@ -26,6 +26,7 @@ env:
 jobs:
   # Prerelease: script adds `-pre` suffix to Chart.yaml version before upload.
   push_prerelease_to_rancher:
+    if: github.repository == 'StackVista/helm-charts-internal'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -49,6 +50,7 @@ jobs:
   # Release: same script with `release` arg — ships the unmodified Chart.yaml version.
   push_to_rancher:
     needs: push_prerelease_to_rancher
+    if: github.repository == 'StackVista/helm-charts-internal'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
