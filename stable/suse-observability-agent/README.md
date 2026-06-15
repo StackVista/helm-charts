@@ -231,7 +231,6 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 | k8sResourceCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by crd_api_group_filters are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
 | k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
-| k8sResourceCollector.platformOtlpEndpoint | string | `""` | Override the OTLP endpoint. When empty, derived by appending /otel to stackstate.url. Protocol is inferred from the endpoint shape: a URL with http(s):// uses HTTP (e.g., https://otlp-http-my-instance.stackstate.io); a host:port without scheme uses gRPC (e.g., otlp-my-instance.stackstate.io:443). |
 | k8sResourceCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
 | k8sResourceCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
 | k8sResourceCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
@@ -349,6 +348,8 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 | nodeAgent.useHostNetwork | bool | `true` | Set to true if you want to deploy the node agent in the host network namespace. |
 | nodeAgent.useHostPID | bool | `true` | Set to true if you want to deploy the node agent in the host PID namespace. |
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
+| otel.platformGrpcOtlpEndpoint | string | `""` | Override the OTLP endpoint with a gRPC OTLP endpoint (format must be `host:port`, no scheme) platformHttpOtlpEndpoint takes precedence when both overrides are defined. When empty, derived by appending /otel to stackstate.url. |
+| otel.platformHttpOtlpEndpoint | string | `""` | Override the OTLP endpoint with an HTTP(S) OTLP endpoint (format must be `http(s)://<host>:<port>`), takes precedence over the platformGrpcOtlpEndpoint when both overrides are defined. When empty, derived by appending /otel to stackstate.url. |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
 | processAgent.disabledProtocols | list | `[]` | List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled. |

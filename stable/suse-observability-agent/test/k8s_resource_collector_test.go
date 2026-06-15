@@ -422,7 +422,7 @@ func TestK8sResourceCollectorPlatformOtlpEndpointExplicitOverride(t *testing.T) 
 }
 
 func TestK8sResourceCollectorGrpcProtocol(t *testing.T) {
-	// A platformOtlpEndpoint without an http(s):// scheme is inferred as gRPC.
+	// otel.platformGrpcOtlpEndpoint selects the gRPC exporter explicitly.
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-grpc.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -437,7 +437,7 @@ func TestK8sResourceCollectorGrpcProtocol(t *testing.T) {
 	// Verify pipeline references gRPC exporter
 	assert.Contains(t, configData, "exporters: [otlp/suse-observability]")
 
-	// Verify endpoint uses explicit platformOtlpEndpoint
+	// Verify endpoint uses otel.platformGrpcOtlpEndpoint
 	deployment, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
 	require.True(t, exists, "k8s-resource-collector deployment was not found")
 
@@ -450,10 +450,34 @@ func TestK8sResourceCollectorGrpcProtocol(t *testing.T) {
 	assert.Equal(t, "otlp-my-suse-observability-instance.com:443", envVars["PLATFORM_OTLP_ENDPOINT"])
 }
 
-func TestK8sResourceCollectorGrpcEndpointRequiresPort443(t *testing.T) {
+func TestK8sResourceCollectorGrpcEndpointRequiresPort(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-grpc-missing-port.yaml")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "treated as gRPC and must include port :443")
+	assert.Contains(t, err.Error(), "must include a port")
+}
+
+func TestK8sResourceCollectorHttpInsecureEndpoint(t *testing.T) {
+	// otel.platformHttpOtlpEndpoint with http:// must add insecure: true to the exporter TLS config.
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-http-insecure.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+
+	configData := configMap.Data["config.yaml"]
+	assert.Contains(t, configData, "otlp_http/suse-observability:")
+	assert.Contains(t, configData, "insecure: true")
+
+	deployment, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector deployment was not found")
+
+	envVars := make(map[string]string)
+	for _, env := range deployment.Spec.Template.Spec.Containers[0].Env {
+		if env.Value != "" {
+			envVars[env.Name] = env.Value
+		}
+	}
+	assert.Equal(t, "http://otlp-my-instance.example.com:4318", envVars["PLATFORM_OTLP_ENDPOINT"])
 }
 
 // TestK8sResourceCollectorMultiNodeAffinityAndPDB asserts the default (replicaCount: 2)

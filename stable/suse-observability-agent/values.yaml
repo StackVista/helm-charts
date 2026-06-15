@@ -669,15 +669,19 @@ checksAgent:
 # K8s CRD collector variables #
 ###############################
 
+otel:
+  # otel.platformHttpOtlpEndpoint -- Override the OTLP endpoint with an HTTP(S) OTLP endpoint (format must be `http(s)://<host>:<port>`), takes precedence over the platformGrpcOtlpEndpoint when both overrides are defined. When empty, derived by appending /otel to stackstate.url.
+  platformHttpOtlpEndpoint: ""
+  # otel.platformGrpcOtlpEndpoint -- Override the OTLP endpoint with a gRPC OTLP endpoint (format must be `host:port`, no scheme) platformHttpOtlpEndpoint takes precedence when both overrides are defined. When empty, derived by appending /otel to stackstate.url.
+  platformGrpcOtlpEndpoint: ""
+
+
 k8sResourceCollector:
   # k8sResourceCollector.enabled -- Enable / disable the OpenTelemetry cluster collector for CRD discovery
   enabled: false
 
   # k8sResourceCollector.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
   skipSslValidation: false
-
-  # k8sResourceCollector.platformOtlpEndpoint -- Override the OTLP endpoint. When empty, derived by appending /otel to stackstate.url. Protocol is inferred from the endpoint shape: a URL with http(s):// uses HTTP (e.g., https://otlp-http-my-instance.stackstate.io); a host:port without scheme uses gRPC (e.g., otlp-my-instance.stackstate.io:443).
-  platformOtlpEndpoint: ""
 
   image:
     # k8sResourceCollector.image.repository -- Base container image repository.

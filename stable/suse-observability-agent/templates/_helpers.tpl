@@ -70,36 +70,47 @@ StackState URL function
 
 {{/*
 Derive platform OTLP endpoint from StackState URL or use explicit override.
-Default: appends /otel to stackstate.url (HTTP via the platform router's /stsAgent/otel route).
-Override: platformOtlpEndpoint points at a dedicated OTLP ingress. Protocol is inferred
-from the endpoint shape — see stackstate-k8s-agent.platform.otlp.useGrpc.
+Default: appends /otel to stackstate.url.
+Override: otel.platformHttpOtlpEndpoint takes precedence over otel.platformGrpcOtlpEndpoint
+when both are set. See stackstate-k8s-agent.platform.otlp.useGrpc.
 */}}
 {{- define "stackstate-k8s-agent.platform.otlp.endpoint" -}}
-{{- if .Values.k8sResourceCollector.platformOtlpEndpoint -}}
-  {{- $endpoint := .Values.k8sResourceCollector.platformOtlpEndpoint -}}
-  {{- if include "stackstate-k8s-agent.platform.otlp.useGrpc" . -}}
-    {{- if not (hasSuffix ":443" $endpoint) -}}
-      {{- fail "k8sResourceCollector.platformOtlpEndpoint without an http(s):// scheme is treated as gRPC and must include port :443 (e.g. otlp-my-instance.example.com:443)" -}}
-    {{- end -}}
+{{- if .Values.otel.platformHttpOtlpEndpoint -}}
+  {{- $endpoint := .Values.otel.platformHttpOtlpEndpoint -}}
+  {{- if not (or (hasPrefix "http://" $endpoint) (hasPrefix "https://" $endpoint)) -}}
+    {{- fail "otel.platformHttpOtlpEndpoint must start with http:// or https://" -}}
+  {{- end -}}
+  {{- $endpoint -}}
+{{- else if .Values.otel.platformGrpcOtlpEndpoint -}}
+  {{- $endpoint := .Values.otel.platformGrpcOtlpEndpoint -}}
+  {{- if or (hasPrefix "http://" $endpoint) (hasPrefix "https://" $endpoint) -}}
+    {{- fail "otel.platformGrpcOtlpEndpoint must not include an http(s):// scheme (format: host:port)" -}}
+  {{- end -}}
+  {{- if not (contains ":" $endpoint) -}}
+    {{- fail "otel.platformGrpcOtlpEndpoint must include a port (format: host:port, e.g. otlp-my-instance.example.com:443)" -}}
   {{- end -}}
   {{- $endpoint -}}
 {{- else -}}
-  {{- $url := tpl .Values.stackstate.url . | trimSuffix "/" -}}
-  {{- if not (hasPrefix "https://" $url) -}}
-    {{- fail "SUSE Observability URL must start with https://" -}}
-  {{- end -}}
-  {{- printf "%s/otel" $url -}}
+  {{- printf "%s/otel" (tpl .Values.stackstate.url . | trimSuffix "/") -}}
 {{- end -}}
 {{- end }}
 
 {{/*
-Infer the OTLP protocol from platformOtlpEndpoint shape. Returns a non-empty string
-when gRPC should be used (no http(s):// scheme), empty otherwise. Empty endpoint
-defaults to HTTP (the derived /otel URL is HTTPS).
+Returns "true" when gRPC should be used: otel.platformGrpcOtlpEndpoint is set and
+otel.platformHttpOtlpEndpoint is not. Empty string otherwise (HTTP is the default).
 */}}
 {{- define "stackstate-k8s-agent.platform.otlp.useGrpc" -}}
-{{- $endpoint := .Values.k8sResourceCollector.platformOtlpEndpoint | default "" -}}
-{{- if and (ne $endpoint "") (not (or (hasPrefix "http://" $endpoint) (hasPrefix "https://" $endpoint))) -}}
+{{- if and (not .Values.otel.platformHttpOtlpEndpoint) .Values.otel.platformGrpcOtlpEndpoint -}}
+true
+{{- end -}}
+{{- end }}
+
+{{/*
+Returns "true" when the HTTP OTLP endpoint uses plain http:// (no TLS), so the
+exporter must be configured with insecure: true.
+*/}}
+{{- define "stackstate-k8s-agent.platform.otlp.insecure" -}}
+{{- if hasPrefix "http://" (.Values.otel.platformHttpOtlpEndpoint | default "") -}}
 true
 {{- end -}}
 {{- end }}

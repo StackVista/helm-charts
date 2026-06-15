@@ -2,9 +2,9 @@ stackstate:
   apiKey: test-api-key
   cluster:
     name: test-cluster
-  url: https://my-suse-observability-instance.com/receiver
+  url: https://my-suse-observability-instance.com
 
-# Enable cluster collector with explicit HTTP OTLP endpoint override
+# Enable cluster collector with a plain http:// OTLP endpoint (no TLS).
 k8sResourceCollector:
   enabled: true
   crdDiscovery:
@@ -14,4 +14,4 @@ k8sResourceCollector:
     useWildcard: true
 
 otel:
-  platformHttpOtlpEndpoint: "https://custom-otlp.example.com:4318"
+  platformHttpOtlpEndpoint: "http://otlp-my-instance.example.com:4318"

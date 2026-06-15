@@ -95,6 +95,9 @@ data:
         endpoint: ${PLATFORM_OTLP_ENDPOINT}
         tls:
           insecure_skip_verify: ${SKIP_SSL_VALIDATION}
+{{- if eq (include "stackstate-k8s-agent.platform.otlp.insecure" .) "true" }}
+          insecure: true
+{{- end }}
         compression: gzip
         timeout: 30s
         retry_on_failure:
