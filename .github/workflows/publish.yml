@@ -29,7 +29,6 @@ on:
 env:
   # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the coercion.
   DRY_RUN: ${{ inputs.dry_run && 'true' || 'false' }}
-  PRERELEASE_ONLY: ${{ inputs.prerelease_only && 'true' || 'false' }}
   # IRSA: tooling account (766509113410), role bound to the docker runner's service account
   # via terraform-infra/iam_github_runner_deploy.tf. The volume mount below brings the runner
   # pod's projected token into the container so AWS SDK / sops can read it.
@@ -105,7 +104,7 @@ jobs:
   # Release: plain cm-push of whatever's in Chart.yaml (no rewriting).
   push_to_public:
     needs: push_prerelease_to_public
-    if: github.repository == 'StackVista/helm-charts-internal' && env.PRERELEASE_ONLY == 'false'
+    if: github.repository == 'StackVista/helm-charts-internal' && !inputs.prerelease_only
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -142,7 +141,7 @@ jobs:
   # Release: same script with `release` arg — ships the unmodified Chart.yaml version.
   push_to_rancher:
     needs: push_prerelease_to_rancher
-    if: github.repository == 'StackVista/helm-charts-internal' && env.PRERELEASE_ONLY == 'false' && inputs.chart == 'suse-observability-agent'
+    if: github.repository == 'StackVista/helm-charts-internal' && !inputs.prerelease_only && inputs.chart == 'suse-observability-agent'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
