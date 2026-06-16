@@ -257,7 +257,7 @@ sources:
     kind: shell
     spec:
       command: |
-        curl -sf "https://api.github.com/repos/StackVista/stackstate-agent/commits/stackstate-7.71.2" | jq -r '.sha[0:8]'
+        curl -sf "https://api.github.com/repos/StackVista/stackstate-agent/commits/stackstate-7.78.2" | jq -r '.sha[0:8]'
 
 # Single pipeline: each target reads from its own sourceid.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
