@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 3.71.2
-version: 1.3.53
+version: 1.4.0
 description: Helm chart for the SUSE observability Agent.
 keywords:
 - monitoring
@@ -8,10 +8,9 @@ keywords:
 - SUSE
 annotations:
   catalog.cattle.io/display-name: SUSE Observability Agent
-  # This fixes the release name, we fix this for ease of use of the user. Ideally we'd be able to set a default here but
-  # allow the user to change this, however, ranger does not support this. If the user wants to change release name
-  # that should go through helm
-  catalog.cattle.io/release-name: suse-observability
+  # This fixes the release name for Rancher UI installs. If the user wants to change the release name,
+  # that should go through helm.
+  catalog.cattle.io/release-name: suse-observability-agent
   # We would like to put a default namespace here, much like the release name, but fixing both namespace and release name
   # hides does fields and allows selecting a project on rancher, which is not what we want. For now this is configurable.
   # catalog.cattle.io/namespace: suse-observability

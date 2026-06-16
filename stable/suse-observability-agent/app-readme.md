@@ -17,4 +17,4 @@ To install proceed as follows:
         * This name will be used to identify the cluster in SUSE Observability
    * Click install.
 4. Once installed, the state of the instance turns to `Waiting for data`. Click the installed instance to see instructions appear for how to install the agent. This will also show a section `Instance credentials` that is required to proceed in the Rancher UI.
-5. Click install on this page, select a namespace to install the SUSE Observability agent into and fill in the data from the `Instance credentials` section into the chart values.
+5. Click install on this page, select or create the `suse-observability-agent` namespace to install the SUSE Observability agent into and fill in the data from the `Instance credentials` section into the chart values.

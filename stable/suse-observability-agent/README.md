@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.53`
+Current chart version is `1.4.0`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -23,10 +23,14 @@ In order to successfully install this chart, you **must** provide the following 
 
 The parameter `stackstate.cluster.name` is entered when installing the Cluster Agent StackPack.
 
+The recommended namespace for this chart is `suse-observability-agent`.
+
 Install them on the command line on Helm with the following command:
 
 ```shell
 helm install \
+--namespace suse-observability-agent \
+--create-namespace \
 --set-string 'stackstate.apiKey'='<your-api-key>' \
 --set-string 'stackstate.cluster.name'='<your-cluster-name>' \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
@@ -41,6 +45,8 @@ The command for **also** installing with a set token would be:
 
 ```shell
 helm install \
+--namespace suse-observability-agent \
+--create-namespace \
 --set-string 'stackstate.apiKey'='<your-api-key>' \
 --set-string 'stackstate.cluster.name'='<your-cluster-name>' \
 --set-string 'stackstate.cluster.authToken'='<your-cluster-token>' \
@@ -64,6 +70,8 @@ Apply one or more with `-f`:
 
 ```shell
 helm install \
+--namespace suse-observability-agent \
+--create-namespace \
 --set-string 'stackstate.apiKey'='<your-api-key>' \
 --set-string 'stackstate.cluster.name'='<your-cluster-name>' \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
