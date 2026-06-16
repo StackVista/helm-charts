@@ -1,11 +1,9 @@
-# Publish Public: manual prerelease + release push to the PUBLIC chartmuseum (`CHARTMUSEUM_URL`,
-# distinct from the internal chartmuseum used by ci.yml's push_to_internal).
-#
-# `suse-observability` is intentionally absent from the choice list — it ships only via the
-# internal chartmuseum. Only public-facing helper charts go here.
-#
-# Operator must explicitly uncheck `dry_run` to publish for real.
-name: Publish Public
+# Publish chart: manual prerelease + release push of suse-observability-agent / -values.
+# - suse-observability-values → public chartmuseum only
+# - suse-observability-agent  → public chartmuseum AND Rancher OCI/S3 registry
+# Rancher path runs publish-suse-agent-to-rancher.sh (skopeo copy, aws s3 cp, cloudfront invalidate);
+# DRY_RUN passes through, wrapping destructive calls only.
+name: Publish chart
 
 on:
   workflow_dispatch:
@@ -17,15 +15,27 @@ on:
         options:
           - suse-observability-agent
           - suse-observability-values
+        default: suse-observability-agent
+      prerelease_only:
+        description: Only prerelease
+        type: boolean
+        default: true
+        required: true
       dry_run:
-        description: "Skip destructive publish steps (modify-chart-version, cm-push)"
+        description: "Skip destructive publish steps (skopeo copy, modify-chart-version, aws s3 cp, cloudfront invalidation, cm-push)"
         type: boolean
         default: true
 
 env:
-  # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the
-  # `(inputs.dry_run && 'true' || 'false')` coercion.
+  # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the coercion.
   DRY_RUN: ${{ inputs.dry_run && 'true' || 'false' }}
+  PRERELEASE_ONLY: ${{ inputs.prerelease_only && 'true' || 'false' }}
+  # IRSA: tooling account (766509113410), role bound to the docker runner's service account
+  # via terraform-infra/iam_github_runner_deploy.tf. The volume mount below brings the runner
+  # pod's projected token into the container so AWS SDK / sops can read it.
+  AWS_ROLE_ARN: arn:aws:iam::766509113410:role/StackStateRoleGithubRunnerDeploy
+  AWS_WEB_IDENTITY_TOKEN_FILE: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+  AWS_REGION: eu-west-1
 
 jobs:
   # Prerelease: rewrites Chart.yaml version to `-pre.N`, then cm-pushes.
@@ -69,10 +79,33 @@ jobs:
             --password "$CHARTMUSEUM_PASSWORD" \
             "$CHART" "$CHARTMUSEUM_URL"
 
+  # Prerelease: script adds `-pre` suffix to Chart.yaml version before upload.
+  push_prerelease_to_rancher:
+    if: github.repository == 'StackVista/helm-charts-internal' && inputs.chart == 'suse-observability-agent'
+    runs-on: docker
+    container:
+      image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+      options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+      volumes:
+        - /var/run/secrets/eks.amazonaws.com:/var/run/secrets/eks.amazonaws.com   # IRSA token
+    steps:
+      - uses: actions/checkout@v5
+      - name: Configure helm repos
+        run: |
+          helm repo add deliveryhero    https://charts.deliveryhero.io
+          helm repo add opentelemetry   https://open-telemetry.github.io/opentelemetry-helm-charts
+          helm repo add stackstate      https://helm.stackstate.io
+          helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+          helm repo update
+      - run: ./scripts/ci/publish-suse-agent-to-rancher.sh
+
   # Release: plain cm-push of whatever's in Chart.yaml (no rewriting).
   push_to_public:
     needs: push_prerelease_to_public
-    if: github.repository == 'StackVista/helm-charts-internal'
+    if: github.repository == 'StackVista/helm-charts-internal' && env.PRERELEASE_ONLY == 'false'
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
@@ -105,3 +138,27 @@ jobs:
             --username "$CHARTMUSEUM_USERNAME" \
             --password "$CHARTMUSEUM_PASSWORD" \
             "$CHART" "$CHARTMUSEUM_URL"
+
+  # Release: same script with `release` arg — ships the unmodified Chart.yaml version.
+  push_to_rancher:
+    needs: push_prerelease_to_rancher
+    if: github.repository == 'StackVista/helm-charts-internal' && env.PRERELEASE_ONLY == 'false' && inputs.chart == 'suse-observability-agent'
+    runs-on: docker
+    container:
+      image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+      options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+      volumes:
+        - /var/run/secrets/eks.amazonaws.com:/var/run/secrets/eks.amazonaws.com   # IRSA token
+    steps:
+      - uses: actions/checkout@v5
+      - name: Configure helm repos
+        run: |
+          helm repo add deliveryhero    https://charts.deliveryhero.io
+          helm repo add opentelemetry   https://open-telemetry.github.io/opentelemetry-helm-charts
+          helm repo add stackstate      https://helm.stackstate.io
+          helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+          helm repo update
+      - run: ./scripts/ci/publish-suse-agent-to-rancher.sh release
