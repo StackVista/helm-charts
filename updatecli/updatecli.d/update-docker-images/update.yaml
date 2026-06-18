@@ -246,18 +246,84 @@ sources:
       name: http-header-injector
       versionfilter:
         kind: semver
+  # Resolves the latest commit hash and uses it as the image tag. The latest
+  # commit may not have its image built/pushed yet; bumping to an unbuilt tag
+  # would produce a broken image reference. So before emitting the new hash we
+  # verify the consumed image(s) exist in the registry, and otherwise re-emit the
+  # CURRENT tag (read from the chart values via scmid: default, so we read the
+  # same checkout the targets diff against). Re-emitting the current value yields
+  # no diff and thus no bump, while keeping the source/pipeline successful — a
+  # failing source would otherwise red-fail the whole shared docker-images run.
   processAgentHash:
     name: "stackstate-process-agent latest commit hash"
     kind: shell
+    scmid: default
     spec:
       command: |
-        curl -sf "https://api.github.com/repos/StackVista/stackstate-process-agent/commits/master" | jq -r '.sha[0:8]'
+        set -euo pipefail
+
+        VALUES_FILE="stable/suse-observability-agent/values.yaml"
+        CURRENT="$(yq -r '.nodeAgent.containers.processAgent.image.tag' "$VALUES_FILE")"
+        if [ -z "$CURRENT" ] || [ "$CURRENT" = "null" ]; then
+          echo "Could not read current process-agent image tag from $VALUES_FILE" >&2
+          exit 1
+        fi
+
+        HASH="$(curl -sf "https://api.github.com/repos/StackVista/stackstate-process-agent/commits/master" | jq -r '.sha[0:8]' || true)"
+        if [ -z "$HASH" ] || [ "$HASH" = "null" ]; then
+          echo "Could not resolve stackstate-process-agent commit hash; keeping current tag $CURRENT" >&2
+          printf '%s' "$CURRENT"
+          exit 0
+        fi
+
+        # Only bump to the new hash once its image exists; otherwise keep current.
+        if skopeo inspect "docker://quay.io/stackstate/stackstate-k8s-process-agent:${HASH}" >/dev/null 2>&1; then
+          printf '%s' "$HASH"
+        else
+          echo "stackstate-k8s-process-agent:${HASH} not built yet; keeping current tag $CURRENT" >&2
+          printf '%s' "$CURRENT"
+        fi
   agentHash:
     name: "stackstate-agent latest commit hash"
     kind: shell
+    scmid: default
     spec:
       command: |
-        curl -sf "https://api.github.com/repos/StackVista/stackstate-agent/commits/stackstate-7.78.2" | jq -r '.sha[0:8]'
+        set -euo pipefail
+
+        VALUES_FILE="stable/suse-observability-agent/values.yaml"
+        # node-, cluster- and checks-agent share this tag; clusterAgent is the canonical read.
+        CURRENT="$(yq -r '.clusterAgent.image.tag' "$VALUES_FILE")"
+        if [ -z "$CURRENT" ] || [ "$CURRENT" = "null" ]; then
+          echo "Could not read current agent image tag from $VALUES_FILE" >&2
+          exit 1
+        fi
+
+        HASH="$(curl -sf "https://api.github.com/repos/StackVista/stackstate-agent/commits/stackstate-7.78.2" | jq -r '.sha[0:8]' || true)"
+        if [ -z "$HASH" ] || [ "$HASH" = "null" ]; then
+          echo "Could not resolve stackstate-agent commit hash; keeping current tag $CURRENT" >&2
+          printf '%s' "$CURRENT"
+          exit 0
+        fi
+
+        # The hash feeds the node-, cluster- and checks-agent image tags. Only bump
+        # to the new hash once every consumed image exists; otherwise keep current.
+        all_built=true
+        for image in \
+          "quay.io/stackstate/stackstate-k8s-agent:${HASH}" \
+          "quay.io/stackstate/stackstate-k8s-cluster-agent:${HASH}"; do
+          if ! skopeo inspect "docker://${image}" >/dev/null 2>&1; then
+            echo "${image} not built yet; keeping current tag $CURRENT" >&2
+            all_built=false
+            break
+          fi
+        done
+
+        if [ "$all_built" = "true" ]; then
+          printf '%s' "$HASH"
+        else
+          printf '%s' "$CURRENT"
+        fi
 
 # Single pipeline: each target reads from its own sourceid.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
@@ -571,8 +637,19 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.checksAgent.image.tag"
-  suseObservabilityHelmDocs:
-    name: "suse-observability README.md (helm-docs)"
+  # updatecli's yaml plugin re-serialises the tag it bumps and only quotes what
+  # go-yaml deems ambiguous, leaving <digits>e<digits> SHAs unquoted — which helm
+  # then coerces to a float (1e+94), producing a wrong image reference. Re-quote
+  # the image tags/versions so the committed values.yaml stays string-typed.
+  #
+  # This MUST run before any target that reads values.yaml (helm-docs / chart
+  # bump): helm-docs reads the unquoted value and would bake the coerced float
+  # into README.md, and a normalize that ran afterwards would fix values.yaml
+  # without regenerating the README. So normalize depends on the tag targets,
+  # and the reader targets depend on normalize. Counterpart check:
+  # scripts/ci/validate_quoted_tags.sh.
+  normalizeSuseObservabilityTags:
+    name: "quote image tags (suse-observability values.yaml)"
     kind: shell
     scmid: "default"
     disablesourceinput: true
@@ -605,6 +682,48 @@ targets:
     spec:
       command: |
         set -e
+        bash scripts/ci/quote_image_tags.sh stable/suse-observability
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability/values.yaml
+  normalizeSuseObservabilityAgentTags:
+    name: "quote image tags (suse-observability-agent values.yaml)"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#httpHeaderInjectorProxy"
+      - "target#httpHeaderInjectorProxyInit"
+      - "target#containerToolsSuseObservabilityAgent"
+      - "target#kubernetesRbacAgentSuseObservabilityAgent"
+      - "target#genericSidecarInjector"
+      - "target#promtail"
+      - "target#httpHeaderInjectorChartVersion"
+      - "target#processAgentTag"
+      - "target#nodeAgentTag"
+      - "target#clusterAgentTag"
+      - "target#checksAgentTag"
+    spec:
+      command: |
+        set -e
+        bash scripts/ci/quote_image_tags.sh stable/suse-observability-agent
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability-agent/values.yaml
+  suseObservabilityHelmDocs:
+    name: "suse-observability README.md (helm-docs)"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#normalizeSuseObservabilityTags"
+    spec:
+      command: |
+        set -e
 
         VALUES_FILE="stable/suse-observability/values.yaml"
         BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
@@ -630,17 +749,7 @@ targets:
     scmid: "default"
     disablesourceinput: true
     dependson:
-      - "target#httpHeaderInjectorProxy"
-      - "target#httpHeaderInjectorProxyInit"
-      - "target#containerToolsSuseObservabilityAgent"
-      - "target#kubernetesRbacAgentSuseObservabilityAgent"
-      - "target#genericSidecarInjector"
-      - "target#promtail"
-      - "target#httpHeaderInjectorChartVersion"
-      - "target#processAgentTag"
-      - "target#nodeAgentTag"
-      - "target#clusterAgentTag"
-      - "target#checksAgentTag"
+      - "target#normalizeSuseObservabilityAgentTags"
     spec:
       command: |
         set -e

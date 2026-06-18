@@ -196,6 +196,8 @@ jobs:
           name: build-${{ matrix.chart }}
           path: stable/${{ matrix.chart }}/
       - if: contains(needs.detect_changes.outputs.stable, format('"{0}"', matrix.chart))
+        run: ./scripts/ci/validate_quoted_tags.sh stable/${{ matrix.chart }}
+      - if: contains(needs.detect_changes.outputs.stable, format('"{0}"', matrix.chart))
         run: ./scripts/ci/validate_chart_images.sh stable/${{ matrix.chart }}
 
   # Same lint/schema/kubeconform as `validate_stable`, for local charts. No version-bump

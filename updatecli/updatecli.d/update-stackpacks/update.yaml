@@ -57,13 +57,39 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.stackpacks.image.version"
+  # updatecli's yaml plugin re-serialises the value it bumps and only quotes what
+  # go-yaml deems ambiguous, leaving <digits>e<digits> values unquoted — which
+  # helm then coerces to a float, producing a wrong image reference. Re-quote the
+  # image tags/versions so the committed values.yaml stays string-typed.
+  #
+  # This MUST run before any target that reads values.yaml (helm-docs): helm-docs
+  # reads the unquoted value and would bake the coerced float into README.md, and
+  # a normalize that ran afterwards would fix values.yaml without regenerating the
+  # README. So normalize depends on the tag target, and helm-docs depends on
+  # normalize. Counterpart check: scripts/ci/validate_quoted_tags.sh.
+  normalizeSuseObservabilityTags:
+    name: "quote image tags (suse-observability values.yaml)"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#stackpacksImageVersion"
+    spec:
+      command: |
+        set -e
+        bash scripts/ci/quote_image_tags.sh stable/suse-observability
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability/values.yaml
   suseObservabilityHelmDocs:
     name: "suse-observability README.md (helm-docs)"
     kind: shell
     scmid: "default"
     disablesourceinput: true
     dependson:
-      - "target#stackpacksImageVersion"
+      - "target#normalizeSuseObservabilityTags"
     spec:
       command: |
         set -e

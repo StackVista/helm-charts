@@ -61,6 +61,27 @@ Images use a small set of tag formats. Keep the source entry in
 tracks, and keep the reference table in
 [`updatecli-image-mapping.md`](updatecli/updatecli-image-mapping.md).
 
+### Commit-hash sources (agent images)
+
+`processAgentHash` and `agentHash` are `shell` sources that resolve the latest
+commit hash of `stackstate-process-agent` / `stackstate-agent` and use it as the
+image tag. Because a fresh commit may not have its image built/pushed yet, each
+source verifies the consumed image(s) exist with `skopeo inspect` before bumping:
+
+- `processAgentHash` → `quay.io/stackstate/stackstate-k8s-process-agent:<hash>`
+- `agentHash` → `quay.io/stackstate/stackstate-k8s-agent:<hash>` **and**
+  `quay.io/stackstate/stackstate-k8s-cluster-agent:<hash>`
+
+If every consumed image exists, the source emits the new hash and the tag is
+bumped. If any is still missing, the source instead **re-emits the current tag**
+(read from `stable/suse-observability-agent/values.yaml` via `scmid: default`, so
+it reads the same checkout the targets diff against). Re-emitting the current
+value produces no diff — so no bump happens until the build lands — while keeping
+the source successful. This matters because the sources live in the single shared
+`docker-images` manifest: a source that *failed* (non-zero exit) would red-fail
+the whole pipeline and block every unrelated image bump, whereas a missing build
+should only hold back the agent tags.
+
 ## Target Configuration
 
 Targets are `yaml` kind with `scmid: default`. Key fields:
