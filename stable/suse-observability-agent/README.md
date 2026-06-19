@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.0`
+Current chart version is `1.5.1`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -204,7 +204,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | checksAgent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| checksAgent.image.tag | string | `"20c2b7aa"` | Default container image tag. |
+| checksAgent.image.tag | string | `"18041034"` | Default container image tag. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | checksAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -266,7 +266,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-k8s-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"20c2b7aa"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"18041034"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -413,7 +413,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| nodeAgent.containers.agent.image.tag | string | `"20c2b7aa"` | Default container image tag. |
+| nodeAgent.containers.agent.image.tag | string | `"18041034"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -479,7 +479,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
 | otel.prometheusScraping.collector.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently. |
-| otel.prometheusScraping.collector.image.tag | string | `"v0.0.39"` | Container image tag for the Prometheus scraper collector. |
+| otel.prometheusScraping.collector.image.tag | string | `"v0.0.40"` | Container image tag for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |

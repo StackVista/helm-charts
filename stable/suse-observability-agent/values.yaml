@@ -162,7 +162,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-k8s-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: "20c2b7aa"
+        tag: "18041034"
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.agent.env -- Additional environment variables for the agent container
@@ -450,7 +450,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: "20c2b7aa"
+    tag: "18041034"
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -593,7 +593,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
-    tag: "20c2b7aa"
+    tag: "18041034"
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -870,7 +870,7 @@ otel:
         # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
         repository: stackstate/sts-opentelemetry-collector
         # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector.
-        tag: "v0.0.39"
+        tag: "v0.0.40"
         # otel.prometheusScraping.collector.image.pullPolicy -- Container image pull policy for the Prometheus scraper collector.
         pullPolicy: IfNotPresent
 
@@ -879,7 +879,6 @@ otel:
 
       # otel.prometheusScraping.collector.priorityClassName -- Priority class for Prometheus scraper collector pods.
       priorityClassName:
-
       resources:
         limits:
           # otel.prometheusScraping.collector.resources.limits.cpu -- CPU resource limits.
@@ -936,7 +935,6 @@ otel:
 
       # otel.prometheusScraping.targetAllocator.priorityClassName -- Priority class for Target Allocator pods.
       priorityClassName:
-
       # otel.prometheusScraping.targetAllocator.allocationStrategy -- Target Allocator strategy for distributing scrape targets across collectors.
       allocationStrategy: consistent-hashing
       # otel.prometheusScraping.targetAllocator.filterStrategy -- Target Allocator filtering strategy for generated scrape configs.
