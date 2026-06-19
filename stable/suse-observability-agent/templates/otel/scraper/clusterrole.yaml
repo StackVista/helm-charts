@@ -1,0 +1,18 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelMetricsScraper.name" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-metrics-scraper
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+rules:
+  # Target discovery is delegated to the Target Allocator, so the scraper
+  # only needs what the k8sattributes processor uses for resource enrichment.
+  - apiGroups: [""]
+    resources: ["pods", "namespaces"]
+    verbs: ["get", "list", "watch"]
+{{- end }}

@@ -36,8 +36,12 @@ func RenderHelmTemplateError(t *testing.T, releaseName string, valuesFiles ...st
 // RenderHelmTemplateOptsNoError renders a helm template assuming it lives in the parent directory, asserts that
 // no error happened during rendering
 func RenderHelmTemplateOptsNoError(t *testing.T, releaseName string, helmOpts *helm.Options) string {
+	return RenderHelmTemplateOptsNoErrorWithArgs(t, releaseName, helmOpts)
+}
+
+func RenderHelmTemplateOptsNoErrorWithArgs(t *testing.T, releaseName string, helmOpts *helm.Options, extraHelmArgs ...string) string {
 	helmOpts.Logger = logger.Discard
-	output, err := RenderHelmTemplateOpts(t, releaseName, helmOpts)
+	output, err := RenderHelmTemplateOptsWithArgs(t, releaseName, helmOpts, extraHelmArgs...)
 	require.NoError(t, err)
 
 	return output
@@ -45,6 +49,10 @@ func RenderHelmTemplateOptsNoError(t *testing.T, releaseName string, helmOpts *h
 
 // RenderHelmTemplateOpts renders a helm template assuming it lives in the parent directory
 func RenderHelmTemplateOpts(t *testing.T, releaseName string, helmOpts *helm.Options) (string, error) {
+	return RenderHelmTemplateOptsWithArgs(t, releaseName, helmOpts)
+}
+
+func RenderHelmTemplateOptsWithArgs(t *testing.T, releaseName string, helmOpts *helm.Options, extraHelmArgs ...string) (string, error) {
 	if helmOpts.Logger == nil {
 		helmOpts.Logger = logger.Discard
 	}
@@ -52,7 +60,7 @@ func RenderHelmTemplateOpts(t *testing.T, releaseName string, helmOpts *helm.Opt
 	helmChartPath, pathErr := filepath.Abs("..")
 	require.NoError(t, pathErr)
 
-	stdout, err := helm.RenderTemplateE(t, helmOpts, helmChartPath, releaseName, []string{})
+	stdout, err := helm.RenderTemplateE(t, helmOpts, helmChartPath, releaseName, []string{}, extraHelmArgs...)
 
 	return stdout, err
 }

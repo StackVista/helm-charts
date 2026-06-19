@@ -74,7 +74,7 @@ if [[ -n "${helm_chart_dir}" ]] && [ ! -d "${helm_chart_dir}" ]; then
 fi
 
 # Helm values to enable non-default features and get their images.
-helm_values="httpHeaderInjectorWebhook.enabled=true,stackstate.apiKey=APIKEY,logsAgent.enabled=true,stackstate.cluster.name=dummy-cluster,stackstate.url=http://dummy.stackstate.io,kubernetes-rbac-agent.enabled=true"
+helm_values="httpHeaderInjectorWebhook.enabled=true,stackstate.apiKey=APIKEY,logsAgent.enabled=true,stackstate.cluster.name=dummy-cluster,stackstate.url=https://dummy.stackstate.io,kubernetes-rbac-agent.enabled=true,otel.enabled=true,otel.prometheusScraping.enabled=true,otel.prometheusScraping.monitorCrds.enabled=true,otel.prometheusScraping.targetAllocator.mtlsEnabled=false"
 helm_release=release
 
 if [[ -z ${helm_chart_archive} ]]; then

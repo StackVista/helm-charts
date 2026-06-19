@@ -1,0 +1,7 @@
+otel:
+  enabled: true
+  prometheusScraping:
+    monitorCrds:
+      enabled: false
+    targetAllocator:
+      mtlsEnabled: false

@@ -1,0 +1,12 @@
+otel:
+  enabled: true
+  prometheusScraping:
+    monitorCrds:
+      enabled: true
+    targetAllocator:
+      mtlsEnabled: false
+      prometheusCR:
+        serviceMonitorSelector:
+          observability.suse.com/agent: scrape
+        podMonitorSelector:
+          observability.suse.com/agent: scrape

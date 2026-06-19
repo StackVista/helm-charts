@@ -1,0 +1,43 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTargetAllocator.name" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-target-allocator
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+rules:
+  # PrometheusCR monitor discovery
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["servicemonitors", "podmonitors"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch"]
+
+  # Scrape target discovery — resolved from monitors and handed to scrapers.
+  - apiGroups: [""]
+    resources: ["nodes", "nodes/metrics", "services", "endpoints", "pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get"]
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch"]
+  - nonResourceURLs: ["/metrics"]
+    verbs: ["get"]
+
+  # No cluster-wide secret access. A Role+RoleBinding in the release namespace
+  # is shipped by this chart for the collector namespace. For additional namespaces
+  # where monitors reference auth secrets, the user must deploy a per-namespace
+  # Role and RoleBinding, and list the namespace in
+  # otel.prometheusScraping.targetAllocator.prometheusCR.secretNamespaces.
+  # See the chart README for a copy-pasteable example.
+{{- end }}

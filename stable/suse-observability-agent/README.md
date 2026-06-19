@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.4.4`
+Current chart version is `1.5.0`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -81,6 +81,115 @@ stackstate/suse-observability-agent
 ```
 
 Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
+
+## OTel Prometheus scraping
+
+When `otel.enabled=true` (default=false) and `otel.prometheusScraping.enabled=true` (default=true), the chart deploys an OpenTelemetry Collector based metrics scraper plus a Target Allocator that discovers `ServiceMonitor` and `PodMonitor` resources and distributes their scrape targets across collector pods.
+
+### Opting monitors in
+
+By default the Target Allocator only picks up monitors that carry the `observability.suse.com/agent: scrape` label. Customize via `otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector` and `podMonitorSelector`.
+
+### Endpoint auth (basicAuth, bearerTokenSecret, oauth2, tlsConfig)
+
+The Target Allocator has no cluster-wide secrets access. When a `ServiceMonitor` or `PodMonitor` references an endpoint auth secret, you must:
+
+1. List the secret's namespace in `otel.prometheusScraping.targetAllocator.prometheusCR.secretNamespaces`.
+2. Deploy a `Role` and `RoleBinding` in that namespace granting the Target Allocator's `ServiceAccount` (which lives in the chart's release namespace) read access to secrets.
+
+#### Securing credentials in transit (mTLS)
+
+By default, `otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets=false` and `otel.prometheusScraping.targetAllocator.mtlsEnabled=false`. In this state the Target Allocator will not serve auth secrets to collectors at all, so ServiceMonitors and PodMonitors that reference secrets require one of the two options below.
+
+**Option 1 — mTLS (recommended):** Enable mTLS so secrets are served over a mutually authenticated TLS connection. Requires cert-manager.
+
+```yaml
+otel:
+  prometheusScraping:
+    targetAllocator:
+      mtlsEnabled: true
+      allowInsecureAuthSecrets: false  # default, explicit for clarity
+```
+
+**Option 2 — plain HTTP (only for isolated clusters):** Allow secrets to be served over plain HTTP by setting `allowInsecureAuthSecrets=true`. Credentials will travel unencrypted between pods.
+
+```yaml
+otel:
+  prometheusScraping:
+    targetAllocator:
+      allowInsecureAuthSecrets: true
+```
+
+#### Full example (without mTLS)
+
+Assume the chart is installed as release `suse-observability-agent` in namespace `suse-observability-agent`, and you want to scrape an application in namespace `payments` whose `/metrics` endpoint requires a bearer token:
+
+```yaml
+# Helm values
+otel:
+  prometheusScraping:
+    enabled: true
+    targetAllocator:
+      prometheusCR:
+        secretNamespaces:
+          - payments
+```
+
+```yaml
+# Resources you apply in the payments namespace
+apiVersion: v1
+kind: Secret
+metadata:
+  name: payments-metrics-auth
+  namespace: payments
+type: Opaque
+stringData:
+  token: <bearer-token>
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: payments-api
+  namespace: payments
+  labels:
+    observability.suse.com/agent: scrape
+spec:
+  selector:
+    matchLabels:
+      app: payments-api
+  endpoints:
+    - port: metrics
+      path: /metrics
+      bearerTokenSecret:
+        name: payments-metrics-auth
+        key: token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: suse-observability-agent-otel-target-allocator-secrets
+  namespace: payments
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: suse-observability-agent-otel-target-allocator-secrets
+  namespace: payments
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: suse-observability-agent-otel-target-allocator-secrets
+subjects:
+  - kind: ServiceAccount
+    name: suse-observability-agent-otel-target-allocator
+    namespace: suse-observability-agent
+```
+
+Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The `ServiceAccount` subject always lives in the chart's release namespace; only the `Role`/`RoleBinding` move to the secret's namespace.
 
 ## Values
 
@@ -215,6 +324,10 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 | k8sResourceCollector.crdDiscovery.apiGroupFilters.include | object | `{"*":true}` | Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups". |
 | k8sResourceCollector.crdDiscovery.discoveryMode | string | `"api_groups"` | CRD discovery mode: "api_groups" (filtered) or "all" (watch everything) |
 | k8sResourceCollector.crdDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
+| k8sResourceCollector.debug | object | `{"enabled":false,"pipelines":["logs"],"verbosity":"basic"}` | Optional debug exporter for troubleshooting. When enabled, the upstream OTel `debug` exporter is wired into the listed pipelines so payloads are written to the collector log. Leave disabled in production. |
+| k8sResourceCollector.debug.enabled | bool | `false` | Enable the debug exporter for this collector. |
+| k8sResourceCollector.debug.pipelines | list | `["logs"]` | Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}. |
+| k8sResourceCollector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
 | k8sResourceCollector.deniedObjects | object | `{}` | Map of resource name (plural, used as the key) -> spec extending the built-in denylist (core Secrets, ConfigMaps). Spec needs only `group`. Resources listed here must not appear under k8sResourceCollector.objects. Use to block third-party resources with sensitive contents. |
 | k8sResourceCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
 | k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
@@ -356,8 +469,58 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 | nodeAgent.useHostNetwork | bool | `true` | Set to true if you want to deploy the node agent in the host network namespace. |
 | nodeAgent.useHostPID | bool | `true` | Set to true if you want to deploy the node agent in the host PID namespace. |
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
+| otel.enabled | bool | `false` | Master switch for all OTel components. Set to true to activate OpenTelemetry based features. |
 | otel.platformGrpcOtlpEndpoint | string | `""` | Override the OTLP endpoint with a gRPC OTLP endpoint (format must be `host:port`, no scheme) platformHttpOtlpEndpoint takes precedence when both overrides are defined. When empty, derived by appending /otel to stackstate.url. |
 | otel.platformHttpOtlpEndpoint | string | `""` | Override the OTLP endpoint with an HTTP(S) OTLP endpoint (format must be `http(s)://<host>:<port>`), takes precedence over the platformGrpcOtlpEndpoint when both overrides are defined. When empty, derived by appending /otel to stackstate.url. |
+| otel.prometheusScraping.collector.affinity | object | `{}` | Affinity settings for pod assignment. |
+| otel.prometheusScraping.collector.debug | object | `{"enabled":false,"pipelines":["metrics"],"verbosity":"basic"}` | Optional debug exporter for troubleshooting. When enabled, the upstream OTel `debug` exporter is wired into the listed pipelines so payloads are written to the collector log. Leave disabled in production. |
+| otel.prometheusScraping.collector.debug.enabled | bool | `false` | Enable the debug exporter for this collector. |
+| otel.prometheusScraping.collector.debug.pipelines | list | `["metrics"]` | Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}. |
+| otel.prometheusScraping.collector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
+| otel.prometheusScraping.collector.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Prometheus scraper collector. |
+| otel.prometheusScraping.collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently. |
+| otel.prometheusScraping.collector.image.tag | string | `"v0.0.39"` | Container image tag for the Prometheus scraper collector. |
+| otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
+| otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |
+| otel.prometheusScraping.collector.priorityClassName | string | `nil` | Priority class for Prometheus scraper collector pods. |
+| otel.prometheusScraping.collector.replicaCount | int | `1` | Number of Prometheus scraper collector pods to schedule. |
+| otel.prometheusScraping.collector.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
+| otel.prometheusScraping.collector.resources.limits.memory | string | `"1Gi"` | Memory resource limits. A bit more headroom than k8sResourceCollector to absorb scrape batching from many targets. |
+| otel.prometheusScraping.collector.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
+| otel.prometheusScraping.collector.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
+| otel.prometheusScraping.collector.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| otel.prometheusScraping.enabled | bool | `true` | Enable / disable OpenTelemetry Collector based Prometheus scraping via ServiceMonitor and PodMonitor resources. Requires otel.enabled=true. |
+| otel.prometheusScraping.monitorCrds.enabled | bool | `false` | Install and upgrade ServiceMonitor and PodMonitor CRDs when Prometheus scraping is enabled. |
+| otel.prometheusScraping.monitorCrds.keep | bool | `true` | Annotate the installed ServiceMonitor and PodMonitor CRDs with `helm.sh/resource-policy: keep` so they (and any custom resources users have created against them) survive a `helm uninstall` of this chart. Only takes effect when `monitorCrds.enabled` is true. |
+| otel.prometheusScraping.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority when sending OTLP to the platform. |
+| otel.prometheusScraping.targetAllocator.affinity | object | `{}` | Affinity settings for pod assignment. |
+| otel.prometheusScraping.targetAllocator.allocationStrategy | string | `"consistent-hashing"` | Target Allocator strategy for distributing scrape targets across collectors. |
+| otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets | bool | `false` | Allow the Target Allocator to serve ServiceMonitor and PodMonitor auth secrets to collectors over plain HTTP. When false (default), auth secrets are not served; enable mTLS with mtlsEnabled=true to serve them securely, or set to true to allow serving over plain HTTP. |
+| otel.prometheusScraping.targetAllocator.filterStrategy | string | `"relabel-config"` | Target Allocator filtering strategy for generated scrape configs. |
+| otel.prometheusScraping.targetAllocator.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Target Allocator. |
+| otel.prometheusScraping.targetAllocator.image.registry | string | `nil` | Override registry for the Target Allocator image. Defaults to global.imageRegistry. |
+| otel.prometheusScraping.targetAllocator.image.repository | string | `"stackstate/opentelemetry-target-allocator"` | SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release. |
+| otel.prometheusScraping.targetAllocator.image.tag | string | `"0.153.0-so1"` | SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>). |
+| otel.prometheusScraping.targetAllocator.mtlsEnabled | bool | `false` | Enable mTLS between scraper collectors and the Target Allocator. When true, credentials referenced by ServiceMonitors and PodMonitors are fetched over a mutually authenticated TLS connection. Requires cert-manager to be installed. See the README for details. |
+| otel.prometheusScraping.targetAllocator.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| otel.prometheusScraping.targetAllocator.podAnnotations | object | `{}` | Additional annotations for Target Allocator pods. |
+| otel.prometheusScraping.targetAllocator.podLabels | object | `{}` | Additional labels for Target Allocator pods. |
+| otel.prometheusScraping.targetAllocator.priorityClassName | string | `nil` | Priority class for Target Allocator pods. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces | list | `[]` | Namespaces where monitor resources are allowed. Mutually exclusive with denyNamespaces. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.denyFSAccessThroughSMs | bool | `true` | Drop monitor endpoints that reference arbitrary files on the collector filesystem. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.denyNamespaces | list | `[]` | Namespaces where monitor resources are denied. Mutually exclusive with allowNamespaces. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorNamespaceSelector | object | `{}` | Labels or full LabelSelector selecting PodMonitor namespaces. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorSelector | object | `{"observability.suse.com/agent":"scrape"}` | Labels or full LabelSelector selecting PodMonitor resources to scrape. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.secretNamespaces | list | `[]` | Namespaces where referenced monitor auth secrets can be read. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorNamespaceSelector | object | `{}` | Labels or full LabelSelector selecting ServiceMonitor namespaces. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector | object | `{"observability.suse.com/agent":"scrape"}` | Labels or full LabelSelector selecting ServiceMonitor resources to scrape. |
+| otel.prometheusScraping.targetAllocator.replicaCount | int | `1` | Number of Target Allocator pods to schedule. |
+| otel.prometheusScraping.targetAllocator.resources.limits.cpu | string | `"200m"` | CPU resource limits. The allocator only watches monitor CRDs and distributes targets across collectors, so this can stay small. |
+| otel.prometheusScraping.targetAllocator.resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
+| otel.prometheusScraping.targetAllocator.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
+| otel.prometheusScraping.targetAllocator.resources.requests.memory | string | `"64Mi"` | Memory resource requests. |
+| otel.prometheusScraping.targetAllocator.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
 | processAgent.disabledProtocols | list | `[]` | List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled. |

@@ -1,0 +1,68 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTargetAllocator.configName" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-target-allocator
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+data:
+  targetallocator.yaml: |
+    collector_namespace: {{ .Release.Namespace | quote }}
+    collector_selector:
+      matchLabels:
+{{ include "stackstate-k8s-agent.otelMetricsScraper.selectorLabels" . | indent 8 }}
+    listen_addr: ":8080"
+    allocation_strategy: {{ .Values.otel.prometheusScraping.targetAllocator.allocationStrategy }}
+    filter_strategy: {{ .Values.otel.prometheusScraping.targetAllocator.filterStrategy }}
+    allow_insecure_auth_secrets: {{ .Values.otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets }}
+    collector_not_ready_grace_period: 30s
+{{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+    https:
+      enabled: true
+      listen_addr: ":8443"
+      ca_file_path: /etc/otel-target-allocator/ca/ca.crt
+      tls_cert_file_path: /etc/otel-target-allocator/tls/tls.crt
+      tls_key_file_path: /etc/otel-target-allocator/tls/tls.key
+{{- end }}
+    # Static scrape_configs the target allocator distributes across scraper replicas
+    # via its HTTP SD endpoint, alongside targets discovered by prometheus_cr. This
+    # keeps each target assigned to exactly one collector so scrapes are not duplicated
+    # when collector.replicaCount > 1.
+    config:
+      scrape_configs:
+        - job_name: opentelemetry-target-allocator
+          scrape_interval: 30s
+          kubernetes_sd_configs:
+            - role: pod
+              namespaces:
+                names:
+                  - {{ .Release.Namespace | quote }}
+              selectors:
+                - role: pod
+                  label: {{ printf "app.kubernetes.io/component=otel-target-allocator,app.kubernetes.io/instance=%s,app.kubernetes.io/name=%s" .Release.Name (include "stackstate-k8s-agent.name" .) | quote }}
+          relabel_configs:
+            - source_labels: [__meta_kubernetes_pod_container_port_name]
+              action: keep
+              regex: http
+    prometheus_cr:
+      enabled: true
+      service_monitor_selector:
+{{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector) | indent 8 }}
+      service_monitor_namespace_selector:
+{{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorNamespaceSelector) | indent 8 }}
+      pod_monitor_selector:
+{{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorSelector) | indent 8 }}
+      pod_monitor_namespace_selector:
+{{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorNamespaceSelector) | indent 8 }}
+      allow_namespaces:
+{{ toYaml .Values.otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces | indent 8 }}
+      deny_namespaces:
+{{ toYaml .Values.otel.prometheusScraping.targetAllocator.prometheusCR.denyNamespaces | indent 8 }}
+      secret_namespaces:
+{{ toYaml .Values.otel.prometheusScraping.targetAllocator.prometheusCR.secretNamespaces | indent 8 }}
+      deny_fs_access_through_sms: {{ .Values.otel.prometheusScraping.targetAllocator.prometheusCR.denyFSAccessThroughSMs }}
+{{- end }}

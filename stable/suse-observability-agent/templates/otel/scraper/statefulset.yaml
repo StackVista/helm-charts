@@ -1,0 +1,158 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelMetricsScraper.name" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-metrics-scraper
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  replicas: {{ .Values.otel.prometheusScraping.collector.replicaCount }}
+  serviceName: {{ include "stackstate-k8s-agent.otelMetricsScraper.name" . }}
+  selector:
+    matchLabels:
+{{ include "stackstate-k8s-agent.otelMetricsScraper.selectorLabels" . | indent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/otel/scraper/configmap.yaml") . | sha256sum }}
+        {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
+        {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
+        ad.stackstate.com/otel-metrics-scraper.check_names: '["openmetrics"]'
+        ad.stackstate.com/otel-metrics-scraper.init_configs: '[{}]'
+        ad.stackstate.com/otel-metrics-scraper.instances: '[{"prometheus_url":"http://%%host%%:8888/metrics","namespace":"stackstate","metrics":["*"]}]'
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
+      {{- with .Values.otel.prometheusScraping.collector.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+{{ include "stackstate-k8s-agent.otelMetricsScraper.selectorLabels" . | indent 8 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
+      {{- with .Values.otel.prometheusScraping.collector.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.otel.prometheusScraping.collector.image .Values.all.image) "context" $) | nindent 6 }}
+      {{- if .Values.otel.prometheusScraping.collector.priorityClassName }}
+      priorityClassName: {{ .Values.otel.prometheusScraping.collector.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ include "stackstate-k8s-agent.otelMetricsScraper.name" . }}
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: otel-metrics-scraper
+          image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.otel.prometheusScraping.collector.image.repository }}:{{ .Values.otel.prometheusScraping.collector.image.tag }}"
+          imagePullPolicy: "{{ .Values.otel.prometheusScraping.collector.image.pullPolicy }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          args:
+            - --config=/etc/otel/config.yaml
+          env:
+          {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
+          - name: PLATFORM_OTLP_ENDPOINT
+            value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
+          - name: K8S_CLUSTER_NAME
+            value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: SKIP_SSL_VALIDATION
+            value: {{ or .Values.global.skipSslValidation .Values.otel.prometheusScraping.skipSslValidation | quote }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: POD_UID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.uid
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel
+            {{- if .Values.global.customCertificates.enabled }}
+            - name: custom-certificates
+              mountPath: /etc/ssl/certs/custom
+              readOnly: true
+            {{- end }}
+            {{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+            - name: target-allocator-ca
+              mountPath: /etc/otel-target-allocator/ca
+              readOnly: true
+            - name: target-allocator-client-tls
+              mountPath: /etc/otel-target-allocator/tls
+              readOnly: true
+            {{- end }}
+          ports:
+            - containerPort: 13133
+              name: health
+              protocol: TCP
+            - containerPort: 8888
+              name: metrics
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.otel.prometheusScraping.collector.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "stackstate-k8s-agent.otelMetricsScraper.configName" . }}
+        {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 8 }}
+        {{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+        - name: target-allocator-ca
+          secret:
+            secretName: {{ include "stackstate-k8s-agent.otelTargetAllocator.caSecretName" . }}
+        - name: target-allocator-client-tls
+          secret:
+            secretName: {{ include "stackstate-k8s-agent.otelMetricsScraper.tlsSecretName" . }}
+        {{- end }}
+      {{- with .Values.otel.prometheusScraping.collector.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.otel.prometheusScraping.collector.affinity (gt (.Values.otel.prometheusScraping.collector.replicaCount | int) 1) }}
+      affinity:
+        {{- if gt (.Values.otel.prometheusScraping.collector.replicaCount | int) 1 }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: otel-metrics-scraper
+                    app.kubernetes.io/instance: {{ .Release.Name }}
+                topologyKey: kubernetes.io/hostname
+        {{- end }}
+        {{- with .Values.otel.prometheusScraping.collector.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.otel.prometheusScraping.collector.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

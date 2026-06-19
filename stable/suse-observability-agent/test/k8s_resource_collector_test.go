@@ -1,6 +1,7 @@
 package test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -120,15 +121,13 @@ func TestK8sResourceCollectorWildcardRBAC(t *testing.T) {
 	// Should have wildcard permissions for custom resources
 	var hasWildcardRule bool
 	for _, rule := range clusterRole.Rules {
-		for _, apiGroup := range rule.APIGroups {
-			if apiGroup == "*" {
-				hasWildcardRule = true
-				// Verify verbs
-				assert.Contains(t, rule.Verbs, "get")
-				assert.Contains(t, rule.Verbs, "list")
-				assert.Contains(t, rule.Verbs, "watch")
-				break
-			}
+		if slices.Contains(rule.APIGroups, "*") {
+			hasWildcardRule = true
+			// Verify verbs
+			assert.Contains(t, rule.Verbs, "get")
+			assert.Contains(t, rule.Verbs, "list")
+			assert.Contains(t, rule.Verbs, "watch")
+			break
 		}
 	}
 	assert.True(t, hasWildcardRule, "wildcard RBAC rule not found in cluster role")
@@ -136,12 +135,10 @@ func TestK8sResourceCollectorWildcardRBAC(t *testing.T) {
 	// Should also have specific CRD permissions
 	var hasCRDRule bool
 	for _, rule := range clusterRole.Rules {
-		for _, apiGroup := range rule.APIGroups {
-			if apiGroup == "apiextensions.k8s.io" {
-				hasCRDRule = true
-				assert.Contains(t, rule.Resources, "customresourcedefinitions")
-				break
-			}
+		if slices.Contains(rule.APIGroups, "apiextensions.k8s.io") {
+			hasCRDRule = true
+			assert.Contains(t, rule.Resources, "customresourcedefinitions")
+			break
 		}
 	}
 	assert.True(t, hasCRDRule, "CRD rule not found in cluster role")
@@ -182,11 +179,9 @@ func TestK8sResourceCollectorRestrictedRBAC(t *testing.T) {
 	// Should still have CRD permissions
 	var hasCRDRule bool
 	for _, rule := range clusterRole.Rules {
-		for _, apiGroup := range rule.APIGroups {
-			if apiGroup == "apiextensions.k8s.io" {
-				hasCRDRule = true
-				break
-			}
+		if slices.Contains(rule.APIGroups, "apiextensions.k8s.io") {
+			hasCRDRule = true
+			break
 		}
 	}
 	assert.True(t, hasCRDRule, "CRD rule not found in cluster role")
@@ -367,8 +362,11 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 	// Verify extensions
 	assert.Contains(t, configData, "extensions:")
 	assert.Contains(t, configData, "health_check:")
+	assert.Contains(t, configData, "pprof:")
+	assert.Contains(t, configData, "endpoint: 0.0.0.0:1777")
 	assert.Contains(t, configData, "bearertokenauth:")
 	assert.Contains(t, configData, "scheme: SUSEObservability")
+	assert.Contains(t, configData, "extensions: [health_check, pprof, bearertokenauth")
 
 	// Verify service pipeline
 	assert.Contains(t, configData, "service:")
@@ -621,4 +619,50 @@ func TestK8sResourceCollectorIntegrationFlagsDisabledByDefault(t *testing.T) {
 	for _, g := range integrationGroups {
 		assert.NotContains(t, configData, g, "integration group %q should not appear when flags are disabled", g)
 	}
+}
+
+func TestK8sResourceCollectorDebugExporterEnabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-debug.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	configData := configMap.Data["config.yaml"]
+
+	// Lock indent: debug must be a sibling of otlp_http/suse-observability under
+	// exporters — otherwise the collector rejects the config as invalid YAML.
+	// (The ConfigMap parser strips the block-scalar indent, so the sibling
+	// exporters live at 2 spaces here.)
+	assert.Contains(t, configData, "\n  debug:\n    verbosity: detailed\n", "debug exporter must be siblings with otlp_http/suse-observability")
+	assert.Contains(t, configData, "exporters: [otlp_http/suse-observability, debug]", "debug should be in exporters list")
+}
+
+func TestK8sResourceCollectorDebugExporterDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-enabled.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	configData := configMap.Data["config.yaml"]
+
+	assert.NotContains(t, configData, "debug:", "debug exporter config should not be present when disabled")
+	assert.Contains(t, configData, "exporters: [otlp_http/suse-observability]", "debug should not be in exporters list")
+}
+
+func TestK8sResourceCollectorDebugInvalidVerbosity(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/collector-debug-invalid-verbosity.yaml",
+	)
+	require.Error(t, err, "should fail with invalid verbosity")
+	assert.Contains(t, err.Error(), "debug.verbosity", "error should mention debug.verbosity")
 }

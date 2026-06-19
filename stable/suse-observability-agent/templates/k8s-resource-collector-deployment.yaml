@@ -27,6 +27,7 @@ spec:
     metadata:
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/k8s-resource-collector-configmap.yaml") . | sha256sum }}
+        {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
         {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
         ad.stackstate.com/k8s-resource-collector.check_names: '["openmetrics"]'
         ad.stackstate.com/k8s-resource-collector.init_configs: '[{}]'

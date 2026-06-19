@@ -1,0 +1,8 @@
+otel:
+  enabled: true
+  platformGrpcOtlpEndpoint: otlp-my-suse-observability-instance.com:443
+  prometheusScraping:
+    monitorCrds:
+      enabled: true
+    targetAllocator:
+      mtlsEnabled: false

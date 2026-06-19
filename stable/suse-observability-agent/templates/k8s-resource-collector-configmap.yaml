@@ -105,10 +105,13 @@ data:
           initial_interval: 5s
           max_interval: 30s
           max_elapsed_time: 300s
+{{- include "stackstate-k8s-agent.collector.debugExporter.config" .Values.k8sResourceCollector.debug | nindent 6 }}
 
     extensions:
       health_check:
         endpoint: 0.0.0.0:13133
+      pprof:
+        endpoint: 0.0.0.0:1777
       bearertokenauth:
         scheme: SUSEObservability
         token: "${STS_API_KEY}"
@@ -126,11 +129,11 @@ data:
       telemetry:
         logs:
           level: {{ .Values.k8sResourceCollector.logLevel }}
-      extensions: [health_check, bearertokenauth{{ if .Values.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
+      extensions: [health_check, pprof, bearertokenauth{{ if .Values.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
       pipelines:
         # Kubernetes resource discovery - real-time watch of CRDs and custom resources
         logs/k8s-resource:
           receivers: [k8sresource]
           processors: []
-          exporters: [{{ $exporterName }}]
+          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.k8sResourceCollector.debug "signal" "logs") }}]
 {{- end }}

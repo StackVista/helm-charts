@@ -1,0 +1,88 @@
+{{- if and (include "stackstate-k8s-agent.otelPrometheusScraping.enabled" .) .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTargetAllocator.selfSignedIssuerName" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-target-allocator
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTargetAllocator.caSecretName" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-target-allocator
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  isCA: true
+  commonName: {{ include "stackstate-k8s-agent.otelTargetAllocator.caSecretName" . }}
+  secretName: {{ include "stackstate-k8s-agent.otelTargetAllocator.caSecretName" . }}
+  issuerRef:
+    kind: Issuer
+    name: {{ include "stackstate-k8s-agent.otelTargetAllocator.selfSignedIssuerName" . }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTargetAllocator.caIssuerName" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-target-allocator
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  ca:
+    secretName: {{ include "stackstate-k8s-agent.otelTargetAllocator.caSecretName" . }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTargetAllocator.tlsSecretName" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-target-allocator
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  secretName: {{ include "stackstate-k8s-agent.otelTargetAllocator.tlsSecretName" . }}
+  dnsNames:
+    - {{ include "stackstate-k8s-agent.otelTargetAllocator.name" . }}
+    - {{ include "stackstate-k8s-agent.otelTargetAllocator.name" . }}.{{ .Release.Namespace }}
+    - {{ include "stackstate-k8s-agent.otelTargetAllocator.name" . }}.{{ .Release.Namespace }}.svc
+    - {{ include "stackstate-k8s-agent.otelTargetAllocator.name" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  usages:
+    - server auth
+  issuerRef:
+    kind: Issuer
+    name: {{ include "stackstate-k8s-agent.otelTargetAllocator.caIssuerName" . }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelMetricsScraper.tlsSecretName" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-metrics-scraper
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  secretName: {{ include "stackstate-k8s-agent.otelMetricsScraper.tlsSecretName" . }}
+  commonName: {{ include "stackstate-k8s-agent.otelMetricsScraper.name" . }}
+  usages:
+    - client auth
+  issuerRef:
+    kind: Issuer
+    name: {{ include "stackstate-k8s-agent.otelTargetAllocator.caIssuerName" . }}
+{{- end }}

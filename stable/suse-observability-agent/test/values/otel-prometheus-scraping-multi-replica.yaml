@@ -1,0 +1,10 @@
+otel:
+  enabled: true
+  prometheusScraping:
+    monitorCrds:
+      enabled: true
+    collector:
+      replicaCount: 2
+    targetAllocator:
+      replicaCount: 2
+      mtlsEnabled: false

@@ -80,6 +80,12 @@ sources:
     spec:
       <<: *dockerSoSpec
       image: "quay.io/stackstate/nginx-prometheus-exporter"
+  opentelemetryTargetAllocator:
+    name: "opentelemetry-target-allocator"
+    kind: dockerimage
+    spec:
+      <<: *dockerSoSpec
+      image: "quay.io/stackstate/opentelemetry-target-allocator"
   promtail:
     name: "promtail"
     kind: dockerimage
@@ -565,6 +571,14 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.k8sResourceCollector.image.tag"
+  stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping:
+    name: "sts-opentelemetry-collector (suse-observability-agent OTel Prometheus scraping)"
+    kind: yaml
+    scmid: "default"
+    sourceid: stsOpentelemetryCollector
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.otel.prometheusScraping.collector.image.tag"
   genericSidecarInjector:
     name: "generic-sidecar-injector"
     kind: yaml
@@ -589,6 +603,14 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.logsAgent.image.tag"
+  opentelemetryTargetAllocatorSuseObservabilityAgent:
+    name: "opentelemetry-target-allocator (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: opentelemetryTargetAllocator
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.otel.prometheusScraping.targetAllocator.image.tag"
   httpHeaderInjectorChartVersion:
     name: "http-header-injector chart version (suse-observability-agent)"
     kind: yaml
@@ -705,6 +727,8 @@ targets:
       - "target#nodeAgentTag"
       - "target#clusterAgentTag"
       - "target#checksAgentTag"
+      - "target#stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping"
+      - "target#opentelemetryTargetAllocatorSuseObservabilityAgent"
     spec:
       command: |
         set -e

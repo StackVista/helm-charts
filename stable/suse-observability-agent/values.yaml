@@ -669,12 +669,6 @@ checksAgent:
 # K8s CRD collector variables #
 ###############################
 
-otel:
-  # otel.platformHttpOtlpEndpoint -- Override the OTLP endpoint with an HTTP(S) OTLP endpoint (format must be `http(s)://<host>:<port>`), takes precedence over the platformGrpcOtlpEndpoint when both overrides are defined. When empty, derived by appending /otel to stackstate.url.
-  platformHttpOtlpEndpoint: ""
-  # otel.platformGrpcOtlpEndpoint -- Override the OTLP endpoint with a gRPC OTLP endpoint (format must be `host:port`, no scheme) platformHttpOtlpEndpoint takes precedence when both overrides are defined. When empty, derived by appending /otel to stackstate.url.
-  platformGrpcOtlpEndpoint: ""
-
 k8sResourceCollector:
   # k8sResourceCollector.enabled -- Enable / disable the OpenTelemetry cluster collector for CRD discovery
   enabled: false
@@ -831,6 +825,173 @@ k8sResourceCollector:
 
   # k8sResourceCollector.affinity -- Affinity settings for pod assignment.
   affinity: {}
+
+  # k8sResourceCollector.debug -- Optional debug exporter for troubleshooting.
+  # When enabled, the upstream OTel `debug` exporter is wired into the listed
+  # pipelines so payloads are written to the collector log. Leave disabled in
+  # production.
+  debug:
+    # k8sResourceCollector.debug.enabled -- Enable the debug exporter for this collector.
+    enabled: false
+    # k8sResourceCollector.debug.verbosity -- Debug exporter verbosity: basic, normal, or detailed.
+    verbosity: basic
+    # k8sResourceCollector.debug.pipelines -- Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}.
+    pipelines:
+      - logs
+
+######################################
+# OTel Prometheus scraping variables #
+######################################
+
+otel:
+  # otel.platformHttpOtlpEndpoint -- Override the OTLP endpoint with an HTTP(S) OTLP endpoint (format must be `http(s)://<host>:<port>`), takes precedence over the platformGrpcOtlpEndpoint when both overrides are defined. When empty, derived by appending /otel to stackstate.url.
+  platformHttpOtlpEndpoint: ""
+  # otel.platformGrpcOtlpEndpoint -- Override the OTLP endpoint with a gRPC OTLP endpoint (format must be `host:port`, no scheme) platformHttpOtlpEndpoint takes precedence when both overrides are defined. When empty, derived by appending /otel to stackstate.url.
+  platformGrpcOtlpEndpoint: ""
+
+  # otel.enabled -- Master switch for all OTel components. Set to true to activate OpenTelemetry based features.
+  enabled: false
+
+  prometheusScraping:
+    # otel.prometheusScraping.enabled -- Enable / disable OpenTelemetry Collector based Prometheus scraping via ServiceMonitor and PodMonitor resources. Requires otel.enabled=true.
+    enabled: true
+
+    # otel.prometheusScraping.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority when sending OTLP to the platform.
+    skipSslValidation: false
+
+    monitorCrds:
+      # otel.prometheusScraping.monitorCrds.enabled -- Install and upgrade ServiceMonitor and PodMonitor CRDs when Prometheus scraping is enabled.
+      enabled: false
+      # otel.prometheusScraping.monitorCrds.keep -- Annotate the installed ServiceMonitor and PodMonitor CRDs with `helm.sh/resource-policy: keep` so they (and any custom resources users have created against them) survive a `helm uninstall` of this chart. Only takes effect when `monitorCrds.enabled` is true.
+      keep: true
+
+    collector:
+      image:
+        # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
+        repository: stackstate/sts-opentelemetry-collector
+        # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector.
+        tag: "v0.0.39"
+        # otel.prometheusScraping.collector.image.pullPolicy -- Container image pull policy for the Prometheus scraper collector.
+        pullPolicy: IfNotPresent
+
+      # otel.prometheusScraping.collector.replicaCount -- Number of Prometheus scraper collector pods to schedule.
+      replicaCount: 1
+
+      # otel.prometheusScraping.collector.priorityClassName -- Priority class for Prometheus scraper collector pods.
+      priorityClassName:
+
+      resources:
+        limits:
+          # otel.prometheusScraping.collector.resources.limits.cpu -- CPU resource limits.
+          cpu: "500m"
+          # otel.prometheusScraping.collector.resources.limits.memory -- Memory resource limits. A bit more headroom than k8sResourceCollector to absorb scrape batching from many targets.
+          memory: "1Gi"
+        requests:
+          # otel.prometheusScraping.collector.resources.requests.cpu -- CPU resource requests.
+          cpu: "100m"
+          # otel.prometheusScraping.collector.resources.requests.memory -- Memory resource requests.
+          memory: "256Mi"
+
+      # otel.prometheusScraping.collector.podAnnotations -- Additional annotations for Prometheus scraper collector pods.
+      podAnnotations: {}
+
+      # otel.prometheusScraping.collector.podLabels -- Additional labels for Prometheus scraper collector pods.
+      podLabels: {}
+
+      # otel.prometheusScraping.collector.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+
+      # otel.prometheusScraping.collector.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+
+      # otel.prometheusScraping.collector.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+
+      # otel.prometheusScraping.collector.debug -- Optional debug exporter for troubleshooting.
+      # When enabled, the upstream OTel `debug` exporter is wired into the listed
+      # pipelines so payloads are written to the collector log. Leave disabled in
+      # production.
+      debug:
+        # otel.prometheusScraping.collector.debug.enabled -- Enable the debug exporter for this collector.
+        enabled: false
+        # otel.prometheusScraping.collector.debug.verbosity -- Debug exporter verbosity: basic, normal, or detailed.
+        verbosity: basic
+        # otel.prometheusScraping.collector.debug.pipelines -- Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}.
+        pipelines:
+          - metrics
+
+    targetAllocator:
+      image:
+        # otel.prometheusScraping.targetAllocator.image.registry -- Override registry for the Target Allocator image. Defaults to global.imageRegistry.
+        registry:
+        # otel.prometheusScraping.targetAllocator.image.repository -- SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release.
+        repository: stackstate/opentelemetry-target-allocator
+        # otel.prometheusScraping.targetAllocator.image.tag -- SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>).
+        tag: "0.153.0-so1"
+        # otel.prometheusScraping.targetAllocator.image.pullPolicy -- Container image pull policy for the Target Allocator.
+        pullPolicy: IfNotPresent
+
+      # otel.prometheusScraping.targetAllocator.replicaCount -- Number of Target Allocator pods to schedule.
+      replicaCount: 1
+
+      # otel.prometheusScraping.targetAllocator.priorityClassName -- Priority class for Target Allocator pods.
+      priorityClassName:
+
+      # otel.prometheusScraping.targetAllocator.allocationStrategy -- Target Allocator strategy for distributing scrape targets across collectors.
+      allocationStrategy: consistent-hashing
+      # otel.prometheusScraping.targetAllocator.filterStrategy -- Target Allocator filtering strategy for generated scrape configs.
+      filterStrategy: relabel-config
+      # otel.prometheusScraping.targetAllocator.mtlsEnabled -- Enable mTLS between scraper collectors and the Target Allocator. When true, credentials referenced by ServiceMonitors and PodMonitors are fetched over a mutually authenticated TLS connection. Requires cert-manager to be installed. See the README for details.
+      mtlsEnabled: false
+      # otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets -- Allow the Target Allocator to serve ServiceMonitor and PodMonitor auth secrets to collectors over plain HTTP. When false (default), auth secrets are not served; enable mTLS with mtlsEnabled=true to serve them securely, or set to true to allow serving over plain HTTP.
+      allowInsecureAuthSecrets: false
+
+      resources:
+        limits:
+          # otel.prometheusScraping.targetAllocator.resources.limits.cpu -- CPU resource limits. The allocator only watches monitor CRDs and distributes targets across collectors, so this can stay small.
+          cpu: "200m"
+          # otel.prometheusScraping.targetAllocator.resources.limits.memory -- Memory resource limits.
+          memory: "256Mi"
+        requests:
+          # otel.prometheusScraping.targetAllocator.resources.requests.cpu -- CPU resource requests.
+          cpu: "50m"
+          # otel.prometheusScraping.targetAllocator.resources.requests.memory -- Memory resource requests.
+          memory: "64Mi"
+
+      # otel.prometheusScraping.targetAllocator.podAnnotations -- Additional annotations for Target Allocator pods.
+      podAnnotations: {}
+
+      # otel.prometheusScraping.targetAllocator.podLabels -- Additional labels for Target Allocator pods.
+      podLabels: {}
+
+      # otel.prometheusScraping.targetAllocator.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+
+      # otel.prometheusScraping.targetAllocator.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+
+      # otel.prometheusScraping.targetAllocator.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+
+      prometheusCR:
+        # otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector -- Labels or full LabelSelector selecting ServiceMonitor resources to scrape.
+        serviceMonitorSelector:
+          observability.suse.com/agent: scrape
+        # otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorNamespaceSelector -- Labels or full LabelSelector selecting ServiceMonitor namespaces.
+        serviceMonitorNamespaceSelector: {}
+        # otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorSelector -- Labels or full LabelSelector selecting PodMonitor resources to scrape.
+        podMonitorSelector:
+          observability.suse.com/agent: scrape
+        # otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorNamespaceSelector -- Labels or full LabelSelector selecting PodMonitor namespaces.
+        podMonitorNamespaceSelector: {}
+        # otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces -- Namespaces where monitor resources are allowed. Mutually exclusive with denyNamespaces.
+        allowNamespaces: []
+        # otel.prometheusScraping.targetAllocator.prometheusCR.denyNamespaces -- Namespaces where monitor resources are denied. Mutually exclusive with allowNamespaces.
+        denyNamespaces: []
+        # otel.prometheusScraping.targetAllocator.prometheusCR.secretNamespaces -- Namespaces where referenced monitor auth secrets can be read.
+        secretNamespaces: []
+        # otel.prometheusScraping.targetAllocator.prometheusCR.denyFSAccessThroughSMs -- Drop monitor endpoints that reference arbitrary files on the collector filesystem.
+        denyFSAccessThroughSMs: true
 
 ##################################
 # http-header-injector variables #

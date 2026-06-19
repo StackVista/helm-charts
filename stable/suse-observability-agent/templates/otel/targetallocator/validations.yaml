@@ -1,0 +1,13 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+{{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+{{- if not (and (.Capabilities.APIVersions.Has "cert-manager.io/v1/Certificate") (.Capabilities.APIVersions.Has "cert-manager.io/v1/Issuer")) }}
+{{- fail "otel.prometheusScraping.targetAllocator.mtlsEnabled=true requires cert-manager CRDs (cert-manager.io/v1 Certificate and Issuer) so the chart can configure mTLS between scraper collectors and the Target Allocator. Install cert-manager first or set otel.prometheusScraping.targetAllocator.mtlsEnabled=false." }}
+{{- end }}
+{{- if .Values.otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets }}
+{{- fail "otel.prometheusScraping.targetAllocator.mtlsEnabled and otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets are mutually exclusive: mtlsEnabled=true serves ServiceMonitor and PodMonitor auth secrets over mTLS, while allowInsecureAuthSecrets=true serves them over plain HTTP. Pick one." }}
+{{- end }}
+{{- end }}
+{{- if and (gt (len .Values.otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces) 0) (gt (len .Values.otel.prometheusScraping.targetAllocator.prometheusCR.denyNamespaces) 0) }}
+{{- fail "otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces and otel.prometheusScraping.targetAllocator.prometheusCR.denyNamespaces are mutually exclusive: set one to restrict the namespaces the Target Allocator watches for ServiceMonitor and PodMonitor resources, not both." }}
+{{- end }}
+{{- end }}

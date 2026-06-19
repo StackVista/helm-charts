@@ -150,6 +150,18 @@ Return the image registry
 {{- end -}}
 
 {{/*
+Render a fully qualified external image reference. Unlike the StackState-owned
+agent images, these upstream images must not be prefixed with global.imageRegistry.
+*/}}
+{{- define "stackstate-k8s-agent.externalImage" -}}
+{{- if .image.tag -}}
+{{- printf "%s:%s" .image.repository .image.tag -}}
+{{- else -}}
+{{- .image.repository -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Renders a value that contains a template.
 Usage:
 {{ include "stackstate-k8s-agent.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
@@ -418,3 +430,135 @@ Returns a dict equivalent to .Values.k8sResourceCollector with integration group
 {{- end }}
 {{- $vals | toYaml }}
 {{- end -}}
+
+{{/*
+Determine whether OTel-based features are enabled on this agent.
+True when explicitly enabled OR when the experimentalStackpacks feature flag is set
+(the StackPacks 2.0 cluster collector is itself an OTel collector, so the OTel
+master switch is implicitly on when StackPacks 2.0 is requested).
+*/}}
+{{- define "stackstate-k8s-agent.otel.enabled" -}}
+{{- if or .Values.otel.enabled (default false ((.Values.global).features).experimentalStackpacks) }}
+true
+{{- end }}
+{{- end -}}
+
+{{/*
+Determine whether OTel Prometheus scraping should be deployed.
+*/}}
+{{- define "stackstate-k8s-agent.otelPrometheusScraping.enabled" -}}
+{{- if and (include "stackstate-k8s-agent.otel.enabled" .) .Values.otel.prometheusScraping.enabled }}
+true
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelMetricsScraper.name" -}}
+{{- printf "%s-otel-metrics-scraper" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelMetricsScraper.configName" -}}
+{{- printf "%s-config" (include "stackstate-k8s-agent.otelMetricsScraper.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.name" -}}
+{{- printf "%s-otel-target-allocator" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.configName" -}}
+{{- printf "%s-config" (include "stackstate-k8s-agent.otelTargetAllocator.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelMetricsScraper.selectorLabels" -}}
+app.kubernetes.io/component: otel-metrics-scraper
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.selectorLabels" -}}
+app.kubernetes.io/component: otel-target-allocator
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.serviceUrl" -}}
+{{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled -}}
+{{- printf "https://%s:8443" (include "stackstate-k8s-agent.otelTargetAllocator.name" .) -}}
+{{- else -}}
+{{- printf "http://%s:8080" (include "stackstate-k8s-agent.otelTargetAllocator.name" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.selfSignedIssuerName" -}}
+{{- printf "%s-selfsigned" (include "stackstate-k8s-agent.otelTargetAllocator.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.caIssuerName" -}}
+{{- printf "%s-ca" (include "stackstate-k8s-agent.otelTargetAllocator.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.caSecretName" -}}
+{{- printf "%s-ca" (include "stackstate-k8s-agent.otelTargetAllocator.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTargetAllocator.tlsSecretName" -}}
+{{- printf "%s-tls" (include "stackstate-k8s-agent.otelTargetAllocator.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelMetricsScraper.tlsSecretName" -}}
+{{- printf "%s-tls" (include "stackstate-k8s-agent.otelMetricsScraper.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Target Allocator expects Kubernetes LabelSelector objects. Values accept either
+a full LabelSelector or a simple label map, which is wrapped as matchLabels.
+*/}}
+{{- define "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" -}}
+{{- $selector := .selector | default dict -}}
+{{- if empty $selector -}}
+{}
+{{- else if or (hasKey $selector "matchLabels") (hasKey $selector "matchExpressions") -}}
+{{- toYaml $selector -}}
+{{- else -}}
+matchLabels:
+{{ toYaml $selector | indent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Debug exporter config helper.
+Given a debug config dict, returns either the empty string (when disabled) or
+the debug exporter configuration block with validated verbosity.
+Validates that verbosity is one of: basic, normal, detailed.
+Validates that all pipeline entries are subset of: traces, logs, metrics.
+*/}}
+{{- define "stackstate-k8s-agent.collector.debugExporter.config" -}}
+{{- if .enabled -}}
+{{- $validVerbosities := list "basic" "normal" "detailed" -}}
+{{- if not (has .verbosity $validVerbosities) -}}
+{{- fail (printf "debug.verbosity must be one of %v, got: %s" $validVerbosities .verbosity) -}}
+{{- end -}}
+{{- $validSignals := list "traces" "logs" "metrics" -}}
+{{- $pipelines := .pipelines | default list -}}
+{{- range $pipeline := $pipelines -}}
+{{- if not (has $pipeline $validSignals) -}}
+{{- fail (printf "debug.pipelines must be subset of %v, got: %s" $validSignals $pipeline) -}}
+{{- end -}}
+{{- end -}}
+debug:
+  verbosity: {{ .verbosity }}
+{{- end -}}
+{{- end }}
+
+{{/*
+Debug exporter suffix helper.
+Given a debug config dict and a signal string (traces|logs|metrics),
+returns either the empty string or ", debug" to append to a pipeline's
+exporters list when the signal is included in debug.pipelines.
+*/}}
+{{- define "stackstate-k8s-agent.collector.debugExporter.suffix" -}}
+{{- if .debug.enabled }}
+{{- $signal := .signal }}
+{{- $pipelines := .debug.pipelines | default list }}
+{{- if has $signal $pipelines }}, debug{{ end }}
+{{- end }}
+{{- end }}

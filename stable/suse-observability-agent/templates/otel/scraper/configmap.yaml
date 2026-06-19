@@ -1,0 +1,132 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelMetricsScraper.configName" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-metrics-scraper
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+data:
+  config.yaml: |
+    receivers:
+      prometheus:
+        target_allocator:
+          endpoint: {{ include "stackstate-k8s-agent.otelTargetAllocator.serviceUrl" . | quote }}
+          interval: 30s
+          collector_id: ${env:POD_NAME}
+{{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+          tls:
+            ca_file: /etc/otel-target-allocator/ca/ca.crt
+            cert_file: /etc/otel-target-allocator/tls/tls.crt
+            key_file: /etc/otel-target-allocator/tls/tls.key
+            # Re-read cert files from disk so cert-manager rotation is picked up without a pod restart.
+            reload_interval: 1m
+{{- end }}
+      prometheus/self:
+        config:
+          scrape_configs:
+            - job_name: opentelemetry-collector
+              scrape_interval: 30s
+              static_configs:
+                - targets:
+                    - ${env:POD_IP}:8888
+                  labels:
+                    k8s.pod.uid: ${env:POD_UID}
+
+    processors:
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+      transform/pre-k8sattributes:
+        error_mode: ignore
+        metric_statements:
+          - context: resource
+            statements:
+              - delete_key(attributes, "k8s.namespace.name")
+      k8sattributes:
+        auth_type: serviceAccount
+        extract:
+          labels:
+            - from: pod
+              key_regex: (.*)
+              tag_name: $$1
+          metadata:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.cronjob.name
+            - k8s.job.name
+            - k8s.node.name
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.pod.start_time
+        passthrough: false
+        pod_association:
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.ip
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.uid
+          - sources:
+              - from: connection
+      transform:
+        error_mode: ignore
+        metric_statements:
+          - context: resource
+            statements:
+              - set(attributes["k8s.cluster.name"], "${env:K8S_CLUSTER_NAME}")
+              - set(attributes["service.instance.id"], attributes["k8s.pod.uid"]) where attributes["service.instance.id"] == nil and attributes["k8s.pod.uid"] != nil
+              - set(attributes["service.namespace"], attributes["k8s.namespace.name"]) where attributes["service.namespace"] == nil and attributes["k8s.namespace.name"] != nil
+      # filter/default: {}
+      batch: {}
+
+{{- $exporterName := ternary "otlp/suse-observability" "otlphttp/suse-observability" (eq (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) "true") }}
+    exporters:
+      {{ $exporterName }}:
+        auth:
+          authenticator: bearertokenauth
+        endpoint: ${env:PLATFORM_OTLP_ENDPOINT}
+        tls:
+          insecure_skip_verify: ${env:SKIP_SSL_VALIDATION}
+        compression: gzip
+        timeout: 30s
+        retry_on_failure:
+          enabled: true
+          initial_interval: 5s
+          max_interval: 30s
+          max_elapsed_time: 300s
+{{- include "stackstate-k8s-agent.collector.debugExporter.config" .Values.otel.prometheusScraping.collector.debug | nindent 6 }}
+
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+      pprof:
+        endpoint: 0.0.0.0:1777
+      bearertokenauth:
+        scheme: SUSEObservability
+        token: "${env:STS_API_KEY}"
+
+    service:
+      telemetry:
+        logs:
+          level: info
+        metrics:
+          readers:
+            - pull:
+                exporter:
+                  prometheus:
+                    host: ${env:POD_IP}
+                    port: 8888
+      extensions: [health_check, pprof, bearertokenauth]
+      pipelines:
+        metrics/prometheus-scraping:
+          receivers: [prometheus, prometheus/self]
+          processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, batch]
+          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.prometheusScraping.collector.debug "signal" "metrics") }}]
+{{- end }}

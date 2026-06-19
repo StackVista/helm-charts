@@ -1,0 +1,8 @@
+[tools]
+go = "1.26.0"
+go-jsonnet = "latest"
+helm = "latest"
+helm-docs = "latest"
+pre-commit = "latest"
+shellcheck = "latest"
+yq = "latest"

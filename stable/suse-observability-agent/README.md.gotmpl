@@ -76,4 +76,113 @@ stackstate/suse-observability-agent
 
 Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
 
+## OTel Prometheus scraping
+
+When `otel.enabled=true` (default=false) and `otel.prometheusScraping.enabled=true` (default=true), the chart deploys an OpenTelemetry Collector based metrics scraper plus a Target Allocator that discovers `ServiceMonitor` and `PodMonitor` resources and distributes their scrape targets across collector pods.
+
+### Opting monitors in
+
+By default the Target Allocator only picks up monitors that carry the `observability.suse.com/agent: scrape` label. Customize via `otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector` and `podMonitorSelector`.
+
+### Endpoint auth (basicAuth, bearerTokenSecret, oauth2, tlsConfig)
+
+The Target Allocator has no cluster-wide secrets access. When a `ServiceMonitor` or `PodMonitor` references an endpoint auth secret, you must:
+
+1. List the secret's namespace in `otel.prometheusScraping.targetAllocator.prometheusCR.secretNamespaces`.
+2. Deploy a `Role` and `RoleBinding` in that namespace granting the Target Allocator's `ServiceAccount` (which lives in the chart's release namespace) read access to secrets.
+
+#### Securing credentials in transit (mTLS)
+
+By default, `otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets=false` and `otel.prometheusScraping.targetAllocator.mtlsEnabled=false`. In this state the Target Allocator will not serve auth secrets to collectors at all, so ServiceMonitors and PodMonitors that reference secrets require one of the two options below.
+
+**Option 1 — mTLS (recommended):** Enable mTLS so secrets are served over a mutually authenticated TLS connection. Requires cert-manager.
+
+```yaml
+otel:
+  prometheusScraping:
+    targetAllocator:
+      mtlsEnabled: true
+      allowInsecureAuthSecrets: false  # default, explicit for clarity
+```
+
+**Option 2 — plain HTTP (only for isolated clusters):** Allow secrets to be served over plain HTTP by setting `allowInsecureAuthSecrets=true`. Credentials will travel unencrypted between pods.
+
+```yaml
+otel:
+  prometheusScraping:
+    targetAllocator:
+      allowInsecureAuthSecrets: true
+```
+
+#### Full example (without mTLS)
+
+Assume the chart is installed as release `suse-observability-agent` in namespace `suse-observability-agent`, and you want to scrape an application in namespace `payments` whose `/metrics` endpoint requires a bearer token:
+
+```yaml
+# Helm values
+otel:
+  prometheusScraping:
+    enabled: true
+    targetAllocator:
+      prometheusCR:
+        secretNamespaces:
+          - payments
+```
+
+```yaml
+# Resources you apply in the payments namespace
+apiVersion: v1
+kind: Secret
+metadata:
+  name: payments-metrics-auth
+  namespace: payments
+type: Opaque
+stringData:
+  token: <bearer-token>
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: payments-api
+  namespace: payments
+  labels:
+    observability.suse.com/agent: scrape
+spec:
+  selector:
+    matchLabels:
+      app: payments-api
+  endpoints:
+    - port: metrics
+      path: /metrics
+      bearerTokenSecret:
+        name: payments-metrics-auth
+        key: token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: suse-observability-agent-otel-target-allocator-secrets
+  namespace: payments
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: suse-observability-agent-otel-target-allocator-secrets
+  namespace: payments
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: suse-observability-agent-otel-target-allocator-secrets
+subjects:
+  - kind: ServiceAccount
+    name: suse-observability-agent-otel-target-allocator
+    namespace: suse-observability-agent
+```
+
+Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The `ServiceAccount` subject always lives in the chart's release namespace; only the `Role`/`RoleBinding` move to the secret's namespace.
+
 {{ template "chart.valuesSection" . }}

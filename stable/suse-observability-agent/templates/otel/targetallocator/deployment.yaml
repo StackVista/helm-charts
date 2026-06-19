@@ -1,0 +1,130 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTargetAllocator.name" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-target-allocator
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  replicas: {{ .Values.otel.prometheusScraping.targetAllocator.replicaCount }}
+  selector:
+    matchLabels:
+{{ include "stackstate-k8s-agent.otelTargetAllocator.selectorLabels" . | indent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/otel/targetallocator/configmap.yaml") . | sha256sum }}
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
+      {{- with .Values.otel.prometheusScraping.targetAllocator.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+{{ include "stackstate-k8s-agent.otelTargetAllocator.selectorLabels" . | indent 8 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
+      {{- with .Values.otel.prometheusScraping.targetAllocator.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.otel.prometheusScraping.targetAllocator.image .Values.all.image) "context" $) | nindent 6 }}
+      {{- if .Values.otel.prometheusScraping.targetAllocator.priorityClassName }}
+      priorityClassName: {{ .Values.otel.prometheusScraping.targetAllocator.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ include "stackstate-k8s-agent.otelTargetAllocator.name" . }}
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: otel-target-allocator
+          image: "{{ .Values.otel.prometheusScraping.targetAllocator.image.registry | default (include "stackstate-k8s-agent.imageRegistry" .) }}/{{ .Values.otel.prometheusScraping.targetAllocator.image.repository }}:{{ .Values.otel.prometheusScraping.targetAllocator.image.tag }}"
+          imagePullPolicy: "{{ .Values.otel.prometheusScraping.targetAllocator.image.pullPolicy }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          args:
+            - --config-file=/conf/targetallocator.yaml
+          env:
+            - name: OTELCOL_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: ALLOW_INSECURE_AUTH_SECRETS
+              value: {{ .Values.otel.prometheusScraping.targetAllocator.allowInsecureAuthSecrets | quote }}
+            - name: OTEL_SERVICE_NAME
+              value: opentelemetry-target-allocator
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "k8s.pod.uid=$(POD_UID),k8s.pod.name=$(POD_NAME)"
+          volumeMounts:
+            - name: config
+              mountPath: /conf
+            {{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+            - name: target-allocator-ca
+              mountPath: /etc/otel-target-allocator/ca
+              readOnly: true
+            - name: target-allocator-server-tls
+              mountPath: /etc/otel-target-allocator/tls
+              readOnly: true
+            {{- end }}
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            {{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.otel.prometheusScraping.targetAllocator.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "stackstate-k8s-agent.otelTargetAllocator.configName" . }}
+        {{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
+        - name: target-allocator-ca
+          secret:
+            secretName: {{ include "stackstate-k8s-agent.otelTargetAllocator.caSecretName" . }}
+        - name: target-allocator-server-tls
+          secret:
+            secretName: {{ include "stackstate-k8s-agent.otelTargetAllocator.tlsSecretName" . }}
+        {{- end }}
+      {{- with .Values.otel.prometheusScraping.targetAllocator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.otel.prometheusScraping.targetAllocator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.otel.prometheusScraping.targetAllocator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

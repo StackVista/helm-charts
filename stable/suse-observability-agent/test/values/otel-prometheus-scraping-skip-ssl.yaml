@@ -1,0 +1,9 @@
+global:
+  skipSslValidation: true
+otel:
+  enabled: true
+  prometheusScraping:
+    monitorCrds:
+      enabled: true
+    targetAllocator:
+      mtlsEnabled: false

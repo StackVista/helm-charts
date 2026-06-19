@@ -1,0 +1,25 @@
+{{- if include "stackstate-k8s-agent.otelPrometheusScraping.enabled" . }}
+{{- if not .Values.otel.prometheusScraping.monitorCrds.enabled }}
+{{- if not (and (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/ServiceMonitor") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/PodMonitor")) }}
+=============================================================================
+WARNING: ServiceMonitor or PodMonitor CRDs are missing from the cluster.
+=============================================================================
+
+otel.prometheusScraping.enabled=true but the following CRD(s) were not found:
+{{- if not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/ServiceMonitor") }}
+  - monitoring.coreos.com/v1/ServiceMonitor
+{{- end }}
+{{- if not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/PodMonitor") }}
+  - monitoring.coreos.com/v1/PodMonitor
+{{- end }}
+
+The Target Allocator will not discover any monitors until these CRDs exist.
+To fix this, choose one of:
+  1. Install the ServiceMonitor and PodMonitor CRDs manually.
+  2. Set otel.prometheusScraping.monitorCrds.enabled=true to have this chart install and manage them.
+  3. Set otel.prometheusScraping.enabled=false to disable Prometheus scraping.
+
+=============================================================================
+{{- end }}
+{{- end }}
+{{- end }}

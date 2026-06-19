@@ -1,0 +1,7 @@
+k8sResourceCollector:
+  enabled: true
+  debug:
+    enabled: true
+    verbosity: detailed
+    pipelines:
+      - logs
