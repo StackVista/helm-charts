@@ -162,7 +162,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-k8s-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: "18041034"
+        tag: "cef227ab"
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.agent.env -- Additional environment variables for the agent container
@@ -450,7 +450,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: "18041034"
+    tag: "cef227ab"
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -540,7 +540,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: "3.6.11-so1"
+    tag: "3.6.11-so2"
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -593,7 +593,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
-    tag: "18041034"
+    tag: "cef227ab"
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -1005,7 +1005,7 @@ httpHeaderInjectorWebhook:
       # proxy.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy"
       # proxy.image.tag - Tag for the docker image
-      tag: "7fa7b86b-626-release"
+      tag: "7fa7b86b-632-release"
 
   # proxyInit -- InitContainer within pod which redirects traffic to the proxy container.
   proxyInit:
@@ -1013,7 +1013,7 @@ httpHeaderInjectorWebhook:
       # proxyInit.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy-init"
       # proxyInit.image.tag - Tag for the docker image
-      tag: "7fa7b86b-626-release"
+      tag: "7fa7b86b-632-release"
 
   # sidecarInjector -- Service for injecting the proxy sidecar into pods
   sidecarInjector:
@@ -1021,7 +1021,7 @@ httpHeaderInjectorWebhook:
       # sidecarInjector.image.repository - Repository for the docker image
       repository: "stackstate/generic-sidecar-injector"
       # sidecarInjector.image.tag - Tag for the docker image
-      tag: "15e759aa-1008-release"
+      tag: "15e759aa-1009-release"
 
   # certificatePrehook -- Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook
   certificatePrehook:
@@ -1029,7 +1029,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: "1.8.6-so5"
+      tag: "1.8.6-so6"
 
 ########################
 # Rbac Agent variables #
