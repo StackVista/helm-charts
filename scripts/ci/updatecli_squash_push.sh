@@ -26,6 +26,10 @@
 #               GITHUB_REPOSITORY  (defaults to StackVista/helm-charts-internal).
 set -euo pipefail
 
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# shellcheck disable=SC1091
+source "$dir/util.sh"  # for create_commit_on_branch_with_retry
+
 WORKING_BRANCH="${1:?working branch required}"
 TARGET_BRANCH="${2:?target branch required}"
 COMMIT_MESSAGE="${3:?commit message required}"
@@ -46,91 +50,6 @@ if ! git fetch origin "$WORKING_BRANCH" 2>/dev/null; then
   exit 0
 fi
 
-# Stage every change from the working branch as if it were a single change on
-# top of TARGET_BRANCH.
-git merge --squash FETCH_HEAD
-
-if git diff --cached --quiet; then
-  echo "Working branch had no effective changes vs $TARGET_BRANCH; cleaning up"
-  git push origin --delete "$WORKING_BRANCH" || true
-  exit 0
-fi
-
-# expectedHeadOid gives optimistic-concurrency: if TARGET_BRANCH moves between
-# this read and the mutation, the API rejects with a clear error rather than
-# overwriting. Re-run the job to retry.
-head_sha=$(git rev-parse HEAD)
-
-if [ "$OUTPUT_BRANCH" != "$TARGET_BRANCH" ]; then
-  # Create or reset the review branch to the target head before asking GitHub
-  # to create the signed commit there. The unsigned updatecli commits are only
-  # an intermediate transport format; they must not remain in PR history when
-  # branch protection requires verified signatures.
-  git push origin "HEAD:refs/heads/${OUTPUT_BRANCH}" --force
-fi
-
-# Translate the staged diff into GraphQL fileChanges. `-z` makes name-status
-# records NUL-terminated and per-field NUL-separated, so paths with spaces or
-# newlines survive intact. Rename/copy records carry TWO paths
-# (oldpath NUL newpath NUL); plain A/M/D records carry one (path NUL).
-#
-# Each per-file addition/deletion JSON object is written to its own file under
-# $tmp, then assembled into arrays via `jq -s` and consumed below via
-# `jq --slurpfile`. Carrying the JSON in shell variables (and passing it via
-# `--argjson`) hits ARG_MAX as soon as one file's base64 content + earlier
-# accumulated entries exceed ~128KB — the auto-generated README.md alone is
-# enough. `--rawfile` and `--slurpfile` read from disk, so jq never sees the
-# bulk content via argv.
-tmp=$(mktemp -d)
-trap 'rm -rf "$tmp"' EXIT
-mkdir -p "$tmp/add" "$tmp/del"
-add_count=0
-del_count=0
-
-emit_add() {
-  jq -n --arg p "$1" --rawfile c "$1" \
-        '{path: $p, contents: ($c | @base64)}' \
-        > "$tmp/add/$(printf '%06d' "$add_count").json"
-  add_count=$((add_count + 1))
-}
-emit_del() {
-  jq -n --arg p "$1" '{path: $p}' \
-        > "$tmp/del/$(printf '%06d' "$del_count").json"
-  del_count=$((del_count + 1))
-}
-
-while IFS= read -r -d '' status; do
-  IFS= read -r -d '' path1
-  case "$status" in
-    R*|C*) IFS= read -r -d '' path2 ;;
-    *)     path2='' ;;
-  esac
-  case "$status" in
-    A|M|T) emit_add "$path1" ;;
-    D)     emit_del "$path1" ;;
-    R*)    emit_add "$path2"; emit_del "$path1" ;;
-    C*)    emit_add "$path2" ;;
-    *)
-      echo "ERROR: unsupported git diff status '$status' for path '$path1'" >&2
-      exit 1
-      ;;
-  esac
-done < <(git diff --cached --name-status -z)
-
-# `jq -s` (slurp) reads all argument files and emits a single array containing
-# each file's parsed JSON value. With no input files jq emits nothing, so
-# branch on the counter and fall back to an empty array literal.
-if [ "$add_count" -gt 0 ]; then
-  jq -s '.' "$tmp"/add/*.json > "$tmp/additions.json"
-else
-  echo '[]' > "$tmp/additions.json"
-fi
-if [ "$del_count" -gt 0 ]; then
-  jq -s '.' "$tmp"/del/*.json > "$tmp/deletions.json"
-else
-  echo '[]' > "$tmp/deletions.json"
-fi
-
 # Uses curl + jq instead of `gh api graphql` because the stackstate-devops CI
 # container does not ship `gh`. $-variables in the query string are GraphQL
 # refs (bound via the variables block below), not bash vars.
@@ -148,51 +67,115 @@ mutation(
   }) { commit { url oid } }
 }'
 
-# `--slurpfile` binds the variable to the array of JSON values read from the
-# file; additions.json / deletions.json each contain ONE value (an array), so
-# the result is wrapped one level extra — peel it back with `$additions[0]`.
-# Writing the assembled payload to disk (rather than capturing it in a shell
-# variable) keeps the base64 content off the next command line.
-jq -n \
-  --arg       query     "$graphql_query" \
-  --arg       repo      "$REPO" \
-  --arg       branch    "$OUTPUT_BRANCH" \
-  --arg       message   "$COMMIT_MESSAGE" \
-  --arg       sha       "$head_sha" \
-  --slurpfile additions "$tmp/additions.json" \
-  --slurpfile deletions "$tmp/deletions.json" \
-  '{query: $query, variables: {repo: $repo, branch: $branch, message: $message,
-    sha: $sha, additions: $additions[0], deletions: $deletions[0]}}' \
-  > "$tmp/payload.json"
+# Build the payload by squashing the working branch onto the live target tip
+# (re-run per attempt; expectedHeadOid = that tip). `must` aborts on failure —
+# critically, a `git merge --squash` conflict must not build from a conflicted index.
+build_squash_payload() {
+  local payload_file=$1
 
-# Feed the payload to curl from disk (`--data-binary @path`) — never via argv
-# or a shell variable expansion that would blow past ARG_MAX on large diffs.
-response=$(curl -sS -w "\n%{http_code}" -X POST \
-  -H "Authorization: Bearer ${GH_TOKEN}" \
-  -H "Accept: application/vnd.github+json" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  -H "Content-Type: application/json" \
-  --data-binary "@$tmp/payload.json" \
-  https://api.github.com/graphql)
+  must git fetch --quiet origin "$TARGET_BRANCH"
+  must git reset --hard --quiet FETCH_HEAD
+  local head_sha
+  head_sha=$(git rev-parse HEAD)
+  must git fetch --quiet origin "$WORKING_BRANCH"
+  must git merge --squash FETCH_HEAD
 
-http_code=$(printf '%s\n' "$response" | tail -n1)
-body=$(printf '%s\n' "$response" | sed '$d')
+  if git diff --cached --quiet; then
+    # The working-branch change is already present on the target (e.g. a
+    # concurrent run landed it). Nothing left to commit — clean up and finish.
+    echo "Working branch has no effective changes vs ${TARGET_BRANCH}; cleaning up" >&2
+    git push origin --delete "$WORKING_BRANCH" || true
+    exit 0
+  fi
 
-# GitHub's GraphQL endpoint returns HTTP 200 even when the mutation errors at
-# the GraphQL layer (e.g. expectedHeadOid mismatch, missing permissions).
-# Check both transport status AND `.errors` in the body.
-if [ "$http_code" != "200" ]; then
-  echo "ERROR: GraphQL HTTP ${http_code}: ${body}" >&2
-  exit 1
+  if [ "$OUTPUT_BRANCH" != "$TARGET_BRANCH" ]; then
+    # Seed the review branch at the target head before adding the signed commit;
+    # the unsigned updatecli commits must not remain in PR history under
+    # require_signed_commits.
+    must git push origin "HEAD:refs/heads/${OUTPUT_BRANCH}" --force
+  fi
+
+  # Translate the staged diff into GraphQL fileChanges. `-z` keeps paths with
+  # spaces/newlines intact; rename/copy records carry two paths, others one.
+  # Each entry is written to its own file under $tmp and slurped via `jq -s` /
+  # `--slurpfile` so the base64 content never hits argv (ARG_MAX on large READMEs).
+  local tmp add_count del_count
+  tmp=$(mktemp -d)
+  mkdir -p "$tmp/add" "$tmp/del"
+  add_count=0
+  del_count=0
+
+  emit_add() {
+    jq -n --arg p "$1" --rawfile c "$1" \
+          '{path: $p, contents: ($c | @base64)}' \
+          > "$tmp/add/$(printf '%06d' "$add_count").json"
+    add_count=$((add_count + 1))
+  }
+  emit_del() {
+    jq -n --arg p "$1" '{path: $p}' \
+          > "$tmp/del/$(printf '%06d' "$del_count").json"
+    del_count=$((del_count + 1))
+  }
+
+  local status path1 path2
+  while IFS= read -r -d '' status; do
+    IFS= read -r -d '' path1
+    case "$status" in
+      R*|C*) IFS= read -r -d '' path2 ;;
+      *)     path2='' ;;
+    esac
+    case "$status" in
+      A|M|T) emit_add "$path1" ;;
+      D)     emit_del "$path1" ;;
+      R*)    emit_add "$path2"; emit_del "$path1" ;;
+      C*)    emit_add "$path2" ;;
+      *)
+        echo "ERROR: unsupported git diff status '$status' for path '$path1'" >&2
+        rm -rf "$tmp"
+        exit 1
+        ;;
+    esac
+  done < <(git diff --cached --name-status -z)
+
+  # `jq -s` (slurp) reads all argument files and emits a single array containing
+  # each file's parsed JSON value. With no input files jq emits nothing, so
+  # branch on the counter and fall back to an empty array literal.
+  if [ "$add_count" -gt 0 ]; then
+    jq -s '.' "$tmp"/add/*.json > "$tmp/additions.json"
+  else
+    echo '[]' > "$tmp/additions.json"
+  fi
+  if [ "$del_count" -gt 0 ]; then
+    jq -s '.' "$tmp"/del/*.json > "$tmp/deletions.json"
+  else
+    echo '[]' > "$tmp/deletions.json"
+  fi
+
+  # additions.json/deletions.json each hold one array, so `--slurpfile` wraps it
+  # one level extra — peel with `$additions[0]`.
+  jq -n \
+    --arg       query     "$graphql_query" \
+    --arg       repo      "$REPO" \
+    --arg       branch    "$OUTPUT_BRANCH" \
+    --arg       message   "$COMMIT_MESSAGE" \
+    --arg       sha       "$head_sha" \
+    --slurpfile additions "$tmp/additions.json" \
+    --slurpfile deletions "$tmp/deletions.json" \
+    '{query: $query, variables: {repo: $repo, branch: $branch, message: $message,
+      sha: $sha, additions: $additions[0], deletions: $deletions[0]}}' \
+    > "$payload_file"
+
+  rm -rf "$tmp"
+}
+
+commit_url=$(create_commit_on_branch_with_retry build_squash_payload) || exit 1
+
+# Empty commit_url means build_squash_payload took its no-op `exit 0` path (which,
+# in this subshell, only ended the subshell). It already cleaned up — just stop.
+if [ -z "$commit_url" ]; then
+  echo "No commit created: working branch had no effective changes vs ${TARGET_BRANCH}."
+  exit 0
 fi
-
-if [ "$(echo "$body" | jq 'has("errors") and (.errors | length > 0)')" = "true" ]; then
-  echo "ERROR: GraphQL returned errors:" >&2
-  echo "$body" | jq '.errors' >&2
-  exit 1
-fi
-
-commit_url=$(echo "$body" | jq -r '.data.createCommitOnBranch.commit.url')
 echo "Created commit: ${commit_url}"
 
 # Clean up the raw working branch on origin when it is no longer the output

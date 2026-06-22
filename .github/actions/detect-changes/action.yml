@@ -16,6 +16,22 @@ runs:
     # Caller is responsible for `actions/checkout@v5` with `fetch-depth: 0`
     # BEFORE invoking this composite action — the runner can't load
     # `./.github/actions/detect-changes/action.yml` until the repo is on disk.
+    # Diff base, master only. `github.event.before` (the prior tip of the pushed
+    # ref, a real ancestor of HEAD) is only available in the expression context,
+    # so it must be passed in explicitly. On a master push the script then diffs
+    # `before...HEAD` = exactly the merged commit. WITHOUT this the base falls
+    # back to origin/master, which == HEAD on a master push → empty diff → EVERY
+    # chart over-fires on every merge.
+    #
+    # NON-master refs are left empty on purpose: a feature-branch push must diff
+    # the whole PR against master, not just the latest push's delta — otherwise
+    # charts changed in earlier commits of the branch drop out of the HEAD
+    # commit's run and its required checks never gate them. Empty BASE_SHA makes
+    # detect-changes.sh fall back to origin/master (the full-PR base). The empty
+    # / all-zeros / non-ancestor cases (workflow_dispatch, first push, force-push)
+    # are all guarded there and fall back to the same safe over-fire base.
     - id: run
       shell: bash
+      env:
+        BASE_SHA: ${{ github.ref == 'refs/heads/master' && github.event.before || '' }}
       run: ./scripts/ci/detect-changes.sh

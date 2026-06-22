@@ -502,20 +502,27 @@ jobs:
             --password "$CHARTMUSEUM_PASSWORD" \
             "$CHART" "$CHARTMUSEUM_URL"
 
-      - name: suse-observability — extra after-script (master path)
-        # Pushes commits + tags back to master via the helm-charts-internal[bot] App
-        # (bypasses branch protection per pulumi-infra). NOT gated on chart_exists: each
-        # sub-step is individually idempotent so the after-script can self-heal if a
-        # previous run died between cm-push and the bump. tag_sts_chart_pre_release.sh
-        # no-ops when the tag already exists on the remote; bump_suse_chart_pre_master_version.sh
-        # always advances whatever's currently in Chart.yaml.
+      - name: suse-observability — tag prerelease (master path)
+        # Tags the just-published prerelease on the current HEAD. Idempotent:
+        # tag_sts_chart_pre_release.sh no-ops if the tag already exists, so the
+        # after-script can self-heal if a previous run died after cm-push.
         if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master'
         env:
           GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          # Target branch for bump_suse_chart_pre_master_version.sh's createCommitOnBranch.
-          BRANCHES: master
         run: |
           ./scripts/ci/configure_git.sh
           ./scripts/ci/tag_sts_chart_pre_release.sh suse-observability
-          ./scripts/ci/bump_suse_chart_pre_master_version.sh stable/suse-observability
+      - name: suse-observability — bump prerelease (master path)
+        # Advances the prerelease version with one App-signed commit via the API
+        # (createCommitOnBranch), retrying if master moved. App-authored commits
+        # are GitHub-signed and bypass branch protection (per pulumi-infra).
+        # Keep this `if:` identical to the tag step above — they're one logical
+        # unit (tag then bump); a desync could bump without a matching tag.
+        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            await require(`${process.env.GITHUB_WORKSPACE}/scripts/ci/bump-suse-prerelease.cjs`)
+              ({ github, core, chart: 'stable/suse-observability' });

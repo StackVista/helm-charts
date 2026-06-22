@@ -23,7 +23,7 @@ if [[ "$current_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+-pre\.[0-9]+$ ]]; then
   tag="prerelease/$chart_name/$current_version"
   # Remote check (not local): CI runs in a fresh container that hasn't fetched tags.
   # Lets the after-script re-run safely if a prior run died after this tag was pushed
-  # but before bump_suse_chart_pre_master_version.sh advanced Chart.yaml.
+  # but before the prerelease bump step advanced Chart.yaml.
   if git ls-remote --exit-code --tags "$REPO_PUSH_URL" "refs/tags/$tag" >/dev/null; then
     echo "Tag '$tag' already exists on remote; skipping."
   else

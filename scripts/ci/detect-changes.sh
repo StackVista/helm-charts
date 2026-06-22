@@ -3,8 +3,10 @@
 # a JSON matrix. Writes to $GITHUB_OUTPUT if set, else stdout.
 #
 # Inputs (env):
-#   BASE_SHA              optional override for the diff base
-#   GITHUB_EVENT_BEFORE   set by GH Actions on push events
+#   BASE_SHA              diff base; the detect-changes action wires this to
+#                         `github.event.before` (prior tip of the pushed ref) on
+#                         master, empty elsewhere. Empty/zero/non-ancestor falls
+#                         back to origin/master below.
 #   GITHUB_REF            set by GH Actions; used to special-case tag pushes
 #   GITHUB_OUTPUT         set by GH Actions; receives the four outputs
 #
@@ -53,7 +55,7 @@ if [ ${#need[@]} -gt 0 ]; then
 fi
 
 # --- 1. Determine diff base ---
-base="${BASE_SHA:-${GITHUB_EVENT_BEFORE:-}}"
+base="${BASE_SHA:-}"
 if [[ -z "$base" || "$base" =~ ^0+$ ]] || ! git merge-base --is-ancestor "$base" HEAD 2>/dev/null; then
   base="$(git rev-parse origin/master 2>/dev/null || git rev-parse HEAD)"
 fi
