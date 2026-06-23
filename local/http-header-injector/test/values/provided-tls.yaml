@@ -1,0 +1,7 @@
+webhook:
+  tls:
+    mode: "provided"
+    provided:
+      caBundle: test-ca
+      crt: test-crt
+      key: test-key

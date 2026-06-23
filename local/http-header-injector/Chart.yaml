@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.0.1
+version: 0.0.30
+description: |
+  Helm chart for deploying the http-header-injector sidecar, which automatically injects x-request-id into http traffic
+  going through the cluster for pods which have the annotation `http-header-injector.stackstate.io/inject: enabled` is set.
+keywords:
+  - monitoring
+  - observability
+  - SUSE
+home: https://github.com/StackVista/helm-charts
+icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
+maintainers:
+  - name: SUSE Observability Ops
+    email: suse-observability-ops@suse.com
+name: http-header-injector

@@ -31,6 +31,7 @@
         'zookeeper',
       ],
       'suse-observability-agent': [
+        'http-header-injector',
         'kubernetes-rbac-agent',
       ],
       'suse-observability-values': [],

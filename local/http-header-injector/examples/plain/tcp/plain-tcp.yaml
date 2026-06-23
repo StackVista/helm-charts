@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tcp-server
+  name: tcp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcp-server
+  template:
+    metadata:
+      annotations:
+        http-header-injector.stackstate.io/inject: enabled
+        config.http-header-injector.stackstate.io/proxy-uid: "2105"
+        config.http-header-injector.stackstate.io/proxy-port: "7061"
+      labels:
+        app: tcp-server
+      name: tcp-server
+    spec:
+      volumes:
+        - name: server-config-volume
+          configMap:
+            name: server-config-volume
+      containers:
+        - args: ["5679", "hello"]
+          image: istio/tcp-echo-server:1.1
+          name: tcp-server
+          ports:
+            - containerPort: 5679
+              name: web-svc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcp-server
+spec:
+  ports:
+    - port: 5679
+      protocol: TCP
+      targetPort: 5679
+  selector:
+    app: tcp-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tcp-client
+  name: tcp-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcp-client
+  template:
+    metadata:
+      annotations:
+        http-header-injector.stackstate.io/inject: enabled
+        config.http-header-injector.stackstate.io/proxy-uid: "2105"
+        config.http-header-injector.stackstate.io/proxy-port: "7061"
+      labels:
+        app: tcp-client
+      name: tcp-client
+    spec:
+      containers:
+        - image: itsthenetwork/alpine-ncat:latest
+          name: senddata
+          command: ["/bin/sh", "-c", "while echo \"Running\"; do { echo \"Apple\"; sleep 1; } | ncat tcp-server 5679; sleep 1; done"]

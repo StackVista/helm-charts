@@ -39,7 +39,8 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | sts-opentelemetry-collector | stable/suse-observability-agent/values.yaml | $.otel.prometheusScraping.collector.image.tag | OTel Prometheus scraping collector — same image as k8sResourceCollector, separate tag entry for independent override |
 | promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability; tag format `<semver>-so<release_increment>` |
 | s3proxy | stable/suse-observability/values.yaml | $.s3proxy.image.tag | Tag format: `<semver>-so<release_increment>` |
-| http-header-injector (chart) | stable/suse-observability-agent/Chart.yaml | dependencies[].version | Helm chart version from helm.stackstate.io — shell target matches by name |
+| http-header-injector-proxy | stable/suse-observability-agent/values.yaml | $.httpHeaderInjectorWebhook.proxy.image.tag | Tag format `<semver>-so<release_increment>`; local chart lives in `local/http-header-injector` |
+| http-header-injector-proxy-init | stable/suse-observability-agent/values.yaml | $.httpHeaderInjectorWebhook.proxyInit.image.tag | Tag format `<semver>-so<release_increment>`; local chart lives in `local/http-header-injector` |
 
 ## Tag Format Reference
 

@@ -148,22 +148,14 @@ sources:
     name: "http-header-injector-proxy"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/http-header-injector-proxy"
-      architecture: "linux/amd64"
-      tagfilter: "^[a-f0-9]{8}-[0-9]+-release$"
-      versionfilter:
-        kind: regex/semver
-        regex: "^[a-f0-9]{8}-([0-9]+)-release$"
   httpHeaderInjectorProxyInit:
     name: "http-header-injector-proxy-init"
     kind: dockerimage
     spec:
+      <<: *dockerSoSpec
       image: "quay.io/stackstate/http-header-injector-proxy-init"
-      architecture: "linux/amd64"
-      tagfilter: "^[a-f0-9]{8}-[0-9]+-release$"
-      versionfilter:
-        kind: regex/semver
-        regex: "^[a-f0-9]{8}-([0-9]+)-release$"
   kubernetesRbacAgent:
     name: "kubernetes-rbac-agent"
     kind: dockerimage
@@ -244,14 +236,6 @@ sources:
       versionfilter:
         kind: semver
         pattern: ">=0.0.0-0"
-  httpHeaderInjectorChart:
-    name: "http-header-injector chart"
-    kind: helmchart
-    spec:
-      url: https://helm.stackstate.io
-      name: http-header-injector
-      versionfilter:
-        kind: semver
   # Resolves the latest commit hash and uses it as the image tag. The latest
   # commit may not have its image built/pushed yet; bumping to an unbuilt tag
   # would produce a broken image reference. So before emitting the new hash we
@@ -611,14 +595,6 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.otel.prometheusScraping.targetAllocator.image.tag"
-  httpHeaderInjectorChartVersion:
-    name: "http-header-injector chart version (suse-observability-agent)"
-    kind: yaml
-    scmid: "default"
-    sourceid: httpHeaderInjectorChart
-    spec:
-      file: "stable/suse-observability-agent/Chart.yaml"
-      key: "$.dependencies[0].version"
   s3proxy:
     name: "s3proxy"
     kind: yaml
@@ -722,7 +698,6 @@ targets:
       - "target#kubernetesRbacAgentSuseObservabilityAgent"
       - "target#genericSidecarInjector"
       - "target#promtail"
-      - "target#httpHeaderInjectorChartVersion"
       - "target#processAgentTag"
       - "target#nodeAgentTag"
       - "target#clusterAgentTag"

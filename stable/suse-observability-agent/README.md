@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.3`
+Current chart version is `1.5.4`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -10,8 +10,8 @@ Current chart version is `1.5.3`
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../../local/http-header-injector/ | httpHeaderInjectorWebhook(http-header-injector) | * |
 | file://../../local/kubernetes-rbac-agent/ | kubernetes-rbac-agent | * |
-| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.30 |
 
 ## Required Values
 
@@ -314,9 +314,9 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so6"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
-| httpHeaderInjectorWebhook.proxy.image.tag | string | `"7fa7b86b-632-release"` |  |
+| httpHeaderInjectorWebhook.proxy.image.tag | string | `"1.38.2-so2"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
-| httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"7fa7b86b-632-release"` |  |
+| httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"1.0.0-so2"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"15e759aa-1009-release"` |  |
 | k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |

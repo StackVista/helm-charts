@@ -1,0 +1,9 @@
+httpHeaderInjectorWebhook:
+  enabled: true
+  webhook:
+    tls:
+      mode: "provided"
+      provided:
+        caBundle: insert-ca-here
+        crt: insert-cert-here
+        key: insert-key-here

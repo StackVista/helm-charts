@@ -1,0 +1,197 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: http-server
+  name: http-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-server
+  template:
+    metadata:
+      annotations:
+        http-header-injector.stackstate.io/inject: enabled
+      labels:
+        app: http-server
+      name: http-server
+    spec:
+      containers:
+        #        - args:
+        #            - -text=apple
+        #          image: hashicorp/http-echo
+        #          name: http-server
+        - name: http-server
+          image: mockserver/mockserver
+          env:
+            - name: "MOCKSERVER_LOG_LEVEL"
+              value: "OFF"
+          args: ["-Dmockserver.logLevel=OFF", "-Dmockserver.propertyFile=/config/mockserver.properties"]
+          ports:
+            - containerPort: 5678
+              name: web-svc
+          volumeMounts:
+            - name: http-server-mockserver-config
+              mountPath: /config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532 # uid for nonroot user in distroless base image
+      #        - name: tcpdumper
+      #          image: docker.io/dockersec/tcpdump
+      #          command:
+      #            - "/bin/sh"
+      #            - "-c"
+      #            - "tcpdump -i eth0 -A"
+      volumes:
+        - name: http-server-mockserver-config
+          configMap:
+            name: http-server-mockserver-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: http-server-mockserver-config
+data:
+  mockserver.properties: |
+    mockserver.logLevel=OFF
+    mockserver.initializationJsonPath=/config/expectations.json
+    mockserver.serverPort=5678
+
+  expectations.json: |
+    [
+      {
+        "httpRequest": {
+          "path": "/success"
+        },
+        "httpResponse": {
+          "body": "Success"
+        }
+      },
+      {
+        "httpRequest": {
+          "path": "/bigSuccess"
+        },
+        "httpResponse": {
+          "body": "/jS/_jMk}7233N%!!A--9*jCSSx3{t;Fa$/jx%C9tV5(NU5t#8kzeM;UjDq9,EbY+cW@]zktE$1PAm4)RWmg!=pZv{v8Pmm4:*TB9RPVUi)GaWMP,r[2QL7;}(dYeA7x*yMmU]45pbgfM[P.fwXriYbzVg,x7]a!Q0=DJgfW{&7&6j?rU-L}QX0SQF=TDJ1T8fv(N?J_?R;1$m%FTGqW{Ru)g[bNW&Bn7[uLbDe;j(1ggfrWfjf#/(}hLdNaUB${]&uJUA:nxLhTrB47Dj{W.2]z$R3/Qq{&r8]4@b0F0ni03C-ZMv87aS(*c]GKh[tXh!8/w4.fF(5_+RfBe1MN&jY2YUt=Jcgvk5{zgkna3PXa9Yt&{Ziwr#AG6n?8#Bqi@]W4$}}i4!1Mftk%BF[tyg.k/]eWLBX1pY_U*mpm1A-[=U7G5S]BMnnJC7pB$z51?wE[mcGW[:7tZFp93Z0&Q$)9_}9kM.#M%(%h2#R}nd*zvhfMqVgvGUNnE9,[0H}Vhu$(D(My0#p7=]dg[9V9Hqv{RX6$d:Q}4/D18d1C,MZ=4MH%N:iGfz?H)-A%+d9dnund_0Z[rQ?2YSFzc/L}tzu38T!yqjLm6fY;(E]]2h%j$9ZCqZuCw]Ktg&BM!WX4[Pc71V&%_.Tj$rU;N[x1qn+;m5K164QuaiQ%WKxXGx-S&1?eCJ94-#;7[3Jmhdy=W?kxc&Cq%r.$0?+F%&Gp2q,$672+d7K!QQmL)a%e?tK%Ng9cd+!,_hNNdw;PQ35uF_&Rt)xiXG6qmcF@gzN8hzP4V.VbYnL14kz#R5DbX:qnyKm$C:0JgQP.;U/={x}fT7c;{b&,w8%cQLWXaZN,u:{W3=KTCwUqxY[-C@Bt(Fqd[-9=Q3q=m$uE*@!v0wwCDPXt&HYBQKe%},U+w4t!4p1Hqch@7XmA26uvz=gjg{*vNy#@MR,jLap;fdK3%uk#7t0YgmT79%T:7nc2NJP[3VKacKL44FZr8(__6r3E"
+        }
+      },
+      {
+        "httpRequest": {
+          "path": "/internal-server-error"
+        },
+        "httpResponse": {
+          "statusCode": 500
+        }
+      },
+      {
+        "httpRequest": {
+          "path": "/bad-gateway"
+        },
+        "httpResponse": {
+          "statusCode": 502
+        }
+      },
+      {
+        "httpRequest": {
+          "path": "/bad-request"
+        },
+        "httpResponse": {
+          "statusCode": 400
+        }
+      },
+      {
+        "httpRequest": {
+          "path": "/not-found"
+        },
+        "httpResponse": {
+          "statusCode": 404
+        }
+      }
+    ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-server
+spec:
+  ports:
+    - port: 5678
+      protocol: TCP
+      targetPort: 5678
+  selector:
+    app: http-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: http-client
+  name: http-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-client
+  template:
+    metadata:
+      annotations:
+        http-header-injector.stackstate.io/inject: enabled
+      labels:
+        app: http-client
+      name: http-client
+    spec:
+      containers:
+        # Alternative client
+        #        - env:
+        #            - name: URL
+        #              value: http://http-server:5678/index.html
+        #            - name: INTERVAL
+        #              value: "2"
+        #          image: julianosk/continuous-requests-py:1.2
+        #          name: http-client
+        - name: http-client-success-traffic
+          image: tolleiv/rakyll-hey:v0.1.4
+          args: [ "-z", "12h", "-c", "5", "-q", "2", "http://<fillmein>/success" ]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001 # uid for appuser in rakyll-hey image
+# Containers for debugging
+#        - image: curlimages/curl
+#          name: curl
+#          command: ["/bin/sh", "-c", "while echo \"Running\"; do sleep 1; done"]
+#        - name: tcpdumper
+#          image: docker.io/dockersec/tcpdump
+#          command:
+#            - "/bin/sh"
+#            - "-c"
+#            - "tcpdump -i eth0 -A"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ngrok-server
+  name: ngrok-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngrok-server
+  template:
+    metadata:
+      labels:
+        app: ngrok-server
+      name: ngrok-server
+    spec:
+      containers:
+        - name: ngrok
+          image: ngrok/ngrok:latest
+          env:
+            - name: NGROK_AUTHTOKEN
+              value: "<auth_token>"
+          args:
+            - "http"
+            - "--scheme=http"
+            - "http-server:5678"
+---

@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 3.78.2
-version: 1.5.3
+version: 1.5.4
 description: Helm chart for the SUSE observability Agent.
 keywords:
 - monitoring
@@ -23,11 +23,8 @@ name: suse-observability-agent
 dependencies:
 - name: http-header-injector
   alias: httpHeaderInjectorWebhook
-  # Local debugging: left here for future reference
-  # repository: file:///home/bram/stackvista/agent/http-header-injector/charts/http-header-injector
-  # version: "*"
-  repository: https://helm.stackstate.io
-  version: 0.0.30
+  repository: file://../../local/http-header-injector/
+  version: "*"
   condition: httpHeaderInjectorWebhook.enabled
 - name: kubernetes-rbac-agent
   repository: file://../../local/kubernetes-rbac-agent/
