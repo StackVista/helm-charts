@@ -1,4 +1,4 @@
-{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.k8sResourceCollector.leaderElection.enabled }}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.otel.k8sResourceCollector.leaderElection.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

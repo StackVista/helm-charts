@@ -5,17 +5,18 @@ stackstate:
   url: https://my-suse-observability-instance.com
 
 # Enable cluster collector with gRPC protocol via dedicated OTLP ingress.
-k8sResourceCollector:
-  enabled: true
-  crdDiscovery:
-    interval: 15m
-    discoveryMode: api_groups
-    apiGroupFilters:
-      include:
-        "*": true
-      exclude: {}
-  rbac:
-    useWildcard: true
-
 otel:
+  enabled: true
+  k8sResourceCollector:
+    enabled: true
+    crdDiscovery:
+      interval: 15m
+      discoveryMode: api_groups
+      apiGroupFilters:
+        include:
+          "*": true
+        exclude: {}
+    rbac:
+      useWildcard: true
+
   platformGrpcOtlpEndpoint: "otlp-my-suse-observability-instance.com:443"

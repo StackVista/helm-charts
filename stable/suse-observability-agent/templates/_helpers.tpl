@@ -381,10 +381,10 @@ true
 
 {{/*
 Determine whether the cluster collector should be deployed.
-True when explicitly enabled OR when the experimentalStackpacks feature flag is set.
+True when OTel is enabled and the collector is explicitly enabled.
 */}}
 {{- define "stackstate-k8s-agent.k8sResourceCollector.enabled" -}}
-{{- if or .Values.k8sResourceCollector.enabled (default false ((.Values.global).features).experimentalStackpacks) }}
+{{- if and (include "stackstate-k8s-agent.otel.enabled" .) .Values.otel.k8sResourceCollector.enabled }}
 true
 {{- end }}
 {{- end -}}
@@ -397,17 +397,17 @@ Headless Service DNS for peer-to-peer cache sync between cluster collector repli
 {{- end -}}
 
 {{/*
-Merge enabled integration overlays into k8sResourceCollector values.
+Merge enabled integration overlays into otel.k8sResourceCollector values.
 
 Each integrations/<name>.yaml file is loaded via .Files.Get, parsed, and deep-merged
-over the base k8sResourceCollector values using mustMergeOverwrite. The merge is
+over the base otel.k8sResourceCollector values using mustMergeOverwrite. The merge is
 additive: integration API groups are added to crdDiscovery.apiGroupFilters.include and
 rbac.crdApiGroups alongside any operator-supplied entries.
 
-Returns a dict equivalent to .Values.k8sResourceCollector with integration groups merged in.
+Returns a dict equivalent to .Values.otel.k8sResourceCollector with integration groups merged in.
 */}}
 {{- define "stackstate-k8s-agent.k8sResourceCollector.mergedValues" -}}
-{{- $vals := deepCopy .Values.k8sResourceCollector }}
+{{- $vals := deepCopy .Values.otel.k8sResourceCollector }}
 {{- $integrations := $vals.integrations | default dict }}
 {{- $files := .Files }}
 {{- $overlays := list }}
@@ -425,7 +425,7 @@ Returns a dict equivalent to .Values.k8sResourceCollector with integration group
 {{- end }}
 {{- range $overlays }}
   {{- $overlay := $files.Get . | fromYaml }}
-  {{- $overlayVals := index $overlay "k8sResourceCollector" | default dict }}
+  {{- $overlayVals := dig "otel" "k8sResourceCollector" dict $overlay }}
   {{- $vals = mustMergeOverwrite $vals $overlayVals }}
 {{- end }}
 {{- $vals | toYaml }}

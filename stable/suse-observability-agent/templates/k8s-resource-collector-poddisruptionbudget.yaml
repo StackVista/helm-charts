@@ -1,4 +1,4 @@
-{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) (gt (.Values.k8sResourceCollector.replicaCount | int) 1) }}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) (gt (.Values.otel.k8sResourceCollector.replicaCount | int) 1) }}
 {{- if .Capabilities.APIVersions.Has "policy/v1/PodDisruptionBudget" }}
 apiVersion: policy/v1
 {{- else }}

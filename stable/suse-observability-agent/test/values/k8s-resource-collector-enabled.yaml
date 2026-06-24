@@ -6,14 +6,16 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver/stsAgent
 
 # Enable cluster collector with default settings (watch all CRDs)
-k8sResourceCollector:
+otel:
   enabled: true
-  crdDiscovery:
-    snapshotInterval: 5m
-    discoveryMode: api_groups
-    apiGroupFilters:
-      include:
-        "*": true
-      exclude: {}
-  rbac:
-    useWildcard: true
+  k8sResourceCollector:
+    enabled: true
+    crdDiscovery:
+      snapshotInterval: 5m
+      discoveryMode: api_groups
+      apiGroupFilters:
+        include:
+          "*": true
+        exclude: {}
+    rbac:
+      useWildcard: true

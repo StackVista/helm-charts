@@ -4,8 +4,7 @@ stackstate:
     name: test-cluster
   url: https://my-suse-observability-instance.com/receiver
 
-# Cluster collector explicitly disabled
 otel:
-  enabled: true
+  enabled: false
   k8sResourceCollector:
-    enabled: false
+    enabled: true

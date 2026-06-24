@@ -5,13 +5,14 @@ stackstate:
   url: https://my-suse-observability-instance.com
 
 # Enable cluster collector with a plain http:// OTLP endpoint (no TLS).
-k8sResourceCollector:
-  enabled: true
-  crdDiscovery:
-    interval: 15m
-    discoveryMode: all
-  rbac:
-    useWildcard: true
-
 otel:
+  enabled: true
+  k8sResourceCollector:
+    enabled: true
+    crdDiscovery:
+      interval: 15m
+      discoveryMode: all
+    rbac:
+      useWildcard: true
+
   platformHttpOtlpEndpoint: "http://otlp-my-instance.example.com:4318"

@@ -5,10 +5,12 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver
 
 # Enable cluster collector with "all" discovery mode (watch everything - no filters)
-k8sResourceCollector:
+otel:
   enabled: true
-  crdDiscovery:
-    snapshotInterval: 5m
-    discoveryMode: all
-  rbac:
-    useWildcard: true
+  k8sResourceCollector:
+    enabled: true
+    crdDiscovery:
+      snapshotInterval: 5m
+      discoveryMode: all
+    rbac:
+      useWildcard: true

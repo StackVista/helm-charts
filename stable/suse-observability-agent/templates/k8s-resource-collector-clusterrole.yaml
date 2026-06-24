@@ -16,8 +16,8 @@ rules:
     resources: ["customresourcedefinitions"]
     verbs: ["get", "list", "watch"]
 
-{{- if .Values.k8sResourceCollector.rbac.useWildcard }}
-  # Wildcard permissions for watching all custom resources (covers k8sResourceCollector.objects too).
+{{- if .Values.otel.k8sResourceCollector.rbac.useWildcard }}
+  # Wildcard permissions for watching all custom resources (covers otel.k8sResourceCollector.objects too).
   # Use this for dynamic CRD discovery in environments with many CRDs.
   - apiGroups: ["*"]
     resources: ["*"]
@@ -25,7 +25,7 @@ rules:
 {{- else }}
   # Restricted permissions for specific API groups.
   # rbac.crdApiGroups grants group-wide access for CRD-discovered resources.
-  # k8sResourceCollector.objects entries derive resource-scoped rules from objects[].group/name.
+  # otel.k8sResourceCollector.objects entries derive resource-scoped rules from objects[].group/name.
 {{- range $group, $enabled := $rcfg.rbac.crdApiGroups }}
 {{- if $enabled }}
   - apiGroups: [{{ $group | quote }}]
@@ -33,9 +33,9 @@ rules:
     verbs: ["get", "list", "watch"]
 {{- end }}
 {{- end }}
-{{- /* Collect resources per group from k8sResourceCollector.objects */}}
+{{- /* Collect resources per group from otel.k8sResourceCollector.objects */}}
 {{- $byGroup := dict }}
-{{- range $name, $obj := .Values.k8sResourceCollector.objects }}
+{{- range $name, $obj := .Values.otel.k8sResourceCollector.objects }}
 {{- if $obj }}
 {{- $g := $obj.group | default "" }}
 {{- $existing := index $byGroup $g | default (list) }}

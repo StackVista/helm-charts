@@ -17,15 +17,15 @@ data:
       k8sresource:
         auth_type: serviceAccount
         cluster_name: {{ .Values.stackstate.cluster.name | quote }}
-        snapshot_interval: {{ .Values.k8sResourceCollector.crdDiscovery.snapshotInterval }}
-        discovery_mode: {{ .Values.k8sResourceCollector.crdDiscovery.discoveryMode }}
-{{- if eq .Values.k8sResourceCollector.crdDiscovery.discoveryMode "api_groups" }}
+        snapshot_interval: {{ .Values.otel.k8sResourceCollector.crdDiscovery.snapshotInterval }}
+        discovery_mode: {{ .Values.otel.k8sResourceCollector.crdDiscovery.discoveryMode }}
+{{- if eq .Values.otel.k8sResourceCollector.crdDiscovery.discoveryMode "api_groups" }}
 {{- $includes := list }}
 {{- range $pattern, $enabled := $rcfg.crdDiscovery.apiGroupFilters.include }}
 {{- if $enabled }}{{ $includes = append $includes $pattern }}{{ end }}
 {{- end }}
 {{- if not $includes }}
-{{- fail "k8sResourceCollector.crdDiscovery.apiGroupFilters.include must have at least one truthy entry when discoveryMode is 'api_groups' (e.g. \"*\": true)" }}
+{{- fail "otel.k8sResourceCollector.crdDiscovery.apiGroupFilters.include must have at least one truthy entry when discoveryMode is 'api_groups' (e.g. \"*\": true)" }}
 {{- end }}
         crd_api_group_filters:
           include:
@@ -43,13 +43,13 @@ data:
 {{- end }}
 {{- end }}
 {{- end }}
-        peer_sync_port: {{ .Values.k8sResourceCollector.peerSync.port }}
-{{- if .Values.k8sResourceCollector.leaderElection.enabled }}
+        peer_sync_port: {{ .Values.otel.k8sResourceCollector.peerSync.port }}
+{{- if .Values.otel.k8sResourceCollector.leaderElection.enabled }}
         peer_sync_dns: {{ include "stackstate-k8s-agent.k8sResourceCollector.peerSync.dns" . | quote }}
         k8s_leader_elector: k8s_leader_elector
 {{- end }}
 {{- $objects := dict }}
-{{- range $name, $obj := .Values.k8sResourceCollector.objects }}
+{{- range $name, $obj := .Values.otel.k8sResourceCollector.objects }}
 {{- if $obj }}{{ $_ := set $objects $name $obj }}{{ end }}
 {{- end }}
 {{- if $objects }}
@@ -75,7 +75,7 @@ data:
 {{- end }}
 {{- end }}
 {{- $denied := dict }}
-{{- range $name, $obj := .Values.k8sResourceCollector.deniedObjects }}
+{{- range $name, $obj := .Values.otel.k8sResourceCollector.deniedObjects }}
 {{- if $obj }}{{ $_ := set $denied $name $obj }}{{ end }}
 {{- end }}
 {{- if $denied }}
@@ -105,7 +105,7 @@ data:
           initial_interval: 5s
           max_interval: 30s
           max_elapsed_time: 300s
-{{- include "stackstate-k8s-agent.collector.debugExporter.config" .Values.k8sResourceCollector.debug | nindent 6 }}
+{{- include "stackstate-k8s-agent.collector.debugExporter.config" .Values.otel.k8sResourceCollector.debug | nindent 6 }}
 
     extensions:
       health_check:
@@ -115,25 +115,25 @@ data:
       bearertokenauth:
         scheme: SUSEObservability
         token: "${STS_API_KEY}"
-{{- if .Values.k8sResourceCollector.leaderElection.enabled }}
+{{- if .Values.otel.k8sResourceCollector.leaderElection.enabled }}
       k8s_leader_elector:
         auth_type: serviceAccount
-        lease_name: {{ .Values.k8sResourceCollector.leaderElection.leaseName | quote }}
+        lease_name: {{ .Values.otel.k8sResourceCollector.leaderElection.leaseName | quote }}
         lease_namespace: ${POD_NAMESPACE}
-        lease_duration: {{ .Values.k8sResourceCollector.leaderElection.leaseDuration }}
-        renew_deadline: {{ .Values.k8sResourceCollector.leaderElection.renewDeadline }}
-        retry_period: {{ .Values.k8sResourceCollector.leaderElection.retryPeriod }}
+        lease_duration: {{ .Values.otel.k8sResourceCollector.leaderElection.leaseDuration }}
+        renew_deadline: {{ .Values.otel.k8sResourceCollector.leaderElection.renewDeadline }}
+        retry_period: {{ .Values.otel.k8sResourceCollector.leaderElection.retryPeriod }}
 {{- end }}
 
     service:
       telemetry:
         logs:
-          level: {{ .Values.k8sResourceCollector.logLevel }}
-      extensions: [health_check, pprof, bearertokenauth{{ if .Values.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
+          level: {{ .Values.otel.k8sResourceCollector.logLevel }}
+      extensions: [health_check, pprof, bearertokenauth{{ if .Values.otel.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
       pipelines:
         # Kubernetes resource discovery - real-time watch of CRDs and custom resources
         logs/k8s-resource:
           receivers: [k8sresource]
           processors: []
-          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.k8sResourceCollector.debug "signal" "logs") }}]
+          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.k8sResourceCollector.debug "signal" "logs") }}]
 {{- end }}

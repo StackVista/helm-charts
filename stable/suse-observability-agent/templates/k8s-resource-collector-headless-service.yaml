@@ -1,4 +1,4 @@
-{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.k8sResourceCollector.leaderElection.enabled }}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.otel.k8sResourceCollector.leaderElection.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,8 +13,8 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - port: {{ .Values.k8sResourceCollector.peerSync.port }}
-      targetPort: {{ .Values.k8sResourceCollector.peerSync.port }}
+    - port: {{ .Values.otel.k8sResourceCollector.peerSync.port }}
+      targetPort: {{ .Values.otel.k8sResourceCollector.peerSync.port }}
       protocol: TCP
       name: peer-sync
   selector:

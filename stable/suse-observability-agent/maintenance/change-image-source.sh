@@ -67,7 +67,7 @@ fi
 function updateDockerImagesInValues() {
   echo "Reconfiguring container images registry in values.yaml"
   DOCKER_REGISTRY_TO="$docker_registry_to" yq -i -e  '.global.imageRegistry = env(DOCKER_REGISTRY_TO)' "$helm_chart_dir/values.yaml"
-  sed -i -r "s|(\s+repository:\s+\"?)stackstate/|\1${docker_repo_to}/|g" "$helm_chart_dir/values.yaml"
+  DOCKER_REPO_TO="$docker_repo_to" yq -i -e '(.. | select(tag == "!!map" and has("repository")) | .repository) |= sub("^stackstate/"; env(DOCKER_REPO_TO) + "/")' "$helm_chart_dir/values.yaml"
 }
 
 updateDockerImagesInValues

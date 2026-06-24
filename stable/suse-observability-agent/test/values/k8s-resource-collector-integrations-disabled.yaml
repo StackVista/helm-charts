@@ -6,17 +6,19 @@ stackstate:
 
 # All integration flags explicitly disabled — used by the "disabled" test to
 # verify that no integration groups appear regardless of chart defaults.
-k8sResourceCollector:
+otel:
   enabled: true
-  crdDiscovery:
-    discoveryMode: api_groups
-    apiGroupFilters:
-      include:
-        "*": true
-  rbac:
-    useWildcard: true
-  integrations:
-    suseRuntimeEnforcer: false
-    suseAdmissionController: false
-    suseVirtualization: false
-    suseSbomScanner: false
+  k8sResourceCollector:
+    enabled: true
+    crdDiscovery:
+      discoveryMode: api_groups
+      apiGroupFilters:
+        include:
+          "*": true
+    rbac:
+      useWildcard: true
+    integrations:
+      suseRuntimeEnforcer: false
+      suseAdmissionController: false
+      suseVirtualization: false
+      suseSbomScanner: false

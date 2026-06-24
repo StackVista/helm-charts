@@ -665,183 +665,9 @@ checksAgent:
   # checksAgent.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
-###############################
-# K8s CRD collector variables #
-###############################
-
-k8sResourceCollector:
-  # k8sResourceCollector.enabled -- Enable / disable the OpenTelemetry cluster collector for CRD discovery
-  enabled: false
-
-  # k8sResourceCollector.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
-  skipSslValidation: false
-
-  image:
-    # k8sResourceCollector.image.repository -- Base container image repository.
-    repository: stackstate/sts-opentelemetry-collector
-    # k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: "v0.0.40"
-    # k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
-    pullPolicy: IfNotPresent
-
-  crdDiscovery:
-    # k8sResourceCollector.crdDiscovery.snapshotInterval -- Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m)
-    snapshotInterval: 5m
-    # k8sResourceCollector.crdDiscovery.discoveryMode -- CRD discovery mode: "api_groups" (filtered) or "all" (watch everything)
-    discoveryMode: api_groups
-    apiGroupFilters:
-      # k8sResourceCollector.crdDiscovery.apiGroupFilters.include -- Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups".
-      include:
-        # Watch all API groups by default
-        "*": true
-      # k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude -- Map of API group patterns (key) -> bool (enabled). Empty by default.
-      exclude: {}
-
-  rbac:
-    # k8sResourceCollector.rbac.useWildcard -- Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups
-    useWildcard: true
-    # k8sResourceCollector.rbac.crdApiGroups -- Map of API group (key) -> bool (enabled) for CRD-discovered custom resources to grant get/list/watch on all resources in the group (only used when useWildcard=false). Set a key to false in an override to disable a default. k8sResourceCollector.objects entries derive their own resource-scoped RBAC and do not need an entry here.
-    crdApiGroups: {}
-    # Example:
-    # crdApiGroups:
-    #   "policies.kubewarden.io": true
-    #   "longhorn.io": true
-
-  integrations:
-    # k8sResourceCollector.integrations.suseRuntimeEnforcer -- Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack.
-    suseRuntimeEnforcer: true
-    # k8sResourceCollector.integrations.suseAdmissionController -- Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack.
-    suseAdmissionController: true
-    # k8sResourceCollector.integrations.suseVirtualization -- Enable pre-configured API group filters for the SUSE Virtualization (KubeVirt) stackpack.
-    suseVirtualization: true
-    # k8sResourceCollector.integrations.suseSbomScanner -- Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack.
-    suseSbomScanner: false
-
-  # k8sResourceCollector.objects -- Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by crd_api_group_filters are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group).
-  objects: {}
-  # Example:
-  # objects:
-  #   pods:
-  #     group: ""
-  #     namespaces: ["kube-system"]
-  #   deployments:
-  #     group: apps
-  #     labelSelector: "app=foo"
-
-  # k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec extending the built-in denylist (core Secrets, ConfigMaps). Spec needs only `group`. Resources listed here must not appear under k8sResourceCollector.objects. Use to block third-party resources with sensitive contents.
-  deniedObjects: {}
-  # Example:
-  # deniedObjects:
-  #   certificates:
-  #     group: cert-manager.io
-
-  peerSync:
-    # k8sResourceCollector.peerSync.port -- Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port.
-    port: 4319
-
-  leaderElection:
-    # k8sResourceCollector.leaderElection.enabled -- Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover.
-    enabled: true
-    # k8sResourceCollector.leaderElection.leaseName -- Name of the Lease object. Must be unique per collector deployment.
-    leaseName: "k8sresourcereceiver"
-    # k8sResourceCollector.leaderElection.leaseDuration -- Duration a leader holds the lease before it must renew.
-    leaseDuration: 15s
-    # k8sResourceCollector.leaderElection.renewDeadline -- Deadline for the leader to renew the lease. Must be less than leaseDuration.
-    renewDeadline: 10s
-    # k8sResourceCollector.leaderElection.retryPeriod -- How often non-leaders retry acquiring the lease. Must be less than renewDeadline.
-    retryPeriod: 2s
-
-  livenessProbe:
-    # k8sResourceCollector.livenessProbe.enabled -- Enable use of livenessProbe check.
-    enabled: true
-    # k8sResourceCollector.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
-    failureThreshold: 3
-    # k8sResourceCollector.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
-    initialDelaySeconds: 10
-    # k8sResourceCollector.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
-    periodSeconds: 10
-    # k8sResourceCollector.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
-    successThreshold: 1
-    # k8sResourceCollector.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
-    timeoutSeconds: 5
-
-  # k8sResourceCollector.logLevel -- Logging level for OpenTelemetry collector (debug, info, warn, error)
-  logLevel: info
-
-  # k8sResourceCollector.priorityClassName -- Priority class for cluster collector pods.
-  priorityClassName: ""
-
-  readinessProbe:
-    # k8sResourceCollector.readinessProbe.enabled -- Enable use of readinessProbe check.
-    enabled: true
-    # k8sResourceCollector.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
-    failureThreshold: 3
-    # k8sResourceCollector.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
-    initialDelaySeconds: 5
-    # k8sResourceCollector.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
-    periodSeconds: 5
-    # k8sResourceCollector.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
-    successThreshold: 1
-    # k8sResourceCollector.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
-    timeoutSeconds: 5
-
-  # k8sResourceCollector.replicaCount -- Number of cluster collector pods to schedule. Use 2+ with leaderElection for HA.
-  replicaCount: 2
-
-  resources:
-    limits:
-      # k8sResourceCollector.resources.limits.cpu -- CPU resource limits.
-      cpu: "500m"
-      # k8sResourceCollector.resources.limits.memory -- Memory resource limits.
-      memory: "512Mi"
-    requests:
-      # k8sResourceCollector.resources.requests.cpu -- CPU resource requests.
-      cpu: "100m"
-      # k8sResourceCollector.resources.requests.memory -- Memory resource requests.
-      memory: "128Mi"
-
-  serviceaccount:
-    # k8sResourceCollector.serviceaccount.annotations -- Annotations for the service account for the cluster collector pods
-    annotations: {}
-
-  # k8sResourceCollector.strategy -- The strategy for the Deployment object.
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
-
-  # k8sResourceCollector.podAnnotations -- Additional annotations for cluster collector pods.
-  podAnnotations: {}
-
-  # k8sResourceCollector.podLabels -- Additional labels for cluster collector pods.
-  podLabels: {}
-
-  # k8sResourceCollector.nodeSelector -- Node labels for pod assignment.
-  nodeSelector: {}
-
-  # k8sResourceCollector.tolerations -- Toleration labels for pod assignment.
-  tolerations: []
-
-  # k8sResourceCollector.affinity -- Affinity settings for pod assignment.
-  affinity: {}
-
-  # k8sResourceCollector.debug -- Optional debug exporter for troubleshooting.
-  # When enabled, the upstream OTel `debug` exporter is wired into the listed
-  # pipelines so payloads are written to the collector log. Leave disabled in
-  # production.
-  debug:
-    # k8sResourceCollector.debug.enabled -- Enable the debug exporter for this collector.
-    enabled: false
-    # k8sResourceCollector.debug.verbosity -- Debug exporter verbosity: basic, normal, or detailed.
-    verbosity: basic
-    # k8sResourceCollector.debug.pipelines -- Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}.
-    pipelines:
-      - logs
-
-######################################
-# OTel Prometheus scraping variables #
-######################################
+###############################################################
+# OTel Prometheus scraping + K8s resource collector variables #
+###############################################################
 
 otel:
   # otel.platformHttpOtlpEndpoint -- Override the OTLP endpoint with an HTTP(S) OTLP endpoint (format must be `http(s)://<host>:<port>`), takes precedence over the platformGrpcOtlpEndpoint when both overrides are defined. When empty, derived by appending /otel to stackstate.url.
@@ -851,6 +677,180 @@ otel:
 
   # otel.enabled -- Master switch for all OTel components. Set to true to activate OpenTelemetry based features.
   enabled: false
+
+  ###############################
+  # K8s resource collector variables #
+  ###############################
+
+  k8sResourceCollector:
+    # otel.k8sResourceCollector.enabled -- Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true.
+    enabled: true
+
+    # otel.k8sResourceCollector.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
+    skipSslValidation: false
+
+    image:
+      # otel.k8sResourceCollector.image.repository -- Base container image repository.
+      repository: stackstate/sts-opentelemetry-collector
+      # otel.k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
+      tag: "v0.0.40"
+      # otel.k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
+      pullPolicy: IfNotPresent
+
+    crdDiscovery:
+      # otel.k8sResourceCollector.crdDiscovery.snapshotInterval -- Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m)
+      snapshotInterval: 5m
+      # otel.k8sResourceCollector.crdDiscovery.discoveryMode -- CRD discovery mode: "api_groups" (filtered) or "all" (watch everything)
+      discoveryMode: api_groups
+      apiGroupFilters:
+        # otel.k8sResourceCollector.crdDiscovery.apiGroupFilters.include -- Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups".
+        include:
+          # Watch all API groups by default
+          "*": true
+        # otel.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude -- Map of API group patterns (key) -> bool (enabled). Empty by default.
+        exclude: {}
+
+    rbac:
+      # otel.k8sResourceCollector.rbac.useWildcard -- Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups
+      useWildcard: true
+      # otel.k8sResourceCollector.rbac.crdApiGroups -- Map of API group (key) -> bool (enabled) for CRD-discovered custom resources to grant get/list/watch on all resources in the group (only used when useWildcard=false). Set a key to false in an override to disable a default. otel.k8sResourceCollector.objects entries derive their own resource-scoped RBAC and do not need an entry here.
+      crdApiGroups: {}
+      # Example:
+      # crdApiGroups:
+      #   "policies.kubewarden.io": true
+      #   "longhorn.io": true
+
+    integrations:
+      # otel.k8sResourceCollector.integrations.suseRuntimeEnforcer -- Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack.
+      suseRuntimeEnforcer: true
+      # otel.k8sResourceCollector.integrations.suseAdmissionController -- Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack.
+      suseAdmissionController: true
+      # otel.k8sResourceCollector.integrations.suseVirtualization -- Enable pre-configured API group filters for the SUSE Virtualization (KubeVirt) stackpack.
+      suseVirtualization: true
+      # otel.k8sResourceCollector.integrations.suseSbomScanner -- Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack.
+      suseSbomScanner: false
+
+    # otel.k8sResourceCollector.objects -- Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by crd_api_group_filters are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group).
+    objects: {}
+    # Example:
+    # objects:
+    #   pods:
+    #     group: ""
+    #     namespaces: ["kube-system"]
+    #   deployments:
+    #     group: apps
+    #     labelSelector: "app=foo"
+
+    # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec extending the built-in denylist (core Secrets, ConfigMaps). Spec needs only `group`. Resources listed here must not appear under otel.k8sResourceCollector.objects. Use to block third-party resources with sensitive contents.
+    deniedObjects: {}
+    # Example:
+    # deniedObjects:
+    #   certificates:
+    #     group: cert-manager.io
+
+    peerSync:
+      # otel.k8sResourceCollector.peerSync.port -- Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port.
+      port: 4319
+
+    leaderElection:
+      # otel.k8sResourceCollector.leaderElection.enabled -- Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover.
+      enabled: true
+      # otel.k8sResourceCollector.leaderElection.leaseName -- Name of the Lease object. Must be unique per collector deployment.
+      leaseName: "k8sresourcereceiver"
+      # otel.k8sResourceCollector.leaderElection.leaseDuration -- Duration a leader holds the lease before it must renew.
+      leaseDuration: 15s
+      # otel.k8sResourceCollector.leaderElection.renewDeadline -- Deadline for the leader to renew the lease. Must be less than leaseDuration.
+      renewDeadline: 10s
+      # otel.k8sResourceCollector.leaderElection.retryPeriod -- How often non-leaders retry acquiring the lease. Must be less than renewDeadline.
+      retryPeriod: 2s
+
+    livenessProbe:
+      # otel.k8sResourceCollector.livenessProbe.enabled -- Enable use of livenessProbe check.
+      enabled: true
+      # otel.k8sResourceCollector.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+      failureThreshold: 3
+      # otel.k8sResourceCollector.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+      initialDelaySeconds: 10
+      # otel.k8sResourceCollector.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+      periodSeconds: 10
+      # otel.k8sResourceCollector.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+      successThreshold: 1
+      # otel.k8sResourceCollector.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+      timeoutSeconds: 5
+
+    # otel.k8sResourceCollector.logLevel -- Logging level for OpenTelemetry collector (debug, info, warn, error)
+    logLevel: info
+
+    # otel.k8sResourceCollector.priorityClassName -- Priority class for cluster collector pods.
+    priorityClassName: ""
+
+    readinessProbe:
+      # otel.k8sResourceCollector.readinessProbe.enabled -- Enable use of readinessProbe check.
+      enabled: true
+      # otel.k8sResourceCollector.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+      failureThreshold: 3
+      # otel.k8sResourceCollector.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+      initialDelaySeconds: 5
+      # otel.k8sResourceCollector.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+      periodSeconds: 5
+      # otel.k8sResourceCollector.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+      successThreshold: 1
+      # otel.k8sResourceCollector.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+      timeoutSeconds: 5
+
+    # otel.k8sResourceCollector.replicaCount -- Number of cluster collector pods to schedule. Use 2+ with leaderElection for HA.
+    replicaCount: 2
+
+    resources:
+      limits:
+        # otel.k8sResourceCollector.resources.limits.cpu -- CPU resource limits.
+        cpu: "500m"
+        # otel.k8sResourceCollector.resources.limits.memory -- Memory resource limits.
+        memory: "512Mi"
+      requests:
+        # otel.k8sResourceCollector.resources.requests.cpu -- CPU resource requests.
+        cpu: "100m"
+        # otel.k8sResourceCollector.resources.requests.memory -- Memory resource requests.
+        memory: "128Mi"
+
+    serviceaccount:
+      # otel.k8sResourceCollector.serviceaccount.annotations -- Annotations for the service account for the cluster collector pods
+      annotations: {}
+
+    # otel.k8sResourceCollector.strategy -- The strategy for the Deployment object.
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 0
+        maxSurge: 1
+
+    # otel.k8sResourceCollector.podAnnotations -- Additional annotations for cluster collector pods.
+    podAnnotations: {}
+
+    # otel.k8sResourceCollector.podLabels -- Additional labels for cluster collector pods.
+    podLabels: {}
+
+    # otel.k8sResourceCollector.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+
+    # otel.k8sResourceCollector.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+
+    # otel.k8sResourceCollector.affinity -- Affinity settings for pod assignment.
+    affinity: {}
+
+    # otel.k8sResourceCollector.debug -- Optional debug exporter for troubleshooting.
+    # When enabled, the upstream OTel `debug` exporter is wired into the listed
+    # pipelines so payloads are written to the collector log. Leave disabled in
+    # production.
+    debug:
+      # otel.k8sResourceCollector.debug.enabled -- Enable the debug exporter for this collector.
+      enabled: false
+      # otel.k8sResourceCollector.debug.verbosity -- Debug exporter verbosity: basic, normal, or detailed.
+      verbosity: basic
+      # otel.k8sResourceCollector.debug.pipelines -- Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}.
+      pipelines:
+        - logs
 
   prometheusScraping:
     # otel.prometheusScraping.enabled -- Enable / disable OpenTelemetry Collector based Prometheus scraping via ServiceMonitor and PodMonitor resources. Requires otel.enabled=true.

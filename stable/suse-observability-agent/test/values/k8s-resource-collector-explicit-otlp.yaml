@@ -5,13 +5,14 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver
 
 # Enable cluster collector with explicit HTTP OTLP endpoint override
-k8sResourceCollector:
-  enabled: true
-  crdDiscovery:
-    interval: 15m
-    discoveryMode: all
-  rbac:
-    useWildcard: true
-
 otel:
+  enabled: true
+  k8sResourceCollector:
+    enabled: true
+    crdDiscovery:
+      interval: 15m
+      discoveryMode: all
+    rbac:
+      useWildcard: true
+
   platformHttpOtlpEndpoint: "https://custom-otlp.example.com:4318"

@@ -5,24 +5,26 @@ stackstate:
   url: https://my-suse-observability-instance.com/receiver
 
 # Enable cluster collector with restricted RBAC (specific API groups)
-k8sResourceCollector:
+otel:
   enabled: true
-  crdDiscovery:
-    snapshotInterval: 5m
-    discoveryMode: api_groups
-    apiGroupFilters:
-      include:
-        # Disable the chart default `"*": true` so this scenario is truly restricted
-        # to the patterns below.
-        "*": false
+  k8sResourceCollector:
+    enabled: true
+    crdDiscovery:
+      snapshotInterval: 5m
+      discoveryMode: api_groups
+      apiGroupFilters:
+        include:
+          # Disable the chart default `"*": true` so this scenario is truly restricted
+          # to the patterns below.
+          "*": false
+          "policies.kubewarden.io": true
+          "longhorn.io": true
+          "*.suse.com": true
+        exclude:
+          "test.suse.com": true
+    rbac:
+      useWildcard: false
+      crdApiGroups:
         "policies.kubewarden.io": true
         "longhorn.io": true
-        "*.suse.com": true
-      exclude:
-        "test.suse.com": true
-  rbac:
-    useWildcard: false
-    crdApiGroups:
-      "policies.kubewarden.io": true
-      "longhorn.io": true
-      "cert-manager.io": true
+        "cert-manager.io": true

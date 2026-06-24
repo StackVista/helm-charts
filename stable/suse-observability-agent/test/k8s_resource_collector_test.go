@@ -91,24 +91,46 @@ func TestK8sResourceCollectorDisabled(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-disabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
+	assertK8sResourceCollectorResourcesExist(t, resources, false)
+}
+
+func TestK8sResourceCollectorDisabledByOtelMasterSwitch(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-enabled-with-otel-disabled.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	assertK8sResourceCollectorResourcesExist(t, resources, false)
+}
+
+func TestK8sResourceCollectorEnabledByExperimentalStackpacks(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/experimental-stackpacks.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	assertK8sResourceCollectorResourcesExist(t, resources, true)
+}
+
+func assertK8sResourceCollectorResourcesExist(t *testing.T, resources helmtestutil.KubernetesResources, shouldExist bool) {
 	// All k8s-resource-collector resources should NOT exist
 	_, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]
-	assert.False(t, exists, "k8s-resource-collector deployment should not exist when disabled")
+	assert.Equal(t, shouldExist, exists, "k8s-resource-collector deployment existence")
 
 	_, exists = resources.ServiceAccounts["suse-observability-agent-k8s-resource-collector"]
-	assert.False(t, exists, "k8s-resource-collector service account should not exist when disabled")
+	assert.Equal(t, shouldExist, exists, "k8s-resource-collector service account existence")
 
 	_, exists = resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
-	assert.False(t, exists, "k8s-resource-collector cluster role should not exist when disabled")
+	assert.Equal(t, shouldExist, exists, "k8s-resource-collector cluster role existence")
 
 	_, exists = resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
-	assert.False(t, exists, "k8s-resource-collector config map should not exist when disabled")
+	assert.Equal(t, shouldExist, exists, "k8s-resource-collector config map existence")
 
 	_, exists = resources.Services["suse-observability-agent-k8s-resource-collector"]
-	assert.False(t, exists, "k8s-resource-collector service should not exist when disabled")
+	assert.Equal(t, shouldExist, exists, "k8s-resource-collector service existence")
 
 	_, exists = resources.Services["suse-observability-agent-k8s-resource-collector-headless"]
-	assert.False(t, exists, "k8s-resource-collector headless service should not exist when disabled")
+	assert.Equal(t, shouldExist, exists, "k8s-resource-collector headless service existence")
 }
 
 func TestK8sResourceCollectorWildcardRBAC(t *testing.T) {
@@ -187,7 +209,7 @@ func TestK8sResourceCollectorRestrictedRBAC(t *testing.T) {
 	assert.True(t, hasCRDRule, "CRD rule not found in cluster role")
 }
 
-// TestK8sResourceCollectorObjects verifies that k8sResourceCollector.objects and
+// TestK8sResourceCollectorObjects verifies that otel.k8sResourceCollector.objects and
 // deniedObjects are rendered into the ConfigMap (with snake_case keys), and that
 // auto-derived RBAC rules in useWildcard=false mode group by API group and dedupe
 // resource names (uniq) when the same resource is declared multiple times.
