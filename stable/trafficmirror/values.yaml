@@ -12,6 +12,10 @@ image:
   # image.tag -- Default container image tag.
   tag: v2.5.4
 
+service:
+  # service.appProtocol -- Optional appProtocol for the service port. Set to `kubernetes.io/h2c` for gRPC / HTTP2 cleartext backends so a Gateway API `HTTPRoute` forwards HTTP/2 upstream.
+  appProtocol: ""
+
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.
   enabled: false
@@ -28,29 +32,33 @@ ingress:
   #  - secretName: chart-example-tls
 
 gateway:
-  # gateway.enabled -- Enable Gateway API `HTTPRoute` for trafficmirror. Mutually exclusive with ingress.enabled.
+  # gateway.enabled -- Enable Gateway API routes (HTTPRoute/GRPCRoute) for trafficmirror. Mutually exclusive with ingress.enabled.
   enabled: false
-  # gateway.annotations -- Annotations for the `HTTPRoute` object.
+  # gateway.kind -- Route kind to create. Valid values: "HTTPRoute" or "GRPCRoute".
+  kind: HTTPRoute
+  # gateway.annotations -- Annotations for the route object.
   annotations: {}
   # gateway.parentRefs -- List of parent `Gateway` references (required when gateway.enabled is true).
   parentRefs: []
   # - name: my-gateway
   #   namespace: gateway-namespace
   #   sectionName: websecure
-  # gateway.hostnames -- List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts.
+  # gateway.hostnames -- List of hostnames for the route. If empty, the route matches all hosts.
   hostnames: []
-  # gateway.path -- Path prefix for the `HTTPRoute` rule.
+  # gateway.path -- Path prefix for the HTTPRoute rule (ignored for GRPCRoute).
   path: /
-  # gateway.filters -- Optional filters for the `HTTPRoute` rule.
+  # gateway.pathType -- Path match type for the HTTPRoute rule (ignored for GRPCRoute).
+  pathType: PathPrefix
+  # gateway.filters -- Optional filters for the route rule.
   filters: []
-  # gateway.timeouts -- Optional timeouts for the `HTTPRoute` rule.
+  # gateway.timeouts -- Optional timeouts for the HTTPRoute rule (ignored for GRPCRoute).
   timeouts: {}
   # request: 30s
   # backendRequest: 30s
   # gateway.backendWeight -- Optional weight for traffic splitting.
   backendWeight:
-  #    hosts:
-  #      - chart-example.local
+  # gateway.additionalGateways -- Additional route objects (e.g. a GRPCRoute alongside an HTTPRoute). Each entry takes the same fields as this block.
+  additionalGateways: []
 
 trafficmirror:
   # trafficmirror.mainUrl -- The default URL to receive the mirrored traffic.

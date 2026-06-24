@@ -96,5 +96,40 @@ func TestGatewayAndIngressMutualExclusion(t *testing.T) {
 
 func TestGatewayMissingParentRefs(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, gatewayChartName, append(append([]string{}, gatewayBaseValues...), "values/gateway_missing_parentrefs.yaml")...)
-	require.Contains(t, err.Error(), "Gateway API requires gateway.parentRefs to be set")
+	require.Contains(t, err.Error(), "Gateway API requires parentRefs to be set")
+}
+
+func onlyGRPCRoute(t *testing.T, r helmtestutil.KubernetesResources) gatewayv1.GRPCRoute {
+	require.Len(t, r.GRPCRoutes, 1, "exactly one GRPCRoute should be rendered")
+	for _, route := range r.GRPCRoutes {
+		return route
+	}
+	return gatewayv1.GRPCRoute{}
+}
+
+func TestGatewayGRPCRoute(t *testing.T) {
+	resources := gatewayRender(t, "values/gateway_grpc.yaml")
+	assert.Empty(t, resources.HTTPRoutes, "no HTTPRoute should be rendered for kind GRPCRoute")
+	route := onlyGRPCRoute(t, resources)
+
+	require.Len(t, route.Spec.ParentRefs, 1)
+	assert.Equal(t, gatewayv1.ObjectName("traefik"), route.Spec.ParentRefs[0].Name)
+	require.NotNil(t, route.Spec.ParentRefs[0].SectionName)
+	assert.Equal(t, gatewayv1.SectionName("grpc"), *route.Spec.ParentRefs[0].SectionName)
+
+	require.Len(t, route.Spec.Rules, 1)
+	require.Empty(t, route.Spec.Rules[0].Matches, "GRPCRoute catch-all should have no method matches")
+	require.Len(t, route.Spec.Rules[0].BackendRefs, 1)
+	require.NotNil(t, route.Spec.Rules[0].BackendRefs[0].Port)
+	assert.Equal(t, gatewayBackendPort, *route.Spec.Rules[0].BackendRefs[0].Port)
+}
+
+func TestGatewayAdditionalGateways(t *testing.T) {
+	resources := gatewayRender(t, "values/gateway_both.yaml")
+	require.Len(t, resources.HTTPRoutes, 1, "one HTTPRoute should be rendered")
+	require.Len(t, resources.GRPCRoutes, 1, "one GRPCRoute should be rendered")
+
+	grpc := onlyGRPCRoute(t, resources)
+	require.NotNil(t, grpc.Spec.ParentRefs[0].SectionName)
+	assert.Equal(t, gatewayv1.SectionName("grpc"), *grpc.Spec.ParentRefs[0].SectionName)
 }

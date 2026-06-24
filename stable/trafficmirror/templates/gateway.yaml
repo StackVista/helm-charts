@@ -1,0 +1,80 @@
+{{- if .Values.gateway.enabled -}}
+{{- if .Values.ingress.enabled -}}
+{{- fail "Cannot configure both ingress.enabled and gateway.enabled simultaneously. Use either Ingress (ingress.enabled=true) OR Gateway API (gateway.enabled=true), but not both." -}}
+{{- end -}}
+{{- $gateways := prepend .Values.gateway.additionalGateways .Values.gateway -}}
+{{- range $gateways }}
+{{- if not .parentRefs -}}
+{{- fail "Gateway API requires parentRefs to be set for each gateway route when gateway.enabled is true." -}}
+{{- end -}}
+{{- $kind := .kind | default "HTTPRoute" -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: {{ $kind }}
+metadata:
+  {{- if .name }}
+  name: {{ printf "%s-%s" (include "common.fullname" $) .name }}
+  {{- else }}
+  name: {{ include "common.fullname" $ }}
+  {{- end }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "common.labels.standard" $ | nindent 4 }}
+  {{- with .annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- range .parentRefs }}
+    - name: {{ .name }}
+      {{- if .namespace }}
+      namespace: {{ .namespace }}
+      {{- end }}
+      {{- if .sectionName }}
+      sectionName: {{ .sectionName }}
+      {{- end }}
+      {{- if .port }}
+      port: {{ .port }}
+      {{- end }}
+    {{- end }}
+  {{- with .hostnames }}
+  hostnames:
+    {{- range . }}
+    - {{ tpl . $ | quote }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- if eq $kind "GRPCRoute" }}
+    - backendRefs:
+        - name: {{ include "common.fullname" $ }}
+          port: {{ .port | default 8080 }}
+          {{- if .backendWeight }}
+          weight: {{ .backendWeight }}
+          {{- end }}
+      {{- with .filters }}
+      filters:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- else }}
+    - matches:
+        - path:
+            type: {{ .pathType | default "PathPrefix" }}
+            value: {{ .path | default "/" | quote }}
+      backendRefs:
+        - name: {{ include "common.fullname" $ }}
+          port: {{ .port | default 8080 }}
+          {{- if .backendWeight }}
+          weight: {{ .backendWeight }}
+          {{- end }}
+      {{- with .filters }}
+      filters:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .timeouts }}
+      timeouts:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+---
+{{- end }}
+{{- end }}

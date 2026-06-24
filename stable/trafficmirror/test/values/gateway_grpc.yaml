@@ -1,0 +1,9 @@
+gateway:
+  enabled: true
+  kind: GRPCRoute
+  parentRefs:
+    - name: traefik
+      namespace: traefik
+      sectionName: grpc
+  hostnames:
+    - otel.example.com

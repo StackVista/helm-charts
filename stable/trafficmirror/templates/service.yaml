@@ -5,6 +5,9 @@ spec:
     port: 8080
     protocol: TCP
     targetPort: app
+    {{- with .Values.service.appProtocol }}
+    appProtocol: {{ . }}
+    {{- end }}
 {{- end -}}
 
 {{- $commonService := fromYaml (include "common.service" .) -}}

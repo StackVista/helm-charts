@@ -1,0 +1,18 @@
+gateway:
+  enabled: true
+  kind: HTTPRoute
+  parentRefs:
+    - name: traefik
+      namespace: traefik
+      sectionName: websecure
+  hostnames:
+    - tm-http.example.com
+  additionalGateways:
+    - name: grpc
+      kind: GRPCRoute
+      parentRefs:
+        - name: traefik
+          namespace: traefik
+          sectionName: grpc
+      hostnames:
+        - tm-grpc.example.com

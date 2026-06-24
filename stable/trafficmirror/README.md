@@ -1,6 +1,6 @@
 # trafficmirror
 
-![Version: 3.1.0](https://img.shields.io/badge/Version-3.1.0-informational?style=flat-square) ![AppVersion: 2.5.4](https://img.shields.io/badge/AppVersion-2.5.4-informational?style=flat-square)
+![Version: 3.2.0](https://img.shields.io/badge/Version-3.2.0-informational?style=flat-square) ![AppVersion: 2.5.4](https://img.shields.io/badge/AppVersion-2.5.4-informational?style=flat-square)
 Trafficmirror -- mirror traffic to various endpoints.
 **Homepage:** <https://github.com/rb3ckers/trafficmirror>
 ## Maintainers
@@ -22,20 +22,24 @@ Trafficmirror -- mirror traffic to various endpoints.
 | container.readinessProbeDefaults.enabled | bool | `true` | Use defaults for the `readinessProbe` from the upstream `common` chart. |
 | deployment.securityContext.runAsNonRoot | bool | `true` |  |
 | deployment.securityContext.runAsUser | int | `65534` |  |
-| gateway.annotations | object | `{}` | Annotations for the `HTTPRoute` object. |
+| gateway.additionalGateways | list | `[]` | Additional route objects (e.g. a GRPCRoute alongside an HTTPRoute). Each entry takes the same fields as this block. |
+| gateway.annotations | object | `{}` | Annotations for the route object. |
 | gateway.backendWeight | string | `nil` | Optional weight for traffic splitting. |
-| gateway.enabled | bool | `false` | Enable Gateway API `HTTPRoute` for trafficmirror. Mutually exclusive with ingress.enabled. |
-| gateway.filters | list | `[]` | Optional filters for the `HTTPRoute` rule. |
-| gateway.hostnames | list | `[]` | List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts. |
+| gateway.enabled | bool | `false` | Enable Gateway API routes (HTTPRoute/GRPCRoute) for trafficmirror. Mutually exclusive with ingress.enabled. |
+| gateway.filters | list | `[]` | Optional filters for the route rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the route. If empty, the route matches all hosts. |
+| gateway.kind | string | `"HTTPRoute"` | Route kind to create. Valid values: "HTTPRoute" or "GRPCRoute". |
 | gateway.parentRefs | list | `[]` | List of parent `Gateway` references (required when gateway.enabled is true). |
-| gateway.path | string | `"/"` | Path prefix for the `HTTPRoute` rule. |
-| gateway.timeouts | object | `{}` | Optional timeouts for the `HTTPRoute` rule. |
+| gateway.path | string | `"/"` | Path prefix for the HTTPRoute rule (ignored for GRPCRoute). |
+| gateway.pathType | string | `"PathPrefix"` | Path match type for the HTTPRoute rule (ignored for GRPCRoute). |
+| gateway.timeouts | object | `{}` | Optional timeouts for the HTTPRoute rule (ignored for GRPCRoute). |
 | image.repository | string | `"ghcr.io/rb3ckers/trafficmirror"` | Base container image repository. |
 | image.tag | string | `"v2.5.4"` | Default container image tag. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
+| service.appProtocol | string | `""` | Optional appProtocol for the service port. Set to `kubernetes.io/h2c` for gRPC / HTTP2 cleartext backends so a Gateway API `HTTPRoute` forwards HTTP/2 upstream. |
 | trafficmirror.enablePProf | bool | `false` | Enable pprof profiling |
 | trafficmirror.failAfterMinutes | int | `30` | Remove a target when it has been failing for this many minutes. |
 | trafficmirror.mainTargetDelayMs | int | `200` | Delay executions to main target, this gives the mirror time to catch up, and increases parallelism. |
