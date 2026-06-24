@@ -85,6 +85,29 @@ ingress:
         - gitlab.proxy
       secretName: secret-tls
 
+gateway:
+  # gateway.enabled -- Enable Gateway API `HTTPRoute` for gitlab-proxy. Mutually exclusive with ingress.enabled.
+  enabled: false
+  # gateway.annotations -- Annotations for the `HTTPRoute` object.
+  annotations: {}
+  # gateway.parentRefs -- List of parent `Gateway` references (required when gateway.enabled is true).
+  parentRefs: []
+  # - name: my-gateway
+  #   namespace: gateway-namespace
+  #   sectionName: websecure
+  # gateway.hostnames -- List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts.
+  hostnames: []
+  # gateway.path -- Path prefix for the `HTTPRoute` rule.
+  path: /
+  # gateway.filters -- Optional filters for the `HTTPRoute` rule.
+  filters: []
+  # gateway.timeouts -- Optional timeouts for the `HTTPRoute` rule.
+  timeouts: {}
+  # request: 30s
+  # backendRequest: 30s
+  # gateway.backendWeight -- Optional weight for traffic splitting.
+  backendWeight:
+
 resources:
   limits:
     ephemeral-storage: 2Gi

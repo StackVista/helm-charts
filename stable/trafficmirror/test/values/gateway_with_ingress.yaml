@@ -1,0 +1,7 @@
+ingress:
+  enabled: true
+gateway:
+  enabled: true
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace

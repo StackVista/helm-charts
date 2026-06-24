@@ -1,6 +1,6 @@
 # trafficmirror
 
-![Version: 3.0.3](https://img.shields.io/badge/Version-3.0.3-informational?style=flat-square) ![AppVersion: 2.5.4](https://img.shields.io/badge/AppVersion-2.5.4-informational?style=flat-square)
+![Version: 3.1.0](https://img.shields.io/badge/Version-3.1.0-informational?style=flat-square) ![AppVersion: 2.5.4](https://img.shields.io/badge/AppVersion-2.5.4-informational?style=flat-square)
 Trafficmirror -- mirror traffic to various endpoints.
 **Homepage:** <https://github.com/rb3ckers/trafficmirror>
 ## Maintainers
@@ -22,6 +22,14 @@ Trafficmirror -- mirror traffic to various endpoints.
 | container.readinessProbeDefaults.enabled | bool | `true` | Use defaults for the `readinessProbe` from the upstream `common` chart. |
 | deployment.securityContext.runAsNonRoot | bool | `true` |  |
 | deployment.securityContext.runAsUser | int | `65534` |  |
+| gateway.annotations | object | `{}` | Annotations for the `HTTPRoute` object. |
+| gateway.backendWeight | string | `nil` | Optional weight for traffic splitting. |
+| gateway.enabled | bool | `false` | Enable Gateway API `HTTPRoute` for trafficmirror. Mutually exclusive with ingress.enabled. |
+| gateway.filters | list | `[]` | Optional filters for the `HTTPRoute` rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts. |
+| gateway.parentRefs | list | `[]` | List of parent `Gateway` references (required when gateway.enabled is true). |
+| gateway.path | string | `"/"` | Path prefix for the `HTTPRoute` rule. |
+| gateway.timeouts | object | `{}` | Optional timeouts for the `HTTPRoute` rule. |
 | image.repository | string | `"ghcr.io/rb3ckers/trafficmirror"` | Base container image repository. |
 | image.tag | string | `"v2.5.4"` | Default container image tag. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |

@@ -2,7 +2,7 @@
 
 Redirector can help with redirecting users to their own URL.
 
-Current chart version is `0.0.2`
+Current chart version is `0.1.0`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/redirector>
 
@@ -35,6 +35,14 @@ ingress:
 | affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator | string | `"In"` |  |
 | affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0] | string | `"redirector"` |  |
 | affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
+| gateway.annotations | object | `{}` | Annotations for the `HTTPRoute` object. |
+| gateway.backendWeight | string | `nil` | Optional weight for traffic splitting. |
+| gateway.enabled | bool | `false` | Enable Gateway API `HTTPRoute` for redirector. Mutually exclusive with ingress.enabled. |
+| gateway.filters | list | `[]` | Optional filters for the `HTTPRoute` rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts. |
+| gateway.parentRefs | list | `[]` | List of parent `Gateway` references (required when gateway.enabled is true). |
+| gateway.path | string | `"/"` | Path prefix for the `HTTPRoute` rule. |
+| gateway.timeouts | object | `{}` | Optional timeouts for the `HTTPRoute` rule. |
 | global.imagePullSecrets | list | `[]` | Globally add image pull secrets that are used. |
 | global.imageRegistry | string | `nil` | Globally override the image registry that is used. Can be overridden by specific containers. Defaults to quay.io |
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Redirector |

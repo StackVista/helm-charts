@@ -17,7 +17,7 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         {{- include "labels" . | nindent 8 }}
-        {{- include "tenantprovisioning-labels" . | nindent 8 }}
+        app.kubernetes.io/component: tenantprovisioning
     spec:
       serviceAccountName: {{ include "fullname" . }}
       {{- include "image-pull-secrets" . | nindent 6 }}

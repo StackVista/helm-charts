@@ -1,0 +1,28 @@
+config:
+  ListenAddr: "127.0.0.1:8080"
+  TmpDir: "/tmp"
+  GenericWebhookAuthToken: "test"
+  PrivateGPGKeyBase64Encoded: "SGVsbG8gd29ybGRcIVwhXCE="
+  Git:
+    RepoURL: "https://repo"
+    Branch: "main"
+    Auth:
+      Username: "doesntmatter"
+      Password: "doesntmatter"
+    CommitAuthor:
+      Name: "John Doe"
+      Email: "john.doe@example.com"
+  Clusters:
+    - Name: "mock"
+      AvailabilityZones: ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
+  AWS:
+    Region: "mock"
+    SQSBaseEndpoint: "mock"
+    TenantProvisioningQueueURL: "mock"
+    TenantProvisioningInternalWorkQueueURL: "mock"
+    TenantProvisioningStatusOutputQueueURL: "mock"
+  ArgoCD:
+    ServerAddr: "mock"
+    Insecure: False
+    AuthToken: "mock"
+    GitRepo: "git@gitlab.com/repo"

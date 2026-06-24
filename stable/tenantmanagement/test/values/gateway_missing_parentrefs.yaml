@@ -1,0 +1,4 @@
+gateway:
+  enabled: true
+  hostnames:
+    - test.example.com

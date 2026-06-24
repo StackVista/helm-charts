@@ -1,6 +1,6 @@
 # tenantmanagement
 
-![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 Manages all SaaS tenants
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -27,6 +27,14 @@ Manages all SaaS tenants
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | fullnameOverride | string | `""` |  |
+| gateway.annotations | object | `{}` | Annotations for the `HTTPRoute` object. |
+| gateway.backendWeight | string | `nil` | Optional weight for traffic splitting. |
+| gateway.enabled | bool | `false` | Enable Gateway API `HTTPRoute` for tenantmanagement. Mutually exclusive with ingress.enabled. |
+| gateway.filters | list | `[]` | Optional filters for the `HTTPRoute` rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts. |
+| gateway.parentRefs | list | `[]` | List of parent `Gateway` references (required when gateway.enabled is true). |
+| gateway.path | string | `"/"` | Path prefix for the `HTTPRoute` rule. |
+| gateway.timeouts | object | `{}` | Optional timeouts for the `HTTPRoute` rule. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"quay.io/stackstate/tenant-management"` |  |
 | image.tag | string | `"0.1.0-SNAPSHOT-3abd0d54"` |  |

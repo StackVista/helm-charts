@@ -1,6 +1,6 @@
 # gitlab-proxy
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.29.0](https://img.shields.io/badge/AppVersion-1.29.0-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.29.0](https://img.shields.io/badge/AppVersion-1.29.0-informational?style=flat-square)
 
 A Helm chart for GitLab Proxy - Nginx-based caching proxy for GitLab packages registry
 
@@ -17,6 +17,14 @@ A Helm chart for GitLab Proxy - Nginx-based caching proxy for GitLab packages re
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | fullnameOverride | string | `""` |  |
+| gateway.annotations | object | `{}` | Annotations for the `HTTPRoute` object. |
+| gateway.backendWeight | string | `nil` | Optional weight for traffic splitting. |
+| gateway.enabled | bool | `false` | Enable Gateway API `HTTPRoute` for gitlab-proxy. Mutually exclusive with ingress.enabled. |
+| gateway.filters | list | `[]` | Optional filters for the `HTTPRoute` rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts. |
+| gateway.parentRefs | list | `[]` | List of parent `Gateway` references (required when gateway.enabled is true). |
+| gateway.path | string | `"/"` | Path prefix for the `HTTPRoute` rule. |
+| gateway.timeouts | object | `{}` | Optional timeouts for the `HTTPRoute` rule. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"docker.io/bitnami/nginx"` |  |
 | image.tag | string | `"1.29.0-debian-12-r2"` |  |

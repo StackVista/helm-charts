@@ -1,0 +1,17 @@
+gateway:
+  enabled: true
+  annotations:
+    gateway.example.com/custom: "value"
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace
+      sectionName: https
+      port: 443
+  hostnames:
+    - test.example.com
+    - "*.test.example.com"
+  path: /api
+  timeouts:
+    request: 30s
+    backendRequest: 60s
+  backendWeight: 100

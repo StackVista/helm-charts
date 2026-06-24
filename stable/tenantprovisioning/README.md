@@ -1,6 +1,6 @@
 # tenantprovisioning
 
-![Version: 0.0.15](https://img.shields.io/badge/Version-0.0.15-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 Create o11y-tenants manifests
 **Homepage:** <https://github.com/stackvista/helm-charts-internal>
 ## Maintainers
@@ -37,6 +37,14 @@ Create o11y-tenants manifests
 | config.PrivateGPGKeyBase64Encoded | string | `nil` | Base64-encoded private GPG key to sign commits. Must not be protected with passphrase. |
 | config.TmpDir | string | `"/tmp"` | Temporary directory for the application. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
+| gateway.annotations | object | `{}` | Annotations for the `HTTPRoute` object. |
+| gateway.backendWeight | string | `nil` | Optional weight for traffic splitting. |
+| gateway.enabled | bool | `false` | Enable Gateway API `HTTPRoute` for tenantprovisioning. Mutually exclusive with ingress.enabled. |
+| gateway.filters | list | `[]` | Optional filters for the `HTTPRoute` rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts. |
+| gateway.parentRefs | list | `[]` | List of parent `Gateway` references (required when gateway.enabled is true). |
+| gateway.path | string | `"/"` | Path prefix for the `HTTPRoute` rule. |
+| gateway.timeouts | object | `{}` | Optional timeouts for the `HTTPRoute` rule. |
 | global.imagePullSecrets | list | `[]` | Globally add image pull secrets that are used. |
 | global.imageRegistry | string | `nil` | Globally override the image registry that is used. Can be overridden by specific containers. Defaults to quay.io |
 | image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
