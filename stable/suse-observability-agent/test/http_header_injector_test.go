@@ -22,6 +22,6 @@ func TestHttpHeaderInjectorLocalDependencyRendersWhenEnabled(t *testing.T) {
 
 	configMap := resources.ConfigMaps["suse-observability-agent-http-header-injector-config"]
 	sidecarConfig := configMap.Data["sidecarconfig.yaml"]
-	assert.Contains(t, sidecarConfig, `image: "quay.io/stackstate/http-header-injector-proxy:1.38.2-so2"`)
-	assert.Contains(t, sidecarConfig, `image: "quay.io/stackstate/http-header-injector-proxy-init:1.0.0-so2"`)
+	assert.Contains(t, sidecarConfig, `image: "quay.io/stackstate/http-header-injector-proxy:1.38.2-so3"`)
+	assert.Contains(t, sidecarConfig, `image: "quay.io/stackstate/http-header-injector-proxy-init:1.0.0-so3"`)
 }
