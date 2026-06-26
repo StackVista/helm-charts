@@ -540,7 +540,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: "3.6.11-so3"
+    tag: "3.6.11-so5"
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -693,7 +693,7 @@ otel:
       # otel.k8sResourceCollector.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-      tag: "v0.0.40"
+      tag: "v0.0.42"
       # otel.k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
 
@@ -870,7 +870,7 @@ otel:
         # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
         repository: stackstate/sts-opentelemetry-collector
         # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector.
-        tag: "v0.0.40"
+        tag: "v0.0.42"
         # otel.prometheusScraping.collector.image.pullPolicy -- Container image pull policy for the Prometheus scraper collector.
         pullPolicy: IfNotPresent
 
@@ -926,7 +926,7 @@ otel:
         # otel.prometheusScraping.targetAllocator.image.repository -- SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release.
         repository: stackstate/opentelemetry-target-allocator
         # otel.prometheusScraping.targetAllocator.image.tag -- SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>).
-        tag: "0.153.0-so1"
+        tag: "0.153.0-so2"
         # otel.prometheusScraping.targetAllocator.image.pullPolicy -- Container image pull policy for the Target Allocator.
         pullPolicy: IfNotPresent
 
@@ -1029,7 +1029,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: "1.8.6-so7"
+      tag: "1.8.6-so9"
 
 ########################
 # Rbac Agent variables #
@@ -1055,7 +1055,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: "afed3f9c-1007-release"
+        tag: "afed3f9c-1008-release"
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
