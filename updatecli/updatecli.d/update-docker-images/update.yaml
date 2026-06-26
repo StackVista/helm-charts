@@ -554,7 +554,7 @@ targets:
     sourceid: stsOpentelemetryCollector
     spec:
       file: "stable/suse-observability-agent/values.yaml"
-      key: "$.k8sResourceCollector.image.tag"
+      key: "$.otel.k8sResourceCollector.image.tag"
   stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping:
     name: "sts-opentelemetry-collector (suse-observability-agent OTel Prometheus scraping)"
     kind: yaml

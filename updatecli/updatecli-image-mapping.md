@@ -35,7 +35,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format `<semver>-so<release_increment>` |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
 | sts-opentelemetry-collector | stable/suse-observability/values.yaml | $.opentelemetry-collector.image.tag | Tag format: `vX.Y.Z` (semver release tags only) |
-| sts-opentelemetry-collector | stable/suse-observability-agent/values.yaml | $.k8sResourceCollector.image.tag | When values change, Chart.yaml version is bumped via shell target |
+| sts-opentelemetry-collector | stable/suse-observability-agent/values.yaml | $.otel.k8sResourceCollector.image.tag | When values change, Chart.yaml version is bumped via shell target |
 | sts-opentelemetry-collector | stable/suse-observability-agent/values.yaml | $.otel.prometheusScraping.collector.image.tag | OTel Prometheus scraping collector — same image as k8sResourceCollector, separate tag entry for independent override |
 | promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability; tag format `<semver>-so<release_increment>` |
 | s3proxy | stable/suse-observability/values.yaml | $.s3proxy.image.tag | Tag format: `<semver>-so<release_increment>` |
