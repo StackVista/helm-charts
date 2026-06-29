@@ -18,7 +18,7 @@ func TestHttpHeaderInjectorLocalDependencyRendersWhenEnabled(t *testing.T) {
 
 	deployment := resources.Deployments["suse-observability-agent-http-header-injector"]
 	require.Len(t, deployment.Spec.Template.Spec.Containers, 1)
-	assert.Equal(t, "quay.io/stackstate/generic-sidecar-injector:15e759aa-1009-release", deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, "quay.io/stackstate/generic-sidecar-injector:15e759aa-1010-release", deployment.Spec.Template.Spec.Containers[0].Image)
 
 	configMap := resources.ConfigMaps["suse-observability-agent-http-header-injector-config"]
 	sidecarConfig := configMap.Data["sidecarconfig.yaml"]
