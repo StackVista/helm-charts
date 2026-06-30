@@ -606,12 +606,33 @@ Usage:
 {{- end -}}
 
 {{/*
+Name of the Secret holding the SUSE Observability registry pull credentials, used by all normal workloads.
+*/}}
+{{- define "suse-observability.pullSecret.name" -}}
+suse-observability-pull-secret
+{{- end -}}
+
+{{/*
+Name of the hook-managed copy of the pull secret. It is created during pre-install/pre-upgrade/post-delete
+hooks so that hook Jobs running before the normal Secret exists (or after it has been removed) can still pull
+images. It must differ from suse-observability.pullSecret.name so GitOps tools (ArgoCD/Flux) and
+`helm template | kubectl apply` never see two resources with the same name.
+*/}}
+{{- define "suse-observability.pullSecret.hookName" -}}
+suse-observability-pull-secret-hook
+{{- end -}}
+
+{{/*
 Return the proper Docker Image Registry Secret Names evaluating values as templates
 {{ include "stackstate.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+Pass "autoSecretName" to override the automatically-included secret name, e.g. for hook Jobs that must
+reference the hook-managed pull secret:
+{{ include "stackstate.image.pullSecret.name" ( dict "context" $ "autoSecretName" (include "suse-observability.pullSecret.hookName" $)) }}
 */}}
 {{- define "stackstate.image.pullSecret.name" -}}
   {{- $pullSecrets := list }}
   {{- $context := .context }}
+  {{- $autoSecretName := .autoSecretName | default (include "suse-observability.pullSecret.name" $context) }}
 
   {{- if $context.Values.global }}
     {{- range $context.Values.global.imagePullSecrets -}}
@@ -622,9 +643,9 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
     {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
   {{- end -}}
 
-  {{- /* Automatically include suse-observability-pull-secret if configured via global.suseObservability */ -}}
+  {{- /* Automatically include the SUSE Observability pull secret if configured via global.suseObservability */ -}}
   {{- if include "suse-observability.global.hasPullSecret" $context -}}
-    {{- $pullSecrets = append $pullSecrets "suse-observability-pull-secret" -}}
+    {{- $pullSecrets = append $pullSecrets $autoSecretName -}}
   {{- end -}}
 
   {{- if (not (empty $pullSecrets)) }}

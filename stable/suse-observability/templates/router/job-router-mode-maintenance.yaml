@@ -48,7 +48,8 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: "{{ template "common.fullname.short" . }}-router-mode-scripts"
-      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      {{- /* Runs as a pre-install/PreSync hook before the normal pull secret exists, so use the hook-managed copy. */ -}}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $ "autoSecretName" (include "suse-observability.pullSecret.hookName" $)) | nindent 6 }}
       volumes:
         - name: "{{ template "common.fullname.short" . }}-router-mode-scripts"
           configMap:
