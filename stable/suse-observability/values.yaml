@@ -1094,6 +1094,9 @@ stackstate:
       accesslog:
         # stackstate.components.router.accesslog.enabled -- Enable access logging on the router
         enabled: false
+      secureCookies:
+        # stackstate.components.router.secureCookies.enabled -- When enabled, the router appends the `Secure` attribute to `Set-Cookie` response headers for requests that reached the edge over HTTPS (detected via the `X-Forwarded-Proto: https` header set by a TLS-terminating proxy such as Traefik or an ingress controller). Plain-HTTP deployments are left untouched.
+        enabled: false
       # stackstate.components.router.envsFromExistingSecrets -- Configure environment variables from existing secrets.
       # envsFromExistingSecret
       # - name: MY_SECRET_ENV_VAR

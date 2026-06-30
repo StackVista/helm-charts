@@ -170,6 +170,47 @@ data:
                         value: "DENY"
                       append_action: APPEND_IF_EXISTS_OR_ADD
             http_filters:
+            {{- if .Values.stackstate.components.router.secureCookies.enabled }}
+            - name: envoy.filters.http.lua
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+                default_source_code:
+                  inline_string: |
+                    -- Append the Secure attribute to Set-Cookie response headers when the
+                    -- request reached the edge over HTTPS (X-Forwarded-Proto: https), so
+                    -- session cookies are never exposed over plaintext. Plain-HTTP setups
+                    -- (no/!https X-Forwarded-Proto) are left untouched. The inbound header
+                    -- is set by the TLS-terminating proxy in front of the router.
+                    function envoy_on_request(handle)
+                      local proto = handle:headers():get("x-forwarded-proto")
+                      handle:streamInfo():dynamicMetadata():set(
+                        "com.suse.observability.router", "forwarded_proto", proto or "")
+                    end
+                    function envoy_on_response(handle)
+                      local meta = handle:streamInfo():dynamicMetadata():get(
+                        "com.suse.observability.router")
+                      if not meta or meta["forwarded_proto"] ~= "https" then
+                        return
+                      end
+                      local headers = handle:headers()
+                      local cookies = {}
+                      for key, value in pairs(headers) do
+                        if string.lower(key) == "set-cookie" then
+                          table.insert(cookies, value)
+                        end
+                      end
+                      if #cookies == 0 then
+                        return
+                      end
+                      headers:remove("set-cookie")
+                      for _, cookie in ipairs(cookies) do
+                        if not string.find(string.lower(cookie), ";%s*secure") then
+                          cookie = cookie .. "; Secure"
+                        end
+                        headers:add("set-cookie", cookie)
+                      end
+                    end
+            {{- end }}
             - name: envoy.filters.http.router
               typed_config:
                 "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
