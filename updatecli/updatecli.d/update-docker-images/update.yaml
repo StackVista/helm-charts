@@ -29,9 +29,7 @@ sources:
       architecture: "linux/amd64"
       tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-so[0-9]+$"
       versionfilter:
-        kind: regex/semver
-        regex: "^([0-9]+\\.[0-9]+\\.[0-9]+-so[0-9]+)$"
-        pattern: ">=0.0.0-0"
+        kind: latest
   clickhouse:
     name: "clickhouse"
     kind: dockerimage
