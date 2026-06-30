@@ -20,140 +20,120 @@ scms:
 sources:
   ###################
   # All images with tag x.y.z-soN
+  # Shell sources using updatecli/latest-so-tag.sh, which sorts by
+  # (x, y, z, N) numerically.  updatecli's built-in versionfilter kinds
+  # (regex/semver, latest) compare the soN pre-release identifier
+  # lexicographically, so "so10" < "so9" — wrong once N ≥ 10.
   ###################
   clickhouseBackup:
     name: "clickhouse-backup"
-    kind: dockerimage
-    spec: &dockerSoSpec
-      image: "quay.io/stackstate/clickhouse-backup"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-so[0-9]+$"
-      versionfilter:
-        kind: latest
+    kind: shell
+    spec:
+      command: updatecli/latest-so-tag.sh clickhouse-backup
   clickhouse:
     name: "clickhouse"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/clickhouse"
+      command: updatecli/latest-so-tag.sh clickhouse
   containerTools:
     name: "container-tools"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/container-tools"
+      command: updatecli/latest-so-tag.sh container-tools
   elasticsearch:
     name: "elasticsearch"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/elasticsearch"
+      command: updatecli/latest-so-tag.sh elasticsearch
   elasticsearchExporter:
     name: "elasticsearch-exporter"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/elasticsearch-exporter"
+      command: updatecli/latest-so-tag.sh elasticsearch-exporter
   hadoop:
     name: "hadoop"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/hadoop"
+      command: updatecli/latest-so-tag.sh hadoop
   jmxExporter:
     name: "jmx-exporter"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/jmx-exporter"
+      command: updatecli/latest-so-tag.sh jmx-exporter
   kafka:
     name: "kafka"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/kafka"
+      command: updatecli/latest-so-tag.sh kafka
   nginxPrometheusExporter:
     name: "nginx-prometheus-exporter"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/nginx-prometheus-exporter"
+      command: updatecli/latest-so-tag.sh nginx-prometheus-exporter
   opentelemetryTargetAllocator:
     name: "opentelemetry-target-allocator"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/opentelemetry-target-allocator"
+      command: updatecli/latest-so-tag.sh opentelemetry-target-allocator
   promtail:
     name: "promtail"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/promtail"
+      command: updatecli/latest-so-tag.sh promtail
   s3proxy:
     name: "s3proxy"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/s3proxy"
+      command: updatecli/latest-so-tag.sh s3proxy
   victoriaMetrics:
     name: "victoria-metrics"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/victoria-metrics"
+      command: updatecli/latest-so-tag.sh victoria-metrics
   vmagent:
     name: "vmagent"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/vmagent"
+      command: updatecli/latest-so-tag.sh vmagent
   vmbackup:
     name: "vmbackup"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/vmbackup"
+      command: updatecli/latest-so-tag.sh vmbackup
   vmrestore:
     name: "vmrestore"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/vmrestore"
+      command: updatecli/latest-so-tag.sh vmrestore
   wait:
     name: "wait"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/wait"
+      command: updatecli/latest-so-tag.sh wait
   zookeeper:
     name: "zookeeper"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/zookeeper"
+      command: updatecli/latest-so-tag.sh zookeeper
   envoy:
     name: "envoy"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/envoy"
+      command: updatecli/latest-so-tag.sh envoy
 
   ###################
   # Images with other tags
   ###################
   httpHeaderInjectorProxy:
     name: "http-header-injector-proxy"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/http-header-injector-proxy"
+      command: updatecli/latest-so-tag.sh http-header-injector-proxy
   httpHeaderInjectorProxyInit:
     name: "http-header-injector-proxy-init"
-    kind: dockerimage
+    kind: shell
     spec:
-      <<: *dockerSoSpec
-      image: "quay.io/stackstate/http-header-injector-proxy-init"
+      command: updatecli/latest-so-tag.sh http-header-injector-proxy-init
   kubernetesRbacAgent:
     name: "kubernetes-rbac-agent"
     kind: dockerimage
