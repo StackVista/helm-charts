@@ -1438,7 +1438,7 @@ stackstate:
         # stackstate.components.clickhouseCleanup.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
         # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
-        tag: "26.5.1-so2"
+        tag: "26.5.1-so3"
         # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
@@ -1484,7 +1484,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: "3.9.2-so9"
+        tag: "3.9.2-so10"
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1547,7 +1547,7 @@ stackstate:
     vmagent:
       image:
         repository: stackstate/vmagent
-        tag: "1.144.0-so6"
+        tag: "1.144.0-so7"
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -1768,7 +1768,7 @@ stackstate:
 ##############################
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
-  imageTag: "8.19.16-so3"
+  imageTag: "8.19.16-so5"
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: null
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
@@ -1797,7 +1797,7 @@ hbase:
       replicaCount: null
   hdfs:
     # hbase.hdfs.version -- Full HDFS image tag. Updated by updatecli.
-    version: "3.5.0-so5"
+    version: "3.5.0-so6"
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
@@ -1836,7 +1836,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: "3.9.2-so9"
+    tag: "3.9.2-so10"
   metrics:
     jmx:
       image:
@@ -1845,7 +1845,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: "0.20.0-so5"
+        tag: "0.20.0-so6"
       resources:
         limits:
           cpu: "1"
@@ -1979,7 +1979,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: "3.9.5-so11"
+    tag: "3.9.5-so12"
   resources: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
   replicaCount: null
@@ -2014,7 +2014,7 @@ victoria-metrics-0:
   server:
     # victoria-metrics-0.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
     image:
-      tag: "1.144.0-so6"
+      tag: "1.144.0-so7"
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-0
     persistentVolume:
@@ -2030,7 +2030,7 @@ victoria-metrics-0:
     # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so7"
+        tag: "1.144.0-so8"
     # victoria-metrics-0.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2053,7 +2053,7 @@ victoria-metrics-1:
   server:
     # victoria-metrics-1.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
     image:
-      tag: "1.144.0-so6"
+      tag: "1.144.0-so7"
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-1
     persistentVolume:
@@ -2069,7 +2069,7 @@ victoria-metrics-1:
     # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so7"
+        tag: "1.144.0-so8"
     # victoria-metrics-1.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2095,7 +2095,7 @@ victoria-metrics:
       # victoria-metrics.restore.image.repository -- Base container image repository for 'vmrestore' containers.
       repository: stackstate/vmrestore
       # victoria-metrics.restore.image.tag -- Container image tag for 'vmrestore' containers.
-      tag: "1.144.0-so6"
+      tag: "1.144.0-so7"
       # victoria-metrics.restore.image.pullPolicy -- Image pull policy for `vmrestore` containers.
       pullPolicy: IfNotPresent
     securityContext:
@@ -2116,7 +2116,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: "26.5.1-so2"
+    tag: "26.5.1-so3"
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha).
   replicaCount: null
   persistence:
@@ -2130,7 +2130,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
-      tag: "2.7.2-so2"
+      tag: "2.7.2-so3"
     s3:
       # clickhouse.backup.s3.endpoint -- S3-compatible endpoint for backup storage (resolved from s3proxy).
       endpoint: '{{ include "stackstate.s3proxy.endpoint" . }}'
