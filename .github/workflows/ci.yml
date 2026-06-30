@@ -16,6 +16,9 @@ on:
         type: boolean
         default: true
 
+permissions:
+  contents: read
+
 env:
   HELM_VERSION: v3.1.2
   CGO_ENABLED: "0"
@@ -47,6 +50,12 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
+      - name: Run prerelease bump helper tests
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            require(`${process.env.GITHUB_WORKSPACE}/scripts/ci/bump-suse-prerelease.test.cjs`);
       - id: d
         uses: ./.github/actions/detect-changes
 
@@ -417,6 +426,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/download-artifact@v7
         with:
           name: build-${{ matrix.chart }}
@@ -428,6 +438,7 @@ jobs:
         with:
           client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
+          permission-contents: write
 
       # GitLab equivalent: `before_script: helm_fetch_dependencies` on push_chart_job —
       # each job gets its own container, so helm repo state from build_stable doesn't carry over.
@@ -480,7 +491,7 @@ jobs:
             "${CHARTMUSEUM_URL}/api/charts/${chart_name}/${chart_version}")
           case "$http_status" in
             200) echo "exists=true"  >> "$GITHUB_OUTPUT"
-                 echo "::notice::${chart_name} ${chart_version} already in internal chartmuseum; skipping cm-push + after-script"
+                 echo "::notice::${chart_name} ${chart_version} already in internal chartmuseum; skipping cm-push"
                  ;;
             404) echo "exists=false" >> "$GITHUB_OUTPUT" ;;
             *)   echo "::error::Unexpected HTTP $http_status from chartmuseum"
@@ -488,6 +499,7 @@ jobs:
           esac
 
       - name: cm-push to internal
+        id: cm_push
         if: env.DRY_RUN == 'false' && steps.chart_exists.outputs.exists == 'false'
         # Secrets via env vars (NOT `${{ }}`-inlined): GH Actions interpolates BEFORE bash
         # parses, so a `$`/backtick/`\` in the value gets shell-re-interpreted and silently
@@ -502,11 +514,79 @@ jobs:
             --password "$CHARTMUSEUM_PASSWORD" \
             "$CHART" "$CHARTMUSEUM_URL"
 
+      - name: Verify chart version in internal chartmuseum
+        if: env.DRY_RUN == 'false' && steps.cm_push.outcome == 'success'
+        env:
+          CHARTMUSEUM_USERNAME: ${{ secrets.CHARTMUSEUM_INTERNAL_USERNAME }}
+          CHARTMUSEUM_PASSWORD: ${{ secrets.CHARTMUSEUM_INTERNAL_PASSWORD }}
+          CHARTMUSEUM_URL:      ${{ secrets.CHARTMUSEUM_INTERNAL_URL }}
+        run: |
+          set -euo pipefail
+          chart_name=$(yq '.name' "$CHART/Chart.yaml")
+          chart_version=$(yq '.version' "$CHART/Chart.yaml")
+          for attempt in 1 2 3 4 5; do
+            http_status=$(curl -sw "%{http_code}" -o /dev/null \
+              -u "${CHARTMUSEUM_USERNAME}:${CHARTMUSEUM_PASSWORD}" \
+              "${CHARTMUSEUM_URL}/api/charts/${chart_name}/${chart_version}")
+            if [ "$http_status" = "200" ]; then
+              echo "::notice::${chart_name} ${chart_version} visible in internal chartmuseum"
+              exit 0
+            fi
+            echo "::notice::${chart_name} ${chart_version} not visible yet, retrying (${attempt}/5)"
+            sleep 5
+          done
+          echo "::error::${chart_name} ${chart_version} was pushed but did not become visible in internal chartmuseum"
+          exit 1
+
+      - name: suse-observability — prerelease after-script state (master path)
+        id: sts_prerelease_state
+        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master'
+        env:
+          CHART_EXISTS: ${{ steps.chart_exists.outputs.exists }}
+          GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          ./scripts/ci/configure_git.sh
+          chart_version=$(yq '.version' "$CHART/Chart.yaml")
+          tag="prerelease/suse-observability/${chart_version}"
+          after_script=false
+          reason="published-chart-belongs-to-another-commit"
+
+          if [ "${CHART_EXISTS}" = "false" ]; then
+            after_script=true
+            reason="new-chart-package-published"
+          else
+            tag_target=$(git ls-remote --tags https://github.com/StackVista/helm-charts-internal.git "refs/tags/${tag}^{}" | awk '{print $1}')
+            if [ -z "$tag_target" ]; then
+              tag_target=$(git ls-remote --tags https://github.com/StackVista/helm-charts-internal.git "refs/tags/${tag}" | awk '{print $1}')
+            fi
+
+            if [ -z "$tag_target" ]; then
+              echo "::error::suse-observability ${chart_version} exists in internal chartmuseum, but ${tag} is missing. Refusing to tag/bump because the published package provenance is unknown."
+              exit 1
+            elif [ "$tag_target" = "$GITHUB_SHA" ]; then
+              after_script=true
+              reason="published-chart-tag-points-at-current-run"
+            else
+              echo "::error::${tag} points at ${tag_target}, not ${GITHUB_SHA}; refusing to tag/bump this stale chart-version run"
+              exit 1
+            fi
+          fi
+
+          {
+            echo "after_script=${after_script}"
+            echo "reason=${reason}"
+          } >> "$GITHUB_OUTPUT"
+          echo "::notice::suse-observability prerelease after-script=${after_script} (${reason})"
+
       - name: suse-observability — tag prerelease (master path)
         # Tags the just-published prerelease on the current HEAD. Idempotent:
         # tag_sts_chart_pre_release.sh no-ops if the tag already exists, so the
-        # after-script can self-heal if a previous run died after cm-push.
-        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master'
+        # after-script can self-heal if a previous run died after tagging but
+        # before bumping. The state step refuses ambiguous or stale duplicate
+        # packages so newer master content cannot be bumped without publishing.
+        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master' && steps.sts_prerelease_state.outputs.after_script == 'true'
         env:
           GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -519,10 +599,10 @@ jobs:
         # are GitHub-signed and bypass branch protection (per pulumi-infra).
         # Keep this `if:` identical to the tag step above — they're one logical
         # unit (tag then bump); a desync could bump without a matching tag.
-        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master'
+        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && github.ref == 'refs/heads/master' && steps.sts_prerelease_state.outputs.after_script == 'true'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
             await require(`${process.env.GITHUB_WORKSPACE}/scripts/ci/bump-suse-prerelease.cjs`)
-              ({ github, core, chart: 'stable/suse-observability' });
+              ({ github, core, chart: 'stable/suse-observability', publishedHead: process.env.GITHUB_SHA });

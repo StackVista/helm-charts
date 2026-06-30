@@ -3,7 +3,7 @@
 //
 // Run from an actions/github-script step:
 //   await require(`${process.env.GITHUB_WORKSPACE}/scripts/ci/bump-suse-prerelease.cjs`)
-//     ({ github, core, chart: 'stable/suse-observability' });
+//     ({ github, core, chart: 'stable/suse-observability', publishedHead: process.env.GITHUB_SHA });
 //
 // The injected `github` Octokit must be authenticated as the helm-charts-internal
 // App (commits it creates are GitHub-signed, satisfying require_signed_commits and
@@ -30,6 +30,26 @@ function bumpVersion(v) {
   throw new Error(`Unsupported chart version "${v}"; expected x.y.z or x.y.z-pre.N`);
 }
 
+function sameOid(left, right) {
+  return Boolean(left && right && String(left).toLowerCase() === String(right).toLowerCase());
+}
+
+function shouldSkipCiForBump({ publishedHead, targetHead }) {
+  // If no published head is provided, keep the historic behavior: the bump is
+  // only a bookkeeping commit after the publish and should not recurse forever.
+  if (!publishedHead) return true;
+
+  // If the branch still points at the commit this run just published, the bump
+  // is bookkeeping. If another content commit already reached master, the bump
+  // must run CI so that newer content gets its own chart package.
+  return sameOid(publishedHead, targetHead);
+}
+
+function commitMessage(chart, newVer, skipCi) {
+  const suffix = skipCi ? " [skip ci]" : "";
+  return `Updating '${chart}' helm chart version to ${newVer}${suffix}`;
+}
+
 // A stale expectedHeadOid is the one error we retry. GitHub returns type
 // STALE_DATA with a message like 'Expected branch to point to "<oid>" but it did
 // not.'; match the type plus that canonical wording narrowly (not a broad
@@ -42,10 +62,11 @@ function isStaleHead(err) {
   return errs.length > 0 ? errs.every(hit) : hit({ message: err?.message });
 }
 
-module.exports = async ({ github, core, chart, branch = 'master', maxAttempts = 5 }) => {
+module.exports = async ({ github, core, chart, branch = 'master', publishedHead, maxAttempts = 5 }) => {
   const [owner, repo] = (process.env.GITHUB_REPOSITORY || 'StackVista/helm-charts-internal').split('/');
   const chartPath = `${chart}/Chart.yaml`;
   const readmePath = `${chart}/README.md`;
+  const expectedPublishedHead = publishedHead || process.env.GITHUB_SHA || '';
 
   const readAt = async (path, ref) => {
     const { data } = await github.rest.repos.getContent({ owner, repo, path, ref });
@@ -57,6 +78,7 @@ module.exports = async ({ github, core, chart, branch = 'master', maxAttempts = 
     // just landed instead of replaying a stale version.
     const { data: br } = await github.rest.repos.getBranch({ owner, repo, branch });
     const headOid = br.commit.sha;
+    const skipCi = shouldSkipCiForBump({ publishedHead: expectedPublishedHead, targetHead: headOid });
 
     const chartYaml = await readAt(chartPath, headOid);
     const readme = await readAt(readmePath, headOid);
@@ -70,12 +92,19 @@ module.exports = async ({ github, core, chart, branch = 'master', maxAttempts = 
     // missing/reworded — surface it instead of silently shipping a stale README.
     if (newReadme === readme) core.warning(`No 'Current chart version is' line updated in ${readmePath}`);
 
+    if (!skipCi) {
+      core.warning(
+        `${branch} advanced after this run published ${expectedPublishedHead.slice(0, 12)}; ` +
+        `creating a non-skip bump commit so the new tip gets a publish run.`
+      );
+    }
+
     core.info(`Bumping ${chart} ${curVer} -> ${newVer} on ${branch}@${headOid.slice(0, 12)} (attempt ${attempt}/${maxAttempts})`);
 
     try {
       const res = await github.graphql(COMMIT_MUTATION, {
         repo: `${owner}/${repo}`, branch, oid: headOid,
-        msg: `Updating '${chart}' helm chart version to ${newVer} [skip ci]`,
+        msg: commitMessage(chart, newVer, skipCi),
         cp: chartPath, cc: Buffer.from(newChart).toString('base64'),
         rp: readmePath, rc: Buffer.from(newReadme).toString('base64'),
       });
@@ -92,4 +121,6 @@ module.exports = async ({ github, core, chart, branch = 'master', maxAttempts = 
 };
 
 module.exports.bumpVersion = bumpVersion;
+module.exports.commitMessage = commitMessage;
 module.exports.isStaleHead = isStaleHead;
+module.exports.shouldSkipCiForBump = shouldSkipCiForBump;
