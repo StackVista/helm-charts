@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.13`
+Current chart version is `1.5.14`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -338,7 +338,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.11-so5"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.11-so6"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
@@ -430,7 +430,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"v0.0.44"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"v0.0.45"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.integrations.suseAdmissionController | bool | `true` | Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack. |
 | otel.k8sResourceCollector.integrations.suseRuntimeEnforcer | bool | `true` | Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack. |
 | otel.k8sResourceCollector.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |
@@ -479,7 +479,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
 | otel.prometheusScraping.collector.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently. |
-| otel.prometheusScraping.collector.image.tag | string | `"v0.0.44"` | Container image tag for the Prometheus scraper collector. |
+| otel.prometheusScraping.collector.image.tag | string | `"v0.0.45"` | Container image tag for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |

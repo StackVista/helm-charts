@@ -566,7 +566,7 @@ If you encounter issues not covered here:
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.image.registry | string | `"quay.io"` | Base container image registry. |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.44"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.45"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.resources.limits.cpu | string | `"500m"` |  |
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
@@ -633,7 +633,7 @@ If you encounter issues not covered here:
 | stackstate.components.aiAssistant.image.imageRegistry | string | `""` | `imageRegistry` used for the `ai-assistant` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.aiAssistant.image.pullPolicy | string | `""` | `pullPolicy` used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.aiAssistant.image.repository | string | `"stackstate/suse-observability-borg"` | Repository of the ai-assistant component Docker image. |
-| stackstate.components.aiAssistant.image.tag | string | `"20260630045733-eab5c1ec"` | Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.aiAssistant.image.tag | string | `"20260701074722-9e9f7e94"` | Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.aiAssistant.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.aiAssistant.persistence | object | `{"size":"1Gi","storageClass":""}` | Persistence settings for the SQLite database. |
 | stackstate.components.aiAssistant.persistence.size | string | `"1Gi"` | Size of the PVC for the SQLite database. |
@@ -903,7 +903,7 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
-| stackstate.components.mcp.image.tag | string | `"20260630044637-5721dae6"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.mcp.image.tag | string | `"20260701045443-5721dae6"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mcp` pods. |
@@ -1128,7 +1128,7 @@ If you encounter issues not covered here:
 | stackstate.components.workloadObserver.image.imageRegistry | string | `""` | `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.workloadObserver.image.pullPolicy | string | `""` | `pullPolicy` used for the `workloadObserver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.workloadObserver.image.repository | string | `"stackstate/workload-observer"` | Repository of the workloadObserver component Docker image. |
-| stackstate.components.workloadObserver.image.tag | string | `"71a6e3c3-1007-release"` | Tag used for the `workloadObserver` component Docker image.. |
+| stackstate.components.workloadObserver.image.tag | string | `"71a6e3c3-1008-release"` | Tag used for the `workloadObserver` component Docker image.. |
 | stackstate.components.workloadObserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.workloadObserver.persistence.size | string | `"1Gi"` |  |
 | stackstate.components.workloadObserver.persistence.storageClass | string | `nil` |  |
