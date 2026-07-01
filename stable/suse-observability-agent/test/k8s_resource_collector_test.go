@@ -397,6 +397,20 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 	assert.Contains(t, configData, "logs/k8s-resource:")
 }
 
+func TestK8sResourceCollectorPprofCanBeDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-pprof-disabled.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+
+	configData := configMap.Data["config.yaml"]
+	assert.NotContains(t, configData, "pprof:", "pprof extension must be omitted when pprof.enabled=false")
+	assert.NotContains(t, configData, "endpoint: 0.0.0.0:1777")
+	assert.Contains(t, configData, "extensions: [health_check, bearertokenauth",
+		"service.extensions must drop pprof when pprof.enabled=false")
+}
+
 func TestK8sResourceCollectorPlatformOtlpEndpointDerived(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)

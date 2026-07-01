@@ -113,8 +113,10 @@ data:
     extensions:
       health_check:
         endpoint: 0.0.0.0:13133
+{{- if .Values.otel.k8sResourceCollector.pprof.enabled }}
       pprof:
         endpoint: 0.0.0.0:1777
+{{- end }}
       bearertokenauth:
         scheme: SUSEObservability
         token: "${STS_API_KEY}"
@@ -132,7 +134,7 @@ data:
       telemetry:
         logs:
           level: {{ .Values.otel.k8sResourceCollector.logLevel }}
-      extensions: [health_check, pprof, bearertokenauth{{ if .Values.otel.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
+      extensions: [health_check, {{ if .Values.otel.k8sResourceCollector.pprof.enabled }}pprof, {{ end }}bearertokenauth{{ if .Values.otel.k8sResourceCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
       pipelines:
         # Kubernetes resource discovery - real-time watch of CRDs and custom resources
         logs/k8s-resource:

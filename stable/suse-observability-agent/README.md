@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.15`
+Current chart version is `1.5.16`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -430,7 +430,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"v0.0.45"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"v0.0.46-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.integrations.suseAdmissionController | bool | `true` | Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack. |
 | otel.k8sResourceCollector.integrations.suseRuntimeEnforcer | bool | `true` | Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack. |
 | otel.k8sResourceCollector.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |
@@ -452,6 +452,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
 | otel.k8sResourceCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
 | otel.k8sResourceCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
+| otel.k8sResourceCollector.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.k8sResourceCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
 | otel.k8sResourceCollector.rbac.crdApiGroups | object | `{}` | Map of API group (key) -> bool (enabled) for CRD-discovered custom resources to grant get/list/watch on all resources in the group (only used when useWildcard=false). Set a key to false in an override to disable a default. otel.k8sResourceCollector.objects entries derive their own resource-scoped RBAC and do not need an entry here. |
 | otel.k8sResourceCollector.rbac.useWildcard | bool | `true` | Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups |
@@ -479,10 +480,11 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
 | otel.prometheusScraping.collector.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently. |
-| otel.prometheusScraping.collector.image.tag | string | `"v0.0.45"` | Container image tag for the Prometheus scraper collector. |
+| otel.prometheusScraping.collector.image.tag | string | `"v0.0.46-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |
+| otel.prometheusScraping.collector.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.prometheusScraping.collector.priorityClassName | string | `nil` | Priority class for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.replicaCount | int | `1` | Number of Prometheus scraper collector pods to schedule. |
 | otel.prometheusScraping.collector.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
@@ -529,10 +531,11 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.enabled | bool | `false` | Enable the telemetry gateway for OTLP push-based telemetry (metrics, traces, logs). Requires otel.enabled=true. |
 | otel.telemetryGateway.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.telemetryGateway.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.telemetryGateway.image.tag | string | `"v0.0.45"` | Container image tag for the telemetry gateway. |
+| otel.telemetryGateway.image.tag | string | `"v0.0.46-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.telemetryGateway.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.telemetryGateway.podAnnotations | object | `{}` | Additional annotations for gateway pods. |
 | otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |
+| otel.telemetryGateway.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.telemetryGateway.priorityClassName | string | `""` | Priority class for gateway pods. |
 | otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA. |
 | otel.telemetryGateway.resources.limits.cpu | string | `"500m"` | CPU resource limits. |

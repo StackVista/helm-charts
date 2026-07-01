@@ -1,0 +1,22 @@
+stackstate:
+  apiKey: test-api-key
+  cluster:
+    name: test-cluster
+  url: https://my-suse-observability-instance.com/receiver/stsAgent
+
+# Enable cluster collector but opt out of the pprof extension.
+otel:
+  enabled: true
+  k8sResourceCollector:
+    enabled: true
+    pprof:
+      enabled: false
+    crdDiscovery:
+      snapshotInterval: 5m
+      discoveryMode: api_groups
+      apiGroupFilters:
+        include:
+          "*": true
+        exclude: {}
+    rbac:
+      useWildcard: true

@@ -194,6 +194,20 @@ sources:
       tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
       versionfilter:
         kind: semver
+  stsOpentelemetryAgentCollector:
+    name: "sts-opentelemetry-collector (agent BOM)"
+    kind: dockerimage
+    spec:
+      # Same image repository as stsOpentelemetryCollector, but the strict agent
+      # BOM variant is published with an "-agent" suffix (e.g. v0.0.46-agent).
+      # Ranked on the semver core so the "-agent" suffix is not treated as a
+      # semver pre-release (which would sort below the plain release).
+      image: "quay.io/stackstate/sts-opentelemetry-collector"
+      architecture: "linux/amd64"
+      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+-agent$"
+      versionfilter:
+        kind: regex/semver
+        regex: "^v([0-9]+\\.[0-9]+\\.[0-9]+)-agent$"
   genericSidecarInjector:
     name: "generic-sidecar-injector"
     kind: dockerimage
@@ -529,7 +543,8 @@ targets:
     name: "sts-opentelemetry-collector (suse-observability-agent)"
     kind: yaml
     scmid: "default"
-    sourceid: stsOpentelemetryCollector
+    # Agent collectors use the strict agent BOM image ("-agent" suffixed tag).
+    sourceid: stsOpentelemetryAgentCollector
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.otel.k8sResourceCollector.image.tag"
@@ -537,10 +552,20 @@ targets:
     name: "sts-opentelemetry-collector (suse-observability-agent OTel Prometheus scraping)"
     kind: yaml
     scmid: "default"
-    sourceid: stsOpentelemetryCollector
+    # Agent collectors use the strict agent BOM image ("-agent" suffixed tag).
+    sourceid: stsOpentelemetryAgentCollector
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.otel.prometheusScraping.collector.image.tag"
+  stsOpentelemetryCollectorSuseObservabilityAgentTelemetryGateway:
+    name: "sts-opentelemetry-collector (suse-observability-agent OTel telemetry gateway)"
+    kind: yaml
+    scmid: "default"
+    # Agent collectors use the strict agent BOM image ("-agent" suffixed tag).
+    sourceid: stsOpentelemetryAgentCollector
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.otel.telemetryGateway.image.tag"
   genericSidecarInjector:
     name: "generic-sidecar-injector"
     kind: yaml
@@ -681,6 +706,7 @@ targets:
       - "target#clusterAgentTag"
       - "target#checksAgentTag"
       - "target#stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping"
+      - "target#stsOpentelemetryCollectorSuseObservabilityAgentTelemetryGateway"
       - "target#opentelemetryTargetAllocatorSuseObservabilityAgent"
     spec:
       command: |

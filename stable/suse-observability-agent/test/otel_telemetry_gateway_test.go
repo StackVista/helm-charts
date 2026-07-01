@@ -200,6 +200,25 @@ func TestOtelTelemetryGatewayCollectorConfig(t *testing.T) {
 	assert.NotContains(t, configData, "sts_api_key")
 }
 
+func TestOtelTelemetryGatewayPprofCanBeDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: []string{"values/minimal.yaml", "values/otel-telemetry-gateway-enabled.yaml"},
+		SetValues: map[string]string{
+			"otel.telemetryGateway.pprof.enabled": "false",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps[otelTelemetryGatewayConfigName]
+	require.True(t, exists, "gateway ConfigMap should exist")
+	configData := configMap.Data["config.yaml"]
+
+	assert.NotContains(t, configData, "pprof:", "pprof extension must be omitted when pprof.enabled=false")
+	assert.NotContains(t, configData, "endpoint: 0.0.0.0:1777")
+	assert.Contains(t, configData, "extensions: [health_check, bearertokenauth]",
+		"service.extensions must drop pprof when pprof.enabled=false")
+}
+
 func TestOtelTelemetryGatewaySpanMetricsCardinalityLimitOverride(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
 		ValuesFiles: []string{"values/minimal.yaml", "values/otel-telemetry-gateway-enabled.yaml"},

@@ -693,10 +693,12 @@ otel:
       # otel.k8sResourceCollector.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-      tag: "v0.0.45"
+      tag: "v0.0.46-agent"
       # otel.k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
-
+    pprof:
+      # otel.k8sResourceCollector.pprof.enabled -- Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward.
+      enabled: true
     crdDiscovery:
       # otel.k8sResourceCollector.crdDiscovery.snapshotInterval -- Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m)
       snapshotInterval: 5m
@@ -869,10 +871,14 @@ otel:
       image:
         # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
         repository: stackstate/sts-opentelemetry-collector
-        # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector.
-        tag: "v0.0.45"
+        # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
+        tag: "v0.0.46-agent"
         # otel.prometheusScraping.collector.image.pullPolicy -- Container image pull policy for the Prometheus scraper collector.
         pullPolicy: IfNotPresent
+
+      pprof:
+        # otel.prometheusScraping.collector.pprof.enabled -- Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward.
+        enabled: true
 
       # otel.prometheusScraping.collector.replicaCount -- Number of Prometheus scraper collector pods to schedule.
       replicaCount: 1
@@ -1002,10 +1008,14 @@ otel:
     image:
       # otel.telemetryGateway.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
-      # otel.telemetryGateway.image.tag -- Container image tag for the telemetry gateway.
-      tag: "v0.0.45"
+      # otel.telemetryGateway.image.tag -- Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
+      tag: "v0.0.46-agent"
       # otel.telemetryGateway.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
+
+    pprof:
+      # otel.telemetryGateway.pprof.enabled -- Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward.
+      enabled: true
 
     # otel.telemetryGateway.replicaCount -- Number of gateway pods.
     # 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA.

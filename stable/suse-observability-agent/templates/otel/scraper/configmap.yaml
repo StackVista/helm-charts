@@ -106,8 +106,10 @@ data:
     extensions:
       health_check:
         endpoint: 0.0.0.0:13133
+{{- if .Values.otel.prometheusScraping.collector.pprof.enabled }}
       pprof:
         endpoint: 0.0.0.0:1777
+{{- end }}
       bearertokenauth:
         scheme: SUSEObservability
         token: "${env:STS_API_KEY}"
@@ -123,7 +125,7 @@ data:
                   prometheus:
                     host: ${env:POD_IP}
                     port: 8888
-      extensions: [health_check, pprof, bearertokenauth]
+      extensions: [health_check, {{ if .Values.otel.prometheusScraping.collector.pprof.enabled }}pprof, {{ end }}bearertokenauth]
       pipelines:
         metrics/prometheus-scraping:
           receivers: [prometheus, prometheus/self]
