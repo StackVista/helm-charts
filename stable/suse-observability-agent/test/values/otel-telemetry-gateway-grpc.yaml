@@ -1,0 +1,5 @@
+otel:
+  enabled: true
+  platformGrpcOtlpEndpoint: otlp-my-suse-observability-instance.com:443
+  telemetryGateway:
+    enabled: true

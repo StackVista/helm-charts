@@ -1,0 +1,146 @@
+{{- if include "stackstate-k8s-agent.otelTelemetryGateway.enabled" . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "stackstate-k8s-agent.otelTelemetryGateway.name" . }}
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: otel-telemetry-gateway
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  replicas: {{ .Values.otel.telemetryGateway.replicaCount }}
+  selector:
+    matchLabels:
+{{ include "stackstate-k8s-agent.otelTelemetryGateway.selectorLabels" . | indent 6 }}
+  strategy:
+    {{- toYaml .Values.otel.telemetryGateway.strategy | nindent 4 }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/otel/telemetrygateway/configmap.yaml") . | sha256sum }}
+        {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
+        {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
+      {{- with .Values.otel.telemetryGateway.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+{{ include "stackstate-k8s-agent.otelTelemetryGateway.selectorLabels" . | indent 8 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
+      {{- with .Values.otel.telemetryGateway.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.otel.telemetryGateway.image .Values.all.image) "context" $) | nindent 6 }}
+      {{- if .Values.otel.telemetryGateway.priorityClassName }}
+      priorityClassName: {{ .Values.otel.telemetryGateway.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ include "stackstate-k8s-agent.otelTelemetryGateway.name" . }}
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: otel-telemetry-gateway
+          image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.otel.telemetryGateway.image.repository }}:{{ .Values.otel.telemetryGateway.image.tag }}"
+          imagePullPolicy: "{{ .Values.otel.telemetryGateway.image.pullPolicy }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          args:
+            - --config=/etc/otel/config.yaml
+          env:
+          {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
+          - name: PLATFORM_OTLP_ENDPOINT
+            value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
+          - name: K8S_CLUSTER_NAME
+            value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: SKIP_SSL_VALIDATION
+            value: {{ or .Values.global.skipSslValidation .Values.otel.telemetryGateway.skipSslValidation | quote }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: K8S_NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: POD_UID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.uid
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel
+            {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 12 }}
+          ports:
+            - containerPort: 4317
+              name: otlp-grpc
+              protocol: TCP
+            - containerPort: 4318
+              name: otlp-http
+              protocol: TCP
+            - containerPort: 13133
+              name: health
+              protocol: TCP
+            - containerPort: 8888
+              name: metrics
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.otel.telemetryGateway.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "stackstate-k8s-agent.otelTelemetryGateway.configName" . }}
+        {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 8 }}
+      {{- with .Values.otel.telemetryGateway.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.otel.telemetryGateway.affinity (gt (.Values.otel.telemetryGateway.replicaCount | int) 1) }}
+      affinity:
+        {{- if gt (.Values.otel.telemetryGateway.replicaCount | int) 1 }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: otel-telemetry-gateway
+                    app.kubernetes.io/instance: {{ .Release.Name }}
+                topologyKey: kubernetes.io/hostname
+        {{- end }}
+        {{- with .Values.otel.telemetryGateway.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.otel.telemetryGateway.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

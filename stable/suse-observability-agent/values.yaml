@@ -991,6 +991,90 @@ otel:
         # otel.prometheusScraping.targetAllocator.prometheusCR.denyFSAccessThroughSMs -- Drop monitor endpoints that reference arbitrary files on the collector filesystem.
         denyFSAccessThroughSMs: true
 
+  telemetryGateway:
+    # otel.telemetryGateway.enabled -- Enable the telemetry gateway for OTLP push-based
+    # telemetry (metrics, traces, logs). Requires otel.enabled=true.
+    enabled: false
+
+    # otel.telemetryGateway.skipSslValidation -- Skip TLS validation when exporting to the platform.
+    skipSslValidation: false
+
+    image:
+      # otel.telemetryGateway.image.repository -- Base container image repository.
+      repository: stackstate/sts-opentelemetry-collector
+      # otel.telemetryGateway.image.tag -- Container image tag for the telemetry gateway.
+      tag: "v0.0.45"
+      # otel.telemetryGateway.image.pullPolicy -- Default container image pull policy.
+      pullPolicy: IfNotPresent
+
+    # otel.telemetryGateway.replicaCount -- Number of gateway pods.
+    # 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA.
+    replicaCount: 1
+
+    # otel.telemetryGateway.priorityClassName -- Priority class for gateway pods.
+    priorityClassName: ""
+
+    resources:
+      limits:
+        # otel.telemetryGateway.resources.limits.cpu -- CPU resource limits.
+        cpu: "500m"
+        # otel.telemetryGateway.resources.limits.memory -- Memory resource limits.
+        memory: "512Mi"
+      requests:
+        # otel.telemetryGateway.resources.requests.cpu -- CPU resource requests.
+        cpu: "100m"
+        # otel.telemetryGateway.resources.requests.memory -- Memory resource requests.
+        memory: "128Mi"
+
+    # otel.telemetryGateway.strategy -- The strategy for the Deployment object.
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 0
+        maxSurge: 1
+
+    serviceaccount:
+      # otel.telemetryGateway.serviceaccount.annotations -- Annotations for the service account for the gateway pods.
+      annotations: {}
+
+    service:
+      # otel.telemetryGateway.service.annotations -- Annotations for the ClusterIP Service.
+      annotations: {}
+
+    spanMetrics:
+      # otel.telemetryGateway.spanMetrics.aggregationCardinalityLimit -- Maximum number of unique span-metric aggregation series held by the gateway. Prevents high-cardinality spans from exhausting memory.
+      aggregationCardinalityLimit: 5000
+
+    # otel.telemetryGateway.podAnnotations -- Additional annotations for gateway pods.
+    podAnnotations: {}
+
+    # otel.telemetryGateway.podLabels -- Additional labels for gateway pods.
+    podLabels: {}
+
+    # otel.telemetryGateway.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+
+    # otel.telemetryGateway.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+
+    # otel.telemetryGateway.affinity -- Affinity settings for pod assignment.
+    affinity: {}
+
+    # otel.telemetryGateway.debug -- Optional debug exporter for troubleshooting.
+    # When enabled, the upstream OTel `debug` exporter is wired into the listed
+    # pipelines so payloads are written to the collector log. Leave disabled in
+    # production.
+    debug:
+      # otel.telemetryGateway.debug.enabled -- Enable the debug exporter for this collector.
+      enabled: false
+      # otel.telemetryGateway.debug.verbosity -- Debug exporter verbosity: basic, normal, or detailed.
+      verbosity: basic
+      # otel.telemetryGateway.debug.pipelines -- Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}.
+      pipelines:
+        - traces
+        - logs
+        - metrics
+
 ##################################
 # http-header-injector variables #
 ##################################

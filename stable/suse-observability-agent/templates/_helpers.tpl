@@ -509,6 +509,40 @@ app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
 {{- end -}}
 
 {{/*
+Determine whether the OTel Telemetry Gateway should be deployed.
+*/}}
+{{- define "stackstate-k8s-agent.otelTelemetryGateway.enabled" -}}
+{{- if and (include "stackstate-k8s-agent.otel.enabled" .) .Values.otel.telemetryGateway.enabled }}
+true
+{{- end }}
+{{- end -}}
+
+{{/*
+Determine whether the SUSE Observability Agent marker CRD should be installed.
+The marker should only exist when at least one product-facing OTel integration
+path is active; otel.enabled=true with all subcomponents disabled is not enough.
+*/}}
+{{- define "stackstate-k8s-agent.otelMarkerCrd.enabled" -}}
+{{- if or (include "stackstate-k8s-agent.otelTelemetryGateway.enabled" .) (include "stackstate-k8s-agent.otelPrometheusScraping.enabled" .) }}
+true
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTelemetryGateway.name" -}}
+{{- printf "%s-otel-telemetry-gateway" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTelemetryGateway.configName" -}}
+{{- printf "%s-config" (include "stackstate-k8s-agent.otelTelemetryGateway.name" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.otelTelemetryGateway.selectorLabels" -}}
+app.kubernetes.io/component: otel-telemetry-gateway
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
+{{- end -}}
+
+{{/*
 Target Allocator expects Kubernetes LabelSelector objects. Values accept either
 a full LabelSelector or a simple label map, which is wrapped as matchLabels.
 */}}

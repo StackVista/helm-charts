@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.14`
+Current chart version is `1.5.15`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -521,6 +521,30 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.targetAllocator.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
 | otel.prometheusScraping.targetAllocator.resources.requests.memory | string | `"64Mi"` | Memory resource requests. |
 | otel.prometheusScraping.targetAllocator.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| otel.telemetryGateway.affinity | object | `{}` | Affinity settings for pod assignment. |
+| otel.telemetryGateway.debug | object | `{"enabled":false,"pipelines":["traces","logs","metrics"],"verbosity":"basic"}` | Optional debug exporter for troubleshooting. When enabled, the upstream OTel `debug` exporter is wired into the listed pipelines so payloads are written to the collector log. Leave disabled in production. |
+| otel.telemetryGateway.debug.enabled | bool | `false` | Enable the debug exporter for this collector. |
+| otel.telemetryGateway.debug.pipelines | list | `["traces","logs","metrics"]` | Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}. |
+| otel.telemetryGateway.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
+| otel.telemetryGateway.enabled | bool | `false` | Enable the telemetry gateway for OTLP push-based telemetry (metrics, traces, logs). Requires otel.enabled=true. |
+| otel.telemetryGateway.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
+| otel.telemetryGateway.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
+| otel.telemetryGateway.image.tag | string | `"v0.0.45"` | Container image tag for the telemetry gateway. |
+| otel.telemetryGateway.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| otel.telemetryGateway.podAnnotations | object | `{}` | Additional annotations for gateway pods. |
+| otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |
+| otel.telemetryGateway.priorityClassName | string | `""` | Priority class for gateway pods. |
+| otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA. |
+| otel.telemetryGateway.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
+| otel.telemetryGateway.resources.limits.memory | string | `"512Mi"` | Memory resource limits. |
+| otel.telemetryGateway.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
+| otel.telemetryGateway.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
+| otel.telemetryGateway.service.annotations | object | `{}` | Annotations for the ClusterIP Service. |
+| otel.telemetryGateway.serviceaccount.annotations | object | `{}` | Annotations for the service account for the gateway pods. |
+| otel.telemetryGateway.skipSslValidation | bool | `false` | Skip TLS validation when exporting to the platform. |
+| otel.telemetryGateway.spanMetrics.aggregationCardinalityLimit | int | `5000` | Maximum number of unique span-metric aggregation series held by the gateway. Prevents high-cardinality spans from exhausting memory. |
+| otel.telemetryGateway.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
+| otel.telemetryGateway.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
 | processAgent.disabledProtocols | list | `[]` | List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled. |

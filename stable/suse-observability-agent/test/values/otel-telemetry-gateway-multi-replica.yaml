@@ -1,0 +1,5 @@
+otel:
+  enabled: true
+  telemetryGateway:
+    enabled: true
+    replicaCount: 2

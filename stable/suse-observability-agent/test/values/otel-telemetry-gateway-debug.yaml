@@ -1,0 +1,11 @@
+otel:
+  enabled: true
+  telemetryGateway:
+    enabled: true
+    debug:
+      enabled: true
+      verbosity: detailed
+      pipelines:
+        - traces
+        - logs
+        - metrics

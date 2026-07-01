@@ -1,0 +1,4 @@
+otel:
+  enabled: true
+  telemetryGateway:
+    enabled: true
