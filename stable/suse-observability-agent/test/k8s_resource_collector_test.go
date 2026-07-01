@@ -372,6 +372,7 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 	assert.Contains(t, configData, "include:")
 	assert.Contains(t, configData, "policies.kubewarden.io")
 	assert.Contains(t, configData, "longhorn.io")
+	assert.NotContains(t, configData, `"*"`, "wildcard should be suppressed when specific API groups are included")
 	assert.Contains(t, configData, "exclude:")
 	assert.Contains(t, configData, "test.suse.com")
 
@@ -551,7 +552,7 @@ func TestK8sResourceCollectorSingleReplicaSkipsPDB(t *testing.T) {
 }
 
 // TestK8sResourceCollectorIntegrationFlags verifies that enabling integration
-// flags merges the corresponding API groups into the rendered ConfigMap
+// flags adds the corresponding API groups to the rendered ConfigMap
 // (crd_api_group_filters.include). All four flags are set in a single values
 // file so one render covers every integration's groups.
 func TestK8sResourceCollectorIntegrationFlags(t *testing.T) {
@@ -583,8 +584,8 @@ func TestK8sResourceCollectorIntegrationFlags(t *testing.T) {
 		assert.Contains(t, configData, g, "expected integration group %q in include filter", g)
 	}
 
-	// Base operator-supplied wildcard must also survive the merge.
-	assert.Contains(t, configData, `"*"`, "operator-supplied wildcard should survive integration merge")
+	// The wildcard would make the integration-specific includes redundant.
+	assert.NotContains(t, configData, `"*"`, "wildcard should be suppressed when integration groups are included")
 }
 
 // TestK8sResourceCollectorIntegrationFlagsRestrictedRBAC verifies that

@@ -24,6 +24,9 @@ data:
 {{- range $pattern, $enabled := $rcfg.crdDiscovery.apiGroupFilters.include }}
 {{- if $enabled }}{{ $includes = append $includes $pattern }}{{ end }}
 {{- end }}
+{{- if and (has "*" $includes) (gt (len $includes) 1) }}
+{{- $includes = without $includes "*" }}
+{{- end }}
 {{- if not $includes }}
 {{- fail "otel.k8sResourceCollector.crdDiscovery.apiGroupFilters.include must have at least one truthy entry when discoveryMode is 'api_groups' (e.g. \"*\": true)" }}
 {{- end }}
