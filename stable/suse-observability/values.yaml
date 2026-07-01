@@ -827,7 +827,7 @@ stackstate:
         # stackstate.components.mcp.image.repository -- Repository of the mcp component Docker image.
         repository: stackstate/suse-observability-mcp
         # stackstate.components.mcp.image.tag -- Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20260630044637-5721dae6"
+        tag: "20260701045443-5721dae6"
       # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       replicaCount: 1
       # stackstate.components.mcp.podAnnotations -- Extra annotations
@@ -866,7 +866,7 @@ stackstate:
         # stackstate.components.aiAssistant.image.repository -- Repository of the ai-assistant component Docker image.
         repository: stackstate/suse-observability-borg
         # stackstate.components.aiAssistant.image.tag -- Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20260630045733-eab5c1ec"
+        tag: "20260701074722-9e9f7e94"
       serviceAccount:
         # stackstate.components.aiAssistant.serviceAccount.annotations -- Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`.
         annotations: {}
@@ -1588,7 +1588,7 @@ stackstate:
         # stackstate.components.workloadObserver.image.repository -- Repository of the workloadObserver component Docker image.
         repository: stackstate/workload-observer
         # stackstate.components.workloadObserver.image.tag -- Tag used for the `workloadObserver` component Docker image..
-        tag: "71a6e3c3-1007-release"
+        tag: "71a6e3c3-1008-release"
       # stackstate.components.workloadObserver.podAnnotations -- Extra annotations
       podAnnotations: {}
       # stackstate.components.workloadObserver.resources -- Resource allocation for `workloadObserver` pods.
@@ -2143,7 +2143,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: "v0.0.44"
+    tag: "v0.0.45"
   resources:
     requests:
       cpu: 250m
