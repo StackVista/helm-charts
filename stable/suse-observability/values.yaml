@@ -827,7 +827,7 @@ stackstate:
         # stackstate.components.mcp.image.repository -- Repository of the mcp component Docker image.
         repository: stackstate/suse-observability-mcp
         # stackstate.components.mcp.image.tag -- Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20260701045443-5721dae6"
+        tag: "20260702044506-5721dae6"
       # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       replicaCount: 1
       # stackstate.components.mcp.podAnnotations -- Extra annotations
@@ -866,7 +866,7 @@ stackstate:
         # stackstate.components.aiAssistant.image.repository -- Repository of the ai-assistant component Docker image.
         repository: stackstate/suse-observability-borg
         # stackstate.components.aiAssistant.image.tag -- Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20260701074722-9e9f7e94"
+        tag: "20260702045517-9e9f7e94"
       serviceAccount:
         # stackstate.components.aiAssistant.serviceAccount.annotations -- Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`.
         annotations: {}
@@ -1911,7 +1911,7 @@ s3proxy:
     # s3proxy.image.repository -- Image repository for S3Proxy
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "3.2.0-so2"
+    tag: "3.2.0-so3"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
@@ -2143,7 +2143,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: "v0.0.45"
+    tag: "v0.0.46"
   resources:
     requests:
       cpu: 250m
@@ -2168,7 +2168,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: "afed3f9c-1008-release"
+        tag: "afed3f9c-1009-release"
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.

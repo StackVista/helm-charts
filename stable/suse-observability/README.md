@@ -536,7 +536,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"afed3f9c-1008-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"afed3f9c-1009-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -566,7 +566,7 @@ If you encounter issues not covered here:
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.image.registry | string | `"quay.io"` | Base container image registry. |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.45"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.46"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.resources.limits.cpu | string | `"500m"` |  |
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
@@ -580,7 +580,7 @@ If you encounter issues not covered here:
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.2.0-so2"` | Image tag for S3Proxy |
+| s3proxy.image.tag | string | `"3.2.0-so3"` | Image tag for S3Proxy |
 | s3proxy.logLevel | string | `"info"` |  |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
@@ -633,7 +633,7 @@ If you encounter issues not covered here:
 | stackstate.components.aiAssistant.image.imageRegistry | string | `""` | `imageRegistry` used for the `ai-assistant` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.aiAssistant.image.pullPolicy | string | `""` | `pullPolicy` used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.aiAssistant.image.repository | string | `"stackstate/suse-observability-borg"` | Repository of the ai-assistant component Docker image. |
-| stackstate.components.aiAssistant.image.tag | string | `"20260701074722-9e9f7e94"` | Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.aiAssistant.image.tag | string | `"20260702045517-9e9f7e94"` | Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.aiAssistant.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.aiAssistant.persistence | object | `{"size":"1Gi","storageClass":""}` | Persistence settings for the SQLite database. |
 | stackstate.components.aiAssistant.persistence.size | string | `"1Gi"` | Size of the PVC for the SQLite database. |
@@ -903,7 +903,7 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
-| stackstate.components.mcp.image.tag | string | `"20260701045443-5721dae6"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.mcp.image.tag | string | `"20260702044506-5721dae6"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mcp` pods. |
