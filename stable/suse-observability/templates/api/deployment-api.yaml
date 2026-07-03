@@ -175,7 +175,7 @@ spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:
       {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
-      - {{ include "stackstate.initContainer.stackpacks" . | nindent 8 }}
+      {{ include "stackstate.initContainer.stackpacks" . | nindent 6 }}
       {{- end }}
       - {{ toYaml $stsStackstateApiInitContainer | nindent 8 }}
       {{- if include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .) }}

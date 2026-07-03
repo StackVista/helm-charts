@@ -1161,11 +1161,18 @@ If you encounter issues not covered here:
 | stackstate.license.fromExternalSecret | string | `nil` | Use an external secret for the license key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
-| stackstate.stackpacks.image.deploymentModeOverride | string | `""` | Use the stackpacks from another deployment mode than StackState is running in |
-| stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.image.version | string | `"20260708133728-master-cad7c72"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
+| stackstate.stackpacks.images[0].deploymentModeOverride | string | `""` |  |
+| stackstate.stackpacks.images[0].name | string | `"v1"` |  |
+| stackstate.stackpacks.images[0].pullPolicy | string | `""` |  |
+| stackstate.stackpacks.images[0].registry | string | `"quay.io"` |  |
+| stackstate.stackpacks.images[0].repository | string | `"stackstate/stackpacks"` |  |
+| stackstate.stackpacks.images[0].version | string | `"20260708133728-master-cad7c72"` |  |
+| stackstate.stackpacks.images[1].deploymentModeOverride | string | `""` |  |
+| stackstate.stackpacks.images[1].name | string | `"contrib"` |  |
+| stackstate.stackpacks.images[1].pullPolicy | string | `""` |  |
+| stackstate.stackpacks.images[1].registry | string | `"ghcr.io"` |  |
+| stackstate.stackpacks.images[1].repository | string | `"stackvista/contrib-stackpacks"` |  |
+| stackstate.stackpacks.images[1].version | string | `"20260703131618-STAC-24722-community-stackpacks-in-contrib-5a6af30"` |  |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.localpvc.size | string | `"1Gi"` | Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS |
 | stackstate.stackpacks.localpvc.storageClass | string | `nil` |  |

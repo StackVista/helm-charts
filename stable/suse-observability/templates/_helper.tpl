@@ -101,13 +101,6 @@ Return the image registry for the router container
 {{- end -}}
 
 {{/*
-Return the image registry for the stackpacks containers
-*/}}
-{{- define "stackstate.stackpacks.image.registry" -}}
-{{ include "common.image.registry" ( dict "image" .Values.stackstate.stackpacks.image "context" $) }}
-{{- end -}}
-
-{{/*
 Return the image registry for the container-tools containers
 */}}
 {{- define "stackstate.containerTools.image.registry" -}}
@@ -794,17 +787,19 @@ Init container to load stackpacks from docker image
 */}}
 {{- define "stackstate.initContainer.stackpacks" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-name: init-stackpacks
-{{- $stackpacksv2 := .Values.global.features.experimentalStackpacks | ternary "-2_0" "" -}}
-{{- $deploymentMode := .Values.stackstate.stackpacks.image.deploymentModeOverride | default .Values.stackstate.deployment.mode | lower -}}
-{{- $tag := printf "%s%s-%s-%s" .Values.stackstate.stackpacks.image.version $stackpacksv2 (lower .Values.stackstate.deployment.edition) $deploymentMode }}
-image: "{{ include "stackstate.stackpacks.image.registry" . }}/{{ .Values.stackstate.stackpacks.image.repository }}:{{ $tag }}"
-imagePullPolicy: {{ .Values.stackstate.stackpacks.image.pullPolicy | quote }}
-args: ["/var/stackpacks"]
-volumeMounts:
-{{ include "stackstate.stackpacks.volumeMount" . }}
-securityContext:
+{{- range .Values.stackstate.stackpacks.images }}
+- name: init-stackpacks-{{ .name }}
+{{- $deploymentMode := .deploymentModeOverride | default $.Values.stackstate.deployment.mode | lower -}}
+{{- $tag := printf "%s-%s-%s" .version (lower $.Values.stackstate.deployment.edition) $deploymentMode }}
+{{- $registry := fromYaml (include "common.image.registry" ( dict "image" . "context" $) ) -}}
+  image: "{{ $registry }}/{{ .repository }}:{{ $tag }}"
+  imagePullPolicy: {{ .pullPolicy | quote }}
+  args: ["/var/stackpacks"]
+  volumeMounts:
+{{ include "stackstate.stackpacks.volumeMount" . | nindent 2 }}
+  securityContext:
   {{- $commonContainer.securityContext | toYaml | nindent 8 }}
+{{- end -}}
 {{- end -}}
 
 {{/*
