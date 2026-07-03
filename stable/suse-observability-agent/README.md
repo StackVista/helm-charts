@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.18`
+Current chart version is `1.5.19`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -204,7 +204,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | checksAgent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| checksAgent.image.tag | string | `"f66fba81"` | Default container image tag. |
+| checksAgent.image.tag | string | `"04ca74ad"` | Default container image tag. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | checksAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -266,7 +266,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-k8s-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"f66fba81"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"04ca74ad"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -318,12 +318,12 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"1.0.0-so3"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"15e759aa-1010-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"5e51c7f9-1012-release"` |  |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"afed3f9c-1009-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"228cfb48-1011-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -360,7 +360,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| nodeAgent.containers.agent.image.tag | string | `"f66fba81"` | Default container image tag. |
+| nodeAgent.containers.agent.image.tag | string | `"04ca74ad"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
