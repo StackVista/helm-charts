@@ -355,7 +355,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
-        tag: "7.0.0-snapshot.20260703094412-master-3768f10"
+        tag: "7.0.0-snapshot.20260703120158-master-6dc11b5"
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -1805,7 +1805,7 @@ hbase:
     # hbase.tephra.replicaCount -- Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
     replicaCount: null
   stackgraph:
-    version: "8.1.8"
+    version: "8.1.9"
 kafkaup-operator:
   enabled: true
   image:
