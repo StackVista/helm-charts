@@ -788,17 +788,18 @@ Init container to load stackpacks from docker image
 {{- define "stackstate.initContainer.stackpacks" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- range .Values.stackstate.stackpacks.images }}
+{{- if (or $.Values.global.features.experimentalStackpacks (eq .schemaVersion "1.0")) }}
 - name: init-stackpacks-{{ .name }}
 {{- $deploymentMode := .deploymentModeOverride | default $.Values.stackstate.deployment.mode | lower -}}
 {{- $tag := printf "%s-%s-%s" .version (lower $.Values.stackstate.deployment.edition) $deploymentMode }}
-{{- $registry := fromYaml (include "common.image.registry" ( dict "image" . "context" $) ) -}}
-  image: "{{ $registry }}/{{ .repository }}:{{ $tag }}"
+  image: "{{ include "common.image.registry" ( dict "image" . "context" $) }}/{{ .repository }}:{{ $tag }}"
   imagePullPolicy: {{ .pullPolicy | quote }}
   args: ["/var/stackpacks"]
   volumeMounts:
 {{ include "stackstate.stackpacks.volumeMount" . | nindent 2 }}
   securityContext:
   {{- $commonContainer.securityContext | toYaml | nindent 8 }}
+{{- end }}
 {{- end -}}
 {{- end -}}
 
