@@ -406,7 +406,7 @@ jobs:
       needs.test_stable.result == 'success' &&
       (github.event_name == 'workflow_dispatch'
         || github.ref == 'refs/heads/master'
-        || startsWith(github.ref, 'refs/tags/')) &&
+        || startsWith(github.ref, 'refs/tags/suse-observability/')) &&
       !contains(github.event.head_commit.message, '[skip ci]') &&
       needs.detect_changes.outputs.stable != '[]'
     runs-on: docker
@@ -452,7 +452,11 @@ jobs:
 
       - name: suse-observability — extra before-script (tag path)
         # Mutates Chart.yaml; only meaningful when followed by the cm-push, so gated together.
-        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && startsWith(github.ref, 'refs/tags/')
+        # Release tags only (suse-observability/x.y.z). Prerelease provenance tags
+        # (prerelease/suse-observability/x.y.z-pre.N) are already published on the master
+        # run and must not re-enter this release-shaped path; set_chart_release_version.sh
+        # rejects x.y.z-pre.N.
+        if: env.DRY_RUN == 'false' && matrix.chart == 'suse-observability' && startsWith(github.ref, 'refs/tags/suse-observability/')
         env:
           GH_APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
