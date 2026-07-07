@@ -1,0 +1,7 @@
+# Legacy top-level oidcLogout/skipLoginPage keys. These are NOT read by the chart: the options are
+# only honoured inside an OIDC-based provider block (oidc, keycloak, rancher). This fixture is used
+# by the gating test to prove the old top-level keys are ignored.
+stackstate:
+  authentication:
+    oidcLogout: true
+    skipLoginPage: true

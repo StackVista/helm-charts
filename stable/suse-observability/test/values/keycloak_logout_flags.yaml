@@ -1,0 +1,7 @@
+# Enables the OIDC logout options inside the keycloak provider block. Layered on top of
+# keycloak_authentication.yaml, which provides the rest of the keycloak configuration.
+stackstate:
+  authentication:
+    keycloak:
+      oidcLogout: true
+      skipLoginPage: true

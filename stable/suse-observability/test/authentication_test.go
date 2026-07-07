@@ -101,6 +101,53 @@ func TestAuthenticationOidcInvalid(t *testing.T) {
 	require.Contains(t, err.Error(), "the discovery uri to be set")
 }
 
+const expectedOidcLogoutDisabled = `stackstate.api.authentication.oidcLogout = false`
+const expectedSkipLoginPageDisabled = `stackstate.api.authentication.skipLoginPage = false`
+const expectedOidcLogoutEnabled = `stackstate.api.authentication.oidcLogout = true`
+const expectedSkipLoginPageEnabled = `stackstate.api.authentication.skipLoginPage = true`
+
+// The oidcLogout and skipLoginPage options are configured inside the active OIDC provider block
+// (oidc, keycloak or rancher) and map straight to the backend authentication config. They default
+// to false, so unless a provider opts in, logging out of SUSE Observability does not log the user
+// out at the provider and the login page is shown.
+func TestAuthenticationOidcLogoutFlagsDefaultDisabled(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
+}
+
+// When enabled inside the oidc provider block, both options render as true in the backend config.
+func TestAuthenticationOidcLogoutFlagsEnabled(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml", "values/oidc_logout_flags.yaml"}, expectedOidcLogoutEnabled, expectedSkipLoginPageEnabled)
+}
+
+// When enabled inside the keycloak provider block, both options render as true in the backend config.
+func TestAuthenticationKeycloakLogoutFlagsEnabled(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/keycloak_authentication.yaml", "values/keycloak_logout_flags.yaml"}, expectedOidcLogoutEnabled, expectedSkipLoginPageEnabled)
+}
+
+// When enabled inside the rancher provider block, both options render as true in the backend config.
+func TestAuthenticationRancherLogoutFlagsEnabled(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml", "values/rancher_logout_flags.yaml"}, expectedOidcLogoutEnabled, expectedSkipLoginPageEnabled)
+}
+
+// Guard for the rancher SaaS shape (e.g. the prime-test tenant): a rancher provider that does not
+// opt in keeps both options false, so existing rancher tenants retain the default behaviour.
+func TestAuthenticationRancherLogoutFlagsDefaultDisabled(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
+}
+
+// Regression guard: the chart must not derive these options from deployment.mode. Even in Saas
+// mode they stay false unless a provider opts in; SaaS deployments enable them per provider.
+func TestAuthenticationOidcLogoutFlagsSaasDefaultDisabled(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/authentication_saas_noroles.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
+}
+
+// Gating guard: the options only apply to OIDC-based providers. For a non-OIDC provider (LDAP) they
+// stay false even when the legacy top-level stackstate.authentication.oidcLogout/skipLoginPage keys
+// are set, proving the chart reads them from the provider block and ignores the old top-level keys.
+func TestAuthenticationLogoutFlagsIgnoredForNonOidc(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/ldap_authentication.yaml", "values/authentication_logout_flags.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
+}
+
 const expectedRancherAuthConfig = `stackstate.api.authentication.authServer.oidcAuthServer {
   clientId = ${oidc_client_id}
   secret = ${oidc_secret}

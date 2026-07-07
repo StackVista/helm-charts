@@ -367,6 +367,25 @@ stackstate:
         access_type: offline # Custom request parameter
 ```
 
+The OIDC-based authentication providers (`oidc`, `keycloak` and `rancher`) support two additional options that map directly to the SUSE Observability backend authentication configuration. Set them **inside the active provider block** &mdash; they have no effect for the `ldap` or file-based providers, and are ignored when placed anywhere else under `stackstate.authentication`:
+
+- `oidcLogout` (default `false`): when enabled, logging out of SUSE Observability (via the `/logout` URL) also performs an OIDC RP-initiated logout, ending the user's session at the identity provider. When disabled, logging out only clears the local SUSE Observability session and the provider session stays active.
+- `skipLoginPage` (default `false`): when enabled, the SUSE Observability login page is skipped and the user is redirected straight to the configured OIDC provider.
+
+> **Note:** Enabling `skipLoginPage: true` while leaving `oidcLogout: false` is usually undesirable. The login page is skipped, but logging out only clears the local session, so the still-active provider session immediately re-authenticates the user and they appear unable to log out. When you enable `skipLoginPage`, enable `oidcLogout` as well unless you have a specific reason not to.
+
+Example (shown for `oidc`; nest the same two keys under `keycloak` or `rancher` when using those providers):
+
+```yaml
+stackstate:
+  authentication:
+    oidc:
+      oidcLogout: true
+      skipLoginPage: true
+      clientId: stackstate-client-id
+      # ... remaining oidc configuration
+```
+
 ### Configuring Rancher authentication
 
 ```

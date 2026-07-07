@@ -1,0 +1,7 @@
+# Enables the OIDC logout options inside the oidc provider block. Layered on top of
+# oidc_authentication.yaml, which provides the rest of the oidc configuration.
+stackstate:
+  authentication:
+    oidc:
+      oidcLogout: true
+      skipLoginPage: true

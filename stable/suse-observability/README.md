@@ -610,10 +610,10 @@ If you encounter issues not covered here:
 | stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
 | stackstate.authentication.file | object | `{}` | Configure users, their passwords and roles from (config) file |
 | stackstate.authentication.fromExternalSecret | string | `nil` | Use an external secret for the authenticated secrets. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
-| stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). |
+| stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Keycloak (both default false). |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
-| stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
-| stackstate.authentication.rancher | object | `{}` | Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). |
+| stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to the provider (both default false). |
+| stackstate.authentication.rancher | object | `{}` | Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Rancher (both default false). |
 | stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]}` | Extend the default role names in StackState |
 | stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
 | stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], resourcePermissions: {}, viewPermissions: [], topologyScope: ""}} |
@@ -1254,6 +1254,25 @@ stackstate:
         groupsField: groups
       customParameters:
         access_type: offline # Custom request parameter
+```
+
+The OIDC-based authentication providers (`oidc`, `keycloak` and `rancher`) support two additional options that map directly to the SUSE Observability backend authentication configuration. Set them **inside the active provider block** &mdash; they have no effect for the `ldap` or file-based providers, and are ignored when placed anywhere else under `stackstate.authentication`:
+
+- `oidcLogout` (default `false`): when enabled, logging out of SUSE Observability (via the `/logout` URL) also performs an OIDC RP-initiated logout, ending the user's session at the identity provider. When disabled, logging out only clears the local SUSE Observability session and the provider session stays active.
+- `skipLoginPage` (default `false`): when enabled, the SUSE Observability login page is skipped and the user is redirected straight to the configured OIDC provider.
+
+> **Note:** Enabling `skipLoginPage: true` while leaving `oidcLogout: false` is usually undesirable. The login page is skipped, but logging out only clears the local session, so the still-active provider session immediately re-authenticates the user and they appear unable to log out. When you enable `skipLoginPage`, enable `oidcLogout` as well unless you have a specific reason not to.
+
+Example (shown for `oidc`; nest the same two keys under `keycloak` or `rancher` when using those providers):
+
+```yaml
+stackstate:
+  authentication:
+    oidc:
+      oidcLogout: true
+      skipLoginPage: true
+      clientId: stackstate-client-id
+      # ... remaining oidc configuration
 ```
 
 ### Configuring Rancher authentication

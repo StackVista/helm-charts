@@ -1,0 +1,7 @@
+# Enables the OIDC logout options inside the rancher provider block. Layered on top of
+# rancher_authentication.yaml, which provides the rest of the rancher configuration.
+stackstate:
+  authentication:
+    rancher:
+      oidcLogout: true
+      skipLoginPage: true

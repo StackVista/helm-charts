@@ -349,6 +349,22 @@ for production this should be replaced with one of the other mechanisms.
 
 {{- $defaultSessionLifetime := ternary "16h" "7d" (not (empty $apiAuth.rancher))  }}
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default $defaultSessionLifetime | toJson }}
+{{- /* oidcLogout and skipLoginPage only apply to OIDC-based providers (oidc, keycloak, rancher). */ -}}
+{{- /* Read them from the active provider block so non-OIDC providers (ldap, file, admin) always render false. */ -}}
+{{- $oidcLogout := false -}}
+{{- $skipLoginPage := false -}}
+{{- if $apiAuth.keycloak -}}
+{{- $oidcLogout = $apiAuth.keycloak.oidcLogout | default false -}}
+{{- $skipLoginPage = $apiAuth.keycloak.skipLoginPage | default false -}}
+{{- else if $apiAuth.oidc -}}
+{{- $oidcLogout = $apiAuth.oidc.oidcLogout | default false -}}
+{{- $skipLoginPage = $apiAuth.oidc.skipLoginPage | default false -}}
+{{- else if $apiAuth.rancher -}}
+{{- $oidcLogout = $apiAuth.rancher.oidcLogout | default false -}}
+{{- $skipLoginPage = $apiAuth.rancher.skipLoginPage | default false -}}
+{{- end }}
+{{ $authnPrefix }}.oidcLogout = {{ $oidcLogout }}
+{{ $authnPrefix }}.skipLoginPage = {{ $skipLoginPage }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
 {{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}{{ if $v.resourcePermissions }}, resourcePermissions: {{ $v.resourcePermissions | toJson }}{{end}}{{ if $v.viewPermissions }}, viewPermissions: {{ $v.viewPermissions | toJson }}{{end}}{{ if $v.topologyScope }}, query: {{ $v.topologyScope | quote }}{{end}} }
