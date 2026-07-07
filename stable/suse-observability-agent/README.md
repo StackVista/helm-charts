@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.19`
+Current chart version is `1.5.20`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -548,6 +548,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.spanMetrics.aggregationCardinalityLimit | int | `5000` | Maximum number of unique span-metric aggregation series held by the gateway. Prevents high-cardinality spans from exhausting memory. |
 | otel.telemetryGateway.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | otel.telemetryGateway.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond | int | `500` | Maximum traces spans per second exported by the gateway. |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
 | processAgent.disabledProtocols | list | `[]` | List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled. |

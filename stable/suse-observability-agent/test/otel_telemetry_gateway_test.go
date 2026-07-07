@@ -165,13 +165,18 @@ func TestOtelTelemetryGatewayCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "k8s.pod.uid")
 	assert.Contains(t, configData, "from: connection")
 	assert.Contains(t, configData, "transform/enrich-resource:")
+	assert.Contains(t, configData, "filter/dropMissingK8sAttributes:")
+	assert.Contains(t, configData, "tail_sampling:")
+	assert.Contains(t, configData, "max_total_spans_per_second: 500")
 	assert.Contains(t, configData, "transform/self-metrics:")
 	assert.NotContains(t, configData, "stsusage:")
 	assert.Contains(t, configData, "batch: {}")
 
 	// span_metrics connector (new snake_case name).
+	assert.Contains(t, configData, "routing/traces:")
+	assert.Contains(t, configData, "pipelines: [traces/sampling, traces/spanmetrics]")
 	assert.Contains(t, configData, "span_metrics:")
-	assert.NotContains(t, configData, "spanmetrics:", "legacy connector name should not appear")
+	assert.NotContains(t, configData, "\n  spanmetrics:", "legacy connector name should not appear")
 	assert.Contains(t, configData, "aggregation_cardinality_limit: 5000")
 	assert.Contains(t, configData, "resource_metrics_key_attributes:")
 	assert.Contains(t, configData, "- service.name")
@@ -195,6 +200,7 @@ func TestOtelTelemetryGatewayCollectorConfig(t *testing.T) {
 	// Customer-data pipelines plus dedicated self-metrics pipeline.
 	assert.Contains(t, configData, "traces/gateway:")
 	assert.Contains(t, configData, "metrics/gateway:")
+	assert.Contains(t, configData, "metrics/spanmetrics:")
 	assert.Contains(t, configData, "metrics/self:")
 	assert.Contains(t, configData, "logs/gateway:")
 	assert.NotContains(t, configData, "sts_api_key")
@@ -267,14 +273,32 @@ func TestOtelTelemetryGatewayAllThreeSignalPipelines(t *testing.T) {
 	require.True(t, exists, "gateway ConfigMap should exist")
 	configData := configMap.Data["config.yaml"]
 
-	// traces/gateway: span_metrics connector as exporter.
-	assert.Contains(t, configData, "exporters: [span_metrics, otlp_http/suse-observability]")
+	// traces/gateway: enriches and filters once before routing fan-out.
+	assert.Contains(t, configData, "exporters: [routing/traces]")
 	assert.Contains(t, configData,
-		"processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, batch]")
+		"processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, filter/dropMissingK8sAttributes]")
 
-	// metrics/gateway: customer OTLP + derived span metrics only; prometheus/self is excluded.
-	assert.Contains(t, configData, "receivers: [otlp, span_metrics]")
-	assert.NotContains(t, configData, "receivers: [otlp, span_metrics, prometheus/self]")
+	// traces/spanmetrics: consumes already-enriched traces and generates span metrics.
+	assert.Contains(t, configData, "traces/spanmetrics:")
+	assert.Contains(t, configData, "receivers: [routing/traces]")
+	assert.Contains(t, configData, "exporters: [span_metrics]")
+
+	// traces/sampling: applies the shared collector sampling policy before platform export.
+	assert.Contains(t, configData, "traces/sampling:")
+	assert.Contains(t, configData, "receivers: [routing/traces]")
+	assert.Contains(t, configData, "processors: [tail_sampling, batch]")
+	assert.Contains(t, configData, "exporters: [otlp_http/suse-observability]")
+
+	// metrics/gateway: customer OTLP only; prometheus/self and span metrics are separate.
+	assert.Contains(t, configData, "metrics/gateway:")
+	assert.Contains(t, configData, "receivers: [otlp]")
+	assert.NotContains(t, configData, "receivers: [otlp, span_metrics]")
+	assert.NotContains(t, configData, "receivers: [otlp, prometheus/self]")
+
+	// metrics/spanmetrics: span metrics already inherit enriched trace resource attributes.
+	assert.Contains(t, configData, "metrics/spanmetrics:")
+	assert.Contains(t, configData, "receivers: [span_metrics]")
+	assert.Contains(t, configData, "processors: [memory_limiter, batch]")
 
 	// metrics/self: dedicated pipeline for collector self-metrics; skips security enforcement.
 	assert.Contains(t, configData, "metrics/self:")
@@ -316,7 +340,8 @@ func TestOtelTelemetryGatewayGrpcExporter(t *testing.T) {
 
 	assert.Contains(t, configData, "otlp/suse-observability:")
 	assert.NotContains(t, configData, "otlp_http/suse-observability:")
-	assert.Contains(t, configData, "exporters: [span_metrics, otlp/suse-observability]")
+	assert.Contains(t, configData, "exporters: [otlp/suse-observability]")
+	assert.Contains(t, configData, "exporters: [routing/traces]")
 
 	deployment, exists := resources.Deployments[otelTelemetryGatewayName]
 	require.True(t, exists, "gateway Deployment should exist")
@@ -334,7 +359,7 @@ func TestOtelTelemetryGatewayDebugExporter(t *testing.T) {
 	configData := configMap.Data["config.yaml"]
 
 	assert.Contains(t, configData, "\n  debug:\n    verbosity: detailed\n")
-	assert.Contains(t, configData, "exporters: [span_metrics, otlp_http/suse-observability, debug]")
+	assert.Contains(t, configData, "exporters: [otlp_http/suse-observability, debug]")
 	assert.Contains(t, configData, "exporters: [otlp_http/suse-observability, debug]")
 }
 

@@ -18,6 +18,9 @@ data:
             endpoint: 0.0.0.0:4317
           http:
             endpoint: 0.0.0.0:4318
+      # Self-scrape of the collector's own Prometheus telemetry endpoint (see
+      # service.telemetry.metrics). k8s.pod.uid is attached as a static label so the
+      # gateway's own metrics carry a pod identity.
       prometheus/self:
         config:
           scrape_configs:
@@ -30,13 +33,17 @@ data:
                     k8s.pod.uid: ${env:POD_UID}
 
     processors:
+      # Must be the first processor in every pipeline. The hard limit is 80% of pod
+      # memory; spike_limit_percentage is subtracted from that, so backpressure starts
+      # around 55% and leaves room for allocation bursts between limiter checks.
       memory_limiter:
         check_interval: 5s
         limit_percentage: 80
         spike_limit_percentage: 25
-      # Step 1: strip client-supplied security-sensitive attributes so k8s_attributes sets authoritative values.
-      # k8s_attributes (step 2) repopulates k8s.namespace.name from the Kubernetes API.
-      # transform (step 3) overwrites k8s.cluster.name from agent config regardless of what k8s_attributes set.
+      # Step 1 of 3: strip client-supplied security-sensitive attributes so clients cannot
+      # spoof cluster/namespace identity. k8s_attributes (step 2) repopulates
+      # k8s.namespace.name authoritatively from the Kubernetes API; transform/enrich-resource
+      # (step 3) stamps k8s.cluster.name from agent config regardless of what was sent.
       transform/pre-k8sattributes:
         error_mode: ignore
         trace_statements:
@@ -54,8 +61,12 @@ data:
             statements:
               - delete_key(resource.attributes, "k8s.cluster.name")
               - delete_key(resource.attributes, "k8s.namespace.name")
+      # Step 2 of 3: enrich resources with pod metadata from the Kubernetes API
+      # (serviceAccount RBAC). pod_association is tried in order: explicit k8s.pod.uid,
+      # then k8s.pod.ip, then the peer address of the OTLP connection. The connection
+      # fallback only works when workloads send directly to this gateway; anything behind
+      # a proxy/LB that rewrites the source IP must set uid or ip on the resource.
       k8s_attributes:
-        auth_type: serviceAccount
         extract:
           labels:
             - from: pod
@@ -82,6 +93,9 @@ data:
                 name: k8s.pod.ip
           - sources:
               - from: connection
+      # Step 3 of 3: unconditionally stamp the authoritative cluster name from agent
+      # config, and backfill service.instance.id / service.namespace from pod uid /
+      # namespace only where the SDK did not set them
       transform/enrich-resource:
         error_mode: ignore
         trace_statements:
@@ -102,6 +116,59 @@ data:
               - set(resource.attributes["k8s.cluster.name"], "${env:K8S_CLUSTER_NAME}")
               - set(resource.attributes["service.instance.id"], resource.attributes["k8s.pod.uid"]) where resource.attributes["service.instance.id"] == nil and resource.attributes["k8s.pod.uid"] != nil
               - set(resource.attributes["service.namespace"], resource.attributes["k8s.namespace.name"]) where resource.attributes["service.namespace"] == nil and resource.attributes["k8s.namespace.name"] != nil
+      # Drop individual spans whose *resource* is missing ANY of the four Kubernetes
+      # attributes below (top-level conditions are OR'd: matching one is enough to drop).
+      # Because these are resource attributes, all spans from an un-enriched resource are
+      # dropped together — but a distributed trace can be partially dropped when only some
+      # participating services were enriched. Runs after enrichment and before the
+      # routing/traces fan-out, so span metrics and sampled trace export both see the same
+      # filtered, enriched stream. error_mode: ignore means a failing OTTL condition is
+      # logged and skipped rather than taking down the pipeline.
+      filter/dropMissingK8sAttributes:
+        error_mode: ignore
+        traces:
+          span:
+            - resource.attributes["k8s.node.name"] == nil
+            - resource.attributes["k8s.pod.uid"] == nil
+            - resource.attributes["k8s.namespace.name"] == nil
+            - resource.attributes["k8s.pod.name"] == nil
+      # Buffers each trace for decision_wait after it is first observed, then decides
+      # based on the spans seen so far. The composite policy enforces a spans/sec
+      # budget in policy_order: error traces can use up to 33%, traces slower than 1s
+      # can use up to 33%, and the rest policy samples matching traces up to its 34%
+      # allocation. Budgets are per policy and unused capacity is not redistributed;
+      # if an earlier matching policy is over budget, the trace is not evaluated by
+      # later policies. Traces still open after 10s are decided on partial data.
+      # Span metrics are computed upstream of this processor, so tail sampling here
+      # does not bias RED metrics or duration histograms.
+      tail_sampling:
+        decision_wait: 10s
+        policies:
+          - name: rate-limited-composite
+            type: composite
+            composite:
+              max_total_spans_per_second: {{ .Values.otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond }}
+              policy_order: [errors, slow-traces, rest]
+              composite_sub_policy:
+                - name: errors
+                  type: status_code
+                  status_code:
+                    status_codes: [ERROR]
+                - name: slow-traces
+                  type: latency
+                  latency:
+                    threshold_ms: 1000
+                - name: rest
+                  type: always_sample
+              rate_allocation:
+                - policy: errors
+                  percent: 33
+                - policy: slow-traces
+                  percent: 33
+                - policy: rest
+                  percent: 34
+      # The self-scrape pipeline (metrics/self) bypasses k8s_attributes, so cluster and
+      # namespace are set directly from downward-API env vars instead of a K8s API lookup.
       transform/self-metrics:
         error_mode: ignore
         metric_statements:
@@ -113,11 +180,27 @@ data:
       batch: {}
 
     connectors:
+      # Pure fan-out: duplicates the enriched, filtered trace stream into the sampling
+      # pipeline (backend export) and the spanmetrics pipeline (metric generation).
+      # Placing the fan-out AFTER enrichment/filter and BEFORE tail_sampling is what
+      # guarantees span metrics reflect 100% of accepted traffic while only a sampled
+      # subset of traces is exported.
+      routing/traces:
+        error_mode: ignore
+        table:
+          - statement: route()
+            pipelines: [traces/sampling, traces/spanmetrics]
+      # Generates RED metrics (request rate, errors, duration histograms) per span.
+      # Runs on the pre-sampling stream (see routing/traces), so latency percentiles and
+      # error rates are unbiased by tail sampling.
       span_metrics:
         # Bound generated span-metric cardinality so one high-cardinality service
         # cannot exhaust gateway memory. Overflow series are marked with
         # otel.metric.overflow="true" by the connector.
         aggregation_cardinality_limit: {{ .Values.otel.telemetryGateway.spanMetrics.aggregationCardinalityLimit }}
+        # Collapse metric resource identity to these stable attributes; per-pod
+        # attributes (pod name/uid, start time) are intentionally excluded so series
+        # identity survives pod restarts and cardinality stays flat under churn.
         resource_metrics_key_attributes:
           - service.name
           - service.namespace
@@ -169,13 +252,31 @@ data:
                     port: 8888
       extensions: [health_check, {{ if .Values.otel.telemetryGateway.pprof.enabled }}pprof, {{ end }}bearertokenauth]
       pipelines:
+        # Shared trace front: receive -> enrich -> drop un-enriched spans -> fan out.
+        # All trace consumers (sampling export, span metrics) branch off AFTER this
+        # pipeline, so they see identical enriched resource data.
         traces/gateway:
           receivers: [otlp]
-          processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, batch]
-          exporters: [span_metrics, {{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.telemetryGateway.debug "signal" "traces") }}]
+          processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, filter/dropMissingK8sAttributes]
+          exporters: [routing/traces]
+        # Connector hop only: feeds the pre-sampling span stream into span_metrics.
+        traces/spanmetrics:
+          receivers: [routing/traces]
+          exporters: [span_metrics]
+        traces/sampling:
+          receivers: [routing/traces]
+          processors: [tail_sampling, batch]
+          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.telemetryGateway.debug "signal" "traces") }}]
         metrics/gateway:
-          receivers: [otlp, span_metrics]
+          receivers: [otlp]
           processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, batch]
+          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.telemetryGateway.debug "signal" "metrics") }}]
+        # Span metrics inherit resource attributes from the enriched trace pipeline. Keep them
+        # separate from raw OTLP metrics so transform/pre-k8sattributes does not delete those
+        # inherited Kubernetes attributes and force another best-effort k8s_attributes lookup.
+        metrics/spanmetrics:
+          receivers: [span_metrics]
+          processors: [memory_limiter, batch]
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.telemetryGateway.debug "signal" "metrics") }}]
         metrics/self:
           receivers: [prometheus/self]

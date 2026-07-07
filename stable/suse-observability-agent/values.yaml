@@ -1055,6 +1055,10 @@ otel:
       # otel.telemetryGateway.spanMetrics.aggregationCardinalityLimit -- Maximum number of unique span-metric aggregation series held by the gateway. Prevents high-cardinality spans from exhausting memory.
       aggregationCardinalityLimit: 5000
 
+    traceSampling:
+      # otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond -- Maximum traces spans per second exported by the gateway.
+      maxTotalSpansPerSecond: 500
+
     # otel.telemetryGateway.podAnnotations -- Additional annotations for gateway pods.
     podAnnotations: {}
 
