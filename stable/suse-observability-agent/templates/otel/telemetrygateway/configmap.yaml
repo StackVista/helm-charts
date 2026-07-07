@@ -226,7 +226,11 @@ data:
           initial_interval: 5s
           max_interval: 30s
           max_elapsed_time: 300s
+      debug/logs:
+        verbosity: basic
+{{- if .Values.otel.telemetryGateway.debug.enabled }}
 {{- include "stackstate-k8s-agent.collector.debugExporter.config" .Values.otel.telemetryGateway.debug | nindent 6 }}
+{{- end }}
 
     extensions:
       health_check:
@@ -285,5 +289,5 @@ data:
         logs/gateway:
           receivers: [otlp]
           processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, batch]
-          exporters: [debug]
+          exporters: [debug/logs]
 {{- end }}

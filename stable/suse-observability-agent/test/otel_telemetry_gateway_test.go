@@ -192,6 +192,8 @@ func TestOtelTelemetryGatewayCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "otlp_http/suse-observability:")
 	assert.Contains(t, configData, "endpoint: ${env:PLATFORM_OTLP_ENDPOINT}")
 	assert.Contains(t, configData, "insecure_skip_verify: ${env:SKIP_SSL_VALIDATION}")
+	assert.Contains(t, configData, "\n  debug/logs:\n    verbosity: basic\n")
+	assert.NotContains(t, configData, "\n  debug:\n", "the opt-in debug exporter should not render by default")
 	assert.Contains(t, configData, "bearertokenauth:")
 	assert.Contains(t, configData, "scheme: SUSEObservability")
 	assert.Contains(t, configData, "token: \"${env:STS_API_KEY}\"")
@@ -361,8 +363,10 @@ func TestOtelTelemetryGatewayDebugExporter(t *testing.T) {
 	configData := configMap.Data["config.yaml"]
 
 	assert.Contains(t, configData, "\n  debug:\n    verbosity: detailed\n")
+	assert.Contains(t, configData, "\n  debug/logs:\n    verbosity: basic\n")
 	assert.Contains(t, configData, "exporters: [otlp_http/suse-observability, debug]")
 	assert.Contains(t, configData, "exporters: [otlp_http/suse-observability, debug]")
+	assert.Contains(t, configData, "exporters: [debug/logs]")
 }
 
 func TestOtelTelemetryGatewayDebugExporterDisabledByDefault(t *testing.T) {
@@ -374,7 +378,9 @@ func TestOtelTelemetryGatewayDebugExporterDisabledByDefault(t *testing.T) {
 	require.True(t, exists, "gateway ConfigMap should exist")
 	configData := configMap.Data["config.yaml"]
 
-	assert.NotContains(t, configData, "debug:")
+	assert.Contains(t, configData, "\n  debug/logs:\n    verbosity: basic\n")
+	assert.NotContains(t, configData, "\n  debug:\n", "the opt-in debug exporter should not render by default")
+	assert.NotContains(t, configData, "verbosity: detailed")
 	assert.NotContains(t, configData, ", debug]")
 }
 
