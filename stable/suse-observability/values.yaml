@@ -1773,7 +1773,7 @@ stackstate:
         # stackstate.stackpacks.images[1].repository -- Repository of the `stackpacks` Docker image.
         repository: stackstate/contrib-stackpacks
         # stackstate.stackpacks.images[1].version -- Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode
-        version: "20260703131618-STAC-24722-community-stackpacks-in-contrib-5a6af30"
+        version: "20260703141926-STAC-24722-community-stackpacks-in-contrib-12b5e5b"
         # stackstate.stackpacks.images[1].deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
         deploymentModeOverride: ""
         # stackstate.stackpacks.images[2].name -- name for the init container
@@ -1785,7 +1785,7 @@ stackstate:
         # stackstate.stackpacks.images[2].repository -- Repository of the `stackpacks` Docker image.
         repository: stackstate/suse-stackpacks
         # stackstate.stackpacks.images[2].version -- Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode
-        version: "20260703131618-STAC-24722-community-stackpacks-in-contrib-5a6af30"
+        version: "20260707121052-suse-virtualization-8bbcbc4"
         # stackstate.stackpacks.images[2].deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
         deploymentModeOverride: ""
         # stackstate.stackpacks.images[2].editions -- Editions that include the stackpacks

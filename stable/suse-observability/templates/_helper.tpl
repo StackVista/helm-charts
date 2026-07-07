@@ -794,7 +794,11 @@ Init container to load stackpacks from docker image
 {{- if (eq $.Values.stackstate.deployment.edition .) }}
 {{- if (or $.Values.global.features.experimentalStackpacks (eq $image.schemaVersion "1.0")) }}
 {{- $deploymentMode := $image.deploymentModeOverride | default $.Values.stackstate.deployment.mode | lower -}}
-{{- $tag := printf "%s-%s-%s" $image.version (lower $.Values.stackstate.deployment.edition) $deploymentMode }}
+{{- $tag := ternary
+    (printf "%s-%s-%s" $image.version (lower $.Values.stackstate.deployment.edition) $deploymentMode)
+    $image.version
+    (eq $image.schemaVersion "1.0")
+}}
 - name: init-stackpacks-{{ $image.name }}
   image: "{{ include "common.image.registry" ( dict "image" $image "context" $) }}/{{ $image.repository }}:{{ $tag }}"
   imagePullPolicy: {{ $image.pullPolicy | quote }}

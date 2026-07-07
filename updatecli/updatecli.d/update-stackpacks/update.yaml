@@ -27,8 +27,8 @@ scms:
       # diverges from master.
 
 sources:
-  stackpacks:
-    name: "stackpacks from {{ requiredEnv .stackpacks.branchEnv }}"
+  legacyStackpacks:
+    name: "stackpacks from {{ requiredEnv .stackpacks.legacyBranchEnv }}"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/stackpacks"
@@ -36,27 +36,65 @@ sources:
       # Match 1.x builds for the configured branch across prime/community +
       # selfhosted/saas variants. Excludes versioned variants like `-2_0-`
       # so we don't pick up 2.x while 1.x remains the default StackPack version.
-      tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.branchEnv }}-[0-9a-f]+-(prime|community)-(selfhosted|saas)$"
+      tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.legacyBranchEnv }}-[0-9a-f]+-(prime|community)-(selfhosted|saas)$"
       versionfilter:
         kind: regex/time
-        regex: "^([0-9]+)-{{ requiredEnv .stackpacks.branchEnv }}-[0-9a-f]+-(prime|community)-(selfhosted|saas)$"
+        regex: "^([0-9]+)-{{ requiredEnv .stackpacks.legacyBranchEnv }}-[0-9a-f]+-(prime|community)-(selfhosted|saas)$"
+        pattern: "20060102150405"
+  contribStackpacks:
+    name: "stackpacks from {{ requiredEnv .stackpacks.contribBranchEnv }}"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/contrib-stackpacks"
+      architecture: "linux/amd64"
+      tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.contribBranchEnv }}-[0-9a-f]+$"
+      versionfilter:
+        kind: regex/time
+        regex: "^([0-9]+)-{{ requiredEnv .stackpacks.contribBranchEnv }}-[0-9a-f]+$"
+        pattern: "20060102150405"
+  suseStackpacks:
+    name: "stackpacks from {{ requiredEnv .stackpacks.suseBranchEnv }}"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/suse-stackpacks"
+      architecture: "linux/amd64"
+      tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.suseBranchEnv }}-[0-9a-f]+$"
+      versionfilter:
+        kind: regex/time
+        regex: "^([0-9]+)-{{ requiredEnv .stackpacks.suseBranchEnv }}-[0-9a-f]+$"
         pattern: "20060102150405"
 
 targets:
-  stackpacksImageVersion:
-    name: "stackpacks image version (suse-observability values.yaml)"
+  legacyStackpacksImageVersion:
+    name: "legacy stackpacks image version (suse-observability values.yaml)"
     kind: yaml
     scmid: "default"
-    sourceid: stackpacks
+    sourceid: legacyStackpacks
     # The chart value is the version-only portion; the variant suffix is
     # appended at render time from stackstate edition + deployment mode.
     transformers:
       - findsubmatch:
-          pattern: '^([0-9]+-{{ requiredEnv .stackpacks.branchEnv }}-[0-9a-f]+)-(prime|community)-(selfhosted|saas)$'
+          pattern: '^([0-9]+-{{ requiredEnv .stackpacks.legacyBranchEnv }}-[0-9a-f]+)-(prime|community)-(selfhosted|saas)$'
           captureindex: 1
     spec:
       file: "stable/suse-observability/values.yaml"
-      key: "$.stackstate.stackpacks.image.version"
+      key: "$.stackstate.stackpacks.images[0].version"
+  contribStackpacksImageVersion:
+    name: "contrib stackpacks image version (suse-observability values.yaml)"
+    kind: yaml
+    scmid: "default"
+    sourceid: contribStackpacks
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.stackpacks.images[1].version"
+  suseStackpacksImageVersion:
+    name: "suse stackpacks image version (suse-observability values.yaml)"
+    kind: yaml
+    scmid: "default"
+    sourceid: suseStackpacks
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.stackpacks.images[2].version"
   # updatecli's yaml plugin re-serialises the value it bumps and only quotes what
   # go-yaml deems ambiguous, leaving <digits>e<digits> values unquoted — which
   # helm then coerces to a float, producing a wrong image reference. Re-quote the
@@ -73,7 +111,9 @@ targets:
     scmid: "default"
     disablesourceinput: true
     dependson:
-      - "target#stackpacksImageVersion"
+      - "target#legacyStackpacksImageVersion"
+      - "target#contribStackpacksImageVersion"
+      - "target#suseStackpacksImageVersion"
     spec:
       command: |
         set -e
