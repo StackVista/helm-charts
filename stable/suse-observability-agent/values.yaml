@@ -1016,7 +1016,6 @@ otel:
     pprof:
       # otel.telemetryGateway.pprof.enabled -- Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward.
       enabled: true
-
     # otel.telemetryGateway.replicaCount -- Number of gateway pods.
     # 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA.
     replicaCount: 1
@@ -1029,12 +1028,12 @@ otel:
         # otel.telemetryGateway.resources.limits.cpu -- CPU resource limits.
         cpu: "500m"
         # otel.telemetryGateway.resources.limits.memory -- Memory resource limits.
-        memory: "512Mi"
+        memory: "1Gi"
       requests:
         # otel.telemetryGateway.resources.requests.cpu -- CPU resource requests.
         cpu: "100m"
         # otel.telemetryGateway.resources.requests.memory -- Memory resource requests.
-        memory: "128Mi"
+        memory: "512Mi"
 
     # otel.telemetryGateway.strategy -- The strategy for the Deployment object.
     strategy:

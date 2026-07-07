@@ -82,6 +82,8 @@ func TestOtelTelemetryGatewayRendersResources(t *testing.T) {
 	require.Len(t, deployment.Spec.Template.Spec.Containers, 1)
 	container := deployment.Spec.Template.Spec.Containers[0]
 	assert.Contains(t, container.Image, "stackstate/sts-opentelemetry-collector")
+	assert.Equal(t, "1Gi", container.Resources.Limits.Memory().String())
+	assert.Equal(t, "512Mi", container.Resources.Requests.Memory().String())
 	assert.Equal(t, int32(1), *deployment.Spec.Replicas)
 }
 

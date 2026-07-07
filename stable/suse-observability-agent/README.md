@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.22`
+Current chart version is `1.5.23`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -539,9 +539,9 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.priorityClassName | string | `""` | Priority class for gateway pods. |
 | otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA. |
 | otel.telemetryGateway.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
-| otel.telemetryGateway.resources.limits.memory | string | `"512Mi"` | Memory resource limits. |
+| otel.telemetryGateway.resources.limits.memory | string | `"1Gi"` | Memory resource limits. |
 | otel.telemetryGateway.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
-| otel.telemetryGateway.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
+| otel.telemetryGateway.resources.requests.memory | string | `"512Mi"` | Memory resource requests. |
 | otel.telemetryGateway.service.annotations | object | `{}` | Annotations for the ClusterIP Service. |
 | otel.telemetryGateway.serviceaccount.annotations | object | `{}` | Annotations for the service account for the gateway pods. |
 | otel.telemetryGateway.skipSslValidation | bool | `false` | Skip TLS validation when exporting to the platform. |

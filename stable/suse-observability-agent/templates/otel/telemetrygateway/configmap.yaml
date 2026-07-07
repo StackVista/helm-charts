@@ -285,5 +285,5 @@ data:
         logs/gateway:
           receivers: [otlp]
           processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, batch]
-          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.telemetryGateway.debug "signal" "logs") }}]
+          exporters: [debug]
 {{- end }}
