@@ -788,18 +788,24 @@ Init container to load stackpacks from docker image
 {{- define "stackstate.initContainer.stackpacks" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- range .Values.stackstate.stackpacks.images }}
-{{- if (or $.Values.global.features.experimentalStackpacks (eq .schemaVersion "1.0")) }}
-- name: init-stackpacks-{{ .name }}
-{{- $deploymentMode := .deploymentModeOverride | default $.Values.stackstate.deployment.mode | lower -}}
-{{- $tag := printf "%s-%s-%s" .version (lower $.Values.stackstate.deployment.edition) $deploymentMode }}
-  image: "{{ include "common.image.registry" ( dict "image" . "context" $) }}/{{ .repository }}:{{ $tag }}"
-  imagePullPolicy: {{ .pullPolicy | quote }}
+{{- $image := . -}}
+{{- $editions := .editions | default (list "Prime" "Community") -}}
+{{- range $editions }}
+{{- if (eq $.Values.stackstate.deployment.edition .) }}
+{{- if (or $.Values.global.features.experimentalStackpacks (eq $image.schemaVersion "1.0")) }}
+{{- $deploymentMode := $image.deploymentModeOverride | default $.Values.stackstate.deployment.mode | lower -}}
+{{- $tag := printf "%s-%s-%s" $image.version (lower $.Values.stackstate.deployment.edition) $deploymentMode }}
+- name: init-stackpacks-{{ $image.name }}
+  image: "{{ include "common.image.registry" ( dict "image" $image "context" $) }}/{{ $image.repository }}:{{ $tag }}"
+  imagePullPolicy: {{ $image.pullPolicy | quote }}
   args: ["/var/stackpacks"]
   volumeMounts:
-{{ include "stackstate.stackpacks.volumeMount" . | nindent 2 }}
+{{ include "stackstate.stackpacks.volumeMount" $image | nindent 2 }}
   securityContext:
   {{- $commonContainer.securityContext | toYaml | nindent 8 }}
 {{- end }}
+{{- end }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
