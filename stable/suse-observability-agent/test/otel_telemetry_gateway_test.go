@@ -158,7 +158,7 @@ func TestOtelTelemetryGatewayCollectorConfig(t *testing.T) {
 	// Processors.
 	assert.Contains(t, configData, "memory_limiter:")
 	assert.Contains(t, configData, "limit_percentage: 80")
-	assert.Contains(t, configData, "spike_limit_percentage: 25")
+	assert.Contains(t, configData, "spike_limit_percentage: 10")
 	assert.Contains(t, configData, "transform/pre-k8sattributes:")
 	assert.Contains(t, configData, "k8s_attributes:")
 	assert.Contains(t, configData, "key_regex: (.*)")

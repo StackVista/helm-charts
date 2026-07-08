@@ -33,13 +33,13 @@ data:
                     k8s.pod.uid: ${env:POD_UID}
 
     processors:
-      # Must be the first processor in every pipeline. The hard limit is 80% of pod
-      # memory; spike_limit_percentage is subtracted from that, so backpressure starts
-      # around 55% and leaves room for allocation bursts between limiter checks.
+      # Must be the first processor in every pipeline. limit_percentage sets the hard
+      # limit at 80% of pod memory; spike_limit_percentage reserves 10% for allocation
+      # bursts, so backpressure starts around 70% while leaving headroom below the pod limit.
       memory_limiter:
         check_interval: 5s
         limit_percentage: 80
-        spike_limit_percentage: 25
+        spike_limit_percentage: 10
       # Step 1 of 3: strip client-supplied security-sensitive attributes so clients cannot
       # spoof cluster/namespace identity. k8s_attributes (step 2) repopulates
       # k8s.namespace.name authoritatively from the Kubernetes API; transform/enrich-resource
