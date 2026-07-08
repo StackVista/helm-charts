@@ -1173,14 +1173,14 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[1].repository | string | `"stackstate/contrib-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[1].version | string | `"20260703141926-STAC-24722-community-stackpacks-in-contrib-12b5e5b"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
+| stackstate.stackpacks.images[1].version | string | `"20260707115718-STAC-24722-community-stackpacks-in-contrib-68eed2d"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
 | stackstate.stackpacks.images[2].deploymentModeOverride | string | `""` | Use the stackpacks from another deployment mode than StackState is running in |
 | stackstate.stackpacks.images[2].editions | list | `["Prime"]` | Editions that include the stackpacks |
 | stackstate.stackpacks.images[2].name | string | `"suse"` | name for the init container |
 | stackstate.stackpacks.images[2].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[2].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[2].repository | string | `"stackstate/suse-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[2].version | string | `"20260707121052-suse-virtualization-8bbcbc4"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
+| stackstate.stackpacks.images[2].version | string | `"20260708061333-suse-virtualization-b25f41e"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.localpvc.size | string | `"1Gi"` | Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS |
 | stackstate.stackpacks.localpvc.storageClass | string | `nil` |  |
