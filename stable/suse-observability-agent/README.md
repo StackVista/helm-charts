@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.26`
+Current chart version is `1.5.27`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -431,6 +431,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
 | otel.k8sResourceCollector.image.tag | string | `"v0.0.47-agent"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.integrations.rancher | bool | `true` | Enable Rancher Manager URL enrichment. When true, the collector reads CATTLE_SERVER from the cattle-cluster-agent Deployment in cattle-system and attaches it as a resource attribute on all emitted log records. Defaults to true: on non-Rancher clusters the cattle-cluster-agent is absent so the attribute is simply not set. Requires a Role and RoleBinding in cattle-system (created automatically). |
 | otel.k8sResourceCollector.integrations.suseAdmissionController | bool | `true` | Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack. |
 | otel.k8sResourceCollector.integrations.suseRuntimeEnforcer | bool | `true` | Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack. |
 | otel.k8sResourceCollector.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |

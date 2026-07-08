@@ -88,6 +88,10 @@ data:
             group: {{ $obj.group | default "" | quote }}
 {{- end }}
 {{- end }}
+{{- if .Values.otel.k8sResourceCollector.integrations.rancher }}
+        rancher_enrichment:
+          enabled: true
+{{- end }}
 
 {{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" (eq (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) "true") }}
     exporters:

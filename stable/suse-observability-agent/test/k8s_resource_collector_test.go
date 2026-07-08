@@ -658,6 +658,62 @@ func TestK8sResourceCollectorIntegrationFlagsDisabledByDefault(t *testing.T) {
 	}
 }
 
+// TestK8sResourceCollectorRancherEnrichmentEnabled verifies that when
+// integrations.rancher=true the ConfigMap contains the rancher_enrichment block
+// and a Role + RoleBinding are created in cattle-system.
+func TestK8sResourceCollectorRancherEnrichmentEnabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-rancher.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	configData := configMap.Data["config.yaml"]
+	assert.Contains(t, configData, "rancher_enrichment:", "rancher_enrichment block must appear in config")
+	assert.Contains(t, configData, "enabled: true", "rancher_enrichment.enabled must be true")
+
+	role, exists := resources.Roles["suse-observability-agent-k8s-resource-collector-rancher"]
+	require.True(t, exists, "cattle-system Role for rancher enrichment was not found")
+	assert.Equal(t, "cattle-system", role.Namespace)
+	require.Len(t, role.Rules, 1)
+	assert.Contains(t, role.Rules[0].APIGroups, "apps")
+	assert.Contains(t, role.Rules[0].Resources, "deployments")
+	assert.ElementsMatch(t, []string{"get", "list", "watch"}, role.Rules[0].Verbs)
+
+	roleBinding, exists := resources.RoleBindings["suse-observability-agent-k8s-resource-collector-rancher"]
+	require.True(t, exists, "cattle-system RoleBinding for rancher enrichment was not found")
+	assert.Equal(t, "cattle-system", roleBinding.Namespace)
+	assert.Equal(t, "Role", roleBinding.RoleRef.Kind)
+	assert.Equal(t, "suse-observability-agent-k8s-resource-collector-rancher", roleBinding.RoleRef.Name)
+	require.Len(t, roleBinding.Subjects, 1)
+	assert.Equal(t, "suse-observability-agent-k8s-resource-collector", roleBinding.Subjects[0].Name)
+}
+
+// TestK8sResourceCollectorRancherEnrichmentDisabled verifies that when
+// integrations.rancher=false no rancher_enrichment config block is rendered
+// and no cattle-system Role or RoleBinding is created.
+func TestK8sResourceCollectorRancherEnrichmentDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t,
+		"suse-observability-agent",
+		"values/minimal.yaml",
+		"values/k8s-resource-collector-integrations-disabled.yaml",
+	)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+	require.True(t, exists, "k8s-resource-collector config map was not found")
+	assert.NotContains(t, configMap.Data["config.yaml"], "rancher_enrichment:", "rancher_enrichment must not appear when disabled")
+
+	_, exists = resources.Roles["suse-observability-agent-k8s-resource-collector-rancher"]
+	assert.False(t, exists, "cattle-system Role must not be created when rancher enrichment is disabled")
+
+	_, exists = resources.RoleBindings["suse-observability-agent-k8s-resource-collector-rancher"]
+	assert.False(t, exists, "cattle-system RoleBinding must not be created when rancher enrichment is disabled")
+}
+
 func TestK8sResourceCollectorDebugExporterEnabled(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t,
 		"suse-observability-agent",

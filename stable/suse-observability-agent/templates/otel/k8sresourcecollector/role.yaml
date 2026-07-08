@@ -14,3 +14,21 @@ rules:
     resources: ["leases"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 {{- end }}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.otel.k8sResourceCollector.integrations.rancher }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Release.Name }}-k8s-resource-collector-rancher
+  namespace: cattle-system
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: k8s-resource-collector
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch"]
+{{- end }}
