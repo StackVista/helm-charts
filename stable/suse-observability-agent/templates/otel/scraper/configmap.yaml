@@ -83,6 +83,14 @@ data:
               - set(attributes["k8s.cluster.name"], "${env:K8S_CLUSTER_NAME}")
               - set(attributes["service.instance.id"], attributes["k8s.pod.uid"]) where attributes["service.instance.id"] == nil and attributes["k8s.pod.uid"] != nil
               - set(attributes["service.namespace"], attributes["k8s.namespace.name"]) where attributes["service.namespace"] == nil and attributes["k8s.namespace.name"] != nil
+      transform/self-metrics:
+        error_mode: ignore
+        metric_statements:
+          - context: resource
+            statements:
+              # Override the collector binary default (sts-opentelemetry-agent-collector)
+              # so each agent collector has its own service component.
+              - set(attributes["service.name"], "{{ include "stackstate-k8s-agent.otelMetricsScraper.name" . }}")
       # filter/default: {}
       batch: {}
 
@@ -128,7 +136,11 @@ data:
       extensions: [health_check, {{ if .Values.otel.prometheusScraping.collector.pprof.enabled }}pprof, {{ end }}bearertokenauth]
       pipelines:
         metrics/prometheus-scraping:
-          receivers: [prometheus, prometheus/self]
+          receivers: [prometheus]
           processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, batch]
+          exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.prometheusScraping.collector.debug "signal" "metrics") }}]
+        metrics/self:
+          receivers: [prometheus/self]
+          processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, transform/self-metrics, batch]
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.prometheusScraping.collector.debug "signal" "metrics") }}]
 {{- end }}

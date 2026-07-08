@@ -169,7 +169,7 @@ func TestOtelPrometheusScrapingCollectorConfig(t *testing.T) {
 	// it is assigned to exactly one collector replica.
 	assert.NotContains(t, configData, "prometheus/target-allocator-metrics:")
 	assert.NotContains(t, configData, "job_name: opentelemetry-target-allocator")
-	assert.Contains(t, configData, "receivers: [prometheus, prometheus/self]")
+	assert.NotContains(t, configData, "receivers: [prometheus, prometheus/self]")
 	assert.Contains(t, configData, "limit_percentage: 80")
 	assert.Contains(t, configData, "spike_limit_percentage: 25")
 	assert.Contains(t, configData, "transform/pre-k8sattributes:")
@@ -186,6 +186,8 @@ func TestOtelPrometheusScrapingCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "set(attributes[\"k8s.cluster.name\"], \"${env:K8S_CLUSTER_NAME}\")")
 	assert.Contains(t, configData, "set(attributes[\"service.instance.id\"], attributes[\"k8s.pod.uid\"])")
 	assert.Contains(t, configData, "set(attributes[\"service.namespace\"], attributes[\"k8s.namespace.name\"])")
+	assert.Contains(t, configData, "transform/self-metrics:")
+	assert.Contains(t, configData, "set(attributes[\"service.name\"], \"suse-observability-agent-otel-metrics-scraper\")")
 	assert.Contains(t, configData, "metrics/prometheus-scraping:")
 	assert.Contains(t, configData, "otlphttp/suse-observability:")
 	assert.Contains(t, configData, "endpoint: ${env:PLATFORM_OTLP_ENDPOINT}")
@@ -199,8 +201,11 @@ func TestOtelPrometheusScrapingCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "readers:")
 	assert.Contains(t, configData, "host: ${env:POD_IP}")
 	assert.Contains(t, configData, "port: 8888")
-	assert.Contains(t, configData, "receivers: [prometheus, prometheus/self]")
+	assert.Contains(t, configData, "receivers: [prometheus]")
 	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, batch]")
+	assert.Contains(t, configData, "metrics/self:")
+	assert.Contains(t, configData, "receivers: [prometheus/self]")
+	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, transform/self-metrics, batch]")
 	assert.NotContains(t, configData, "sts_api_key")
 }
 

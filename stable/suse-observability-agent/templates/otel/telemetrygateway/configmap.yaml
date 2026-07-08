@@ -167,16 +167,14 @@ data:
                   percent: 33
                 - policy: rest
                   percent: 34
-      # The self-scrape pipeline (metrics/self) bypasses k8s_attributes, so cluster and
-      # namespace are set directly from downward-API env vars instead of a K8s API lookup.
       transform/self-metrics:
         error_mode: ignore
         metric_statements:
           - context: resource
             statements:
-              - set(resource.attributes["k8s.cluster.name"], "${env:K8S_CLUSTER_NAME}")
-              - set(resource.attributes["k8s.namespace.name"], "${env:K8S_NAMESPACE_NAME}")
-              - set(resource.attributes["service.namespace"], "${env:K8S_NAMESPACE_NAME}") where resource.attributes["service.namespace"] == nil
+              # Override the collector binary default (sts-opentelemetry-agent-collector)
+              # so each agent collector has its own service component.
+              - set(resource.attributes["service.name"], "{{ include "stackstate-k8s-agent.otelTelemetryGateway.name" . }}")
       batch: {}
 
     connectors:
@@ -284,7 +282,7 @@ data:
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.telemetryGateway.debug "signal" "metrics") }}]
         metrics/self:
           receivers: [prometheus/self]
-          processors: [memory_limiter, transform/self-metrics, batch]
+          processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, transform/self-metrics, batch]
           exporters: [{{ $exporterName }}]
         logs/gateway:
           receivers: [otlp]

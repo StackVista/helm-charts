@@ -171,6 +171,8 @@ func TestOtelTelemetryGatewayCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "tail_sampling:")
 	assert.Contains(t, configData, "max_total_spans_per_second: 500")
 	assert.Contains(t, configData, "transform/self-metrics:")
+	assert.Contains(t, configData, "set(resource.attributes[\"service.name\"], \"suse-observability-agent-otel-telemetry-gateway\")")
+	assert.NotContains(t, configData, "set(resource.attributes[\"k8s.namespace.name\"], \"${env:K8S_NAMESPACE_NAME}\")")
 	assert.NotContains(t, configData, "stsusage:")
 	assert.Contains(t, configData, "batch: {}")
 
@@ -206,6 +208,8 @@ func TestOtelTelemetryGatewayCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "metrics/gateway:")
 	assert.Contains(t, configData, "metrics/spanmetrics:")
 	assert.Contains(t, configData, "metrics/self:")
+	assert.Contains(t, configData, "receivers: [prometheus/self]")
+	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, transform/self-metrics, batch]")
 	assert.Contains(t, configData, "logs/gateway:")
 	assert.NotContains(t, configData, "sts_api_key")
 }
@@ -304,11 +308,11 @@ func TestOtelTelemetryGatewayAllThreeSignalPipelines(t *testing.T) {
 	assert.Contains(t, configData, "receivers: [span_metrics]")
 	assert.Contains(t, configData, "processors: [memory_limiter, batch]")
 
-	// metrics/self: dedicated pipeline for collector self-metrics; skips security enforcement.
+	// metrics/self: collector self-metrics follow the same k8s enrichment path as scraped metrics.
 	assert.Contains(t, configData, "metrics/self:")
 	assert.Contains(t, configData, "receivers: [prometheus/self]")
-	assert.Contains(t, configData, "processors: [memory_limiter, transform/self-metrics, batch]")
-	assert.Contains(t, configData, "set(resource.attributes[\"k8s.namespace.name\"], \"${env:K8S_NAMESPACE_NAME}\")")
+	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/enrich-resource, transform/self-metrics, batch]")
+	assert.Contains(t, configData, "set(resource.attributes[\"service.name\"], \"suse-observability-agent-otel-telemetry-gateway\")")
 
 	// logs/gateway.
 	assert.Contains(t, configData, "logs/gateway:")
