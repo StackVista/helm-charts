@@ -787,6 +787,7 @@ Init container to load stackpacks from docker image
 */}}
 {{- define "stackstate.initContainer.stackpacks" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $firstImage := first .Values.stackstate.stackpacks.images }}
 {{- range .Values.stackstate.stackpacks.images }}
 {{- $image := . -}}
 {{- $editions := .editions | default (list "Prime" "Community") -}}
@@ -802,7 +803,11 @@ Init container to load stackpacks from docker image
 - name: init-stackpacks-{{ $image.name }}
   image: "{{ include "common.image.registry" ( dict "image" $image "context" $) }}/{{ $image.repository }}:{{ $tag }}"
   imagePullPolicy: {{ $image.pullPolicy | quote }}
-  args: ["/var/stackpacks"]
+  args:
+    - "/var/stackpacks"
+{{- if eq $image.name $firstImage.name }}
+    - "--clear"
+{{- end }}
   volumeMounts:
 {{ include "stackstate.stackpacks.volumeMount" $image | nindent 2 }}
   securityContext:
