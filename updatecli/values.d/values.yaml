@@ -15,7 +15,9 @@ stackstate:
 # Branch segment expected in stackpacks docker tags
 # (e.g. `<ts>-master-<sha>-prime-selfhosted`).
 stackpacks:
-  branchEnv: STACKPACKS_SOURCE_BRANCH
+  legacyBranchEnv: STACKPACKS_SOURCE_BRANCH
+  contribBranchEnv: STACKPACKS_CONTRIB_SOURCE_BRANCH
+  suseBranchEnv: STACKPACKS_SUSE_SOURCE_BRANCH
 
 docker:
   sts:

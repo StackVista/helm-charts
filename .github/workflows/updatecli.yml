@@ -30,9 +30,17 @@ on:
         type: string
         default: master
       stackpacks_source_branch:
-        description: Source branch for stackpacks pipeline
+        description: Source branch for legacy stackpacks update
         type: string
         default: master
+      stackpacks_contrib_source_branch:
+        description: Source branch for contrib stackpacks update
+        type: string
+        default: main
+      stackpacks_suse_source_branch:
+        description: Source branch for suse stackpacks update
+        type: string
+        default: main
       dry_run:
         description: "Skip `updatecli pipeline apply` + follow_up (squash-push / open PR)"
         type: boolean
@@ -83,6 +91,8 @@ jobs:
       TARGET_BRANCH: ${{ github.base_ref || 'master' }}
       STACKSTATE_SOURCE_BRANCH: master
       STACKPACKS_SOURCE_BRANCH: master
+      STACKPACKS_CONTRIB_SOURCE_BRANCH: main
+      STACKPACKS_SUSE_SOURCE_BRANCH: main
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
@@ -116,9 +126,11 @@ jobs:
       pr_title:       ${{ steps.meta.outputs.pr_title }}
       working_branch: ${{ steps.meta.outputs.working_branch }}
     env:
-      TARGET_BRANCH:            ${{ inputs.target_branch }}
-      STACKSTATE_SOURCE_BRANCH: ${{ inputs.stackstate_source_branch }}
-      STACKPACKS_SOURCE_BRANCH: ${{ inputs.stackpacks_source_branch }}
+      TARGET_BRANCH:                    ${{ inputs.target_branch }}
+      STACKSTATE_SOURCE_BRANCH:         ${{ inputs.stackstate_source_branch }}
+      STACKPACKS_SOURCE_BRANCH:         ${{ inputs.stackpacks_source_branch }}
+      STACKPACKS_CONTRIB_SOURCE_BRANCH: ${{ inputs.stackpacks_contrib_source_branch }}
+      STACKPACKS_SUSE_SOURCE_BRANCH:    ${{ inputs.stackpacks_suse_source_branch }}
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
