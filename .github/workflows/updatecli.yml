@@ -36,11 +36,11 @@ on:
       stackpacks_contrib_source_branch:
         description: Source branch for contrib stackpacks update
         type: string
-        default: master
+        default: main
       stackpacks_suse_source_branch:
         description: Source branch for suse stackpacks update
         type: string
-        default: master
+        default: main
       dry_run:
         description: "Skip `updatecli pipeline apply` + follow_up (squash-push / open PR)"
         type: boolean
@@ -91,8 +91,8 @@ jobs:
       TARGET_BRANCH: ${{ github.base_ref || 'master' }}
       STACKSTATE_SOURCE_BRANCH: master
       STACKPACKS_SOURCE_BRANCH: master
-      STACKPACKS_CONTRIB_SOURCE_BRANCH: master
-      STACKPACKS_SUSE_SOURCE_BRANCH: master
+      STACKPACKS_CONTRIB_SOURCE_BRANCH: main
+      STACKPACKS_SUSE_SOURCE_BRANCH: main
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:

@@ -58,7 +58,9 @@ func TestStackpacks2DisabledNonSplit(t *testing.T) {
 	assert.Regexp(t, ".*/stackstate/stackpacks:.*", server.Spec.Template.Spec.InitContainers[stackpacksInitIdx].Image)
 
 	// Stackpacks 2 Contrib docker image should be absent
-	assert.NotContains(t, server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-contrib" })
+	assert.Equal(t, -1, slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool {
+		return container.Name == "init-stackpacks-contrib"
+	}))
 }
 
 func TestStackpacks2EnabledSplit(t *testing.T) {
@@ -106,7 +108,9 @@ func TestStackpacks2DisabledSplit(t *testing.T) {
 	assert.Regexp(t, ".*/stackstate/stackpacks:.*", api.Spec.Template.Spec.InitContainers[stackpacksInitIdx].Image)
 
 	// Stackpacks 2 Contrib docker image should be absent
-	assert.NotContains(t, api.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-contrib" })
+	assert.Equal(t, -1, slices.IndexFunc(api.Spec.Template.Spec.InitContainers, func(container v1.Container) bool {
+		return container.Name == "init-stackpacks-contrib"
+	}))
 }
 
 func TestStackpacks2EnabledNonSplitCommunity(t *testing.T) {
@@ -134,5 +138,7 @@ func TestStackpacks2EnabledNonSplitCommunity(t *testing.T) {
 	assert.Regexp(t, ".*/stackstate/contrib-stackpacks:.*", server.Spec.Template.Spec.InitContainers[contribStackpacksInitIdx].Image)
 
 	// Stackpacks 2 SUSE Docker image should be absent
-	assert.NotContains(t, server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-suse" })
+	assert.Equal(t, -1, slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool {
+		return container.Name == "init-stackpacks-suse"
+	}))
 }

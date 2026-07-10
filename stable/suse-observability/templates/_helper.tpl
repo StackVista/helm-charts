@@ -787,18 +787,20 @@ Init container to load stackpacks from docker image
 */}}
 {{- define "stackstate.initContainer.stackpacks" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $firstImage := first .Values.stackstate.stackpacks.images }}
+{{- $firstImage := first .Values.stackstate.stackpacks.images -}}
+{{- $stackpacksv2 := .Values.global.features.experimentalStackpacks | ternary "-2_0" "" -}}
 {{- range .Values.stackstate.stackpacks.images }}
 {{- $image := . -}}
 {{- $editions := .editions | default (list "Prime" "Community") -}}
+{{- $deriveTag := hasKey $image "version" }}
 {{- range $editions }}
 {{- if (eq $.Values.stackstate.deployment.edition .) }}
-{{- if (or $.Values.global.features.experimentalStackpacks (eq $image.schemaVersion "1.0")) }}
+{{- if (or $.Values.global.features.experimentalStackpacks $deriveTag) }}
 {{- $deploymentMode := $image.deploymentModeOverride | default $.Values.stackstate.deployment.mode | lower -}}
 {{- $tag := ternary
-    (printf "%s-%s-%s" $image.version (lower $.Values.stackstate.deployment.edition) $deploymentMode)
-    $image.version
-    (eq $image.schemaVersion "1.0")
+    (printf "%s%s-%s-%s" $image.version $stackpacksv2 (lower $.Values.stackstate.deployment.edition) $deploymentMode)
+    $image.tag
+    $deriveTag
 }}
 - name: init-stackpacks-{{ $image.name }}
   image: "{{ include "common.image.registry" ( dict "image" $image "context" $) }}/{{ $image.repository }}:{{ $tag }}"

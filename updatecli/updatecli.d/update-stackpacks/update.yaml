@@ -86,7 +86,7 @@ targets:
     sourceid: contribStackpacks
     spec:
       file: "stable/suse-observability/values.yaml"
-      key: "$.stackstate.stackpacks.images[1].version"
+      key: "$.stackstate.stackpacks.images[1].tag"
   suseStackpacksImageVersion:
     name: "suse stackpacks image version (suse-observability values.yaml)"
     kind: yaml
@@ -94,7 +94,7 @@ targets:
     sourceid: suseStackpacks
     spec:
       file: "stable/suse-observability/values.yaml"
-      key: "$.stackstate.stackpacks.images[2].version"
+      key: "$.stackstate.stackpacks.images[2].tag"
   # updatecli's yaml plugin re-serialises the value it bumps and only quotes what
   # go-yaml deems ambiguous, leaving <digits>e<digits> values unquoted — which
   # helm then coerces to a float, producing a wrong image reference. Re-quote the
