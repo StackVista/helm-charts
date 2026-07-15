@@ -3,10 +3,11 @@
 otel:
   enabled: true
   k8sResourceCollector:
-    rbac:
-      crdApiGroups:
-        # New group added on top of the base file's "policies.kubewarden.io".
-        "longhorn.io": true
+    crDiscovery:
+      apiGroups:
+        include:
+          # New group added on top of the base file's "policies.kubewarden.io".
+          "longhorn.io": true
     objects:
       # New resource added on top of the base file's pods/deployments/statefulsets.
       services:

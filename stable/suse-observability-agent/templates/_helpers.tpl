@@ -401,8 +401,8 @@ Merge enabled integration overlays into otel.k8sResourceCollector values.
 
 Each integrations/<name>.yaml file is loaded via .Files.Get, parsed, and deep-merged
 over the base otel.k8sResourceCollector values using mustMergeOverwrite. The merge is
-additive: integration API groups are added to crdDiscovery.apiGroupFilters.include and
-rbac.crdApiGroups alongside any operator-supplied entries.
+additive: integration API groups are added to crDiscovery.apiGroups.include
+alongside any operator-supplied entries.
 
 Returns a dict equivalent to .Values.otel.k8sResourceCollector with integration groups merged in.
 */}}

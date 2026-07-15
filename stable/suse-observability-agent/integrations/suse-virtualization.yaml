@@ -10,11 +10,7 @@
 #         suseVirtualization: true
 otel:
   k8sResourceCollector:
-    crdDiscovery:
-      apiGroupFilters:
+    crDiscovery:
+      apiGroups:
         include:
           "kubevirt.io": true
-    rbac:
-      # Only consulted when otel.k8sResourceCollector.rbac.useWildcard is false.
-      crdApiGroups:
-        "kubevirt.io": true

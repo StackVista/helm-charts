@@ -4,18 +4,14 @@ stackstate:
     name: test-cluster
   url: https://my-suse-observability-instance.com/receiver
 
-# All four integration flags enabled alongside the default wildcard filter.
-# Exercises the mergedValues helper: integration groups are merged in alongside
-# the operator-supplied "*": true entry.
+# All four integration flags enabled. Exercises the mergedValues helper:
+# integration groups are merged into the include map without requiring a wildcard.
 otel:
   enabled: true
   k8sResourceCollector:
     enabled: true
-    crdDiscovery:
+    crDiscovery:
       discoveryMode: api_groups
-      apiGroupFilters:
-        include:
-          "*": true
     rbac:
       useWildcard: true
     integrations:

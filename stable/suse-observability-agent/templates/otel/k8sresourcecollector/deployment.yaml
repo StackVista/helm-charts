@@ -62,6 +62,14 @@ spec:
             value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
           - name: K8S_CLUSTER_NAME
             value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: POD_UID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.uid
           - name: SKIP_SSL_VALIDATION
             value: {{ or .Values.global.skipSslValidation .Values.otel.k8sResourceCollector.skipSslValidation | quote }}
           {{- if .Values.otel.k8sResourceCollector.leaderElection.enabled }}
@@ -69,10 +77,6 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
           {{- end }}
           volumeMounts:
             - name: config

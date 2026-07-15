@@ -271,7 +271,7 @@ func TestK8sResourceCollectorObjects(t *testing.T) {
 }
 
 // TestK8sResourceCollectorObjectsMergeAcrossValues proves that the dict-shaped
-// objects / crdApiGroups values merge per-key when an operator layers extra
+// objects / apiGroups values merge per-key when an operator layers extra
 // values via `-f extra.yaml`. With list-shaped values the second file would
 // override the first entirely; with dict-shaped values both sets coexist.
 func TestK8sResourceCollectorObjectsMergeAcrossValues(t *testing.T) {
@@ -305,8 +305,8 @@ func TestK8sResourceCollectorObjectsMergeAcrossValues(t *testing.T) {
 			apiGroups[g] = true
 		}
 	}
-	assert.True(t, apiGroups["policies.kubewarden.io"], "base crdApiGroups entry should survive override")
-	assert.True(t, apiGroups["longhorn.io"], "extra crdApiGroups entry proves per-key merge across -f files")
+	assert.True(t, apiGroups["policies.kubewarden.io"], "base apiGroups entry should survive override")
+	assert.True(t, apiGroups["longhorn.io"], "extra apiGroups entry proves per-key merge across -f files")
 }
 
 // TestK8sResourceCollectorApiGroupDisableViaOverride proves that setting a
@@ -347,8 +347,8 @@ func TestK8sResourceCollectorDiscoveryModeAll(t *testing.T) {
 
 	configData := configMap.Data["config.yaml"]
 	assert.Contains(t, configData, "discovery_mode: all")
-	// When mode is "all", crd_api_group_filters should not be present
-	assert.NotContains(t, configData, "crd_api_group_filters:")
+	// When mode is "all", cr_api_groups should not be present
+	assert.NotContains(t, configData, "cr_api_groups:")
 }
 
 func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
@@ -362,13 +362,16 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 
 	// Verify receiver configuration
 	assert.Contains(t, configData, "receivers:")
+	assert.Contains(t, configData, "prometheus/self:")
 	assert.Contains(t, configData, "k8sresource:")
 	assert.Contains(t, configData, "auth_type: serviceAccount")
 	assert.Contains(t, configData, "snapshot_interval: 5m")
 	assert.Contains(t, configData, "discovery_mode: api_groups")
+	assert.Contains(t, configData, "max_cr_total_data_size_bytes: 10485760")
+	assert.Contains(t, configData, "max_object_total_data_size_bytes: 10485760")
 
 	// Verify API group filters
-	assert.Contains(t, configData, "crd_api_group_filters:")
+	assert.Contains(t, configData, "cr_api_groups:")
 	assert.Contains(t, configData, "include:")
 	assert.Contains(t, configData, "policies.kubewarden.io")
 	assert.Contains(t, configData, "longhorn.io")
@@ -395,6 +398,8 @@ func TestK8sResourceCollectorConfigMapContent(t *testing.T) {
 	assert.Contains(t, configData, "service:")
 	assert.Contains(t, configData, "pipelines:")
 	assert.Contains(t, configData, "logs/k8s-resource:")
+	assert.Contains(t, configData, "metrics/self:")
+	assert.Contains(t, configData, "receivers: [prometheus/self]")
 }
 
 func TestK8sResourceCollectorPprofCanBeDisabled(t *testing.T) {
@@ -567,7 +572,7 @@ func TestK8sResourceCollectorSingleReplicaSkipsPDB(t *testing.T) {
 
 // TestK8sResourceCollectorIntegrationFlags verifies that enabling integration
 // flags adds the corresponding API groups to the rendered ConfigMap
-// (crd_api_group_filters.include). All four flags are set in a single values
+// (cr_api_groups.include). All four flags are set in a single values
 // file so one render covers every integration's groups.
 func TestK8sResourceCollectorIntegrationFlags(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t,
@@ -581,7 +586,7 @@ func TestK8sResourceCollectorIntegrationFlags(t *testing.T) {
 	require.True(t, exists, "k8s-resource-collector config map was not found")
 	configData := configMap.Data["config.yaml"]
 
-	require.Contains(t, configData, "crd_api_group_filters:")
+	require.Contains(t, configData, "cr_api_groups:")
 	require.Contains(t, configData, "include:")
 
 	allGroups := []string{
@@ -604,7 +609,7 @@ func TestK8sResourceCollectorIntegrationFlags(t *testing.T) {
 
 // TestK8sResourceCollectorIntegrationFlagsRestrictedRBAC verifies that
 // integration flags also populate the ClusterRole under restricted RBAC
-// (useWildcard=false), and that they merge with operator-supplied crdApiGroups
+// (useWildcard=false), and that they merge with operator-supplied apiGroups
 // rather than replacing them.
 func TestK8sResourceCollectorIntegrationFlagsRestrictedRBAC(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t,
@@ -630,7 +635,7 @@ func TestK8sResourceCollectorIntegrationFlagsRestrictedRBAC(t *testing.T) {
 	}
 
 	// Operator-supplied base entry must survive the merge.
-	assert.True(t, apiGroups["policies.kubewarden.io"], "operator-supplied crdApiGroups entry should survive integration merge")
+	assert.True(t, apiGroups["policies.kubewarden.io"], "operator-supplied apiGroups entry should survive integration merge")
 }
 
 // TestK8sResourceCollectorIntegrationFlagsDisabledByDefault verifies that when

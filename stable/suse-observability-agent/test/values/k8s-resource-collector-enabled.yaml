@@ -5,17 +5,13 @@ stackstate:
   # Canonical URL shape per the kubernetes-v2 stackpack instructions.
   url: https://my-suse-observability-instance.com/receiver/stsAgent
 
-# Enable cluster collector with default settings (watch all CRDs)
+# Enable cluster collector with default settings and integration API groups.
 otel:
   enabled: true
   k8sResourceCollector:
     enabled: true
-    crdDiscovery:
+    crDiscovery:
       snapshotInterval: 5m
       discoveryMode: api_groups
-      apiGroupFilters:
-        include:
-          "*": true
-        exclude: {}
     rbac:
       useWildcard: true

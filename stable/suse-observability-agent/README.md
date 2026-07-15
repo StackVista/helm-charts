@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.29`
+Current chart version is `1.5.30`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -418,10 +418,12 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
 | otel.enabled | bool | `false` | Master switch for all OTel components. Set to true to activate OpenTelemetry based features. |
 | otel.k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
-| otel.k8sResourceCollector.crdDiscovery.apiGroupFilters.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
-| otel.k8sResourceCollector.crdDiscovery.apiGroupFilters.include | object | `{"*":true}` | Map of API group patterns (key) -> bool (enabled). Supports wildcards like "*.suse.com". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups". |
-| otel.k8sResourceCollector.crdDiscovery.discoveryMode | string | `"api_groups"` | CRD discovery mode: "api_groups" (filtered) or "all" (watch everything) |
-| otel.k8sResourceCollector.crdDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
+| otel.k8sResourceCollector.crDiscovery.apiGroups.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
+| otel.k8sResourceCollector.crDiscovery.apiGroups.include | object | `{}` | Map of API group patterns (key) -> bool (enabled). Used for both CR filtering and restricted RBAC. Supports wildcards like "*.suse.com" for filtering, but restricted RBAC (rbac.useWildcard=false) can only render exact API groups or "*". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups". Common SUSE integration API groups are added by the enabled integrations below. |
+| otel.k8sResourceCollector.crDiscovery.discoveryMode | string | `"api_groups"` | CR discovery mode: "api_groups" (filtered custom resources) or "all" (watch all custom resources). CRDs are always watched and forwarded. |
+| otel.k8sResourceCollector.crDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
+| otel.k8sResourceCollector.dataLimits.maxCrTotalDataSizeBytes | int | `10485760` | Total serialized payload budget, in bytes, for CR-discovered Custom Resources per collection cycle. Default: 10 MiB. CRs are considered smallest-first, then by stable identity; CRs that do not fit are dropped and counted in receiver metrics. |
+| otel.k8sResourceCollector.dataLimits.maxObjectTotalDataSizeBytes | int | `10485760` | Total serialized payload budget, in bytes, for statically configured Kubernetes object watches per collection cycle. Default: 10 MiB. Objects are considered smallest-first, then by stable identity; objects that do not fit are dropped and counted in receiver metrics. |
 | otel.k8sResourceCollector.debug | object | `{"enabled":false,"pipelines":["logs"],"verbosity":"basic"}` | Optional debug exporter for troubleshooting. When enabled, the upstream OTel `debug` exporter is wired into the listed pipelines so payloads are written to the collector log. Leave disabled in production. |
 | otel.k8sResourceCollector.debug.enabled | bool | `false` | Enable the debug exporter for this collector. |
 | otel.k8sResourceCollector.debug.pipelines | list | `["logs"]` | Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}. |
@@ -430,7 +432,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"v0.0.47-agent"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"v0.0.50-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.integrations.rancher | bool | `true` | Enable Rancher Manager URL enrichment. When true, the collector reads CATTLE_SERVER from the cattle-cluster-agent Deployment in cattle-system and attaches it as a resource attribute on all emitted log records. Defaults to true: on non-Rancher clusters the cattle-cluster-agent is absent so the attribute is simply not set. Requires a Role and RoleBinding in cattle-system (created automatically). |
 | otel.k8sResourceCollector.integrations.suseAdmissionController | bool | `true` | Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack. |
 | otel.k8sResourceCollector.integrations.suseRuntimeEnforcer | bool | `true` | Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack. |
@@ -449,13 +451,12 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | otel.k8sResourceCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
 | otel.k8sResourceCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| otel.k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by crd_api_group_filters are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
+| otel.k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by cr_api_groups are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
 | otel.k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
 | otel.k8sResourceCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
 | otel.k8sResourceCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
 | otel.k8sResourceCollector.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.k8sResourceCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
-| otel.k8sResourceCollector.rbac.crdApiGroups | object | `{}` | Map of API group (key) -> bool (enabled) for CRD-discovered custom resources to grant get/list/watch on all resources in the group (only used when useWildcard=false). Set a key to false in an override to disable a default. otel.k8sResourceCollector.objects entries derive their own resource-scoped RBAC and do not need an entry here. |
 | otel.k8sResourceCollector.rbac.useWildcard | bool | `true` | Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups |
 | otel.k8sResourceCollector.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | otel.k8sResourceCollector.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
@@ -481,7 +482,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
 | otel.prometheusScraping.collector.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently. |
-| otel.prometheusScraping.collector.image.tag | string | `"v0.0.47-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
+| otel.prometheusScraping.collector.image.tag | string | `"v0.0.50-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |
@@ -532,7 +533,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.enabled | bool | `false` | Enable the telemetry gateway for OTLP push-based telemetry (metrics, traces, logs). Requires otel.enabled=true. |
 | otel.telemetryGateway.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.telemetryGateway.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.telemetryGateway.image.tag | string | `"v0.0.47-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
+| otel.telemetryGateway.image.tag | string | `"v0.0.50-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.telemetryGateway.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.telemetryGateway.podAnnotations | object | `{}` | Additional annotations for gateway pods. |
 | otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |

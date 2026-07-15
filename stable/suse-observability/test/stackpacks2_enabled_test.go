@@ -25,6 +25,7 @@ func TestStackpacks2EnabledNonSplit(t *testing.T) {
 	// Stackpacks 2 is auto-upgraded
 	serverConfigmap := resources.ConfigMaps["suse-observability-server"]
 	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
+	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
 	stackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-v1" })
@@ -52,6 +53,7 @@ func TestStackpacks2DisabledNonSplit(t *testing.T) {
 	// Stackpacks 2 is not auto-upgraded
 	serverConfigmap := resources.ConfigMaps["suse-observability-server"]
 	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
+	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
 	stackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return (container.Name == "init-stackpacks-v1") })
@@ -78,6 +80,7 @@ func TestStackpacks2EnabledSplit(t *testing.T) {
 	// Stackpacks 2 is auto-upgraded
 	serverConfigmap := resources.ConfigMaps["suse-observability-api"]
 	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
+	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
 	stackpacksInitIdx := slices.IndexFunc(api.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-v1" })
@@ -102,6 +105,7 @@ func TestStackpacks2DisabledSplit(t *testing.T) {
 	// Stackpacks 2 is not auto-upgraded
 	serverConfigmap := resources.ConfigMaps["suse-observability-api"]
 	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
+	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
 	stackpacksInitIdx := slices.IndexFunc(api.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-v1" })

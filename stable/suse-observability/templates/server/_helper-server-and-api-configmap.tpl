@@ -113,7 +113,7 @@ stackstate.stackPacks {
   Users can extend this list by setting: stackstate.stackpacks.upgradeOnStartup
 */}}
   {{ $defaultStackPacksToUpgrade := list "kubernetes-v2" "stackstate-k8s-agent-v2" "open-telemetry" "aad-v2" "stackstate" -}}
-  {{ $stackpacks2ToUpgrade := .Values.global.features.experimentalStackpacks | ternary (list "open-telemetry-2") (list) -}}
+  {{ $stackpacks2ToUpgrade := .Values.global.features.experimentalStackpacks | ternary (list "open-telemetry-2" "otel-k8s-crd") (list) -}}
   {{ $userStackPacksToUpgrade := .Values.stackstate.stackpacks.upgradeOnStartup | default list -}}
   {{ $upgradeList := concat $defaultStackPacksToUpgrade $stackpacks2ToUpgrade $userStackPacksToUpgrade | uniq -}}
   upgradeOnStartUp = {{ toJson $upgradeList }}

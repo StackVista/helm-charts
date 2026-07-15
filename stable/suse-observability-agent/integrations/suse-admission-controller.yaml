@@ -10,8 +10,8 @@
 #         suseAdmissionController: true
 otel:
   k8sResourceCollector:
-    crdDiscovery:
-      apiGroupFilters:
+    crDiscovery:
+      apiGroups:
         include:
           "policies.kubewarden.io": true
           # Policy/audit reports. wgpolicyk8s.io is the current group; openreports.io
@@ -19,9 +19,3 @@ otel:
           # so the integration works before and after clusters migrate.
           "wgpolicyk8s.io": true
           "openreports.io": true
-    rbac:
-      # Only consulted when otel.k8sResourceCollector.rbac.useWildcard is false.
-      crdApiGroups:
-        "policies.kubewarden.io": true
-        "wgpolicyk8s.io": true
-        "openreports.io": true

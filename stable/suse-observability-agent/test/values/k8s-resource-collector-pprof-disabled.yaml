@@ -11,10 +11,10 @@ otel:
     enabled: true
     pprof:
       enabled: false
-    crdDiscovery:
+    crDiscovery:
       snapshotInterval: 5m
       discoveryMode: api_groups
-      apiGroupFilters:
+      apiGroups:
         include:
           "*": true
         exclude: {}

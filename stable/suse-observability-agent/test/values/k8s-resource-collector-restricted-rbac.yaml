@@ -9,22 +9,15 @@ otel:
   enabled: true
   k8sResourceCollector:
     enabled: true
-    crdDiscovery:
+    crDiscovery:
       snapshotInterval: 5m
       discoveryMode: api_groups
-      apiGroupFilters:
+      apiGroups:
         include:
-          # Disable the chart default `"*": true` so this scenario is truly restricted
-          # to the patterns below.
-          "*": false
           "policies.kubewarden.io": true
           "longhorn.io": true
-          "*.suse.com": true
+          "cert-manager.io": true
         exclude:
           "test.suse.com": true
     rbac:
       useWildcard: false
-      crdApiGroups:
-        "policies.kubewarden.io": true
-        "longhorn.io": true
-        "cert-manager.io": true

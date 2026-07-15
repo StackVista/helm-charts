@@ -11,9 +11,9 @@ otel:
   enabled: true
   k8sResourceCollector:
     enabled: true
-    crdDiscovery:
+    crDiscovery:
       discoveryMode: api_groups
-      apiGroupFilters:
+      apiGroups:
         include:
           "*": true
     rbac:

@@ -23,8 +23,8 @@
 # exist, and Kubernetes accepts ClusterRoles referencing absent groups.
 otel:
   k8sResourceCollector:
-    crdDiscovery:
-      apiGroupFilters:
+    crDiscovery:
+      apiGroups:
         include:
           # suse-runtime-enforcer
           "security.rancher.io": true
@@ -38,14 +38,3 @@ otel:
           "sbomscanner.kubewarden.io": true
           "storage.sbomscanner.kubewarden.io": true
           "postgresql.cnpg.io": true
-    rbac:
-      # Only consulted when otel.k8sResourceCollector.rbac.useWildcard is false.
-      crdApiGroups:
-        "security.rancher.io": true
-        "policies.kubewarden.io": true
-        "wgpolicyk8s.io": true
-        "openreports.io": true
-        "kubevirt.io": true
-        "sbomscanner.kubewarden.io": true
-        "storage.sbomscanner.kubewarden.io": true
-        "postgresql.cnpg.io": true

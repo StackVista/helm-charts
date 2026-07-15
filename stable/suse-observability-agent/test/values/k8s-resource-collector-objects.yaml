@@ -10,18 +10,13 @@ otel:
   enabled: true
   k8sResourceCollector:
     enabled: true
-    crdDiscovery:
+    crDiscovery:
       discoveryMode: api_groups
-      apiGroupFilters:
+      apiGroups:
         include:
-          # Disable the chart default `"*": true` so this scenario watches only
-          # the single API group below.
-          "*": false
           "policies.kubewarden.io": true
     rbac:
       useWildcard: false
-      crdApiGroups:
-        "policies.kubewarden.io": true
     objects:
       # Core group, namespaced selection — exercises namespaces render.
       pods:

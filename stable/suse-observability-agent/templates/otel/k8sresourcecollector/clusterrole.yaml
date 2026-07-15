@@ -24,10 +24,13 @@ rules:
     verbs: ["get", "list", "watch"]
 {{- else }}
   # Restricted permissions for specific API groups.
-  # rbac.crdApiGroups grants group-wide access for CRD-discovered resources.
+  # crDiscovery.apiGroups.include grants group-wide access for CRD-discovered resources.
   # otel.k8sResourceCollector.objects entries derive resource-scoped rules from objects[].group/name.
-{{- range $group, $enabled := $rcfg.rbac.crdApiGroups }}
+{{- range $group, $enabled := $rcfg.crDiscovery.apiGroups.include }}
 {{- if $enabled }}
+{{- if and (ne $group "*") (contains "*" $group) }}
+{{- fail (printf "otel.k8sResourceCollector.crDiscovery.apiGroups.include contains wildcard pattern %q, but restricted RBAC requires exact API groups or rbac.useWildcard=true" $group) }}
+{{- end }}
   - apiGroups: [{{ $group | quote }}]
     resources: ["*"]
     verbs: ["get", "list", "watch"]

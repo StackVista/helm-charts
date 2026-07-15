@@ -9,7 +9,7 @@ otel:
   enabled: true
   k8sResourceCollector:
     enabled: true
-    crdDiscovery:
+    crDiscovery:
       snapshotInterval: 5m
       discoveryMode: all
     rbac:

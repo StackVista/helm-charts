@@ -1735,7 +1735,7 @@ stackstate:
     installed: []
     # stackstate.stackpacks.upgradeOnStartup -- Specify additional stackpacks that will, on startup only, be upgraded to the latest version available.
     # Note: The following StackPacks are automatically upgraded with SUSE Observability:
-    # kubernetes-v2, open-telemetry, stackstate-k8s-agent-v2, aad-v2, stackstate, plus either prime-kubernetes or community-kubernetes (based on stackstate.deployment.edition).
+    # kubernetes-v2, open-telemetry, stackstate-k8s-agent-v2, aad-v2, stackstate, plus either prime-kubernetes or community-kubernetes (based on stackstate.deployment.edition). When StackPacks 2.0 is enabled, open-telemetry-2 and otel-k8s-crd are also upgraded.
     # Additional StackPacks declared in upgradeOnStartup will be merged with these defaults.
     upgradeOnStartup: []
     # stackstate.stackpacks.source -- Source of the stackpacks, for now just the docker-image.
@@ -2167,7 +2167,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: "v0.0.47"
+    tag: "v0.0.50"
   resources:
     requests:
       cpu: 250m

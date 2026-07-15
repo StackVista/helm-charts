@@ -4,6 +4,7 @@
 otel:
   enabled: true
   k8sResourceCollector:
-    rbac:
-      crdApiGroups:
-        "longhorn.io": false
+    crDiscovery:
+      apiGroups:
+        include:
+          "longhorn.io": false

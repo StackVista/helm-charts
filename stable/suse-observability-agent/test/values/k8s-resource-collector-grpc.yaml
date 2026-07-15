@@ -9,10 +9,10 @@ otel:
   enabled: true
   k8sResourceCollector:
     enabled: true
-    crdDiscovery:
+    crDiscovery:
       interval: 15m
       discoveryMode: api_groups
-      apiGroupFilters:
+      apiGroups:
         include:
           "*": true
         exclude: {}
