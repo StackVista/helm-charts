@@ -10,7 +10,7 @@ image:
   # image.repository -- Base container image repository.
   repository: ghcr.io/rb3ckers/trafficmirror
   # image.tag -- Default container image tag.
-  tag: v2.5.4
+  tag: v2.5.5
 
 service:
   # service.appProtocol -- Optional appProtocol for the service port. Set to `kubernetes.io/h2c` for gRPC / HTTP2 cleartext backends so a Gateway API `HTTPRoute` forwards HTTP/2 upstream.

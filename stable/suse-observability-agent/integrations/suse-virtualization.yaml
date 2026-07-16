@@ -14,3 +14,6 @@ otel:
       apiGroups:
         include:
           "kubevirt.io": true
+    objects:
+      pods:
+        labelSelector: "kubevirt.io=virt-launcher"

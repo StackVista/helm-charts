@@ -69,7 +69,7 @@ data:
         k8s_leader_elector: k8s_leader_elector
 {{- end }}
 {{- $objects := dict }}
-{{- range $name, $obj := .Values.otel.k8sResourceCollector.objects }}
+{{- range $name, $obj := $rcfg.objects }}
 {{- if $obj }}{{ $_ := set $objects $name $obj }}{{ end }}
 {{- end }}
 {{- if $objects }}

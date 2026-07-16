@@ -1,6 +1,6 @@
 # trafficmirror
 
-![Version: 3.2.0](https://img.shields.io/badge/Version-3.2.0-informational?style=flat-square) ![AppVersion: 2.5.4](https://img.shields.io/badge/AppVersion-2.5.4-informational?style=flat-square)
+![Version: 3.2.1](https://img.shields.io/badge/Version-3.2.1-informational?style=flat-square) ![AppVersion: 2.5.5](https://img.shields.io/badge/AppVersion-2.5.5-informational?style=flat-square)
 Trafficmirror -- mirror traffic to various endpoints.
 **Homepage:** <https://github.com/rb3ckers/trafficmirror>
 ## Maintainers
@@ -34,7 +34,7 @@ Trafficmirror -- mirror traffic to various endpoints.
 | gateway.pathType | string | `"PathPrefix"` | Path match type for the HTTPRoute rule (ignored for GRPCRoute). |
 | gateway.timeouts | object | `{}` | Optional timeouts for the HTTPRoute rule (ignored for GRPCRoute). |
 | image.repository | string | `"ghcr.io/rb3ckers/trafficmirror"` | Base container image repository. |
-| image.tag | string | `"v2.5.4"` | Default container image tag. |
+| image.tag | string | `"v2.5.5"` | Default container image tag. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
