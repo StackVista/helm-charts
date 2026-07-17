@@ -1771,7 +1771,7 @@ stackstate:
         # stackstate.stackpacks.images[1].repository -- Repository of the `stackpacks` Docker image.
         repository: stackstate/contrib-stackpacks
         # stackstate.stackpacks.images[1].tag -- Tag used for the `stackpacks` Docker image
-        tag: "20260715105341-main-a50fa57"
+        tag: "20260717120517-main-4d1aa7a"
         # stackstate.stackpacks.images[2].name -- name for the init container
       - name: suse
         # stackstate.stackpacks.images[2].registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
