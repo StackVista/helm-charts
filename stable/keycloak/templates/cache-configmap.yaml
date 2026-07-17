@@ -1,0 +1,91 @@
+{{- if (include "keycloak.createCacheConfigmap" .) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "keycloak.cacheConfigmapName" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+    app.kubernetes.io/component: keycloak
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+data:
+  cache-ispn.xml: |-
+    {{- if .Values.cache.configuration }}
+    {{- .Values.cache.configuration | nindent 4 }}
+    {{- else }}
+    {{- $owners := int .Values.cache.ownersCount }}
+    {{- $authOwners := int (default .Values.cache.ownersCount .Values.cache.authOwnersCount) }}
+    <?xml version="1.0" encoding="UTF-8"?>
+    <infinispan
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:infinispan:config:15.0 http://www.infinispan.org/schemas/infinispan-config-15.0.xsd"
+            xmlns="urn:infinispan:config:15.0">
+        <cache-container name="keycloak">
+            <transport lock-timeout="60000" stack="{{ .Values.cache.stackName }}"/>
+            <local-cache name="realms" simple-cache="true">
+                <encoding>
+                    <key media-type="application/x-java-object"/>
+                    <value media-type="application/x-java-object"/>
+                </encoding>
+                <memory max-count="10000"/>
+            </local-cache>
+            <local-cache name="users" simple-cache="true">
+                <encoding>
+                    <key media-type="application/x-java-object"/>
+                    <value media-type="application/x-java-object"/>
+                </encoding>
+                <memory max-count="10000"/>
+            </local-cache>
+            <distributed-cache name="sessions" owners="{{ $owners }}">
+                <expiration lifespan="-1"/>
+                <memory max-count="10000"/>
+            </distributed-cache>
+            <distributed-cache name="authenticationSessions" owners="{{ $authOwners }}">
+                <expiration lifespan="-1"/>
+            </distributed-cache>
+            <distributed-cache name="offlineSessions" owners="{{ $owners }}">
+                <expiration lifespan="-1"/>
+                <memory max-count="10000"/>
+            </distributed-cache>
+            <distributed-cache name="clientSessions" owners="{{ $owners }}">
+                <expiration lifespan="-1"/>
+                <memory max-count="10000"/>
+            </distributed-cache>
+            <distributed-cache name="offlineClientSessions" owners="{{ $owners }}">
+                <expiration lifespan="-1"/>
+                <memory max-count="10000"/>
+            </distributed-cache>
+            <distributed-cache name="loginFailures" owners="{{ $authOwners }}">
+                <expiration lifespan="-1"/>
+            </distributed-cache>
+            <local-cache name="authorization" simple-cache="true">
+                <encoding>
+                    <key media-type="application/x-java-object"/>
+                    <value media-type="application/x-java-object"/>
+                </encoding>
+                <memory max-count="10000"/>
+            </local-cache>
+            <replicated-cache name="work">
+                <expiration lifespan="-1"/>
+            </replicated-cache>
+            <local-cache name="keys" simple-cache="true">
+                <encoding>
+                    <key media-type="application/x-java-object"/>
+                    <value media-type="application/x-java-object"/>
+                </encoding>
+                <expiration max-idle="3600000"/>
+                <memory max-count="1000"/>
+            </local-cache>
+            <distributed-cache name="actionTokens" owners="{{ $authOwners }}">
+                <encoding>
+                    <key media-type="application/x-java-object"/>
+                    <value media-type="application/x-java-object"/>
+                </encoding>
+                <expiration max-idle="-1" lifespan="-1" interval="300000"/>
+                <memory max-count="-1"/>
+            </distributed-cache>
+        </cache-container>
+    </infinispan>
+    {{- end }}
+{{- end }}

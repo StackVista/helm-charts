@@ -1,0 +1,25 @@
+apiVersion: v2
+name: keycloak
+description: Keycloak is a high performance Java-based identity and access management
+  solution, packaged for SUSE Observability on top of the upstream Keycloak image.
+appVersion: 26.7.0
+version: 0.1.5
+keywords:
+  - keycloak
+  - access-management
+home: https://github.com/StackVista/helm-charts-internal
+sources:
+  - https://github.com/StackVista/helm-charts-internal/tree/main/stable/keycloak
+  - https://www.keycloak.org
+maintainers:
+  - name: SUSE Observability
+    url: https://github.com/StackVista
+dependencies:
+  # Pinned to 2.24.0: later Bitnami common (2.4x) dropped
+  # common.ingress.supportsPathType, which the forked ingress template still
+  # uses. Keep this exact-pinned and in sync with the vendored charts/common.
+  - name: common
+    repository: oci://registry-1.docker.io/bitnamicharts
+    tags:
+      - bitnami-common
+    version: 2.24.0

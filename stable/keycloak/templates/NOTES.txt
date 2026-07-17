@@ -1,0 +1,42 @@
+CHART NAME: {{ .Chart.Name }}
+CHART VERSION: {{ .Chart.Version }}
+APP VERSION: {{ .Chart.AppVersion }}
+
+** Please be patient while the chart is being deployed **
+
+Keycloak can be accessed through the following DNS name from within your cluster:
+
+    {{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (port {{ .Values.service.ports.http }})
+
+{{- if .Values.ingress.enabled }}
+
+To access Keycloak from outside the cluster, use the configured ingress host:
+
+    echo "Keycloak URL: http{{ if .Values.ingress.tls }}s{{ end }}://{{ (tpl .Values.ingress.hostname .) }}/"
+
+{{- else }}
+
+To access Keycloak from outside the cluster, forward the service port locally:
+
+    kubectl port-forward --namespace {{ include "common.names.namespace" . }} svc/{{ include "common.names.fullname" . }} 8080:{{ .Values.service.ports.http }} &
+    echo "Keycloak URL: http://127.0.0.1:8080/"
+
+{{- end }}
+
+Access the Administration Console using the following credentials:
+
+    echo Username: {{ .Values.auth.adminUser }}
+    echo Password: $(kubectl get secret --namespace {{ include "common.names.namespace" . }} {{ include "keycloak.secretName" . }} -o jsonpath="{.data.{{ include "keycloak.secretKey" . }}}" | base64 -d)
+
+{{- if .Values.metrics.enabled }}
+
+Prometheus metrics and health endpoints are exposed on the management port ({{ .Values.containerPorts.management }}):
+
+    kubectl port-forward --namespace {{ include "common.names.namespace" . }} svc/{{ printf "%s-metrics" (include "common.names.fullname" .) }} {{ .Values.metrics.service.ports.management }}:{{ .Values.metrics.service.ports.management }} &
+    echo "Keycloak Prometheus metrics URL: http://127.0.0.1:{{ .Values.metrics.service.ports.management }}/metrics"
+
+{{- end }}
+
+{{- include "keycloak.validateValues" . }}
+{{- include "common.warnings.rollingTag" .Values.image }}
+{{- include "common.warnings.resources" (dict "sections" (list "") "context" $) }}

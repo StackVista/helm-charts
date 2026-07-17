@@ -1,0 +1,5 @@
+# Minimal values so `helm template` renders during CI kubeconform validation.
+# The chart requires an external database host and password; supply dummy values.
+externalDatabase:
+  host: keycloak-postgresql.keycloak.svc.cluster.local
+  password: linter-dummy-password

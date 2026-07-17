@@ -45,6 +45,7 @@
       'gitlab-proxy': [],
       'gitlab-steward': [],
       'helm-reaper': [],
+      keycloak: [],
       'k8s-spot-termination-handler': [],
       'kommoner-operator': [],
       'notification-operator': [],

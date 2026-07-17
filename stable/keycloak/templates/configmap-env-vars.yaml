@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-env-vars" (include "common.names.fullname" .) }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+    app.kubernetes.io/component: keycloak
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+data:
+  KC_BOOTSTRAP_ADMIN_USERNAME: {{ .Values.auth.adminUser | quote }}
+  # Database (external PostgreSQL only)
+  KC_DB: {{ .Values.externalDatabase.type | quote }}
+  {{- if not .Values.externalDatabase.existingSecretHostKey }}
+  KC_DB_URL_HOST: {{ include "keycloak.databaseHost" . | quote }}
+  {{- end }}
+  {{- if not .Values.externalDatabase.existingSecretPortKey }}
+  KC_DB_URL_PORT: {{ include "keycloak.databasePort" . }}
+  {{- end }}
+  {{- if not .Values.externalDatabase.existingSecretDatabaseKey }}
+  KC_DB_URL_DATABASE: {{ include "keycloak.databaseName" . | quote }}
+  {{- end }}
+  {{- if not .Values.externalDatabase.existingSecretUserKey }}
+  KC_DB_USERNAME: {{ include "keycloak.databaseUser" . | quote }}
+  {{- end }}
+  # HTTP / proxy (TLS terminates at the ingress/proxy edge)
+  KC_HTTP_ENABLED: {{ .Values.httpEnabled | quote }}
+  KC_HTTP_PORT: {{ .Values.containerPorts.http | quote }}
+  KC_HTTP_MANAGEMENT_PORT: {{ .Values.containerPorts.management | quote }}
+  {{- /*
+    http-relative-path is a BUILD-TIME option: with `start --optimized` Keycloak
+    fatally rejects a runtime value that differs from the one baked into the image.
+    Only emit it for a non-default path, which additionally requires rebuilding the
+    image with `kc.sh build --http-relative-path=<path>`. Default "/" is left to the
+    baked value so the optimized image starts.
+  */}}
+  {{- if and .Values.httpRelativePath (ne .Values.httpRelativePath "/") }}
+  KC_HTTP_RELATIVE_PATH: {{ .Values.httpRelativePath | quote }}
+  {{- end }}
+  {{- if .Values.proxyHeaders }}
+  KC_PROXY_HEADERS: {{ .Values.proxyHeaders | quote }}
+  {{- end }}
+  {{- if .Values.hostname }}
+  KC_HOSTNAME: {{ tpl .Values.hostname $ | quote }}
+  {{- end }}
+  {{- if .Values.hostnameAdmin }}
+  KC_HOSTNAME_ADMIN: {{ tpl .Values.hostnameAdmin $ | quote }}
+  {{- end }}
+  KC_HOSTNAME_STRICT: {{ .Values.hostnameStrict | quote }}
+  # Observability
+  KC_HEALTH_ENABLED: {{ .Values.metrics.healthEnabled | quote }}
+  KC_METRICS_ENABLED: {{ .Values.metrics.enabled | quote }}
+  # Caching / clustering
+  {{- if .Values.cache.enabled }}
+  KC_CACHE: "ispn"
+  KC_CACHE_STACK: {{ .Values.cache.stackName | quote }}
+  KC_CACHE_CONFIG_FILE: "cache-ispn.xml"
+  JAVA_OPTS_APPEND: {{ printf "-Djgroups.dns.query=%s" (include "keycloak.jgroupsDnsQuery" .) | quote }}
+  {{- else }}
+  KC_CACHE: "local"
+  {{- end }}
+  # Logging
+  {{- if .Values.logging }}
+  KC_LOG_CONSOLE_OUTPUT: {{ .Values.logging.output | quote }}
+  KC_LOG_LEVEL: {{ .Values.logging.level | quote }}
+  {{- end }}
+  {{- if .Values.extraEnvVarsConfigMapData }}
+  {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVarsConfigMapData "context" $) | nindent 2 }}
+  {{- end }}

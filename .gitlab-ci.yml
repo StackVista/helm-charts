@@ -7,11 +7,13 @@ beest_agent_trigger:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH
       when: manual
@@ -263,6 +265,28 @@ build_k8s-spot-termination-handler:
     - helm dependencies build stable/k8s-spot-termination-handler
     - mkdir -p stable/k8s-spot-termination-handler/build; helm package --destination stable/k8s-spot-termination-handler/build stable/k8s-spot-termination-handler
   stage: build
+build_keycloak:
+  artifacts:
+    paths:
+      - stable/keycloak/charts/
+      - stable/keycloak/build/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - stable/keycloak/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/keycloak/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/keycloak/%
+    - helm dependencies build stable/keycloak
+    - mkdir -p stable/keycloak/build; helm package --destination stable/keycloak/build stable/keycloak
+  stage: build
 build_kommoner-operator:
   artifacts:
     paths:
@@ -384,6 +408,26 @@ build_local_hbase:
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/hbase/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/hbase/%
     - helm dependencies build local/hbase
+  stage: build
+build_local_http-header-injector:
+  artifacts:
+    paths:
+      - local/http-header-injector/charts/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/http-header-injector/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' local/http-header-injector/Chart.yaml | xargs -I % helm dependencies build --skip-refresh local/http-header-injector/%
+    - helm dependencies build local/http-header-injector
   stage: build
 build_local_kafka:
   artifacts:
@@ -770,6 +814,7 @@ build_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
         - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -986,6 +1031,17 @@ check_k8s-spot-termination-handler_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh k8s-spot-termination-handler
+  stage: validate
+check_keycloak_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.14.0
+  rules:
+    - changes:
+        - stable/keycloak/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh keycloak
   stage: validate
 check_kommoner-operator_version:
   before_script:
@@ -1512,6 +1568,45 @@ push_k8s-spot-termination-handler_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/k8s-spot-termination-handler
+push_keycloak_to_internal:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
+    - changes:
+        - stable/keycloak/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-keycloak]/
+      when: on_success
+    - changes:
+        - stable/keycloak/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^keycloak\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/keycloak
 push_kommoner-operator_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -1695,11 +1790,13 @@ push_prerelease_suse-observability-agent_to_public:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
@@ -1931,11 +2028,13 @@ push_suse-observability-agent_prerelease_to_rancher:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
@@ -1971,11 +2070,13 @@ push_suse-observability-agent_to_internal:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
@@ -2014,11 +2115,13 @@ push_suse-observability-agent_to_public:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
@@ -2051,11 +2154,13 @@ push_suse-observability-agent_to_rancher:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
@@ -2689,6 +2794,30 @@ test_k8s-spot-termination-handler:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
+test_keycloak:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - stable/keycloak/**/*
+      exists:
+        - stable/keycloak/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./stable/keycloak/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
 test_kommoner-operator:
   cache:
     key:
@@ -2827,6 +2956,30 @@ test_local_hbase:
   script:
     - go mod download
     - go test ./local/hbase/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
+test_local_http-header-injector:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - local/http-header-injector/**/*
+      exists:
+        - local/http-header-injector/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./local/http-header-injector/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -3267,6 +3420,7 @@ test_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
       exists:
         - stable/suse-observability-agent/test/*.go
@@ -3625,6 +3779,24 @@ validate_k8s-spot-termination-handler:
     - .gitlab/validate_local_dep_versions.sh stable/k8s-spot-termination-handler
     - .gitlab/validate_kubeconform.sh stable/k8s-spot-termination-handler
   stage: validate
+validate_keycloak:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.14.0
+  rules:
+    - changes:
+        - stable/keycloak/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/keycloak/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/keycloak/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/keycloak/values.yaml
+    - if [ -f stable/keycloak/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/keycloak/ci/default-values.yaml; fi
+    - if [ -f stable/keycloak/ci/default-values.yaml ]; then helm lint stable/keycloak --values stable/keycloak/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/keycloak
+    - .gitlab/validate_kubeconform.sh stable/keycloak
+  stage: validate
 validate_kommoner-operator:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -3732,6 +3904,24 @@ validate_local_hbase:
     - if [ -f local/hbase/ci/default-values.yaml ]; then helm lint local/hbase --values local/hbase/ci/default-values.yaml; fi
     - .gitlab/validate_local_dep_versions.sh local/hbase
     - .gitlab/validate_kubeconform.sh local/hbase
+  stage: validate
+validate_local_http-header-injector:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.14.0
+  rules:
+    - changes:
+        - local/http-header-injector/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml local/http-header-injector/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml local/http-header-injector/Chart.yaml
+    - if [ -f local/http-header-injector/values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/http-header-injector/values.yaml; fi
+    - if [ -f local/http-header-injector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml local/http-header-injector/ci/default-values.yaml; fi
+    - if [ -f local/http-header-injector/ci/default-values.yaml ]; then helm lint local/http-header-injector --values local/http-header-injector/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh local/http-header-injector
+    - .gitlab/validate_kubeconform.sh local/http-header-injector
   stage: validate
 validate_local_kafka:
   before_script:
@@ -4060,6 +4250,7 @@ validate_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
         - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -4077,6 +4268,7 @@ validate_suse-observability-agent_images:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
+        - local/http-header-injector/**/*
         - local/kubernetes-rbac-agent/**/*
         - .gitlab-ci.yml
       if: $CI_PIPELINE_SOURCE == "merge_request_event"

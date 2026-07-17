@@ -1,0 +1,534 @@
+## SUSE Observability Keycloak chart values.
+## This chart runs the upstream-style Keycloak image (StackState build FROM
+## dp.apps.rancher.io/containers/keycloak) with `start --optimized`. Configuration
+## is driven by upstream KC_* environment variables / CLI flags, not Bitnami
+## KEYCLOAK_* variables.
+
+## @section Global parameters
+
+global:
+  # global.imageRegistry -- Global Docker image registry (overrides image.registry when set)
+  imageRegistry: ""
+  # global.imagePullSecrets -- Global Docker registry secret names as an array
+  imagePullSecrets: []
+  # global.defaultStorageClass -- Global default StorageClass for Persistent Volume(s)
+  defaultStorageClass: ""
+  # global.storageClass -- DEPRECATED: use global.defaultStorageClass instead
+  storageClass: ""
+  compatibility:
+    openshift:
+      # global.compatibility.openshift.adaptSecurityContext -- Adapt securityContext to be compatible with Openshift restricted-v2 SCC. Values: auto, force, disabled
+      adaptSecurityContext: auto
+
+## @section Common parameters
+
+# kubeVersion -- Force target Kubernetes version (using Helm capabilities if not set)
+kubeVersion: ""
+# nameOverride -- String to partially override common.names.fullname
+nameOverride: ""
+# fullnameOverride -- String to fully override common.names.fullname
+fullnameOverride: ""
+# namespaceOverride -- String to fully override common.names.namespace
+namespaceOverride: ""
+# commonLabels -- Labels to add to all deployed objects
+commonLabels: {}
+# commonAnnotations -- Annotations to add to all deployed objects
+commonAnnotations: {}
+# enableServiceLinks -- If set to false, disable Kubernetes service links in the pod spec
+enableServiceLinks: true
+# dnsPolicy -- DNS Policy for pod
+dnsPolicy: ""
+# dnsConfig -- DNS Configuration for pod
+dnsConfig: {}
+# clusterDomain -- Default Kubernetes cluster domain (used to build the JGroups DNS query)
+clusterDomain: cluster.local
+# extraDeploy -- Array of extra objects to deploy with the release (rendered as templates). A consumer injects an extra Secret via this.
+extraDeploy: []
+
+diagnosticMode:
+  # diagnosticMode.enabled -- Enable diagnostic mode (all probes disabled and the container command is overridden)
+  enabled: false
+  # diagnosticMode.command -- Command override applied to the container in diagnostic mode
+  command:
+    - sleep
+  # diagnosticMode.args -- Args override applied to the container in diagnostic mode
+  args:
+    - infinity
+
+## @section Keycloak image parameters
+
+image:
+  # image.registry -- Keycloak image registry
+  registry: quay.io
+  # image.repository -- Keycloak image repository (StackState build FROM the upstream/Rancher Keycloak image)
+  repository: stackstate/keycloak
+  # image.tag -- Keycloak image tag
+  tag: 26.7.0-main-af703171
+  # image.digest -- Keycloak image digest in the way sha256:aa.... Overrides the tag when set
+  digest: ""
+  # image.pullPolicy -- Keycloak image pull policy
+  pullPolicy: IfNotPresent
+  # image.pullSecrets -- Docker registry secret names as an array (e.g. registry-credentials)
+  pullSecrets:
+    - registry-credentials
+
+## @section Keycloak authentication parameters
+
+auth:
+  # auth.adminUser -- Bootstrap admin username (maps to KC_BOOTSTRAP_ADMIN_USERNAME)
+  adminUser: admin
+  # auth.adminPassword -- Bootstrap admin password (maps to KC_BOOTSTRAP_ADMIN_PASSWORD). Auto-generated when empty and no existingSecret is set.
+  adminPassword: ""
+  # auth.existingSecret -- Name of an existing secret containing the admin password. When set, adminPassword is ignored.
+  existingSecret: ""
+  # auth.passwordSecretKey -- Key inside auth.existingSecret holding the admin password (defaults to "admin-password")
+  passwordSecretKey: ""
+  # auth.annotations -- Additional annotations for the chart-managed admin secret
+  annotations: {}
+
+## @section Keycloak server parameters
+
+# httpEnabled -- Serve plain HTTP (KC_HTTP_ENABLED). Required behind a TLS-terminating proxy edge.
+httpEnabled: true
+# proxyHeaders -- Reverse-proxy header mode (KC_PROXY_HEADERS). Use "xforwarded" for an edge proxy; leave empty to unset.
+proxyHeaders: "xforwarded"
+# hostname -- Public hostname/URL of Keycloak (KC_HOSTNAME). Formerly KEYCLOAK_BASE_URL. Evaluated as a template.
+hostname: ""
+# hostnameAdmin -- Separate admin console hostname/URL (KC_HOSTNAME_ADMIN). Evaluated as a template. Leave empty to reuse hostname.
+hostnameAdmin: ""
+# hostnameStrict -- Disable dynamic hostname resolution from request headers (KC_HOSTNAME_STRICT)
+hostnameStrict: false
+# httpRelativePath -- Path relative to '/' for serving resources (KC_HTTP_RELATIVE_PATH)
+httpRelativePath: "/"
+# command -- Override the default container command (image ENTRYPOINT is kc.sh; leave empty to use it)
+command: []
+# args -- Override the default container args. Defaults to ["start", "--optimized"] when empty.
+args: []
+# extraEnvVars -- Extra environment variables for the Keycloak container (list of name/value). The StackState image reads KEYCLOAK_BASE_URL and USERCREATE_EVENT_LISTENER_CLIENT_NAME_PREFIX from here.
+extraEnvVars: []
+# extraEnvVarsConfigMapData -- Extra key/value pairs merged into the chart-managed env-vars ConfigMap
+extraEnvVarsConfigMapData: {}
+# extraEnvVarsCM -- Name of an existing ConfigMap with extra env vars (mounted via envFrom)
+extraEnvVarsCM: ""
+# extraEnvVarsSecret -- Name of an existing Secret with extra env vars (mounted via envFrom)
+extraEnvVarsSecret: ""
+
+## @section Keycloak statefulset parameters
+
+# replicaCount -- Number of Keycloak replicas to deploy
+replicaCount: 1
+# revisionHistoryLimitCount -- Number of controller revisions to keep
+revisionHistoryLimitCount: 10
+containerPorts:
+  # containerPorts.http -- Keycloak HTTP container port (KC_HTTP_PORT)
+  http: 8080
+  # containerPorts.management -- Keycloak management port for metrics/health (KC_HTTP_MANAGEMENT_PORT)
+  management: 9000
+# extraContainerPorts -- Extra ports to expose on the Keycloak container
+extraContainerPorts: []
+# statefulsetAnnotations -- Extra annotations for the StatefulSet resource
+statefulsetAnnotations: {}
+
+podSecurityContext:
+  # podSecurityContext.enabled -- Enable the pods' security context
+  enabled: true
+  # podSecurityContext.fsGroupChangePolicy -- Filesystem group change policy
+  fsGroupChangePolicy: Always
+  # podSecurityContext.sysctls -- Kernel settings using the sysctl interface
+  sysctls: []
+  # podSecurityContext.supplementalGroups -- Extra filesystem groups
+  supplementalGroups: []
+  # podSecurityContext.fsGroup -- Pod fsGroup. The image runs as gid 0.
+  fsGroup: 0
+
+containerSecurityContext:
+  # containerSecurityContext.enabled -- Enable the container security context
+  enabled: true
+  # containerSecurityContext.seLinuxOptions -- SELinux options
+  seLinuxOptions: {}
+  # containerSecurityContext.runAsUser -- runAsUser. The image runs as uid 1000.
+  runAsUser: 1000
+  # containerSecurityContext.runAsGroup -- runAsGroup (gid 0 / root group, as the image expects)
+  runAsGroup: 0
+  # containerSecurityContext.runAsNonRoot -- Run as a non-root user
+  runAsNonRoot: true
+  # containerSecurityContext.privileged -- Run in privileged mode
+  privileged: false
+  # containerSecurityContext.readOnlyRootFilesystem -- Mount the root filesystem read-only (conf and data are writable emptyDir mounts)
+  readOnlyRootFilesystem: true
+  # containerSecurityContext.allowPrivilegeEscalation -- Allow privilege escalation
+  allowPrivilegeEscalation: false
+  capabilities:
+    # containerSecurityContext.capabilities.drop -- Linux capabilities to drop
+    drop: ["ALL"]
+  seccompProfile:
+    # containerSecurityContext.seccompProfile.type -- Seccomp profile type
+    type: "RuntimeDefault"
+
+# resourcesPreset -- Container resource preset (none, nano, micro, small, medium, large, xlarge, 2xlarge). Ignored when resources is set.
+resourcesPreset: "small"
+# resources -- Explicit container requests/limits (recommended for production)
+resources: {}
+
+livenessProbe:
+  # livenessProbe.enabled -- Enable the liveness probe (GET /health/live on the management port)
+  enabled: true
+  # livenessProbe.initialDelaySeconds -- Initial delay for the liveness probe
+  initialDelaySeconds: 60
+  # livenessProbe.periodSeconds -- Period for the liveness probe
+  periodSeconds: 10
+  # livenessProbe.timeoutSeconds -- Timeout for the liveness probe
+  timeoutSeconds: 5
+  # livenessProbe.failureThreshold -- Failure threshold for the liveness probe
+  failureThreshold: 3
+  # livenessProbe.successThreshold -- Success threshold for the liveness probe
+  successThreshold: 1
+
+readinessProbe:
+  # readinessProbe.enabled -- Enable the readiness probe (GET /health/ready on the management port)
+  enabled: true
+  # readinessProbe.initialDelaySeconds -- Initial delay for the readiness probe
+  initialDelaySeconds: 30
+  # readinessProbe.periodSeconds -- Period for the readiness probe
+  periodSeconds: 10
+  # readinessProbe.timeoutSeconds -- Timeout for the readiness probe
+  timeoutSeconds: 1
+  # readinessProbe.failureThreshold -- Failure threshold for the readiness probe
+  failureThreshold: 3
+  # readinessProbe.successThreshold -- Success threshold for the readiness probe
+  successThreshold: 1
+
+startupProbe:
+  # startupProbe.enabled -- Enable the startup probe (GET /health/ready on the management port)
+  enabled: false
+  # startupProbe.initialDelaySeconds -- Initial delay for the startup probe
+  initialDelaySeconds: 30
+  # startupProbe.periodSeconds -- Period for the startup probe
+  periodSeconds: 5
+  # startupProbe.timeoutSeconds -- Timeout for the startup probe
+  timeoutSeconds: 1
+  # startupProbe.failureThreshold -- Failure threshold for the startup probe
+  failureThreshold: 60
+  # startupProbe.successThreshold -- Success threshold for the startup probe
+  successThreshold: 1
+
+# customLivenessProbe -- Custom liveness probe overriding the default
+customLivenessProbe: {}
+# customReadinessProbe -- Custom readiness probe overriding the default
+customReadinessProbe: {}
+# customStartupProbe -- Custom startup probe overriding the default
+customStartupProbe: {}
+# lifecycleHooks -- Container lifecycle hooks
+lifecycleHooks: {}
+# automountServiceAccountToken -- Mount the service account token in the pod (needed for KUBE_PING/DNS discovery RBAC)
+automountServiceAccountToken: true
+# hostAliases -- Pod host aliases
+hostAliases: []
+# podLabels -- Extra labels for Keycloak pods
+podLabels: {}
+# podAnnotations -- Annotations for Keycloak pods
+podAnnotations: {}
+# podAffinityPreset -- Pod affinity preset. Ignored if affinity is set. Values: soft or hard
+podAffinityPreset: ""
+# podAntiAffinityPreset -- Pod anti-affinity preset. Ignored if affinity is set. Values: soft or hard
+podAntiAffinityPreset: soft
+nodeAffinityPreset:
+  # nodeAffinityPreset.type -- Node affinity preset type. Ignored if affinity is set. Values: soft or hard
+  type: ""
+  # nodeAffinityPreset.key -- Node label key to match. Ignored if affinity is set.
+  key: ""
+  # nodeAffinityPreset.values -- Node label values to match. Ignored if affinity is set.
+  values: []
+# affinity -- Affinity for pod assignment (overrides the presets above)
+affinity: {}
+# nodeSelector -- Node labels for pod assignment
+nodeSelector: {}
+# tolerations -- Tolerations for pod assignment
+tolerations: []
+# topologySpreadConstraints -- Topology spread constraints for pod assignment
+topologySpreadConstraints: []
+# podManagementPolicy -- Pod management policy for the StatefulSet
+podManagementPolicy: Parallel
+# priorityClassName -- Priority class name for Keycloak pods
+priorityClassName: ""
+# schedulerName -- Alternate scheduler name
+schedulerName: ""
+# terminationGracePeriodSeconds -- Seconds the pod needs to terminate gracefully
+terminationGracePeriodSeconds: ""
+updateStrategy:
+  # updateStrategy.type -- StatefulSet update strategy type
+  type: RollingUpdate
+  # updateStrategy.rollingUpdate -- StatefulSet rolling update configuration
+  rollingUpdate: {}
+# minReadySeconds -- Seconds a pod must be ready before killing the next during an update
+minReadySeconds: 0
+# extraVolumes -- Extra volumes for the Keycloak pods
+extraVolumes: []
+# extraVolumeMounts -- Extra volume mounts for the Keycloak container
+extraVolumeMounts: []
+# initContainers -- Additional init containers for the Keycloak pods
+initContainers: []
+# sidecars -- Additional sidecar containers for the Keycloak pods
+sidecars: []
+
+## @section Exposure parameters
+
+service:
+  # service.type -- Kubernetes service type
+  type: ClusterIP
+  ports:
+    # service.ports.http -- Keycloak service HTTP port
+    http: 80
+  nodePorts:
+    # service.nodePorts.http -- nodePort for the HTTP port when service type is NodePort/LoadBalancer
+    http: ""
+  # service.sessionAffinity -- Session affinity. Values: ClientIP or None
+  sessionAffinity: None
+  # service.sessionAffinityConfig -- Additional settings for sessionAffinity
+  sessionAffinityConfig: {}
+  # service.clusterIP -- Static clusterIP for the service
+  clusterIP: ""
+  # service.loadBalancerIP -- loadBalancerIP for the service (cloud specific)
+  loadBalancerIP: ""
+  # service.loadBalancerSourceRanges -- Addresses allowed when service is LoadBalancer
+  loadBalancerSourceRanges: []
+  # service.externalTrafficPolicy -- External traffic policy for NodePort/LoadBalancer
+  externalTrafficPolicy: Cluster
+  # service.annotations -- Additional annotations for the Keycloak service
+  annotations: {}
+  # service.extraPorts -- Extra ports to expose on the Keycloak service
+  extraPorts: []
+  headless:
+    # service.headless.annotations -- Annotations for the headless service
+    annotations: {}
+    # service.headless.extraPorts -- Extra ports to expose on the headless service
+    extraPorts: []
+
+ingress:
+  # ingress.enabled -- Enable ingress record generation for Keycloak
+  enabled: false
+  # ingress.ingressClassName -- IngressClass used to implement the Ingress
+  ingressClassName: ""
+  # ingress.pathType -- Ingress path type
+  pathType: ImplementationSpecific
+  # ingress.apiVersion -- Force Ingress API version (auto-detected if not set)
+  apiVersion: ""
+  # ingress.controller -- Ingress controller type. Values: default or gce
+  controller: default
+  # ingress.hostname -- Default host for the ingress record (evaluated as a template)
+  hostname: keycloak.local
+  # ingress.path -- Default path for the ingress record (evaluated as a template)
+  path: "{{ .Values.httpRelativePath }}"
+  # ingress.servicePort -- Backend service port name to use (http)
+  servicePort: http
+  # ingress.annotations -- Additional annotations for the Ingress (e.g. cert-manager or a Traefik middleware annotation set by the consumer)
+  annotations: {}
+  # ingress.labels -- Additional labels for the Ingress resource
+  labels: {}
+  # ingress.tls -- Enable TLS for ingress.hostname (TLS terminates at the ingress)
+  tls: false
+  # ingress.selfSigned -- Create a self-signed TLS secret for this ingress via Helm
+  selfSigned: false
+  # ingress.extraHosts -- Additional hostnames to cover with the ingress record
+  extraHosts: []
+  # ingress.extraPaths -- Additional arbitrary paths added under the main host
+  extraPaths: []
+  # ingress.extraTls -- TLS configuration for additional hostnames
+  extraTls: []
+  # ingress.secrets -- Custom certificates provided as secrets
+  secrets: []
+  # ingress.extraRules -- Additional rules for the ingress record
+  extraRules: []
+
+networkPolicy:
+  # networkPolicy.enabled -- Create a NetworkPolicy for Keycloak
+  enabled: true
+  # networkPolicy.allowExternal -- When false, only pods with the matching client label may reach Keycloak
+  allowExternal: true
+  # networkPolicy.allowExternalEgress -- Allow the pod to reach any destination
+  allowExternalEgress: true
+  # networkPolicy.kubeAPIServerPorts -- Possible kube-apiserver endpoints for restricted egress
+  kubeAPIServerPorts: [443, 6443, 8443]
+  # networkPolicy.extraIngress -- Extra ingress rules for the NetworkPolicy
+  extraIngress: []
+  # networkPolicy.extraEgress -- Extra egress rules for the NetworkPolicy
+  extraEgress: []
+  # networkPolicy.ingressNSMatchLabels -- Namespace labels allowed to reach Keycloak
+  ingressNSMatchLabels: {}
+  # networkPolicy.ingressNSPodMatchLabels -- Pod labels (in allowed namespaces) allowed to reach Keycloak
+  ingressNSPodMatchLabels: {}
+
+## @section RBAC parameters
+
+serviceAccount:
+  # serviceAccount.create -- Create a ServiceAccount for Keycloak pods
+  create: true
+  # serviceAccount.name -- Name of the created ServiceAccount (generated when empty)
+  name: ""
+  # serviceAccount.automountServiceAccountToken -- Auto-mount the service account token on the ServiceAccount object
+  automountServiceAccountToken: false
+  # serviceAccount.annotations -- Additional annotations for the ServiceAccount
+  annotations: {}
+  # serviceAccount.extraLabels -- Additional labels for the ServiceAccount
+  extraLabels: {}
+
+rbac:
+  # rbac.create -- Create the Role/RoleBinding granting pod get/list for JGroups KUBE_PING/DNS discovery
+  create: true
+  # rbac.rules -- Custom RBAC rules appended to the Role
+  rules: []
+
+## @section Other parameters
+
+pdb:
+  # pdb.create -- Create a PodDisruptionBudget
+  create: true
+  # pdb.minAvailable -- Minimum number/percentage of pods that must remain available
+  minAvailable: ""
+  # pdb.maxUnavailable -- Maximum number/percentage of pods that may be unavailable
+  maxUnavailable: ""
+
+autoscaling:
+  # autoscaling.enabled -- Enable the HorizontalPodAutoscaler
+  enabled: false
+  # autoscaling.minReplicas -- Minimum number of replicas
+  minReplicas: 1
+  # autoscaling.maxReplicas -- Maximum number of replicas
+  maxReplicas: 11
+  # autoscaling.targetCPU -- Target CPU utilization percentage
+  targetCPU: ""
+  # autoscaling.targetMemory -- Target memory utilization percentage
+  targetMemory: ""
+  behavior:
+    scaleUp:
+      # autoscaling.behavior.scaleUp.stabilizationWindowSeconds -- Stabilization window when scaling up
+      stabilizationWindowSeconds: 120
+      # autoscaling.behavior.scaleUp.selectPolicy -- Policy selection when scaling up
+      selectPolicy: Max
+      # autoscaling.behavior.scaleUp.policies -- Scaling policies when scaling up
+      policies: []
+    scaleDown:
+      # autoscaling.behavior.scaleDown.stabilizationWindowSeconds -- Stabilization window when scaling down
+      stabilizationWindowSeconds: 300
+      # autoscaling.behavior.scaleDown.selectPolicy -- Policy selection when scaling down
+      selectPolicy: Max
+      # autoscaling.behavior.scaleDown.policies -- Scaling policies when scaling down
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 300
+
+## @section Metrics parameters
+
+metrics:
+  # metrics.enabled -- Enable Keycloak metrics (KC_METRICS_ENABLED) on the management port
+  enabled: false
+  # metrics.healthEnabled -- Enable Keycloak health endpoints (KC_HEALTH_ENABLED) on the management port. Required by the probes.
+  healthEnabled: true
+  service:
+    ports:
+      # metrics.service.ports.management -- Metrics service port targeting the management container port (9000)
+      management: 9000
+    # metrics.service.annotations -- Annotations for the metrics service (enables prometheus scraping)
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "{{ .Values.metrics.service.ports.management }}"
+    # metrics.service.extraPorts -- Extra ports for the metrics service
+    extraPorts: []
+  serviceMonitor:
+    # metrics.serviceMonitor.enabled -- Create a ServiceMonitor for the Prometheus Operator
+    enabled: false
+    # metrics.serviceMonitor.port -- Service port name the ServiceMonitor scrapes (management)
+    port: management
+    # metrics.serviceMonitor.endpoints -- Scrape endpoints. Defaults scrape /metrics and /health on the management port.
+    endpoints:
+      - path: /metrics
+      - path: /health
+    # metrics.serviceMonitor.path -- Single scrape path. Deprecated: use endpoints instead.
+    path: ""
+    # metrics.serviceMonitor.namespace -- Namespace where the ServiceMonitor is created
+    namespace: ""
+    # metrics.serviceMonitor.interval -- Scrape interval
+    interval: 30s
+    # metrics.serviceMonitor.scrapeTimeout -- Scrape timeout
+    scrapeTimeout: ""
+    # metrics.serviceMonitor.labels -- Additional labels so Prometheus discovers the ServiceMonitor
+    labels: {}
+    # metrics.serviceMonitor.selector -- Prometheus instance selector labels
+    selector: {}
+    # metrics.serviceMonitor.relabelings -- RelabelConfigs applied before scraping
+    relabelings: []
+    # metrics.serviceMonitor.metricRelabelings -- MetricRelabelConfigs applied before ingestion
+    metricRelabelings: []
+    # metrics.serviceMonitor.honorLabels -- Honor target labels on collisions
+    honorLabels: false
+    # metrics.serviceMonitor.jobLabel -- Service label to use as the job name in Prometheus
+    jobLabel: ""
+  prometheusRule:
+    # metrics.prometheusRule.enabled -- Create a PrometheusRule resource
+    enabled: false
+    # metrics.prometheusRule.namespace -- Namespace where the PrometheusRule is created
+    namespace: ""
+    # metrics.prometheusRule.labels -- Additional labels so Prometheus discovers the PrometheusRule
+    labels: {}
+    # metrics.prometheusRule.groups -- Alert rule groups
+    groups: []
+
+## @section Database parameters
+
+## External PostgreSQL configuration. Keycloak requires an external database;
+## there is no bundled PostgreSQL subchart.
+externalDatabase:
+  # externalDatabase.type -- Database vendor (KC_DB). The image is build-optimized for postgres; do not change without rebuilding the image.
+  type: postgres
+  # externalDatabase.host -- Database host (KC_DB_URL_HOST). Evaluated as a template.
+  host: ""
+  # externalDatabase.port -- Database port (KC_DB_URL_PORT)
+  port: 5432
+  # externalDatabase.user -- Database username (KC_DB_USERNAME)
+  user: keycloak
+  # externalDatabase.database -- Database name (KC_DB_URL_DATABASE)
+  database: keycloak
+  # externalDatabase.password -- Database password (KC_DB_PASSWORD). Stored in a chart-managed secret when no existingSecret is set.
+  password: ""
+  # externalDatabase.existingSecret -- Name of an existing secret holding database credentials
+  existingSecret: ""
+  # externalDatabase.existingSecretHostKey -- Key in existingSecret holding the database host (sources KC_DB_URL_HOST from the secret when set)
+  existingSecretHostKey: ""
+  # externalDatabase.existingSecretPortKey -- Key in existingSecret holding the database port
+  existingSecretPortKey: ""
+  # externalDatabase.existingSecretUserKey -- Key in existingSecret holding the database user
+  existingSecretUserKey: ""
+  # externalDatabase.existingSecretDatabaseKey -- Key in existingSecret holding the database name
+  existingSecretDatabaseKey: ""
+  # externalDatabase.existingSecretPasswordKey -- Key in existingSecret holding the database password (defaults to "db-password")
+  existingSecretPasswordKey: ""
+  # externalDatabase.annotations -- Additional annotations for the chart-managed external database secret
+  annotations: {}
+
+## @section Keycloak cache / clustering parameters
+
+## Infinispan (ispn) distributed cache with JGroups discovery. When enabled the
+## chart renders a cache-ispn.xml ConfigMap (mounted at conf/cache-ispn.xml) with
+## the owners counts below and points Keycloak at it via KC_CACHE_CONFIG_FILE.
+cache:
+  # cache.enabled -- Enable the distributed Infinispan cache (KC_CACHE=ispn) for clustering. Set false for a single-node local cache.
+  enabled: true
+  # cache.stackName -- JGroups stack for discovery (KC_CACHE_STACK). "kubernetes" uses DNS_PING against the headless service.
+  stackName: kubernetes
+  # cache.ownersCount -- Number of owners for the distributed session caches (rendered into cache-ispn.xml)
+  ownersCount: 2
+  # cache.authOwnersCount -- Number of owners for the auth/loginFailures/actionTokens caches (defaults to ownersCount)
+  authOwnersCount: ""
+  # cache.configuration -- Inline cache-ispn.xml content. Overrides the generated file when set.
+  configuration: ""
+  # cache.existingConfigmap -- Name of an existing ConfigMap providing cache-ispn.xml. Overrides configuration when set.
+  existingConfigmap: ""
+
+## @section Keycloak logging parameters
+
+logging:
+  # logging.output -- Console log format (KC_LOG_CONSOLE_OUTPUT): default or json
+  output: default
+  # logging.level -- Root log level (KC_LOG_LEVEL): FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL, OFF
+  level: INFO
