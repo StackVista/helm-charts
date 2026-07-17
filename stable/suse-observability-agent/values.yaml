@@ -729,8 +729,8 @@ otel:
       suseVirtualization: true
       # otel.k8sResourceCollector.integrations.suseSbomScanner -- Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack.
       suseSbomScanner: false
-      # otel.k8sResourceCollector.integrations.rancher -- Enable Rancher Manager URL enrichment. When true, the collector reads CATTLE_SERVER from the cattle-cluster-agent Deployment in cattle-system and attaches it as a resource attribute on all emitted log records. Defaults to true: on non-Rancher clusters the cattle-cluster-agent is absent so the attribute is simply not set. Requires a Role and RoleBinding in cattle-system (created automatically).
-      rancher: true
+      # otel.k8sResourceCollector.integrations.rancher -- Enable Rancher Manager URL enrichment. When true, the collector reads CATTLE_SERVER from the cattle-cluster-agent Deployment in cattle-system and attaches it as a resource attribute on all emitted log records. Defaults to false: on non-Rancher clusters the cattle-system namespace is absent so the necessary Role and RoleBinding cannot be created.
+      rancher: false
 
     # otel.k8sResourceCollector.objects -- Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by cr_api_groups are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group).
     objects: {}
