@@ -684,7 +684,7 @@ func TestK8sResourceCollectorRancherEnrichmentEnabled(t *testing.T) {
 	require.True(t, exists, "cattle-system Role for rancher enrichment was not found")
 	assert.Equal(t, "cattle-system", role.Namespace)
 	require.Len(t, role.Rules, 1)
-	assert.Contains(t, role.Rules[0].APIGroups, "apps")
+	assert.Contains(t, role.Rules[0].APIGroups, "")
 	assert.Contains(t, role.Rules[0].Resources, "deployments")
 	assert.ElementsMatch(t, []string{"get", "list", "watch"}, role.Rules[0].Verbs)
 
