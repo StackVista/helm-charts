@@ -22,9 +22,8 @@ func TestStackpacks2EnabledNonSplit(t *testing.T) {
 		return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2"
 	}), 0)
 
-	// Stackpacks 2 is auto-upgraded
+	// otel-k8s-crd is auto-upgraded when StackPacks 2 is enabled
 	serverConfigmap := resources.ConfigMaps["suse-observability-server"]
-	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
 	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
@@ -50,9 +49,8 @@ func TestStackpacks2DisabledNonSplit(t *testing.T) {
 		return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2"
 	}))
 
-	// Stackpacks 2 is not auto-upgraded
+	// otel-k8s-crd is not auto-upgraded when StackPacks 2 is disabled
 	serverConfigmap := resources.ConfigMaps["suse-observability-server"]
-	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
 	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
@@ -77,9 +75,8 @@ func TestStackpacks2EnabledSplit(t *testing.T) {
 		return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2"
 	}), 0)
 
-	// Stackpacks 2 is auto-upgraded
+	// otel-k8s-crd is auto-upgraded when StackPacks 2 is enabled
 	serverConfigmap := resources.ConfigMaps["suse-observability-api"]
-	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
 	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
@@ -102,9 +99,8 @@ func TestStackpacks2DisabledSplit(t *testing.T) {
 		return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2"
 	}))
 
-	// Stackpacks 2 is not auto-upgraded
+	// otel-k8s-crd is not auto-upgraded when StackPacks 2 is disabled
 	serverConfigmap := resources.ConfigMaps["suse-observability-api"]
-	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
 	assert.NotRegexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
@@ -130,9 +126,9 @@ func TestStackpacks2EnabledNonSplitCommunity(t *testing.T) {
 		return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2"
 	}), 0)
 
-	// Stackpacks 2 is auto-upgraded
+	// otel-k8s-crd is auto-upgraded when StackPacks 2 is enabled
 	serverConfigmap := resources.ConfigMaps["suse-observability-server"]
-	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"open-telemetry-2\"", serverConfigmap.Data["application_stackstate.conf"])
+	assert.Regexp(t, "upgradeOnStartUp = \\[.*,\"otel-k8s-crd\"", serverConfigmap.Data["application_stackstate.conf"])
 
 	// Stackpacks 1 Docker image should be mounted
 	stackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-v1" })

@@ -108,14 +108,18 @@ stackstate.stackPacks {
     {{- end }}
   }
 {{- end }}
-{{/*
+{{- /*
   Default StackPacks that will be upgraded on startup - to keep them in sync with SUSE Observability upgrades.
   Users can extend this list by setting: stackstate.stackpacks.upgradeOnStartup
-*/}}
-  {{ $defaultStackPacksToUpgrade := list "kubernetes-v2" "stackstate-k8s-agent-v2" "open-telemetry" "aad-v2" "stackstate" -}}
-  {{ $stackpacks2ToUpgrade := .Values.global.features.experimentalStackpacks | ternary (list "open-telemetry-2" "otel-k8s-crd") (list) -}}
-  {{ $userStackPacksToUpgrade := .Values.stackstate.stackpacks.upgradeOnStartup | default list -}}
-  {{ $upgradeList := concat $defaultStackPacksToUpgrade $stackpacks2ToUpgrade $userStackPacksToUpgrade | uniq -}}
+*/ -}}
+{{- $defaultStackPacksToUpgrade := list "kubernetes-v2" "stackstate-k8s-agent-v2" "open-telemetry" "aad-v2" -}}
+{{- /* stackstate (v1) upgrades while the v2 feature flag is off; suse-observability (v2) takes over when enabled,
+       running the cross-name migration via successorMapping. Both must not be in the list simultaneously to
+       avoid concurrent upgrade tasks racing on the same config records. */ -}}
+{{- $stackpacks2ToUpgrade := .Values.global.features.experimentalStackpacks | ternary (list "otel-k8s-crd" "suse-observability") (list "stackstate") -}}
+{{- $userStackPacksToUpgrade := .Values.stackstate.stackpacks.upgradeOnStartup | default list -}}
+{{- $upgradeList := concat $defaultStackPacksToUpgrade $stackpacks2ToUpgrade $userStackPacksToUpgrade | uniq }}
+
   upgradeOnStartUp = {{ toJson $upgradeList }}
 
   {{- $editionStackPack := printf "%s-kubernetes" (lower .Values.stackstate.deployment.edition) }}
