@@ -28,7 +28,7 @@ metadata:
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 rules:
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
+  - apiGroups: [""]
+    resources: ["deployments", "secrets"]
     verbs: ["get", "list", "watch"]
 {{- end }}
