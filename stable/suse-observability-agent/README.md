@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.33`
+Current chart version is `1.5.34`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -432,7 +432,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"v0.0.50-agent"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"v0.0.51-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.integrations.rancher | bool | `false` | Enable Rancher Manager URL enrichment. When true, the collector reads CATTLE_SERVER from the cattle-cluster-agent Deployment in cattle-system and attaches it as a resource attribute on all emitted log records. Defaults to false: on non-Rancher clusters the cattle-system namespace is absent so the necessary Role and RoleBinding cannot be created. |
 | otel.k8sResourceCollector.integrations.suseAdmissionController | bool | `true` | Enable pre-configured API group filters for the SUSE Admission Controller (Kubewarden) stackpack. |
 | otel.k8sResourceCollector.integrations.suseRuntimeEnforcer | bool | `true` | Enable pre-configured API group filters for the SUSE Runtime Enforcer stackpack. |
@@ -482,7 +482,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
 | otel.prometheusScraping.collector.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently. |
-| otel.prometheusScraping.collector.image.tag | string | `"v0.0.50-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
+| otel.prometheusScraping.collector.image.tag | string | `"v0.0.51-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |
@@ -533,7 +533,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.enabled | bool | `false` | Enable the telemetry gateway for OTLP push-based telemetry (metrics, traces, logs). Requires otel.enabled=true. |
 | otel.telemetryGateway.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.telemetryGateway.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.telemetryGateway.image.tag | string | `"v0.0.50-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
+| otel.telemetryGateway.image.tag | string | `"v0.0.51-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.telemetryGateway.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.telemetryGateway.podAnnotations | object | `{}` | Additional annotations for gateway pods. |
 | otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |
