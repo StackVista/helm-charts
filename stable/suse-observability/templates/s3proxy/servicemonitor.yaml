@@ -13,7 +13,7 @@ spec:
   {{ include "s3proxy.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
-{{- if ( and .Values.s3proxy.metrics.enabled .Values.s3proxy.metrics.servicemonitor.enabled ) }}
+{{- if ( and (eq (include "stackstate.backup.anyEnabled" .) "true") .Values.s3proxy.metrics.enabled .Values.s3proxy.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 {{- $s3proxyServiceMonitor := fromYaml (include "s3proxy.servicemonitor" .) -}}
 {{- toYaml (merge $s3proxyServiceMonitor $commonServiceMonitor) -}}

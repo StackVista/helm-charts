@@ -1193,6 +1193,8 @@ externalZookeeper:
 ## @section Backup parameters
 ##
 backup:
+  # backup.enabled -- Enable scheduled ClickHouse backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. The parent chart defaults this to true.
+  enabled: false
   image:
     # backup.image.registry -- Registry where to get the backup image from.
     registry: quay.io

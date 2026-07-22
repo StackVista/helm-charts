@@ -10,9 +10,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-// TestS3ProxyAlwaysEnabled verifies that S3Proxy is deployed even when global.backup.enabled=false
-// because it's needed for settings-local-backup
-func TestS3ProxyAlwaysEnabled(t *testing.T) {
+// TestS3ProxyEnabledWhenOnlySettingsBackup verifies that S3Proxy is deployed even when
+// global.backup.enabled=false, because backup.configuration.enabled (settings backup)
+// defaults to true and gates s3proxy independently of global.backup.enabled.
+func TestS3ProxyEnabledWhenOnlySettingsBackup(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{

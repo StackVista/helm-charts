@@ -141,6 +141,8 @@ backup:
         # backup.storage.backend.azure.endpoint -- Azure blob endpoint (auto-derived from accountName if not set)
         endpoint: ""
   elasticsearch:
+    # backup.elasticsearch.enabled -- Enable scheduled ElasticSearch snapshots (creation of the SLM policy). Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true.
+    enabled: true
     # backup.elasticsearch.bucketName -- Name of the storage bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'
     # backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files.
@@ -169,6 +171,8 @@ backup:
     # backup.poddisruptionbudget.maxUnavailable -- Maximum number of pods that can be unavailable during the backup.
     maxUnavailable: 0
   stackGraph:
+    # backup.stackGraph.enabled -- Enable scheduled StackGraph backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true.
+    enabled: true
     # backup.stackGraph.bucketName -- Name of the storage bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
     # backup.stackGraph.s3Prefix -- Prefix (dir name) used to store backup files.
@@ -205,6 +209,8 @@ backup:
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
   configuration:
+    # backup.configuration.enabled -- Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled.
+    enabled: true
     # backup.configuration.bucketName -- Name of the storage bucket to store configuration backups.
     bucketName: 'sts-configuration-backup'
     # backup.configuration.s3Prefix -- Prefix (dir name) used to store backup files.
@@ -2049,6 +2055,8 @@ victoria-metrics-0:
     # victoria-metrics-0.server.resources - CPU/Memory requests and limits
     resources: {}
   backup:
+    # victoria-metrics-0.backup.enabled -- Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true.
+    enabled: true
     # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
@@ -2088,6 +2096,8 @@ victoria-metrics-1:
     # victoria-metrics-1.server.resources - CPU/Memory requests and limits
     resources: {}
   backup:
+    # victoria-metrics-1.backup.enabled -- Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true.
+    enabled: true
     # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
@@ -2150,6 +2160,8 @@ clickhouse:
     size: null
   resources: {}
   backup:
+    # clickhouse.backup.enabled -- Enable scheduled ClickHouse backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true.
+    enabled: true
     image:
       # clickhouse.backup.image.registry -- Registry where to get the image from.
       registry: quay.io

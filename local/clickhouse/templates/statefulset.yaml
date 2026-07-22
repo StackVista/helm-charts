@@ -392,6 +392,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.name
+            {{- if and $.Values.global.backup.enabled $.Values.backup.enabled }}
             - name: S3_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -402,6 +403,7 @@ spec:
                 secretKeyRef:
                   name: '{{ tpl $.Values.backup.s3.secretName $ }}'
                   key: secretkey
+            {{- end }}
           resources:
             requests:
               memory: "{{ $.Values.backup.resources.requests.memory }}"

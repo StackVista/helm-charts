@@ -23,8 +23,9 @@ SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_snapshot/${BACKUP_ELA
 }" --silent --output /dev/stderr --write-out "%{http_code}")
 if [ "$SC" -ne 200 ]; then exit 1; fi
 
-echo "=== Configuring ElasticSearch snapshot lifecycle management policy \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME}\" for snapshot repository \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}\"..."
-SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_slm/policy/${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME}?pretty" --header "Content-Type: application/json" --data "
+if [ "${BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED}" = "true" ]; then
+  echo "=== Configuring ElasticSearch snapshot lifecycle management policy \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME}\" for snapshot repository \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}\"..."
+  SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_slm/policy/${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME}?pretty" --header "Content-Type: application/json" --data "
 {
     \"schedule\": \"${BACKUP_ELASTICSEARCH_SCHEDULED_SCHEDULED}\",
     \"name\": \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_NAME_TEMPLATE}\",
@@ -40,4 +41,7 @@ SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_slm/policy/${BACKUP_E
         \"max_count\": \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_RETENTION_MAX_COUNT}\"
     }
 }" --silent --output /dev/stderr --write-out "%{http_code}")
-if [ "$SC" -ne 200 ]; then exit 1; fi
+  if [ "$SC" -ne 200 ]; then exit 1; fi
+else
+  echo "=== Scheduled ElasticSearch snapshots disabled (backup.elasticsearch.enabled=false); skipping SLM policy creation."
+fi

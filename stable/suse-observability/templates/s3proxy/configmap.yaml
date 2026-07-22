@@ -53,6 +53,8 @@ data:
   {{- end }}
 {{- end -}}
 
+{{- if eq (include "stackstate.backup.anyEnabled" .) "true" }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $s3proxyConfigMap := fromYaml (include "stackstate.s3proxy.configmap" .) -}}
 {{- toYaml (merge $s3proxyConfigMap $commonConfigMap) -}}
+{{- end }}

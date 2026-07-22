@@ -32,6 +32,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | backup.bucketName | string | `"sts-clickhouse-backup"` | Name of the storage bucket where ClickHouse backups are stored. |
 | backup.config.keep_remote | int | `308` | How many latest backup should be kept on remote storage. Incremental backups are executed every 1h so 308 = ~14 days. |
 | backup.config.tables | string | `"otel.*"` | Create and upload backup only matched with table name patterns, separated by comma. |
+| backup.enabled | bool | `false` | Enable scheduled ClickHouse backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. The parent chart defaults this to true. |
 | backup.image.registry | string | `"quay.io"` | Registry where to get the backup image from. |
 | backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the backup image from. |
 | backup.image.tag | string | `"2.6.43-47a710b2-169-release"` | Container image tag for clickhouse backup containers. |

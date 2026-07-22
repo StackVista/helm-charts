@@ -18,6 +18,8 @@ spec:
     app.kubernetes.io/component: s3proxy
 {{- end -}}
 
+{{- if eq (include "stackstate.backup.anyEnabled" .) "true" }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $s3proxyService := fromYaml (include "stackstate.s3proxy.service" .) -}}
 {{- toYaml (merge $s3proxyService $commonService) -}}
+{{- end }}

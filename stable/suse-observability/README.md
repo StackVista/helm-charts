@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.10.3-pre.66`
+Current chart version is `2.10.3-pre.68`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -370,6 +370,7 @@ If you encounter issues not covered here:
 | anomaly-detection.stackstate.instance | string | `"{{ include \"stackstate.router.endpoint\" . }}"` | **Required Stackstate instance URL. |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
+| backup.configuration.enabled | bool | `true` | Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled. |
 | backup.configuration.maxLocalFiles | int | `10` | The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size. |
 | backup.configuration.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.configuration.scheduled.backupRetentionTimeDelta | string | `"365 days ago"` | Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted. |
@@ -384,6 +385,7 @@ If you encounter issues not covered here:
 | backup.configuration.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.configuration.yaml.maxSizeLimit | string | `"100Mi"` | Max size of the settings backup or installed via a stackpack |
 | backup.elasticsearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the storage bucket where ElasticSearch snapshots are stored. |
+| backup.elasticsearch.enabled | bool | `true` | Enable scheduled ElasticSearch snapshots (creation of the SLM policy). Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | backup.elasticsearch.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.elasticsearch.scheduled.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html). |
 | backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | string | `"30d"` | Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
@@ -398,6 +400,7 @@ If you encounter issues not covered here:
 | backup.initJobAnnotations | object | `{}` | Annotations for Backup-init Job. |
 | backup.poddisruptionbudget.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable during the backup. |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the storage bucket to store StackGraph backups. |
+| backup.stackGraph.enabled | bool | `true` | Enable scheduled StackGraph backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | backup.stackGraph.restore.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | backup.stackGraph.restore.tempData.size | string | `nil` |  |
 | backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
@@ -434,6 +437,7 @@ If you encounter issues not covered here:
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
 | backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
 | backup.storage.settingsPvc.storageClass | string | `""` | Storage class for the settings PVC |
+| clickhouse.backup.enabled | bool | `true` | Enable scheduled ClickHouse backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
 | clickhouse.backup.image.tag | string | `"2.7.2-so6"` | Container image tag for 'clickhouse' backup containers. |
@@ -1190,6 +1194,7 @@ If you encounter issues not covered here:
 | stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
 | victoria-metrics-0.backup.awsSecrets | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials (resolved from s3proxy). |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
+| victoria-metrics-0.backup.enabled | bool | `true` | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | victoria-metrics-0.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
 | victoria-metrics-0.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
 | victoria-metrics-0.backup.overrideS3Endpoint | string | `"http://{{ include \"stackstate.s3proxy.endpoint\" . }}"` | S3-compatible endpoint for backup storage (resolved from s3proxy). **Do not change this value!** |
@@ -1205,6 +1210,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.resources | object | `{}` |  |
 | victoria-metrics-1.backup.awsSecrets | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials (resolved from s3proxy). |
 | victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
+| victoria-metrics-1.backup.enabled | bool | `true` | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | victoria-metrics-1.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
 | victoria-metrics-1.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
 | victoria-metrics-1.backup.overrideS3Endpoint | string | `"http://{{ include \"stackstate.s3proxy.endpoint\" . }}"` | S3-compatible endpoint for backup storage (resolved from s3proxy). **Do not change this value!** |

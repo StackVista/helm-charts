@@ -37,6 +37,49 @@
 stackpacks/
 {{- end -}}
 
+{{- /*
+  Per-component backup effective-enabled helpers. Each returns "true" when the
+  component's backup should render, otherwise an empty string.
+
+  Settings/configuration backup is independent of global.backup.enabled: it writes a
+  local snapshot via s3proxy and only uploads remotely when global.backup.enabled is
+  set (that remote gate lives at runtime in BACKUP_CONFIGURATION_UPLOAD_REMOTE).
+
+  All other components are remote-only and gate on global.backup.enabled AND their own flag.
+*/ -}}
+{{- define "stackstate.backup.stackGraph.enabled" -}}
+{{- if and .Values.global.backup.enabled .Values.backup.stackGraph.enabled -}}true{{- end -}}
+{{- end -}}
+{{- define "stackstate.backup.elasticsearch.enabled" -}}
+{{- if and .Values.global.backup.enabled .Values.backup.elasticsearch.enabled -}}true{{- end -}}
+{{- end -}}
+{{- define "stackstate.backup.configuration.enabled" -}}
+{{- if .Values.backup.configuration.enabled -}}true{{- end -}}
+{{- end -}}
+{{- define "stackstate.backup.clickhouse.enabled" -}}
+{{- if and .Values.global.backup.enabled .Values.clickhouse.backup.enabled -}}true{{- end -}}
+{{- end -}}
+{{- define "stackstate.backup.vm0.enabled" -}}
+{{- if and .Values.global.backup.enabled (index .Values "victoria-metrics-0" "backup" "enabled") -}}true{{- end -}}
+{{- end -}}
+{{- define "stackstate.backup.vm1.enabled" -}}
+{{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
+{{- if and .Values.global.backup.enabled $vm1Enabled (index .Values "victoria-metrics-1" "backup" "enabled") -}}true{{- end -}}
+{{- end -}}
+{{- /*
+  s3proxy renders if and only if at least one backup component is enabled.
+*/ -}}
+{{- define "stackstate.backup.anyEnabled" -}}
+{{- if or
+    (eq (include "stackstate.backup.configuration.enabled" .) "true")
+    (eq (include "stackstate.backup.stackGraph.enabled" .) "true")
+    (eq (include "stackstate.backup.elasticsearch.enabled" .) "true")
+    (eq (include "stackstate.backup.clickhouse.enabled" .) "true")
+    (eq (include "stackstate.backup.vm0.enabled" .) "true")
+    (eq (include "stackstate.backup.vm1.enabled" .) "true")
+-}}true{{- end -}}
+{{- end -}}
+
 {{- define "stackstate.backup.envvars" -}}
 - name: BACKUP_STACKPACKS_SERVICE_URL
   value: http://{{ template "common.fullname.short" . }}-backup-stackpacks:7090
@@ -45,7 +88,7 @@ stackpacks/
 - name: BACKUP_ELASTICSEARCH_S3_PREFIX
   value: {{ include "trimTrailingSlashes" .Values.backup.elasticsearch.s3Prefix | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED
-  value: {{ .Values.backup.elasticsearch.scheduled.enabled | quote }}
+  value: {{ .Values.backup.elasticsearch.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SCHEDULED
   value: {{ .Values.backup.elasticsearch.scheduled.schedule | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_INDICES
@@ -81,7 +124,7 @@ stackpacks/
 - name: BACKUP_CONFIGURATION_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_ENABLED
-  value: {{ .Values.backup.configuration.scheduled.enabled | quote }}
+  value: {{ .Values.backup.configuration.enabled | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE
   value: {{ include "stackstate.backup.configuration.backupNameTemplate" . | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_PARSE_REGEXP

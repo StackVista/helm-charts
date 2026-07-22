@@ -216,6 +216,8 @@ spec:
         {{- end }}
 {{- end -}}
 
+{{- if eq (include "stackstate.backup.anyEnabled" .) "true" }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $s3proxyDeployment := fromYaml (include "stackstate.s3proxy.deployment" .) -}}
 {{- toYaml (merge $s3proxyDeployment $commonDeployment) -}}
+{{- end }}

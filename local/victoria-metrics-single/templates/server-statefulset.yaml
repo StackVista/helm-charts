@@ -24,7 +24,7 @@ spec:
     metadata:
       annotations:
         checksum/scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
-        {{- if .Values.global.backup.enabled }}
+        {{- if and .Values.global.backup.enabled .Values.backup.enabled }}
         {{- include "common.annotations.checksumObject" (dict "value" .Values.backup "name" "checksum/backup-config") | nindent 8 }}
         {{- include "common.annotations.checksumObject" (dict "value" .Values.global.s3proxy.credentials "name" "checksum/s3proxy-credentials") | nindent 8 }}
         {{- end }}
@@ -43,7 +43,7 @@ spec:
 {{- end }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
       initContainers:
-        {{- if .Values.global.backup.enabled }}
+        {{- if and .Values.global.backup.enabled .Values.backup.enabled }}
         - name: create-crontab
           image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.setupCron.image "context" $) }}/{{ .Values.backup.setupCron.image.repository }}:{{ .Values.backup.setupCron.image.tag }}
           imagePullPolicy: IfNotPresent
@@ -190,7 +190,7 @@ spec:
           {{- with .Values.server.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-        {{- if .Values.global.backup.enabled }}
+        {{- if and .Values.global.backup.enabled .Values.backup.enabled }}
         - name: vmbackup
           image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.vmbackup.image "context" $) }}/{{ .Values.backup.vmbackup.image.repository }}:{{ .Values.backup.vmbackup.image.tag }}
           imagePullPolicy: IfNotPresent
@@ -320,7 +320,7 @@ spec:
             claimName: {{ .Values.server.persistentVolume.existingClaim }}
         {{- end }}
         {{- end }}
-        {{- if .Values.global.backup.enabled }}
+        {{- if and .Values.global.backup.enabled .Values.backup.enabled }}
         - name: crontab
           emptyDir: { }
         {{- end }}
