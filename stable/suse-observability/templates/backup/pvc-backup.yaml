@@ -20,6 +20,23 @@ spec:
       storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default (include "suse-observability.sizing.hbase.stackgraph.persistence.size" . | trim) }}
       {{- end }}
   {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.scheduled.tempData "global" .Values.global) | nindent 2 }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
+  annotations:
+    monitor.kubernetes-v2.stackstate.io/pvc-orphan: |-
+      {
+        "enabled": false
+      }
+spec:
+  accessModes: {{ .Values.backup.stackGraph.v2.tempData.accessModes }}
+  resources:
+    requests:
+      # This storage is here just as a buffer to upload to s3Proxy, no persistent data there
+      storage: {{ .Values.backup.stackGraph.v2.tempData.size | trim }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.v2.tempData "global" .Values.global) | nindent 2 }}
 {{- end }}
 ---
 {{/*

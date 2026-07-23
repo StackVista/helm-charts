@@ -31,11 +31,11 @@ spec:
 {{- $stackstateReceiverBaseService := fromYaml (include "stackstate.receiver.service" $receiverBaseArgs) -}}
 {{- toYaml (merge $stackstateReceiverBaseService $commonService) }}
 ---
-{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs") . -}}
+{{ $receiverLogsArgs := merge (dict "ReceiverType" "logs") . -}}
 {{- $stackstateReceiverLogsService := fromYaml (include "stackstate.receiver.service" $receiverLogsArgs) -}}
 {{ toYaml (merge $stackstateReceiverLogsService $commonService) }}
 ---
-{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent") . -}}
+{{ $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent") . -}}
 {{- $stackstateReceiverProcessAgentService := fromYaml (include "stackstate.receiver.service" $receiverProcessAgentArgs) -}}
 {{ toYaml (merge $stackstateReceiverProcessAgentService $commonService) -}}
 {{ else }}

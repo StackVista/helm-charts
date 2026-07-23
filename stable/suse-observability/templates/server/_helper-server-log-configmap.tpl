@@ -23,4 +23,6 @@ This is here to supress X-Forwarded-for spurious messages
 <logger name="com.stackstate.util.logging.Check" level="INFO"/>
 <logger name="com.stackvista.graph.transaction.StackTransactionManager" level="INFO"/>
 <logger name="org.apache.pekko.actor.ActorSystemImpl" level="ERROR"/>
+<!-- Suppress spurious message during hbase backup -->
+<logger name="org.apache.hadoop.hbase.security.token.FsDelegationToken" level="ERROR"/>
 {{- end -}}

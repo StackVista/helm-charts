@@ -42,14 +42,10 @@ volumeMounts:
 {{- $overrideInitContainer := fromYaml (include "stackstate.backup.stackgraph.container.init" .) -}}
 {{- $stackgraphBackupInitContainer := (merge $overrideInitContainer $commonContainer) -}}
 {{- if eq (include "stackstate.backup.stackGraph.enabled" .) "true" }}
-{{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
-{{- else }}
-apiVersion: batch/v1beta1
-{{- end }}
 kind: CronJob
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-sg
+  name: {{ template "namePrefix" . }}-backup-sg
   labels:
     app.kubernetes.io/name: suse-observability
     app.kubernetes.io/component: backup-sg
@@ -57,6 +53,7 @@ metadata:
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.backup.stackGraph.scheduled.schedule | quote }}
+  suspend: {{ eq .Values.backup.stackGraph.scheduled.implementation "v2" }}
   {{- if .Values.deployment.compatibleWithArgoCD }}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
@@ -97,6 +94,132 @@ spec:
             - name: tmp-data
               persistentVolumeClaim:
                 claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
+        {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
+          nodeSelector:
+          {{- with .Values.stackstate.components.all.nodeSelector }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.stackstate.components.backup.nodeSelector }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
+        {{- if $affinity }}
+          affinity:
+            {{- $affinity | nindent 12 }}
+        {{- end }}
+        {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
+          tolerations:
+          {{- with .Values.stackstate.components.all.tolerations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.stackstate.components.backup.tolerations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.backup.stackGraph.securityContext.enabled }}
+          securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
+          restartPolicy: Never
+---
+{{ end }}
+
+{{- define "stackstate.backup.stackgraph.v2.container.init" }}
+name: wait
+command:
+  - sh
+  - -c
+  - |
+    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: Always
+{{- end }}
+{{- define "stackstate.backup.stackgraph.v2.container.main" }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
+{{- $serverServiceConfig := dict "ServiceName" "server" "ServiceConfig"  .Values.stackstate.components.server }}
+name: backup-stackgraph-v2
+image: "{{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+command:
+  - '/backup-restore-scripts/backup-stackgraph-v2.sh'
+env:
+  {{- include "stackstate.backup.envvars" . | nindent 2 }}
+  {{- include "stackstate.baseurls.envvars" .  | nindent 2 }}
+  - name: PROMETHEUS_WRITE_ENDPOINT
+    value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+  - name: HADOOP_USER_NAME
+    value: nobody
+  - name: ZOOKEEPER_QUORUM
+    value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
+  {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- with .Values.stackstate.components.backup.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+volumeMounts:
+  {{- include "stackstate.backup.volumeMounts" . | nindent 2 }}
+  - name: tmp-data
+    mountPath: /tmp-data
+{{- end }}
+
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.backup.stackgraph.v2.container.main" .) -}}
+{{- $stackgraphBackupV2MainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideInitContainer := fromYaml (include "stackstate.backup.stackgraph.v2.container.init" .) -}}
+{{- $stackgraphBackupV2InitContainer := (merge $overrideInitContainer $commonContainer) -}}
+{{ if .Values.global.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup-sg-v2
+  labels:
+    app.kubernetes.io/name: suse-observability
+    app.kubernetes.io/component: backup-sg-v2
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  concurrencyPolicy: Forbid
+  schedule: {{ .Values.backup.stackGraph.scheduled.schedule | quote }}
+  suspend: {{ eq .Values.backup.stackGraph.scheduled.implementation "v1" }}
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  {{- end }}
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup-v2
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+    spec:
+      backoffLimit: 1
+      ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
+      template:
+        metadata:
+        {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
+          annotations:
+          {{- with .Values.stackstate.components.all.podAnnotations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.stackstate.components.backup.podAnnotations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+          labels:
+            app.kubernetes.io/component: backup-v2
+            {{- include "suse-observability.labels.global" . | nindent 12 }}
+          {{- with .Values.stackstate.components.backup.podLabels }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          initContainers:
+          - {{- toYaml $stackgraphBackupV2InitContainer | nindent 12 }}
+          containers:
+          - {{- toYaml $stackgraphBackupV2MainContainer | nindent 12 }}
+          {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 10 }}
+          volumes:
+            {{- include "stackstate.backup.volumes" . | nindent 12 }}
+            - name: tmp-data
+              persistentVolumeClaim:
+                claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
         {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
           nodeSelector:
           {{- with .Values.stackstate.components.all.nodeSelector }}
@@ -173,13 +296,9 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "stackstate.backup.configuration.container.main" .) -}}
 {{- $configBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideInitContainer := fromYaml (include "stackstate.backup.configuration.container.init" .) -}}
-{{- $configBackupInitContainer := (merge $overrideInitContainer $commonContainer) -}}
+{{- $configBackupInitContainer := (merge $overrideInitContainer $commonContainer) }}
 {{- if eq (include "stackstate.backup.configuration.enabled" .) "true" }}
-{{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
-{{- else }}
-apiVersion: batch/v1beta1
-{{- end }}
 kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-conf

@@ -13,6 +13,11 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 name: regionserver
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hbase.regionserver.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.hbase.regionserver.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.hbase.regionserver.image.pullPolicy | quote  }}
+envFrom:
+- configMapRef:
+    name: {{ template "common.fullname.global" (merge (dict "Base" "backup") .) }}-sts-hbase-backup
+- secretRef:
+    name: {{ template "common.fullname.global" (merge (dict "Base" "backup") .) }}-sts-hbase-backup
 env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}

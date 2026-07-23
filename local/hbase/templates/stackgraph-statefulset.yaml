@@ -16,6 +16,11 @@ volumeMounts:
 name: stackgraph
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.stackgraph.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.stackgraph.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.stackgraph.image.pullPolicy | quote  }}
+envFrom:
+- configMapRef:
+    name: {{ template "common.fullname.global" (merge (dict "Base" "backup") .) }}-sts-hbase-backup
+- secretRef:
+    name: {{ template "common.fullname.global" (merge (dict "Base" "backup") .) }}-sts-hbase-backup
 env:
 {{- include "all.commonEnv" . }}
 {{- include "hbase.master.commonEnv" . }}

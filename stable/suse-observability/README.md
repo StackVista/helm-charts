@@ -408,6 +408,7 @@ If you encounter issues not covered here:
 | backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
 | backup.stackGraph.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.stackGraph.scheduled.backupRetentionTimeDelta | string | `"30 days ago"` | Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted. |
+| backup.stackGraph.scheduled.implementation | string | `"v1"` | Allows choosing the backup implementation to run on a schedule, can be "v1", "v2" or "all". For now the default is "v1", due to the v2 system not declared 'stable' yet. Not-schedule jobs will be suspended. |
 | backup.stackGraph.scheduled.schedule | string | `"0 3 * * *"` | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
 | backup.stackGraph.scheduled.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | backup.stackGraph.scheduled.tempData.size | string | `nil` |  |
@@ -417,6 +418,9 @@ If you encounter issues not covered here:
 | backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| backup.stackGraph.v2.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
+| backup.stackGraph.v2.tempData.size | string | `"20Gi"` |  |
+| backup.stackGraph.v2.tempData.storageClass | string | `nil` |  |
 | backup.storage.backend.azure | object | `{"accountKey":"","accountName":"","enabled":false,"endpoint":"","fromExternalSecret":""}` | Use Azure Blob Storage |
 | backup.storage.backend.azure.accountKey | string | `""` | Azure storage account key (optional, falls back to managed identity) |
 | backup.storage.backend.azure.accountName | string | `""` | Azure storage account name |
@@ -505,7 +509,7 @@ If you encounter issues not covered here:
 | hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.version | string | `"3.5.0-so9"` | Full HDFS image tag. Updated by updatecli. |
+| hbase.hdfs.version | string | `"3.5.0-so10"` | Full HDFS image tag. Updated by updatecli. |
 | hbase.stackgraph.version | string | `"8.1.11"` |  |
 | hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |

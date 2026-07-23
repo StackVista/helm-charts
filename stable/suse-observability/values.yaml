@@ -186,15 +186,25 @@ backup:
         # backup.stackGraph.restore.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     scheduled:
+      # backup.stackGraph.scheduled.implementation -- Allows choosing the backup implementation to run on a schedule, can be "v1", "v2" or "all". For now the default is "v1", due to the v2 system not declared 'stable' yet. Not-schedule jobs will be suspended.
+      implementation: "v1"
       # backup.stackGraph.scheduled.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
       schedule: "0 3 * * *"
       # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted.
       backupRetentionTimeDelta: "30 days ago"
       tempData:
+        # backup.stackGraph.scheduled.v2.tmpData.accessModes -- Access mode for temporary backup data.
+        accessModes: ["ReadWriteOnce"]
+        # backup.stackGraph.scheduled.v2.tmpData.size -- Size of volume for temporary backup data -- only used as a buffer for sending data to s3, so does not need to fit a complete backup.
+        size: null
+        # backup.stackGraph.scheduled.v2.tmpData.storageClass -- Storage class of the volume for temporary backup data.
+        storageClass:
+    v2:
+      tempData:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
         # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup. It defaults to a datanode size on Distributed Mode and to the stackgraph size on Mono mode.
-        size: null
+        size: "20Gi"
         # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     securityContext:
@@ -1833,7 +1843,7 @@ hbase:
       replicaCount: null
   hdfs:
     # hbase.hdfs.version -- Full HDFS image tag. Updated by updatecli.
-    version: "3.5.0-so9"
+    version: "3.5.0-so10"
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null

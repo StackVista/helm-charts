@@ -75,7 +75,7 @@ spec:
 {{- $fullBackupConfig := dict "job_name" "full-backup" "script_name" "full-backup" "cron_schedule" .Values.backup.scheduled.full_schedule }}
 {{- include "clickhouse.backup.cronjob" (merge $fullBackupConfig .) }}
 ---
-{{- $incrementalBackupConfig := dict "job_name" "incremental-backup" "script_name" "incremental-backup" "cron_schedule" .Values.backup.scheduled.incremental_schedule }}
+{{ $incrementalBackupConfig := dict "job_name" "incremental-backup" "script_name" "incremental-backup" "cron_schedule" .Values.backup.scheduled.incremental_schedule }}
 {{- include "clickhouse.backup.cronjob" (merge $incrementalBackupConfig .) }}
 
 {{- end }}

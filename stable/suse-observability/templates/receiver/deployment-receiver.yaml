@@ -235,27 +235,27 @@ spec:
 {{- $evaluatedConfig := merge $baseConfig (dict "extraEnv" $evaluatedExtraEnv) -}}
 
 {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
-  {{- $evaluatedBaseConfig := deepCopy $evaluatedConfig -}}
-  {{- $receiverBaseTypeConfig := merge $evaluatedBaseConfig .Values.stackstate.components.receiver.split.base -}}
-  {{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "TypeConfig" $receiverBaseTypeConfig) . -}}
-  {{- $receiverBaseDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverBaseArgs) -}}
-  {{- toYaml (merge $receiverBaseDeployment $commonDeployment) }}
+{{- $evaluatedBaseConfig := deepCopy $evaluatedConfig -}}
+{{- $receiverBaseTypeConfig := merge $evaluatedBaseConfig .Values.stackstate.components.receiver.split.base -}}
+{{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "TypeConfig" $receiverBaseTypeConfig) . -}}
+{{- $receiverBaseDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverBaseArgs) -}}
+{{- toYaml (merge $receiverBaseDeployment $commonDeployment) }}
 ---
-  {{- $evaluatedLogsConfig := deepCopy $evaluatedConfig -}}
-  {{- $receiverLogsTypeConfig := merge $evaluatedLogsConfig .Values.stackstate.components.receiver.split.logs -}}
-  {{- $receiverLogsArgs := merge (dict "ReceiverType" "logs" "TypeConfig" $receiverLogsTypeConfig) . -}}
-  {{- $receiverLogsDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverLogsArgs) -}}
-  {{- toYaml (merge $receiverLogsDeployment $commonDeployment) }}
+{{ $evaluatedLogsConfig := deepCopy $evaluatedConfig -}}
+{{- $receiverLogsTypeConfig := merge $evaluatedLogsConfig .Values.stackstate.components.receiver.split.logs -}}
+{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs" "TypeConfig" $receiverLogsTypeConfig) . -}}
+{{- $receiverLogsDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverLogsArgs) -}}
+{{- toYaml (merge $receiverLogsDeployment $commonDeployment) }}
 ---
-  {{- $evaluatedProcessAgentConfig := deepCopy $evaluatedConfig -}}
-  {{- $receiverProcessAgentTypeConfig := merge $evaluatedProcessAgentConfig .Values.stackstate.components.receiver.split.processAgent -}}
-  {{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "TypeConfig" $receiverProcessAgentTypeConfig) . -}}
-  {{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
-  {{- toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
+{{ $evaluatedProcessAgentConfig := deepCopy $evaluatedConfig -}}
+{{- $receiverProcessAgentTypeConfig := merge $evaluatedProcessAgentConfig .Values.stackstate.components.receiver.split.processAgent -}}
+{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "TypeConfig" $receiverProcessAgentTypeConfig) . -}}
+{{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
+{{- toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
 {{- else }}
-  {{- $evaluatedNonSplitConfig := deepCopy $evaluatedConfig -}}
-  {{- $receiverNonSplitTypeConfig := merge $evaluatedNonSplitConfig .Values.stackstate.components.receiver -}}
-  {{- $receiverArgs := merge (dict "ReceiverType" "" "TypeConfig" $receiverNonSplitTypeConfig) . -}}
-  {{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
-  {{- toYaml (merge $receiverDeployment $commonDeployment) }}
+{{- $evaluatedNonSplitConfig := deepCopy $evaluatedConfig -}}
+{{- $receiverNonSplitTypeConfig := merge $evaluatedNonSplitConfig .Values.stackstate.components.receiver -}}
+{{- $receiverArgs := merge (dict "ReceiverType" "" "TypeConfig" $receiverNonSplitTypeConfig) . -}}
+{{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
+{{- toYaml (merge $receiverDeployment $commonDeployment) }}
 {{- end }}

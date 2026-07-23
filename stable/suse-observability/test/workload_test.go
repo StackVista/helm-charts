@@ -59,6 +59,7 @@ var expectedWorkloadsHA = []string{
 	"Job/suse-observability-init-pvc-*",
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
+	"CronJob/suse-observability-backup-sg-v2",
 	"CronJob/suse-observability-backup-init",
 	"CronJob/suse-observability-clickhouse-incremental-backup",
 	"CronJob/suse-observability-clickhouse-full-backup",
@@ -101,6 +102,7 @@ var expectedWorkloadsNonHA = []string{
 	"Job/suse-observability-init-pvc-*",
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
+	"CronJob/suse-observability-backup-sg-v2",
 	"CronJob/suse-observability-backup-init",
 	"CronJob/suse-observability-clickhouse-incremental-backup",
 	"CronJob/suse-observability-clickhouse-full-backup",

@@ -775,6 +775,8 @@ data:
     {{- .Files.Get "scripts/expire-s3-backups.sh" | nindent 4 }}
   backup-stackgraph.sh: |
     {{- .Files.Get "scripts/backup-stackgraph.sh" | nindent 4 }}
+  backup-stackgraph-v2.sh: |
+    {{- .Files.Get "scripts/backup-stackgraph-v2.sh" | nindent 4 }}
   backup-configuration.sh: |
     {{- .Files.Get "scripts/backup-configuration.sh" | nindent 4 }}
   job-elasticsearch-list-snapshots.yaml: |
