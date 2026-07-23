@@ -353,14 +353,16 @@ If you encounter issues not covered here:
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| ai | object | `{"assistant":{"anthropic":{"apiKey":"","fromExternalSecret":{"key":"ANTHROPIC_API_KEY","name":""}},"bedrock":{"awsRegion":"eu-west-1"},"enabled":false,"provider":"bedrock"},"platformOptimization":{"enabled":false}}` | Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them. |
+| ai | object | `{"assistant":{"anthropic":{"apiKey":"","fromExternalSecret":{"key":"ANTHROPIC_API_KEY","name":""}},"bedrock":{"awsRegion":"eu-west-1"},"enabled":false,"provider":"bedrock"},"mcp":{"enabled":false},"platformOptimization":{"enabled":false}}` | Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them. |
 | ai.assistant | object | `{"anthropic":{"apiKey":"","fromExternalSecret":{"key":"ANTHROPIC_API_KEY","name":""}},"bedrock":{"awsRegion":"eu-west-1"},"enabled":false,"provider":"bedrock"}` | AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime) |
 | ai.assistant.anthropic.apiKey | string | `""` | Anthropic API key used when `ai.assistant.provider=anthropic`. |
 | ai.assistant.anthropic.fromExternalSecret.key | string | `"ANTHROPIC_API_KEY"` | Key in the external secret that contains the Anthropic API key. |
 | ai.assistant.anthropic.fromExternalSecret.name | string | `""` | Existing secret name that contains the Anthropic API key. When set, the chart will not create an internal secret for `ANTHROPIC_API_KEY`. |
 | ai.assistant.bedrock.awsRegion | string | `"eu-west-1"` | AWS region used when `ai.assistant.provider=bedrock`. |
-| ai.assistant.enabled | bool | `false` | Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. |
+| ai.assistant.enabled | bool | `false` | Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. Enabling the AI Assistant always enables the MCP Server. |
 | ai.assistant.provider | string | `"bedrock"` | LLM provider for AI Assistant. Possible values: `bedrock` or `anthropic`. |
+| ai.mcp | object | `{"enabled":false}` | MCP (Model Context Protocol) Server for use with external code assistants. Entitlement: Included with SUSE Observability (Rancher Prime) |
+| ai.mcp.enabled | bool | `false` | Enables the MCP Server for use with external code assistants, without enabling the AI Assistant or configuring an LLM provider. The MCP Server is also enabled automatically when `ai.assistant.enabled=true`. |
 | ai.platformOptimization | object | `{"enabled":false}` | Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization. |
 | ai.platformOptimization.enabled | bool | `false` | Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution. |
 | anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |

@@ -24,6 +24,14 @@ Internal constants — values that are fixed by the application and not user-con
 {{- define "stackstate.mcp.port" -}}8080{{- end -}}
 {{- define "stackstate.mcp.listenAddress" -}}:{{ include "stackstate.mcp.port" . }}{{- end -}}
 {{- define "stackstate.aiAssistant.port" -}}8081{{- end -}}
+
+{{/*
+The MCP server is deployed when explicitly enabled or when the AI Assistant is enabled,
+since the AI Assistant is an MCP client that requires the MCP server.
+*/}}
+{{- define "stackstate.mcp.enabled" -}}
+{{- or .Values.ai.mcp.enabled .Values.ai.assistant.enabled -}}
+{{- end -}}
 {{- define "stackstate.cache.backend" -}}mapdb{{- end -}}
 {{- define "stackstate.metricStore.remoteWritePath" -}}/api/v1/write{{- end -}}
 {{- define "stackstate.metrics.defaultAgentMetricsFilter" -}}["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "pekko_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]{{- end -}}

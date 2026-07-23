@@ -152,7 +152,7 @@ data:
                     cluster: "{{ template "common.fullname.short" . }}-receiver"
                     prefix_rewrite: "/"
                 {{- end }}
-                {{- if .Values.ai.assistant.enabled }}
+                {{- if eq (include "stackstate.mcp.enabled" .) "true" }}
                 - match:
                     prefix: "/mcp"
                   route:
@@ -329,7 +329,7 @@ data:
                 socket_address:
                   address: "{{ template "common.fullname.short" . }}-ui"
                   port_value: 8080
-    {{- if .Values.ai.assistant.enabled }}
+    {{- if eq (include "stackstate.mcp.enabled" .) "true" }}
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
       name: "{{ template "stackstate.mcp.fullname" . }}"
       type: STRICT_DNS

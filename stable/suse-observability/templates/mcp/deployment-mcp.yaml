@@ -3,7 +3,7 @@
 {{- $stackstateService := ternary "api-headless" "server-headless" (eq (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) | trim) "true") }}
 {{- $stackstateUrl := printf "http://%s-%s:7070" (include "common.fullname.short" .) $stackstateService -}}
 {{- $mcpImageTag := .Values.stackstate.components.mcp.image.tag -}}
-{{- if .Values.ai.assistant.enabled -}}
+{{- if eq (include "stackstate.mcp.enabled" .) "true" -}}
 {{- $mcpImageTag = required "stackstate.components.mcp.image.tag must be set" .Values.stackstate.components.mcp.image.tag -}}
 {{- end -}}
 name: mcp
@@ -92,7 +92,7 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if .Values.ai.assistant.enabled }}
+{{- if eq (include "stackstate.mcp.enabled" .) "true" }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $mcpDeployment := fromYaml (include "stackstate.mcp.deployment" .) -}}
 {{- toYaml (merge $mcpDeployment $commonDeployment) -}}

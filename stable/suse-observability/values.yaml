@@ -312,7 +312,7 @@ scc:
 ai:
   # ai.assistant -- AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime)
   assistant:
-    # ai.assistant.enabled -- Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability.
+    # ai.assistant.enabled -- Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. Enabling the AI Assistant always enables the MCP Server.
     enabled: false
     # ai.assistant.provider -- LLM provider for AI Assistant. Possible values: `bedrock` or `anthropic`.
     provider: bedrock
@@ -327,6 +327,10 @@ ai:
     bedrock:
       # ai.assistant.bedrock.awsRegion -- AWS region used when `ai.assistant.provider=bedrock`.
       awsRegion: eu-west-1
+  # ai.mcp -- MCP (Model Context Protocol) Server for use with external code assistants. Entitlement: Included with SUSE Observability (Rancher Prime)
+  mcp:
+    # ai.mcp.enabled -- Enables the MCP Server for use with external code assistants, without enabling the AI Assistant or configuring an LLM provider. The MCP Server is also enabled automatically when `ai.assistant.enabled=true`.
+    enabled: false
   # ai.platformOptimization -- Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization.
   platformOptimization:
     # ai.platformOptimization.enabled -- Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution.

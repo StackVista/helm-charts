@@ -50,6 +50,7 @@ func TestMcpServerDisabled(t *testing.T) {
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
 			"ai.assistant.enabled": "false",
+			"ai.mcp.enabled":       "false",
 		},
 	})
 
@@ -68,6 +69,46 @@ func TestMcpServerDisabled(t *testing.T) {
 	require.True(t, ok, "Active router configmap should exist")
 	assert.NotContains(t, routerConfigMap.Data["listeners.yaml"], "prefix: \"/mcp\"")
 	assert.NotContains(t, routerConfigMap.Data["clusters.yaml"], "name: \"suse-observability-mcp\"")
+}
+
+// TestMcpServerEnabledWithoutAssistant verifies that the MCP server can be deployed for
+// external code assistants via ai.mcp.enabled without enabling the AI Assistant and
+// without configuring an LLM provider (STAC-25055).
+func TestMcpServerEnabledWithoutAssistant(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"ai.assistant.enabled": "false",
+			"ai.mcp.enabled":       "true",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-mcp"]
+	require.True(t, ok, "MCP server deployment should exist")
+	assert.Equal(t, "mcp", deployment.Spec.Template.Spec.Containers[0].Name)
+
+	_, ok = resources.Services["suse-observability-mcp"]
+	require.True(t, ok, "MCP server service should exist")
+
+	// The AI Assistant must not be deployed.
+	assert.NotContains(t, resources.Statefulsets, "suse-observability-ai-assistant")
+	assert.NotContains(t, resources.Services, "suse-observability-ai-assistant")
+
+	// The AI chat feature switch stays off without the AI Assistant.
+	apiDeployment, ok := resources.Deployments["suse-observability-api"]
+	require.True(t, ok, "API deployment should exist")
+	assert.NotContains(t, apiDeployment.Spec.Template.Spec.Containers[0].Env, corev1.EnvVar{
+		Name:  "CONFIG_FORCE_stackstate_featureSwitches_enableAi",
+		Value: "true",
+	})
+
+	// The MCP endpoint is exposed through the router.
+	routerConfigMap, ok := resources.ConfigMaps["suse-observability-router-active"]
+	require.True(t, ok, "Active router configmap should exist")
+	assert.Contains(t, routerConfigMap.Data["listeners.yaml"], "prefix: \"/mcp\"")
+	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "name: \"suse-observability-mcp\"")
 }
 
 func TestMcpServerPublicExposureUsesIngressWhenEnabled(t *testing.T) {
