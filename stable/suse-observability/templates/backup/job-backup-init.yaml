@@ -47,6 +47,8 @@ template:
             mountPath: /work
           - name: tmp-data
             mountPath: /tmp-data
+          - name: tmp-data-v2
+            mountPath: /tmp-data-v2
     {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 4 }}
     restartPolicy: Never
 {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
@@ -82,6 +84,10 @@ template:
       - name: tmp-data
         persistentVolumeClaim:
           claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
+      # This volume is included here, to make sure the pvc gets created upon helm install.
+      - name: tmp-data-v2
+        persistentVolumeClaim:
+          claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
 {{- end -}}
 
 {{- if .Values.global.backup.enabled }}
