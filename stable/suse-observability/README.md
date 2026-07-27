@@ -1181,13 +1181,13 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[1].repository | string | `"stackstate/contrib-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[1].tag | string | `"20260721144515-main-838a6b4"` | Tag used for the `stackpacks` Docker image |
+| stackstate.stackpacks.images[1].tag | string | `"20260727104157-main-0569ab4"` | Tag used for the `stackpacks` Docker image |
 | stackstate.stackpacks.images[2].editions | list | `["Prime"]` | Editions that include the stackpacks |
 | stackstate.stackpacks.images[2].name | string | `"suse"` | name for the init container |
 | stackstate.stackpacks.images[2].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[2].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[2].repository | string | `"stackstate/suse-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[2].tag | string | `"20260720124210-main-223827d"` | Tag used for the `stackpacks` Docker image |
+| stackstate.stackpacks.images[2].tag | string | `"20260727104204-main-46f97c4"` | Tag used for the `stackpacks` Docker image |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.localpvc.size | string | `"1Gi"` | Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS |
 | stackstate.stackpacks.localpvc.storageClass | string | `nil` |  |
