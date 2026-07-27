@@ -9,6 +9,12 @@ stackstate:
 # Role/RoleBinding in cattle-system.
 otel:
   enabled: true
+  integrations:
+    suseRuntimeEnforcer: false
+    suseAdmissionController: false
+    suseVirtualization: false
+    suseSbomScanner: false
+    rancherAgent: true
   k8sResourceCollector:
     enabled: true
     crDiscovery:
@@ -18,9 +24,3 @@ otel:
           "*": true
     rbac:
       useWildcard: true
-    integrations:
-      suseRuntimeEnforcer: false
-      suseAdmissionController: false
-      suseVirtualization: false
-      suseSbomScanner: false
-      rancher: true

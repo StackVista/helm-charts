@@ -8,6 +8,12 @@ stackstate:
 # verify that no integration groups appear regardless of chart defaults.
 otel:
   enabled: true
+  integrations:
+    suseRuntimeEnforcer: false
+    suseAdmissionController: false
+    suseVirtualization: false
+    suseSbomScanner: false
+    rancherAgent: false
   k8sResourceCollector:
     enabled: true
     crDiscovery:
@@ -17,9 +23,3 @@ otel:
           "example.com": true
     rbac:
       useWildcard: true
-    integrations:
-      suseRuntimeEnforcer: false
-      suseAdmissionController: false
-      suseVirtualization: false
-      suseSbomScanner: false
-      rancher: false
