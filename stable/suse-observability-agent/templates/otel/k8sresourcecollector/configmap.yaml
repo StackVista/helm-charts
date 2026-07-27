@@ -105,7 +105,7 @@ data:
             group: {{ $obj.group | default "" | quote }}
 {{- end }}
 {{- end }}
-{{- if .Values.otel.k8sResourceCollector.integrations.rancher }}
+{{- if .Values.otel.integrations.rancherAgent }}
         rancher_enrichment:
           enabled: true
 {{- end }}
