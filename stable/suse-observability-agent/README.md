@@ -530,7 +530,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.debug.enabled | bool | `false` | Enable the debug exporter for this collector. |
 | otel.telemetryGateway.debug.pipelines | list | `["traces","logs","metrics"]` | Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}. |
 | otel.telemetryGateway.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
-| otel.telemetryGateway.enabled | bool | `false` | Enable the telemetry gateway for OTLP push-based telemetry (metrics, traces, logs). Requires otel.enabled=true. |
+| otel.telemetryGateway.enabled | bool | `false` | Enable the telemetry gateway for OTLP push-based telemetry. Metrics and traces are forwarded to SUSE Observability; log signals are accepted for debug visibility only and written to the gateway pod logs. Requires otel.enabled=true. |
 | otel.telemetryGateway.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.telemetryGateway.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
 | otel.telemetryGateway.image.tag | string | `"v0.0.53-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
@@ -540,10 +540,10 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.telemetryGateway.priorityClassName | string | `""` | Priority class for gateway pods. |
 | otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA. |
-| otel.telemetryGateway.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
-| otel.telemetryGateway.resources.limits.memory | string | `"1Gi"` | Memory resource limits. |
-| otel.telemetryGateway.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
-| otel.telemetryGateway.resources.requests.memory | string | `"512Mi"` | Memory resource requests. |
+| otel.telemetryGateway.resources.limits.cpu | string | `"1"` | CPU resource limits. |
+| otel.telemetryGateway.resources.limits.memory | string | `"2Gi"` | Memory resource limits. |
+| otel.telemetryGateway.resources.requests.cpu | string | `"250m"` | CPU resource requests. |
+| otel.telemetryGateway.resources.requests.memory | string | `"1Gi"` | Memory resource requests. |
 | otel.telemetryGateway.service.annotations | object | `{}` | Annotations for the ClusterIP Service. |
 | otel.telemetryGateway.serviceaccount.annotations | object | `{}` | Annotations for the service account for the gateway pods. |
 | otel.telemetryGateway.skipSslValidation | bool | `false` | Skip TLS validation when exporting to the platform. |

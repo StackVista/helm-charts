@@ -999,7 +999,9 @@ otel:
 
   telemetryGateway:
     # otel.telemetryGateway.enabled -- Enable the telemetry gateway for OTLP push-based
-    # telemetry (metrics, traces, logs). Requires otel.enabled=true.
+    # telemetry. Metrics and traces are forwarded to SUSE Observability; log signals are
+    # accepted for debug visibility only and written to the gateway pod logs.
+    # Requires otel.enabled=true.
     enabled: false
 
     # otel.telemetryGateway.skipSslValidation -- Skip TLS validation when exporting to the platform.
@@ -1026,14 +1028,14 @@ otel:
     resources:
       limits:
         # otel.telemetryGateway.resources.limits.cpu -- CPU resource limits.
-        cpu: "500m"
+        cpu: "1"
         # otel.telemetryGateway.resources.limits.memory -- Memory resource limits.
-        memory: "1Gi"
+        memory: "2Gi"
       requests:
         # otel.telemetryGateway.resources.requests.cpu -- CPU resource requests.
-        cpu: "100m"
+        cpu: "250m"
         # otel.telemetryGateway.resources.requests.memory -- Memory resource requests.
-        memory: "512Mi"
+        memory: "1Gi"
 
     # otel.telemetryGateway.strategy -- The strategy for the Deployment object.
     strategy:
