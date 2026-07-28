@@ -27,6 +27,9 @@ spec:
     - jsonPath: .spec.name
       name: Notitication
       type: string
+    - jsonPath: .spec.suppressUntil
+      name: SuppressUntil
+      type: string
     - jsonPath: .status.instance
       name: Instance
       type: string
@@ -165,6 +168,14 @@ spec:
                 - responders
                 type: object
               status:
+                type: string
+              suppressUntil:
+                description: |-
+                  SuppressUntil bounds how long Status may stay DISABLED. Once the deadline passes the
+                  operator restores Status to ENABLED, so a caller that disables notifications and never
+                  re-enables them (for example a deployment pipeline that fails between its mute and
+                  unmute steps) cannot leave notifications off indefinitely.
+                format: date-time
                 type: string
             required:
             - componentTags
