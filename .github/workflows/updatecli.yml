@@ -9,6 +9,12 @@
 # onto the updatecli branch and open a PR (docker_images).
 # apply + follow_up are job-level-gated on `!inputs.dry_run` — operator must explicitly opt in.
 name: Updatecli
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch'
+    && (inputs.dry_run == false
+        && format('Updatecli apply — {0} → {1}', inputs.pipeline, inputs.target_branch)
+        || format('Updatecli dry-run — {0} → {1}', inputs.pipeline, inputs.target_branch))
+    || format('Updatecli validate — {0}', github.ref_name) }}
 
 on:
   push:
@@ -103,6 +109,41 @@ jobs:
           for dir in update-docker-images update-stackstate update-stackpacks; do
             updatecli pipeline diff --config "updatecli/updatecli.d/$dir/" --values updatecli/values.d/values.yaml
           done
+
+  summarize:
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && github.event_name == 'workflow_dispatch' }}
+    runs-on: small
+    steps:
+      - name: Write step summary
+        env:
+          PIPELINE:                         ${{ inputs.pipeline }}
+          TARGET_BRANCH:                    ${{ inputs.target_branch }}
+          STACKSTATE_SOURCE_BRANCH:         ${{ inputs.stackstate_source_branch }}
+          STACKPACKS_SOURCE_BRANCH:         ${{ inputs.stackpacks_source_branch }}
+          STACKPACKS_CONTRIB_SOURCE_BRANCH: ${{ inputs.stackpacks_contrib_source_branch }}
+          STACKPACKS_SUSE_SOURCE_BRANCH:    ${{ inputs.stackpacks_suse_source_branch }}
+          DRY_RUN: >-
+            ${{ inputs.dry_run && 'true' || 'false' }}
+        run: |
+          {
+            echo "### Updatecli inputs"
+            echo ""
+            echo "| Input | Value |"
+            echo "| --- | --- |"
+            echo "| pipeline | \`${PIPELINE}\` |"
+            echo "| target_branch | \`${TARGET_BRANCH}\` |"
+            case "$PIPELINE" in
+              stackstate)
+                echo "| stackstate_source_branch | \`${STACKSTATE_SOURCE_BRANCH}\` |"
+                ;;
+              stackpacks)
+                echo "| stackpacks_source_branch | \`${STACKPACKS_SOURCE_BRANCH}\` |"
+                echo "| stackpacks_contrib_source_branch | \`${STACKPACKS_CONTRIB_SOURCE_BRANCH}\` |"
+                echo "| stackpacks_suse_source_branch | \`${STACKPACKS_SUSE_SOURCE_BRANCH}\` |"
+                ;;
+            esac
+            echo "| dry_run | \`${DRY_RUN}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # Runs `updatecli pipeline apply` against the chosen pipeline. Outputs feed follow_up.
   # `working_branch` follows updatecli's `updatecli-<target>-<pipelineid>` naming convention.
