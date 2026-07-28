@@ -970,6 +970,14 @@ true
 {{- end -}}
 
 {{/*
+Returns the otel-collector service name. The subchart uses fullnameOverride for a stable name
+independent of the Helm release name; the router must use this rather than common.fullname.short.
+*/}}
+{{- define "stackstate.otelCollector.fullname" -}}
+{{- index .Values "opentelemetry-collector" "fullnameOverride" | default "suse-observability-otel-collector" -}}
+{{- end -}}
+
+{{/*
 Get receiver split enabled flag with sizing profile evaluation
 Usage: {{ include "stackstate.receiver.split.enabled" . }}
 Returns: "true" or "false" string

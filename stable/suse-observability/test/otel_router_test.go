@@ -30,3 +30,23 @@ func TestOtelRouterRouteEnabled(t *testing.T) {
 	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "name: \"suse-observability-otel-collector\"")
 	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "port_value: 4318")
 }
+
+// TestOtelRouterClusterNameStableAcrossReleaseNames asserts the otel-collector cluster address
+// uses the subchart's stable fullnameOverride regardless of the Helm release name. A non-default
+// release name previously caused the router to reference a non-existent service (503 UH).
+func TestOtelRouterClusterNameStableAcrossReleaseNames(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "prime-test", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	routerConfigMap, ok := resources.ConfigMaps["prime-test-suse-observability-router-active"]
+	require.True(t, ok, "Active router configmap should exist for non-default release name")
+
+	clusters := routerConfigMap.Data["clusters.yaml"]
+	assert.Contains(t, clusters, "address: \"suse-observability-otel-collector\"",
+		"router must use the stable otel-collector service name regardless of release name")
+	assert.NotContains(t, clusters, "address: \"prime-test-suse-observability-otel-collector\"",
+		"router must not use release-prefixed name for otel-collector (service does not exist)")
+}

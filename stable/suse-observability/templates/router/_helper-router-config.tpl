@@ -75,13 +75,13 @@ data:
                     prefix: "/stsAgent/otel/"
                   route:
                     timeout: 0s
-                    cluster: "{{ template "common.fullname.short" . }}-otel-collector"
+                    cluster: "{{ include "stackstate.otelCollector.fullname" . }}"
                     prefix_rewrite: "/"
                 - match:
                     prefix: "/receiver/stsAgent/otel/"
                   route:
                     timeout: 0s
-                    cluster: "{{ template "common.fullname.short" . }}-otel-collector"
+                    cluster: "{{ include "stackstate.otelCollector.fullname" . }}"
                     prefix_rewrite: "/"
                 {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
                 - match:
@@ -297,18 +297,18 @@ data:
                   port_value: 7077
       {{- end }}
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
-      name: "{{ template "common.fullname.short" . }}-otel-collector"
+      name: "{{ include "stackstate.otelCollector.fullname" . }}"
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
       connect_timeout: 2s
       load_assignment:
-        cluster_name: "{{ template "common.fullname.short" . }}-otel-collector"
+        cluster_name: "{{ include "stackstate.otelCollector.fullname" . }}"
         endpoints:
         - lb_endpoints:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "common.fullname.short" . }}-otel-collector"
+                  address: "{{ include "stackstate.otelCollector.fullname" . }}"
                   port_value: 4318
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
       name: "{{ template "common.fullname.short" . }}-ui"
