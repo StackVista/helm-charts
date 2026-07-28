@@ -82,7 +82,9 @@ trap 'rm -f "${imagesFile}" "${resultsFile}"' EXIT
 checkImage() {
   local image="$1"
   local out
-  if out=$(skopeo inspect "docker://${image}" 2>&1 >/dev/null); then
+  # --no-tags: default inspect enumerates the repo's full tag list (paginated);
+  # on large snapshot repos quay's gateway 502/504s partway through the crawl.
+  if out=$(skopeo inspect --no-tags "docker://${image}" 2>&1 >/dev/null); then
     printf '%b\n' "${GREEN}OK${NO_COLOR}\t${image}"
   else
     local short

@@ -153,7 +153,10 @@ jobs:
     if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.stable != '[]') }}
     runs-on: docker
     container:
-      image: quay.io/helmpack/chart-testing:v3.14.0
+      image: ${{ vars.REGISTRY_QUAY_URL }}/helmpack/chart-testing:v3.14.0
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
       options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
     strategy:
       fail-fast: false
@@ -216,7 +219,10 @@ jobs:
     if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.local != '[]') }}
     runs-on: docker
     container:
-      image: quay.io/helmpack/chart-testing:v3.14.0
+      image: ${{ vars.REGISTRY_QUAY_URL }}/helmpack/chart-testing:v3.14.0
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
       options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
     strategy:
       fail-fast: false
@@ -252,7 +258,10 @@ jobs:
     if: ${{ github.repository == 'StackVista/helm-charts-internal' && (needs.detect_changes.outputs.stable != '[]') }}
     runs-on: docker
     container:
-      image: quay.io/helmpack/chart-testing:v3.14.0
+      image: ${{ vars.REGISTRY_QUAY_URL }}/helmpack/chart-testing:v3.14.0
+      credentials:
+        username: ${{ vars.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
       options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
     strategy:
       fail-fast: false
