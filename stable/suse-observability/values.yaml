@@ -1803,7 +1803,7 @@ stackstate:
         # stackstate.stackpacks.images[2].repository -- Repository of the `stackpacks` Docker image.
         repository: stackstate/suse-stackpacks
         # stackstate.stackpacks.images[2].tag -- Tag used for the `stackpacks` Docker image
-        tag: "20260727104204-main-46f97c4"
+        tag: "20260728075849-main-5f250b4"
         # stackstate.stackpacks.images[2].editions -- Editions that include the stackpacks
         editions: ["Prime"]
   ui:
