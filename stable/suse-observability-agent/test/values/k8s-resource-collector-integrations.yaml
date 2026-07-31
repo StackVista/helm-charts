@@ -8,14 +8,14 @@ stackstate:
 # integration groups are merged into the include map without requiring a wildcard.
 otel:
   enabled: true
+  integrations:
+    suseRuntimeEnforcer: true
+    suseAdmissionController: true
+    suseVirtualization: true
+    suseSbomScanner: true
   k8sResourceCollector:
     enabled: true
     crDiscovery:
       discoveryMode: api_groups
     rbac:
       useWildcard: true
-    integrations:
-      suseRuntimeEnforcer: true
-      suseAdmissionController: true
-      suseVirtualization: true
-      suseSbomScanner: true

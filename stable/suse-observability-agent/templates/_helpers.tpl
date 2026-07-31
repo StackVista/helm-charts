@@ -407,8 +407,7 @@ alongside any operator-supplied entries.
 Returns a dict equivalent to .Values.otel.k8sResourceCollector with integration groups merged in.
 */}}
 {{- define "stackstate-k8s-agent.k8sResourceCollector.mergedValues" -}}
-{{- $vals := deepCopy .Values.otel.k8sResourceCollector }}
-{{- $integrations := $vals.integrations | default dict }}
+{{- $integrations := .Values.otel.integrations | default dict }}
 {{- $files := .Files }}
 {{- $overlays := list }}
 {{- if index $integrations "suseRuntimeEnforcer" }}
@@ -423,6 +422,7 @@ Returns a dict equivalent to .Values.otel.k8sResourceCollector with integration 
 {{- if index $integrations "suseSbomScanner" }}
   {{- $overlays = append $overlays "integrations/suse-sbom-scanner.yaml" }}
 {{- end }}
+{{- $vals := deepCopy .Values.otel.k8sResourceCollector }}
 {{- range $overlays }}
   {{- $overlay := $files.Get . | fromYaml }}
   {{- $overlayVals := dig "otel" "k8sResourceCollector" dict $overlay }}

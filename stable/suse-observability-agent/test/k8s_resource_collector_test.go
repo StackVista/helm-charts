@@ -698,7 +698,7 @@ func TestK8sResourceCollectorRancherEnrichmentEnabled(t *testing.T) {
 }
 
 // TestK8sResourceCollectorRancherEnrichmentDisabled verifies that when
-// integrations.rancher=false no rancher_enrichment config block is rendered
+// integrations.rancherAgent=false no rancher_enrichment config block is rendered
 // and no cattle-system Role or RoleBinding is created.
 func TestK8sResourceCollectorRancherEnrichmentDisabled(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t,

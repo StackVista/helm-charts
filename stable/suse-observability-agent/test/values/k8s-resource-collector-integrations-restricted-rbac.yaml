@@ -8,6 +8,8 @@ stackstate:
 # from the overlay appear in the ClusterRole alongside operator-supplied entries.
 otel:
   enabled: true
+  integrations:
+    suseSbomScanner: true
   k8sResourceCollector:
     enabled: true
     crDiscovery:
@@ -18,5 +20,3 @@ otel:
           "policies.kubewarden.io": true
     rbac:
       useWildcard: false
-    integrations:
-      suseSbomScanner: true
