@@ -1176,12 +1176,12 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.images[0].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[0].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[0].repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[0].version | string | `"20260729104830-master-83cc445"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
+| stackstate.stackpacks.images[0].version | string | `"20260731093853-master-781aa6b"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
 | stackstate.stackpacks.images[1].name | string | `"contrib"` | name for the init container |
 | stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[1].repository | string | `"stackstate/contrib-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[1].tag | string | `"20260729104846-main-56ce644"` | Tag used for the `stackpacks` Docker image |
+| stackstate.stackpacks.images[1].tag | string | `"20260804092344-main-4a2553c"` | Tag used for the `stackpacks` Docker image |
 | stackstate.stackpacks.images[2].editions | list | `["Prime"]` | Editions that include the stackpacks |
 | stackstate.stackpacks.images[2].name | string | `"suse"` | name for the init container |
 | stackstate.stackpacks.images[2].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
