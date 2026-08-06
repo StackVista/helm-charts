@@ -1806,6 +1806,8 @@ stackstate:
         tag: "20260728075849-main-5f250b4"
         # stackstate.stackpacks.images[2].editions -- Editions that include the stackpacks
         editions: ["Prime"]
+    # stackstate.stackpacks.extraImages -- Additional stackpack Docker images to mount after the built-in stackpack images.
+    extraImages: []
   ui:
     # stackstate.ui.defaultTimeRange -- Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR.
     defaultTimeRange:

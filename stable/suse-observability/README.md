@@ -1171,6 +1171,7 @@ If you encounter issues not covered here:
 | stackstate.license.fromExternalSecret | string | `nil` | Use an external secret for the license key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
+| stackstate.stackpacks.extraImages | list | `[]` | Additional stackpack Docker images to mount after the built-in stackpack images. |
 | stackstate.stackpacks.images[0].deploymentModeOverride | string | `""` | Use the stackpacks from another deployment mode than StackState is running in |
 | stackstate.stackpacks.images[0].name | string | `"v1"` | name for the init container |
 | stackstate.stackpacks.images[0].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |

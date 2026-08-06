@@ -1,0 +1,8 @@
+stackstate:
+  stackpacks:
+    extraImages:
+      - name: internal
+        registry: "quay.io"
+        pullPolicy: ""
+        repository: stackstate/internal-stackpacks
+        tag: "test-tag"

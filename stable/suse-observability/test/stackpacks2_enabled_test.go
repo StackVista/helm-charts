@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	v1 "k8s.io/api/core/v1"
 )
@@ -141,4 +142,27 @@ func TestStackpacks2EnabledNonSplitCommunity(t *testing.T) {
 	assert.Equal(t, -1, slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool {
 		return container.Name == "init-stackpacks-suse"
 	}))
+}
+
+func TestStackpacks2EnabledNonSplitPrimeWithInternalStackpacks(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/stackpacks2_enabled.yaml", "values/internal_stackpacks_enabled.yaml")
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	server := resources.Deployments["suse-observability-server"]
+
+	stackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-v1" })
+	require.GreaterOrEqual(t, stackpacksInitIdx, 0)
+	assert.Regexp(t, ".*/stackstate/stackpacks:.*", server.Spec.Template.Spec.InitContainers[stackpacksInitIdx].Image)
+
+	contribStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-contrib" })
+	require.GreaterOrEqual(t, contribStackpacksInitIdx, 0)
+	assert.Regexp(t, ".*/stackstate/contrib-stackpacks:.*", server.Spec.Template.Spec.InitContainers[contribStackpacksInitIdx].Image)
+
+	suseStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-suse" })
+	require.GreaterOrEqual(t, suseStackpacksInitIdx, 0)
+	assert.Regexp(t, ".*/stackstate/suse-stackpacks:.*", server.Spec.Template.Spec.InitContainers[suseStackpacksInitIdx].Image)
+
+	internalStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-internal" })
+	require.GreaterOrEqual(t, internalStackpacksInitIdx, 0)
+	assert.Regexp(t, ".*/stackstate/internal-stackpacks:test-tag", server.Spec.Template.Spec.InitContainers[internalStackpacksInitIdx].Image)
 }

@@ -797,10 +797,16 @@ Init container to load stackpacks from docker image
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $firstImage := first .Values.stackstate.stackpacks.images -}}
 {{- $stackpacksv2 := .Values.global.features.experimentalStackpacks | ternary "-2_0" "" -}}
-{{- range .Values.stackstate.stackpacks.images }}
+{{- $images := concat .Values.stackstate.stackpacks.images (.Values.stackstate.stackpacks.extraImages | default list) -}}
+{{- range $images }}
 {{- $image := . -}}
+{{- $imageEnabled := true -}}
+{{- if hasKey $image "enabled" -}}
+{{- $imageEnabled = $image.enabled -}}
+{{- end -}}
 {{- $editions := .editions | default (list "Prime" "Community") -}}
 {{- $deriveTag := hasKey $image "version" }}
+{{- if $imageEnabled }}
 {{- range $editions }}
 {{- if (eq $.Values.stackstate.deployment.edition .) }}
 {{- if (or $.Values.global.features.experimentalStackpacks $deriveTag) }}
@@ -824,6 +830,7 @@ Init container to load stackpacks from docker image
   {{- $commonContainer.securityContext | toYaml | nindent 8 }}
 {{- end }}
 {{- end }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
