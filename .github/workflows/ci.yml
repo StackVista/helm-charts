@@ -170,11 +170,11 @@ jobs:
           path: stable/${{ matrix.chart }}/
       - run: ./scripts/ci/validate_before_script.sh
       - run: yamale --schema /etc/ct/chart_schema.yaml stable/${{ matrix.chart }}/Chart.yaml
-      - run: yamllint --config-file /etc/ct/lintconf.yaml stable/${{ matrix.chart }}/Chart.yaml
-      - run: yamllint --config-file /etc/ct/lintconf.yaml stable/${{ matrix.chart }}/values.yaml
+      - run: yamllint --config-file lintconf.yaml stable/${{ matrix.chart }}/Chart.yaml
+      - run: yamllint --config-file lintconf.yaml stable/${{ matrix.chart }}/values.yaml
       - run: |
           if [ -f stable/${{ matrix.chart }}/ci/default-values.yaml ]; then
-            yamllint --config-file /etc/ct/lintconf.yaml stable/${{ matrix.chart }}/ci/default-values.yaml
+            yamllint --config-file lintconf.yaml stable/${{ matrix.chart }}/ci/default-values.yaml
             helm lint stable/${{ matrix.chart }} --values stable/${{ matrix.chart }}/ci/default-values.yaml
           fi
       - run: ./scripts/ci/validate_local_dep_versions.sh stable/${{ matrix.chart }}
@@ -238,13 +238,13 @@ jobs:
           path: local/${{ matrix.chart }}/
       - run: ./scripts/ci/validate_before_script.sh
       - run: yamale --schema /etc/ct/chart_schema.yaml local/${{ matrix.chart }}/Chart.yaml
-      - run: yamllint --config-file /etc/ct/lintconf.yaml local/${{ matrix.chart }}/Chart.yaml
+      - run: yamllint --config-file lintconf.yaml local/${{ matrix.chart }}/Chart.yaml
       - run: |
           if [ -f local/${{ matrix.chart }}/values.yaml ]; then
-            yamllint --config-file /etc/ct/lintconf.yaml local/${{ matrix.chart }}/values.yaml
+            yamllint --config-file lintconf.yaml local/${{ matrix.chart }}/values.yaml
           fi
           if [ -f local/${{ matrix.chart }}/ci/default-values.yaml ]; then
-            yamllint --config-file /etc/ct/lintconf.yaml local/${{ matrix.chart }}/ci/default-values.yaml
+            yamllint --config-file lintconf.yaml local/${{ matrix.chart }}/ci/default-values.yaml
             helm lint local/${{ matrix.chart }} --values local/${{ matrix.chart }}/ci/default-values.yaml
           fi
       - run: ./scripts/ci/validate_local_dep_versions.sh local/${{ matrix.chart }}

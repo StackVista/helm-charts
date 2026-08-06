@@ -1,0 +1,9 @@
+apiVersion: v2
+name: codeartifact-proxy
+description: A Helm chart for CodeArtifact Proxy - Nginx-based caching proxy for AWS CodeArtifact Maven/PyPI format endpoints
+
+type: application
+
+version: 0.1.4
+
+appVersion: "1.29.0"

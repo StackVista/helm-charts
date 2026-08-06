@@ -42,6 +42,7 @@
       'beacher-job': [],
       'ci-test': [],
       chartmuseum: [],
+      'codeartifact-proxy': [],
       'gitlab-proxy': [],
       'gitlab-steward': [],
       'helm-reaper': [],

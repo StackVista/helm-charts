@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "codeartifact-proxy.fullname" . }}-test-connection"
+  labels:
+    {{- include "codeartifact-proxy.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: curl
+      image: "{{ .Values.tests.image.repository }}:{{ .Values.tests.image.tag }}"
+      command: ['curl']
+      args: ['-sf', 'http://{{ include "codeartifact-proxy.fullname" . }}:{{ .Values.service.port }}/health']
+  restartPolicy: Never

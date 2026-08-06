@@ -1,0 +1,57 @@
+{{/*
+nginx entrypoint. Prepares the writable directories nginx needs under a read-only root filesystem,
+starts nginx in the foreground against the chart's own nginx.conf, and, in the same container,
+reloads it whenever the sidecar records a new token generation. Signalling from the sidecar
+container would require a shared process namespace (which also exposes /proc/<pid>/environ and
+/proc/<pid>/root across containers), so the reload is driven from inside the nginx container
+instead and the pod keeps shareProcessNamespace: false. nginx validates the new include on reload
+and keeps serving the old configuration if it is invalid.
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "codeartifact-proxy.fullname" . }}-nginx-entrypoint
+  labels:
+    {{- include "codeartifact-proxy.labels" . | nindent 4 }}
+data:
+  nginx-entrypoint.sh: |
+    #!/bin/sh
+    set -eu
+
+    CONFIG_FILE="/etc/nginx/config/nginx.conf"
+    GENERATION_FILE="/etc/nginx/auth/.token-generation"
+    POLL_SECONDS={{ .Values.nginx.reloadPollSeconds }}
+
+    # nginx mkdir()s each *_temp_path at startup but not its parents, and it does so before
+    # dropping to the worker user, so create the full tree here on the writable volumes. The cache
+    # volume is persistent and may already hold a warm cache from the previous pod; mkdir -p keeps
+    # it.
+    mkdir -p \
+      "{{ .Values.nginx.tmpMountPath }}/client-body" \
+      "{{ .Values.nginx.tmpMountPath }}/proxy" \
+      "{{ .Values.nginx.tmpMountPath }}/fastcgi" \
+      "{{ .Values.nginx.tmpMountPath }}/uwsgi" \
+      "{{ .Values.nginx.tmpMountPath }}/scgi" \
+      "{{ .Values.persistence.mountPath }}/codeartifact-assets" \
+      "{{ .Values.persistence.mountPath }}/codeartifact-metadata"
+
+    # -e /dev/stderr: until the config's own error_log takes effect nginx logs to its compiled-in
+    # default path, which is on the read-only root. Fail fast and loudly on a bad config rather
+    # than starting a pod that cannot serve.
+    nginx -c "$CONFIG_FILE" -e /dev/stderr -t
+
+    nginx -c "$CONFIG_FILE" -e /dev/stderr -g 'daemon off;' &
+    nginx_pid=$!
+    trap 'kill -QUIT "$nginx_pid" 2>/dev/null || true' TERM INT
+
+    generation="$(cat "$GENERATION_FILE" 2>/dev/null || true)"
+    while kill -0 "$nginx_pid" 2>/dev/null; do
+      sleep "$POLL_SECONDS"
+      current="$(cat "$GENERATION_FILE" 2>/dev/null || true)"
+      if [ -n "$current" ] && [ "$current" != "$generation" ]; then
+        generation="$current"
+        kill -HUP "$nginx_pid"
+      fi
+    done
+
+    wait "$nginx_pid"

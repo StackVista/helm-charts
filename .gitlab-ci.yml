@@ -177,6 +177,28 @@ build_ci-test:
     - helm dependencies build stable/ci-test
     - mkdir -p stable/ci-test/build; helm package --destination stable/ci-test/build stable/ci-test
   stage: build
+build_codeartifact-proxy:
+  artifacts:
+    paths:
+      - stable/codeartifact-proxy/charts/
+      - stable/codeartifact-proxy/build/
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - stable/codeartifact-proxy/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/codeartifact-proxy/Chart.yaml | xargs -I % helm dependencies build --skip-refresh stable/codeartifact-proxy/%
+    - helm dependencies build stable/codeartifact-proxy
+    - mkdir -p stable/codeartifact-proxy/build; helm package --destination stable/codeartifact-proxy/build stable/codeartifact-proxy
+  stage: build
 build_gitlab-proxy:
   artifacts:
     paths:
@@ -988,6 +1010,17 @@ check_ci-test_version:
   script:
     - .gitlab/verify_versions_bumped.sh ci-test
   stage: validate
+check_codeartifact-proxy_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.14.0
+  rules:
+    - changes:
+        - stable/codeartifact-proxy/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh codeartifact-proxy
+  stage: validate
 check_gitlab-proxy_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -1412,6 +1445,45 @@ push_ci-test_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/ci-test
+push_codeartifact-proxy_to_internal:
+  before_script:
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
+      when: never
+    - if: $RUN_UPDATECLI_STACKSTATE
+      when: never
+    - if: $RUN_UPDATECLI_STACKPACKS
+      when: never
+    - changes:
+        - stable/codeartifact-proxy/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-codeartifact-proxy]/
+      when: on_success
+    - changes:
+        - stable/codeartifact-proxy/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^codeartifact-proxy\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/codeartifact-proxy
 push_gitlab-proxy_to_internal:
   before_script:
     - helm repo add deliveryhero https://charts.deliveryhero.io
@@ -2698,6 +2770,30 @@ test_ci-test:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
+test_codeartifact-proxy:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
+  rules:
+    - changes:
+        - stable/codeartifact-proxy/**/*
+      exists:
+        - stable/codeartifact-proxy/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./stable/codeartifact-proxy/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
 test_gitlab-proxy:
   cache:
     key:
@@ -3706,6 +3802,24 @@ validate_ci-test:
     - if [ -f stable/ci-test/ci/default-values.yaml ]; then helm lint stable/ci-test --values stable/ci-test/ci/default-values.yaml; fi
     - .gitlab/validate_local_dep_versions.sh stable/ci-test
     - .gitlab/validate_kubeconform.sh stable/ci-test
+  stage: validate
+validate_codeartifact-proxy:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.14.0
+  rules:
+    - changes:
+        - stable/codeartifact-proxy/**/*
+        - .gitlab-ci.yml
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/codeartifact-proxy/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/codeartifact-proxy/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/codeartifact-proxy/values.yaml
+    - if [ -f stable/codeartifact-proxy/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/codeartifact-proxy/ci/default-values.yaml; fi
+    - if [ -f stable/codeartifact-proxy/ci/default-values.yaml ]; then helm lint stable/codeartifact-proxy --values stable/codeartifact-proxy/ci/default-values.yaml; fi
+    - .gitlab/validate_local_dep_versions.sh stable/codeartifact-proxy
+    - .gitlab/validate_kubeconform.sh stable/codeartifact-proxy
   stage: validate
 validate_gitlab-proxy:
   before_script:

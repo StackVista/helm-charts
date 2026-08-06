@@ -1,0 +1,243 @@
+{{/*
+nginx configuration ConfigMap: the complete `nginx.conf` plus the server block and the shared
+proxy snippet. The chart runs `nginx -c /etc/nginx/config/nginx.conf`, so the base image's own
+nginx.conf and conf.d/ are never read.
+
+Owning the whole nginx.conf is what makes readOnlyRootFilesystem workable: nginx mkdir()s every
+configured *_temp_path at startup, and the base image's compiled-in defaults (openSUSE builds use
+/var/lib/nginx/tmp/*) sit on the read-only root. All of them are therefore redeclared below onto
+writable volumes. It also drops the base image's `user` directive, which nginx cannot honour as a
+non-root process.
+
+Serves ONLY three read-only Maven/PyPI CodeArtifact locations plus /health. There is deliberately
+no /generic/ location: generic packages are fetched directly via the AWS CLI/SDK (SigV4) at their
+few call sites, not through this proxy.
+
+Clients authenticate to this proxy with their own HTTP Basic Auth credentials (`auth_basic` /
+`.htpasswd`, unrelated to CodeArtifact). `proxy-common.inc` first clears any client-supplied
+Authorization and then includes the auth file the token-refresh sidecar writes to the shared
+memory-backed emptyDir, so the only Authorization reaching CodeArtifact is the one nginx sets. No
+CodeArtifact token appears anywhere in this ConfigMap.
+
+Each format has a prefix location (immutable assets, long TTL) that maps the client path onto the
+CodeArtifact endpoint path through proxy_pass's URI, plus a regex location (mutable metadata/index
+responses, short TTL). nginx forbids a URI part on proxy_pass inside a regex location, so those do
+the same path mapping with an explicit `rewrite ... break`.
+*/}}
+{{- $mavenReleases := include "codeartifact-proxy.endpoint" (dict "root" . "key" "mavenReleases") }}
+{{- $mavenSnapshots := include "codeartifact-proxy.endpoint" (dict "root" . "key" "mavenSnapshots") }}
+{{- $pypi := include "codeartifact-proxy.endpoint" (dict "root" . "key" "pypi") }}
+{{- $mavenReleasesUrl := urlParse $mavenReleases }}
+{{- $mavenSnapshotsUrl := urlParse $mavenSnapshots }}
+{{- $pypiUrl := urlParse $pypi }}
+{{- $tmp := .Values.nginx.tmpMountPath }}
+{{- $cache := .Values.persistence.mountPath }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "codeartifact-proxy.fullname" . }}-nginx-config
+  labels:
+    {{- include "codeartifact-proxy.labels" . | nindent 4 }}
+data:
+  nginx.conf: |
+    # No `user` directive: the container already runs as a non-root uid, and nginx only warns and
+    # ignores it when it cannot setuid.
+    worker_processes auto;
+    pid {{ $tmp }}/nginx.pid;
+    error_log /dev/stderr {{ .Values.nginx.errorLogLevel }};
+
+    events {
+      worker_connections {{ .Values.nginx.workerConnections }};
+    }
+
+    http {
+      # Every directory nginx mkdir()s at startup is redeclared here onto a writable volume,
+      # because the container root filesystem is read-only. Leaving any of these to the image
+      # default fails the whole process at load time with
+      # `mkdir() "/var/lib/nginx/tmp/..." failed (30: Read-only file system)`.
+      client_body_temp_path {{ $tmp }}/client-body;
+      proxy_temp_path {{ $tmp }}/proxy;
+      fastcgi_temp_path {{ $tmp }}/fastcgi;
+      uwsgi_temp_path {{ $tmp }}/uwsgi;
+      scgi_temp_path {{ $tmp }}/scgi;
+
+      # No mime.types include: every response is either proxied (upstream Content-Type passes
+      # through) or the /health literal, so the chart does not depend on the base image's
+      # /etc/nginx layout at all.
+      default_type application/octet-stream;
+
+      sendfile on;
+      tcp_nopush on;
+      keepalive_timeout 65;
+      server_tokens off;
+
+      include /etc/nginx/config/default.conf;
+    }
+
+  proxy-common.inc: |
+    auth_basic "Packages Registry Proxy";
+    auth_basic_user_file /etc/nginx/htpasswd/.htpasswd;
+
+    # Defence in depth: an empty value makes nginx send no Authorization at all, so if the
+    # sidecar include below were ever absent the client's own credentials still are not forwarded
+    # upstream. Verified against nginx 1.29: with the include present only the CodeArtifact token
+    # is sent, and any client-supplied Authorization is dropped.
+    proxy_set_header Authorization "";
+    include /etc/nginx/auth/codeartifact-auth.conf;
+
+    proxy_ssl_server_name on;
+    proxy_ssl_protocols TLSv1.2 TLSv1.3;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # proxy_cache_valid is not inherited once a location sets its own, so error responses are
+    # explicitly never cached here rather than at server level.
+    proxy_cache_valid 401 403 0;
+    proxy_cache_valid 500 502 503 504 0;
+
+  # Included from nginx.conf at http level, so http-level directives (resolver, proxy_cache_path,
+  # log_format) are valid here.
+  default.conf: |
+    resolver {{ .Values.nginx.resolver }} valid=300s ipv6=off;
+    resolver_timeout 5s;
+
+    # Both cache zones live on the per-pod persistent volume, so a restart or rollout keeps a warm
+    # cache instead of re-fetching the working set from CodeArtifact. use_temp_path=off keeps
+    # cache writes inside the cache directory (no rename across filesystems). max_size is what
+    # actually bounds on-disk usage; keep the sum below persistence.size.
+    proxy_cache_path {{ $cache }}/codeartifact-assets levels=1:2 keys_zone=codeartifact_assets:100m max_size={{ .Values.nginx.cache.assetMaxSize }} inactive=60d use_temp_path=off;
+    proxy_cache_path {{ $cache }}/codeartifact-metadata levels=1:2 keys_zone=codeartifact_metadata:10m max_size={{ .Values.nginx.cache.metadataMaxSize }} inactive=1h use_temp_path=off;
+
+    log_format cache_debug '$remote_addr - $remote_user [$time_local] '
+                      '"$request" $status $body_bytes_sent '
+                      '"$http_referer" "$http_user_agent" "$http_x_forwarded_for" '
+                      '"$upstream_addr" "$upstream_response_time" "$upstream_status" '
+                      'cache_status:$upstream_cache_status '
+                      'upstream_cache_control:"$upstream_http_cache_control" '
+                      'upstream_expires:"$upstream_http_expires"';
+
+    server {
+      listen 0.0.0.0:{{ .Values.nginx.listenPort }};
+
+      access_log /dev/stdout cache_debug;
+
+      # Cache bypass for no-cache requests (used by the manual token-refresh continuity check).
+      set $no_cache 0;
+      if ($http_cache_control ~* "no-cache") {
+        set $no_cache 1;
+      }
+      proxy_cache_bypass $no_cache;
+      proxy_no_cache $no_cache;
+
+      add_header X-Cache-Status $upstream_cache_status always;
+
+      # Health check endpoint. No auth, no upstream, no caching. default_type rather than
+      # add_header, which would emit a second Content-Type next to the one `return` already sets.
+      location /health {
+        access_log off;
+        default_type text/plain;
+        return 200 "healthy\n";
+      }
+
+      # Maven releases metadata (maven-metadata.xml): short TTL. A matching regex location wins
+      # over the prefix location below.
+      location ~* ^/maven/releases/.*/maven-metadata\.xml$ {
+        if ($request_method !~ ^(GET|HEAD)$) {
+          return 405;
+        }
+        include /etc/nginx/config/proxy-common.inc;
+
+        proxy_cache codeartifact_metadata;
+        proxy_cache_key "maven-releases$request_uri";
+        proxy_cache_valid 200 206 {{ .Values.nginx.cache.metadataTtl }};
+        proxy_cache_valid 404 {{ .Values.nginx.cache.notFoundTtl }};
+
+        rewrite ^/maven/releases/(.*)$ {{ $mavenReleasesUrl.path }}$1 break;
+        proxy_pass {{ $mavenReleasesUrl.scheme }}://{{ $mavenReleasesUrl.host }};
+      }
+
+      # Maven releases: proxies to the `packages` repository Maven format endpoint.
+      location /maven/releases/ {
+        if ($request_method !~ ^(GET|HEAD)$) {
+          return 405;
+        }
+        include /etc/nginx/config/proxy-common.inc;
+
+        proxy_cache codeartifact_assets;
+        proxy_cache_key "maven-releases$request_uri";
+        # Immutable release artifacts (jar/pom/classifiers): long TTL.
+        proxy_cache_valid 200 206 {{ .Values.nginx.cache.assetTtl }};
+        proxy_cache_valid 404 {{ .Values.nginx.cache.notFoundTtl }};
+        add_header Cache-Control "public, immutable";
+
+        proxy_pass {{ $mavenReleases }};
+      }
+
+      # Maven snapshots metadata (maven-metadata.xml): short TTL.
+      location ~* ^/maven/snapshots/.*/maven-metadata\.xml$ {
+        if ($request_method !~ ^(GET|HEAD)$) {
+          return 405;
+        }
+        include /etc/nginx/config/proxy-common.inc;
+
+        proxy_cache codeartifact_metadata;
+        proxy_cache_key "maven-snapshots$request_uri";
+        proxy_cache_valid 200 206 {{ .Values.nginx.cache.metadataTtl }};
+        proxy_cache_valid 404 {{ .Values.nginx.cache.notFoundTtl }};
+
+        rewrite ^/maven/snapshots/(.*)$ {{ $mavenSnapshotsUrl.path }}$1 break;
+        proxy_pass {{ $mavenSnapshotsUrl.scheme }}://{{ $mavenSnapshotsUrl.host }};
+      }
+
+      # Maven snapshots: proxies to the `packages-snapshot` repository Maven format endpoint.
+      location /maven/snapshots/ {
+        if ($request_method !~ ^(GET|HEAD)$) {
+          return 405;
+        }
+        include /etc/nginx/config/proxy-common.inc;
+
+        proxy_cache codeartifact_assets;
+        proxy_cache_key "maven-snapshots$request_uri";
+        proxy_cache_valid 200 206 {{ .Values.nginx.cache.snapshotAssetTtl }};
+        proxy_cache_valid 404 {{ .Values.nginx.cache.notFoundTtl }};
+
+        proxy_pass {{ $mavenSnapshots }};
+      }
+
+      # PyPI simple index pages: short TTL. Preserves the /simple/ trailing-slash convention pip
+      # relies on.
+      location ~* ^/pypi/simple/[^/]+/?$ {
+        if ($request_method !~ ^(GET|HEAD)$) {
+          return 405;
+        }
+        include /etc/nginx/config/proxy-common.inc;
+
+        proxy_cache codeartifact_metadata;
+        proxy_cache_key "pypi$request_uri";
+        proxy_cache_valid 200 206 {{ .Values.nginx.cache.metadataTtl }};
+        proxy_cache_valid 404 {{ .Values.nginx.cache.notFoundTtl }};
+
+        rewrite ^/pypi/(.*)$ {{ $pypiUrl.path }}$1 break;
+        proxy_pass {{ $pypiUrl.scheme }}://{{ $pypiUrl.host }};
+      }
+
+      # PyPI: proxies to the `packages` repository PyPI format endpoint.
+      location /pypi/ {
+        if ($request_method !~ ^(GET|HEAD)$) {
+          return 405;
+        }
+        include /etc/nginx/config/proxy-common.inc;
+
+        proxy_cache codeartifact_assets;
+        proxy_cache_key "pypi$request_uri";
+        # Immutable wheel/sdist assets: long TTL.
+        proxy_cache_valid 200 206 {{ .Values.nginx.cache.assetTtl }};
+        proxy_cache_valid 404 {{ .Values.nginx.cache.notFoundTtl }};
+        add_header Cache-Control "public, immutable";
+
+        proxy_pass {{ $pypi }};
+      }
+    }

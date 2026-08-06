@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "codeartifact-proxy.fullname" . }}
+  labels:
+    {{- include "codeartifact-proxy.labels" . | nindent 4 }}
+spec:
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "codeartifact-proxy.selectorLabels" . | nindent 6 }}

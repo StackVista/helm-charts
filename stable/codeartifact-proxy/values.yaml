@@ -1,0 +1,313 @@
+# Default values for codeartifact-proxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+#
+# codeartifact-proxy is an isolated HTTP proxy in front of AWS CodeArtifact's Maven/PyPI format
+# endpoints. It is composed entirely from off-the-shelf images (no custom build): a SUSE
+# Application Collection nginx image doing `proxy_pass` with a server-injected Authorization
+# header, and a token-refresh sidecar that mints short-lived CodeArtifact tokens via the pod's
+# IRSA identity. The CodeArtifact authorization token never appears in this values file, in Helm,
+# or in Argo/SOPS — it only ever exists in the sidecar-written, memory-backed emptyDir include.
+#
+# It ships as a StatefulSet because caching artifact reads is one of its jobs, so each replica keeps
+# its cache on its own persistent volume (see `persistence`) across restarts and rollouts.
+
+replicaCount: 2
+revisionHistoryLimit: 10
+
+# image -- SUSE Application Collection nginx image (off-the-shelf; no custom codeartifact-proxy
+# image is built). Pinned by digest per the Container and CI Image Policy.
+image:
+  registry: dp.apps.rancher.io
+  repository: containers/nginx
+  # image.digest -- REQUIRED. Rendering fails while this is empty or a `sha256:0000…` placeholder.
+  # Resolve the published digest for dp.apps.rancher.io/containers/nginx from the SUSE Application
+  # Collection catalog (authenticated) and set it here.
+  digest: "sha256:f2a364c3f576d6a25a331f41d20dd4b58883e0fb53d4ba045c49172658921dba"  # 1.31.3-5.1
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  # serviceAccount.automount -- Must stay true: the IRSA/pod-identity webhook mutates this
+  # ServiceAccount's token projection, and the sidecar needs it to call CodeArtifact.
+  automount: true
+  annotations: {}
+    # eks.amazonaws.com/role-arn -- REQUIRED. Set to the terraform-infra StackStateRoleCodeArtifactProxy ARN (STAC-25404).
+    # eks.amazonaws.com/role-arn: "arn:aws:iam::<account-id>:role/StackStateRoleCodeArtifactProxy"
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 1001
+  fsGroupChangePolicy: Always
+  supplementalGroups: []
+  sysctls: []
+
+# securityContext -- Applies to the nginx container. Non-root, read-only root filesystem, all
+# capabilities dropped; only the mounted volumes are writable, which is why the chart owns the whole
+# nginx.conf and redirects every path nginx writes to (nginx.tmpMountPath, persistence.mountPath).
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+  seLinuxOptions: {}
+  seccompProfile:
+    type: RuntimeDefault
+
+# sidecar -- Token-refresh sidecar, in the same pod as nginx. Runs under the pod's IRSA identity,
+# calls `aws codeartifact get-authorization-token`, and atomically replaces a 0600 nginx `include`
+# file on a memory-backed emptyDir shared with the nginx container, containing exactly:
+#   proxy_set_header Authorization "Basic <base64(aws:token)>";
+# It never logs the token/header. On refresh failure it keeps the last good include and retries
+# with capped backoff. After a successful refresh it bumps a token-generation marker next to the
+# include; the nginx container's own entrypoint polls that marker and reloads nginx in place, so
+# the pod needs no shared process namespace.
+sidecar:
+  image:
+    registry: dp.apps.rancher.io
+    # sidecar.image.repository/digest -- REQUIRED. Rendering fails while the digest is empty or a
+    # `sha256:0000…` placeholder. Resolve the SUSE Application Collection AWS CLI image digest
+    # (authenticated) and set it here. Prefer AWS CLI; a minimal AWS SDK v2 Go helper is the
+    # fallback only if no AWS CLI image/BCI package is available. Never switch distro or use an
+    # unverified installer.
+    repository: containers/aws-cli
+    digest: "sha256:5a652068c480d84b709565f9c640d451f29615a5b24a28de83a3c6383160431e"  # 2.36.10-16.7
+    pullPolicy: IfNotPresent
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsGroup: 1001
+    runAsNonRoot: true
+    runAsUser: 1001
+    seLinuxOptions: {}
+    seccompProfile:
+      type: RuntimeDefault
+  resources:
+    limits:
+      cpu: 250m
+      ephemeral-storage: 256Mi
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      ephemeral-storage: 32Mi
+      memory: 64Mi
+  # sidecar.tmpSizeLimit -- Size of the sidecar's writable /tmp emptyDir. The root filesystem is
+  # read-only and HOME is set to /tmp, so this holds the AWS CLI's own cache. No token material is
+  # written here: the include lives on the memory-backed `codeartifact-auth` volume.
+  tmpSizeLimit: 64Mi
+  refresh:
+    # sidecar.refresh.tokenValiditySeconds -- Requested validity for `get-authorization-token`.
+    # PRODUCTION DEFAULT (14400s / 4h). Use 900 only for the manual refresh validation check
+    # (Verification item 5 / the mandatory user gate), then restore this value before merging.
+    tokenValiditySeconds: 14400
+    # sidecar.refresh.refreshIntervalSeconds -- Steady-state interval between successful refreshes.
+    # PRODUCTION DEFAULT (7200s / 2h). Use 240 only for the manual refresh validation check.
+    refreshIntervalSeconds: 7200
+    # sidecar.refresh.readinessMarginSeconds -- The sidecar reports Ready only while the current
+    # token still has at least this many seconds of validity left.
+    # PRODUCTION DEFAULT (600s / 10m). Use 120 only for the manual refresh validation check.
+    readinessMarginSeconds: 600
+    # sidecar.refresh.maxBackoffRetrySeconds -- Cap on retry backoff after a failed refresh. The
+    # last good include file is retained (never deleted) while retries continue.
+    maxBackoffRetrySeconds: 60
+
+# tests.image -- Image for the `helm test` connection pod. bci-base is the smallest BCI variant
+# that ships curl (bci-micro/bci-busybox do not).
+tests:
+  image:
+    repository: registry.suse.com/bci/bci-base
+    tag: "15.7"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ingressClass
+  annotations:
+  hosts:
+    - host: codeartifact.proxy
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - codeartifact.proxy
+      secretName: secret-tls
+
+gateway:
+  # gateway.enabled -- Enable Gateway API `HTTPRoute` for codeartifact-proxy. Mutually exclusive with ingress.enabled.
+  enabled: false
+  # gateway.annotations -- Annotations for the `HTTPRoute` object.
+  annotations: {}
+  # gateway.parentRefs -- List of parent `Gateway` references (required when gateway.enabled is true).
+  parentRefs: []
+  # - name: my-gateway
+  #   namespace: gateway-namespace
+  #   sectionName: websecure
+  # gateway.hostnames -- List of hostnames for the `HTTPRoute`. If empty, the route matches all hosts.
+  hostnames: []
+  # gateway.path -- Path prefix for the `HTTPRoute` rule.
+  path: /
+  # gateway.filters -- Optional filters for the `HTTPRoute` rule.
+  filters: []
+  # gateway.timeouts -- Optional timeouts for the `HTTPRoute` rule.
+  timeouts: {}
+  # request: 30s
+  # backendRequest: 30s
+  # gateway.backendWeight -- Optional weight for traffic splitting.
+  backendWeight:
+
+# resources -- nginx container resources. The cached artifacts live on the persistent cache volume
+# and so do not count here; ephemeral-storage only has to cover nginx.tmpSizeLimit plus logs.
+resources:
+  limits:
+    ephemeral-storage: 2Gi
+    memory: 256Mi
+  requests:
+    cpu: 250m
+    ephemeral-storage: 50Mi
+    memory: 256Mi
+
+livenessProbe:
+  failureThreshold: 6
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
+  tcpSocket:
+    port: http
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+  httpGet:
+    path: /health
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels: {}
+          topologyKey: kubernetes.io/hostname
+        weight: 1
+
+podDisruptionBudget:
+  maxUnavailable: 1
+
+# persistence -- Per-replica nginx cache volume (a StatefulSet volumeClaimTemplate). Caching is a
+# primary function of this proxy, not just a latency optimization, so the cache must survive pod
+# restarts and rollouts rather than being discarded with an emptyDir. Sized like gitlab-proxy's
+# cache volume; keep it above the sum of nginx.cache.*MaxSize, which is what actually bounds
+# on-disk usage.
+persistence:
+  accessModes: ["ReadWriteOnce"]
+  # persistence.storageClass -- Storage class for the cache volume. Empty uses the cluster default.
+  storageClass:
+  size: 200Gi
+  # persistence.mountPath -- Where the cache volume is mounted; both proxy_cache_path zones live
+  # under it.
+  mountPath: /var/cache/nginx
+
+# auth.htpasswd -- Client-facing HTTP Basic Auth credentials for this proxy
+# (PACKAGE_REGISTRY_PROXY_USER/TOKEN). Unrelated to the CodeArtifact authorization token, which
+# never enters Helm/Argo/SOPS. The default below is a chart-test-only credential; the real
+# tooling-main deployment supplies a SOPS-encrypted copy of the current gitlab-proxy htpasswd
+# user set via argocd-apps.
+auth:
+  htpasswd: |
+    test:$apr1$lpJpERMg$rjNCT9/GOewTido8UmQYD.
+
+# codeartifact -- Non-secret CodeArtifact coordinates. Endpoint hostnames come from
+# terraform-infra outputs (STAC-25404); the applier/argocd wires the real values. Do not hardcode
+# real hostnames in this chart.
+codeartifact:
+  domain: stackstate
+  # codeartifact.domainOwner -- AWS account ID owning the CodeArtifact domain (terraform output
+  # `codeartifact_domain_owner`). Omitted from the token call when empty.
+  domainOwner: ""
+  region: eu-west-1
+  # codeartifact.endpoints -- Full base URLs, exactly as returned by
+  # `aws codeartifact get-repository-endpoint --format <maven|pypi> --repository <repo>`, including
+  # the trailing `/maven/<repo>/` or `/pypi/<repo>/` path segment and trailing slash. All three are
+  # REQUIRED terraform-infra outputs (STAC-25404); rendering fails while any is unset.
+  endpoints:
+    # codeartifact.endpoints.mavenReleases -- `packages` repository Maven format endpoint base URL (terraform output `codeartifact_packages_maven_endpoint`).
+    mavenReleases: ""
+    # codeartifact.endpoints.mavenSnapshots -- `packages-snapshot` repository Maven format endpoint base URL (terraform output `codeartifact_packages_snapshot_maven_endpoint`).
+    mavenSnapshots: ""
+    # codeartifact.endpoints.pypi -- `packages` repository PyPI format endpoint base URL (terraform output `codeartifact_packages_pypi_endpoint`); its `/simple/` suffix comes from the client path, not from this value.
+    pypi: ""
+
+nginx:
+  # nginx.resolver -- Cluster-internal DNS resolver nginx uses to resolve the CodeArtifact
+  # endpoint hostnames. Mirrors the resolver already used by gitlab-proxy in tooling-main.
+  resolver: 10.0.224.1
+  # nginx.listenPort -- Port nginx listens on and the Service targets. Must be above 1024 because
+  # the container runs non-root with all capabilities dropped.
+  listenPort: 8080
+  # nginx.reloadPollSeconds -- How often the nginx container checks the sidecar's token-generation
+  # marker; the reload delay after a token rotation is at most this many seconds.
+  reloadPollSeconds: 5
+  # nginx.tmpMountPath -- Writable temp directory for the nginx container, backed by an emptyDir.
+  # Holds nginx's pid file and its client_body/proxy/fastcgi/uwsgi/scgi temp paths: the chart's
+  # nginx.conf points every one of those here, because nginx mkdir()s them at startup and the image
+  # defaults (/var/lib/nginx/tmp/* on openSUSE builds) sit on the read-only root filesystem, which
+  # fails the process at load time.
+  tmpMountPath: /tmp
+  # nginx.tmpSizeLimit -- Size of that emptyDir. Only holds in-flight request/response spooling for
+  # uncached traffic, since both cache zones use use_temp_path=off and write to the cache volume.
+  tmpSizeLimit: 1Gi
+  # nginx.errorLogLevel -- nginx error_log level, written to stderr.
+  errorLogLevel: warn
+  # nginx.workerConnections -- Max simultaneous connections per worker process.
+  workerConnections: 1024
+  cache:
+    # nginx.cache.metadataTtl -- TTL for Maven metadata (maven-metadata.xml) and PyPI simple-index
+    # pages: short, because these can change upstream (new snapshot/release versions published).
+    metadataTtl: 5m
+    # nginx.cache.assetTtl -- TTL for immutable versioned assets (jar/whl/sdist/pom): long, since a
+    # given coordinate+version+asset never changes content once published.
+    assetTtl: 30d
+    # nginx.cache.snapshotAssetTtl -- TTL for Maven snapshot assets: short, because a snapshot
+    # version's assets can be republished by a later build of the same branch.
+    snapshotAssetTtl: 5m
+    # nginx.cache.notFoundTtl -- TTL for 404 responses: short, because an artifact that is missing now
+    # can be published upstream at any time. Set to 0 to disable negative caching.
+    notFoundTtl: 1m
+    # nginx.cache.assetMaxSize -- On-disk cap for the versioned-asset cache zone. nginx enforces
+    # this; the volume size does not. Keep assetMaxSize + metadataMaxSize below persistence.size.
+    assetMaxSize: 150g
+    # nginx.cache.metadataMaxSize -- On-disk cap for the metadata/index cache zone.
+    metadataMaxSize: 1g

@@ -1,0 +1,13 @@
+# The chart's required deployment inputs (image digests and CodeArtifact endpoints), so tests can
+# focus on the behaviour under test. Not real digests or endpoints.
+image:
+  digest: "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+sidecar:
+  image:
+    digest: "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+codeartifact:
+  domainOwner: "000000000000"
+  endpoints:
+    mavenReleases: "https://stackstate-000000000000.d.codeartifact.eu-west-1.amazonaws.com/maven/packages/"
+    mavenSnapshots: "https://stackstate-000000000000.d.codeartifact.eu-west-1.amazonaws.com/maven/packages-snapshot/"
+    pypi: "https://stackstate-000000000000.d.codeartifact.eu-west-1.amazonaws.com/pypi/packages/"

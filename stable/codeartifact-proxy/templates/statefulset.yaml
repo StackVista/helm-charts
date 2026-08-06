@@ -1,0 +1,216 @@
+{{/*
+StatefulSet, so each replica keeps its own cache across restarts and rollouts through a
+volumeClaimTemplate - the point of the proxy is to serve repeat artifact reads from disk rather
+than re-fetching them from CodeArtifact, and an emptyDir cache is discarded on every pod
+replacement. Two containers:
+  - nginx: the App Collection image, `proxy_pass` to CodeArtifact with the sidecar's auth include.
+  - codeartifact-token-refresh (sidecar): mints/rotates the CodeArtifact token under IRSA.
+An initContainer runs the same refresh script once, blocking, so nginx is never started without a
+valid auth include already in place.
+*/}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "codeartifact-proxy.fullname" . }}
+  labels:
+    {{- include "codeartifact-proxy.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "codeartifact-proxy.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  updateStrategy:
+    rollingUpdate: {}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      {{- include "codeartifact-proxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret-htpasswd: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/configmap-nginx-config: {{ include (print $.Template.BasePath "/configmap-nginx-config.yaml") . | sha256sum }}
+        checksum/configmap-token-refresh: {{ include (print $.Template.BasePath "/configmap-token-refresh.yaml") . | sha256sum }}
+        checksum/configmap-nginx-entrypoint: {{ include (print $.Template.BasePath "/configmap-nginx-entrypoint.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "codeartifact-proxy.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "codeartifact-proxy.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+      # The nginx container reloads itself when the sidecar bumps the token generation, so no
+      # cross-container signalling - and therefore no shared /proc - is needed.
+      shareProcessNamespace: false
+      hostNetwork: false
+      hostIPC: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        # Bootstrap: obtain the first CodeArtifact token before nginx starts, so nginx never comes
+        # up pointed at an empty/missing auth include.
+        - name: codeartifact-token-bootstrap
+          image: {{ include "codeartifact-proxy.digest" (dict "image" .Values.sidecar.image "path" "sidecar.image.digest") | quote }}
+          imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.sidecar.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.sidecar.resources | nindent 12 }}
+          env:
+            - name: RUN_ONCE
+              value: "true"
+            # The root filesystem is read-only, so $HOME must not stay `/`: the AWS CLI writes a
+            # credential/CLI cache under $HOME/.aws while assuming the IRSA role.
+            - name: HOME
+              value: /tmp
+          command:
+            - /bin/sh
+          args:
+            - /scripts/refresh-token.sh
+          volumeMounts:
+            - name: token-refresh-script
+              mountPath: /scripts
+              readOnly: true
+            - name: codeartifact-auth
+              mountPath: /etc/nginx/auth
+            - name: sidecar-tmp
+              mountPath: /tmp
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "codeartifact-proxy.digest" (dict "image" .Values.image "path" "image.digest") | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          command:
+            - /bin/sh
+          args:
+            - /scripts/nginx-entrypoint.sh
+          ports:
+            - name: http
+              containerPort: {{ .Values.nginx.listenPort }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: nginx-entrypoint-script
+              mountPath: /scripts
+              readOnly: true
+            # Persistent per-replica cache (volumeClaimTemplate below) holding both
+            # proxy_cache_path zones, so a restart or rollout keeps the warm cache.
+            - name: {{ include "codeartifact-proxy.cacheVolumeName" . }}
+              mountPath: {{ .Values.persistence.mountPath }}
+            # nginx mkdir()s its *_temp_path directories and writes its pid file at startup, and
+            # the root filesystem is read-only. Transient by nature, so a separate emptyDir rather
+            # than part of the persistent cache claim.
+            - name: nginx-tmp
+              mountPath: {{ .Values.nginx.tmpMountPath }}
+            - name: nginx-config
+              mountPath: /etc/nginx/config
+              readOnly: true
+            - name: nginx-htpasswd
+              mountPath: /etc/nginx/htpasswd
+              readOnly: true
+            # Shared memory-backed emptyDir carrying the sidecar-written auth include. Mounted
+            # read-only in nginx: only the sidecar/initContainer ever write to it.
+            - name: codeartifact-auth
+              mountPath: /etc/nginx/auth
+              readOnly: true
+        # Token-refresh sidecar: same script as the bootstrap initContainer, run in a loop.
+        - name: codeartifact-token-refresh
+          image: {{ include "codeartifact-proxy.digest" (dict "image" .Values.sidecar.image "path" "sidecar.image.digest") | quote }}
+          imagePullPolicy: {{ .Values.sidecar.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.sidecar.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.sidecar.resources | nindent 12 }}
+          env:
+            - name: RUN_ONCE
+              value: "false"
+            - name: HOME
+              value: /tmp
+          command:
+            - /bin/sh
+          args:
+            - /scripts/refresh-token.sh
+          # Ready only while the current token still has at least readinessMarginSeconds of
+          # validity left, using only the recorded expiry epoch - never token contents/hashes.
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  now=$(date +%s)
+                  expiry=$(cat /etc/nginx/auth/.token-expiry-epoch 2>/dev/null || echo 0)
+                  [ "$((expiry - now))" -gt {{ .Values.sidecar.refresh.readinessMarginSeconds }} ]
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 1
+          volumeMounts:
+            - name: token-refresh-script
+              mountPath: /scripts
+              readOnly: true
+            - name: codeartifact-auth
+              mountPath: /etc/nginx/auth
+            - name: sidecar-tmp
+              mountPath: /tmp
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ include "codeartifact-proxy.fullname" . }}-nginx-config
+        - name: nginx-entrypoint-script
+          configMap:
+            name: {{ include "codeartifact-proxy.fullname" . }}-nginx-entrypoint
+            defaultMode: 0555
+        - name: nginx-htpasswd
+          secret:
+            secretName: {{ include "codeartifact-proxy.fullname" . }}-htpasswd
+        - name: token-refresh-script
+          configMap:
+            name: {{ include "codeartifact-proxy.fullname" . }}-token-refresh
+            defaultMode: 0555
+        # Memory-backed emptyDir: the CodeArtifact auth include never touches node disk.
+        - name: codeartifact-auth
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Mi
+        - name: nginx-tmp
+          emptyDir:
+            sizeLimit: {{ .Values.nginx.tmpSizeLimit }}
+        - name: sidecar-tmp
+          emptyDir:
+            sizeLimit: {{ .Values.sidecar.tmpSizeLimit }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ include "codeartifact-proxy.cacheVolumeName" . }}
+      spec:
+        accessModes: {{ .Values.persistence.accessModes }}
+        {{- with .Values.persistence.storageClass }}
+        storageClassName: {{ . }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}

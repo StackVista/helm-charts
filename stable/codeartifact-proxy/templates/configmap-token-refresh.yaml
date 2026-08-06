@@ -1,0 +1,96 @@
+{{/*
+Token-refresh script, shared by the bootstrap initContainer (runs it once, blocking, so nginx
+never starts without a valid include file) and the long-running sidecar container (runs it in a
+loop). Uses the pod's IRSA identity (via the mounted ServiceAccount token) to call
+`aws codeartifact get-authorization-token`, then atomically (write-tmp + rename) replaces a 0600
+nginx `include` file on the shared memory-backed emptyDir containing exactly one directive:
+  proxy_set_header Authorization "Basic <base64(aws:token)>";
+It then bumps a token-generation marker beside it, which the nginx container's own entrypoint polls
+to trigger an in-place reload. Never echoes/logs the token, the Basic header, or aws CLI stderr. On
+failure it leaves the existing include file untouched and retries with capped exponential backoff.
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "codeartifact-proxy.fullname" . }}-token-refresh
+  labels:
+    {{- include "codeartifact-proxy.labels" . | nindent 4 }}
+data:
+  refresh-token.sh: |
+    #!/bin/sh
+    set -eu
+
+    AUTH_DIR="/etc/nginx/auth"
+    INCLUDE_FILE="$AUTH_DIR/codeartifact-auth.conf"
+    EXPIRY_FILE="$AUTH_DIR/.token-expiry-epoch"
+    # Bumped after every successful refresh; the nginx container's entrypoint polls it and reloads
+    # nginx when it changes. Contains no token material.
+    GENERATION_FILE="$AUTH_DIR/.token-generation"
+    DOMAIN="{{ .Values.codeartifact.domain }}"
+    REGION="{{ .Values.codeartifact.region }}"
+    TOKEN_VALIDITY_SECONDS={{ .Values.sidecar.refresh.tokenValiditySeconds }}
+    REFRESH_INTERVAL_SECONDS={{ .Values.sidecar.refresh.refreshIntervalSeconds }}
+    MAX_BACKOFF_SECONDS={{ .Values.sidecar.refresh.maxBackoffRetrySeconds }}
+    # RUN_ONCE=true: bootstrap initContainer mode - exit 0 after the first successful refresh.
+    # RUN_ONCE=false: sidecar mode - refresh forever, sleeping REFRESH_INTERVAL_SECONDS between
+    # successes and retrying with capped backoff after failures.
+    RUN_ONCE="${RUN_ONCE:-false}"
+
+    refresh_once() {
+      token=$(aws codeartifact get-authorization-token \
+        --domain "$DOMAIN" \
+        {{- if .Values.codeartifact.domainOwner }}
+        --domain-owner "{{ .Values.codeartifact.domainOwner }}" \
+        {{- end }}
+        --region "$REGION" \
+        --duration-seconds "$TOKEN_VALIDITY_SECONDS" \
+        --query authorizationToken --output text 2>/tmp/refresh-token.err) || return 1
+      # Never log $token or the derived header - discard stderr capture on success, keep the file
+      # small and local to this container's own /tmp so it never lands on the shared volume.
+      rm -f /tmp/refresh-token.err
+
+      basic=$(printf 'aws:%s' "$token" | base64 | tr -d '\n')
+      tmp_include="$AUTH_DIR/.codeartifact-auth.conf.tmp.$$"
+      printf 'proxy_set_header Authorization "Basic %s";\n' "$basic" > "$tmp_include"
+      chmod 0600 "$tmp_include"
+      mv -f "$tmp_include" "$INCLUDE_FILE"
+
+      tmp_expiry="$AUTH_DIR/.token-expiry-epoch.tmp.$$"
+      echo "$(( $(date +%s) + TOKEN_VALIDITY_SECONDS ))" > "$tmp_expiry"
+      mv -f "$tmp_expiry" "$EXPIRY_FILE"
+
+      # Written after the include, so nginx only ever reloads a fully-written include.
+      tmp_generation="$AUTH_DIR/.token-generation.tmp.$$"
+      date +%s%N > "$tmp_generation"
+      mv -f "$tmp_generation" "$GENERATION_FILE"
+
+      unset token basic
+      return 0
+    }
+
+    if [ "$RUN_ONCE" = "true" ]; then
+      backoff=1
+      while ! refresh_once; do
+        sleep "$backoff"
+        backoff=$(( backoff * 2 ))
+        if [ "$backoff" -gt "$MAX_BACKOFF_SECONDS" ]; then
+          backoff="$MAX_BACKOFF_SECONDS"
+        fi
+      done
+      exit 0
+    fi
+
+    backoff=1
+    while true; do
+      if refresh_once; then
+        backoff=1
+        sleep "$REFRESH_INTERVAL_SECONDS"
+      else
+        # Retain the last good include file; only the backoff sleep changes on failure.
+        sleep "$backoff"
+        backoff=$(( backoff * 2 ))
+        if [ "$backoff" -gt "$MAX_BACKOFF_SECONDS" ]; then
+          backoff="$MAX_BACKOFF_SECONDS"
+        fi
+      fi
+    done

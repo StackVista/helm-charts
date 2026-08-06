@@ -1,0 +1,13 @@
+# Minimal values so `helm template` renders during CI kubeconform validation. The image digests and
+# CodeArtifact endpoints are deployment-specific required inputs; supply dummy values.
+image:
+  digest: "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+sidecar:
+  image:
+    digest: "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+codeartifact:
+  domainOwner: "000000000000"
+  endpoints:
+    mavenReleases: "https://linter.d.codeartifact.eu-west-1.amazonaws.com/maven/packages/"
+    mavenSnapshots: "https://linter.d.codeartifact.eu-west-1.amazonaws.com/maven/packages-snapshot/"
+    pypi: "https://linter.d.codeartifact.eu-west-1.amazonaws.com/pypi/packages/"
