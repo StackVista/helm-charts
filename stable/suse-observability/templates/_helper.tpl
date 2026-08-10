@@ -445,6 +445,13 @@ checksum/api-configmap: {{ include (print $.Template.BasePath "/api/configmap-ap
 {{- end -}}
 
 {{/*
+StackPack scripts configmap checksum annotations
+*/}}
+{{- define "stackstate.stackpacks.scripts.configmap.checksum" -}}
+checksum/stackpack-scripts-configmap: {{ include (print $.Template.BasePath "/global/configmap-stackpacks-scripts.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Checks configmap checksum annotations
 */}}
 {{- define "stackstate.checks.configmap.checksum" -}}
@@ -819,6 +826,9 @@ Init container to load stackpacks from docker image
 - name: init-stackpacks-{{ $image.name }}
   image: "{{ include "common.image.registry" ( dict "image" $image "context" $) }}/{{ $image.repository }}:{{ $tag }}"
   imagePullPolicy: {{ $image.pullPolicy | quote }}
+  command:
+    - /bin/sh
+    - /stackpack-scripts/copy-stackpacks.sh
   args:
     - "/var/stackpacks"
 {{- if eq $image.name $firstImage.name }}
@@ -826,6 +836,8 @@ Init container to load stackpacks from docker image
 {{- end }}
   volumeMounts:
 {{ include "stackstate.stackpacks.volumeMount" $image | nindent 2 }}
+  - name: stackpack-scripts
+    mountPath: /stackpack-scripts
   securityContext:
   {{- $commonContainer.securityContext | toYaml | nindent 8 }}
 {{- end }}
@@ -833,6 +845,13 @@ Init container to load stackpacks from docker image
 {{- end -}}
 {{- end -}}
 {{- end -}}
+{{- end -}}
+
+{{- define "stackstate.stackpacks.scripts.volume" -}}
+- name: stackpack-scripts
+  configMap:
+    name: {{ template "common.fullname.short" . }}-stackpacks-scripts
+    defaultMode: 0555
 {{- end -}}
 
 {{/*

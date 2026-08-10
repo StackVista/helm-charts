@@ -166,3 +166,28 @@ func TestStackpacks2EnabledNonSplitPrimeWithInternalStackpacks(t *testing.T) {
 	require.GreaterOrEqual(t, internalStackpacksInitIdx, 0)
 	assert.Regexp(t, ".*/stackstate/internal-stackpacks:test-tag", server.Spec.Template.Spec.InitContainers[internalStackpacksInitIdx].Image)
 }
+
+func TestStackpacksInitContainersUseChartScript(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml")
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	server := resources.Deployments["suse-observability-server"]
+
+	stackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-v1" })
+	require.GreaterOrEqual(t, stackpacksInitIdx, 0)
+	stackpacksInitContainer := server.Spec.Template.Spec.InitContainers[stackpacksInitIdx]
+
+	assert.Equal(t, []string{"/bin/sh", "/stackpack-scripts/copy-stackpacks.sh"}, stackpacksInitContainer.Command)
+	assert.Contains(t, stackpacksInitContainer.Args, "/var/stackpacks")
+	assert.Contains(t, stackpacksInitContainer.Args, "--clear")
+
+	assert.GreaterOrEqual(t, slices.IndexFunc(stackpacksInitContainer.VolumeMounts, func(volumeMount v1.VolumeMount) bool {
+		return volumeMount.Name == "stackpack-scripts" && volumeMount.MountPath == "/stackpack-scripts"
+	}), 0)
+	assert.GreaterOrEqual(t, slices.IndexFunc(server.Spec.Template.Spec.Volumes, func(volume v1.Volume) bool {
+		return volume.Name == "stackpack-scripts" && volume.ConfigMap != nil && volume.ConfigMap.Name == "suse-observability-stackpacks-scripts"
+	}), 0)
+
+	stackpacksScripts := resources.ConfigMaps["suse-observability-stackpacks-scripts"]
+	assert.Contains(t, stackpacksScripts.Data["copy-stackpacks.sh"], "Copying StackPacks from /stackpacks")
+}

@@ -165,6 +165,9 @@ spec:
         {{- include "stackstate.auth.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.api.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.api.configmap.checksum" . | nindent 8 }}
+        {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+        {{- include "stackstate.stackpacks.scripts.configmap.checksum" . | nindent 8 }}
+        {{- end }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "api") .) }}
       labels:
         app.kubernetes.io/component: api
@@ -216,6 +219,7 @@ spec:
         {{- end }}
         {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
         {{ include "stackstate.stackpacks.volume" . | nindent 8 }}
+        {{ include "stackstate.stackpacks.scripts.volume" . | nindent 8 }}
         {{- end }}
 {{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
         {{- if eq $deploymentMode "Mono" }}

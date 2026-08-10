@@ -1,0 +1,12 @@
+{{- define "stackstate.stackpacks.scripts.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-stackpacks-scripts
+data:
+  copy-stackpacks.sh: |-
+    {{- tpl (.Files.Get "scripts/copy-stackpacks.sh") . | trim | nindent 4 }}
+{{- end -}}
+{{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackpacksScriptsConfigMap := fromYaml (include "stackstate.stackpacks.scripts.configmap" .) -}}
+{{- toYaml (merge $stackpacksScriptsConfigMap $commonConfigMap) -}}
+{{- end }}

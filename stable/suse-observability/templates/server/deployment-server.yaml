@@ -160,6 +160,9 @@ spec:
         {{- include "stackstate.email.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.server.configmap.checksum" . | nindent 8 }}
+        {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+        {{- include "stackstate.stackpacks.scripts.configmap.checksum" . | nindent 8 }}
+        {{- end }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "server") .) }}
       labels:
         app.kubernetes.io/component: server
@@ -206,6 +209,7 @@ spec:
       {{- include "stackstate.service.pod.volumes" (dict "pod_name" "server" "root" . ) | nindent 6 }}
       {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
       {{ include "stackstate.stackpacks.volume" . | nindent 6 }}
+      {{ include "stackstate.stackpacks.scripts.volume" . | nindent 6 }}
       {{- end }}
 {{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
       {{- if eq $deploymentMode "Mono" }}
