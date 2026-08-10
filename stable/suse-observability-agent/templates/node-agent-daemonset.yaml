@@ -27,11 +27,17 @@ spec:
         {{- include "stackstate-k8s-agent.nodeAgent.configmap.override.checksum" . | nindent 8 }}
         {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
+      {{- with .Values.nodeAgent.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/component: node-agent
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
+      {{- with .Values.nodeAgent.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.nodeAgent.containers.agent.image .Values.all.image) "context" $) | nindent 6 }}
       containers:

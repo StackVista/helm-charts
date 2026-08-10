@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.40`
+Current chart version is `1.5.41`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -213,6 +213,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | checksAgent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | checksAgent.logLevel | string | `"INFO"` | Logging level for clusterchecks agent processes. |
 | checksAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| checksAgent.podAnnotations | object | `{}` | Additional annotations on the checks agent pods. |
+| checksAgent.podLabels | object | `{}` | Additional labels on the checks agent pods. |
 | checksAgent.priorityClassName | string | `""` | Priority class for clusterchecks agent pods. |
 | checksAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | checksAgent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
@@ -275,6 +277,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | clusterAgent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | clusterAgent.logLevel | string | `"INFO"` | Logging level for stackstate-k8s-agent processes. |
 | clusterAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| clusterAgent.podAnnotations | object | `{}` | Additional annotations on the cluster agent pods. |
+| clusterAgent.podLabels | object | `{}` | Additional labels on the cluster agent pods. |
 | clusterAgent.priorityClassName | string | `""` | Priority class for stackstate-k8s-agent pods. |
 | clusterAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | clusterAgent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
@@ -340,6 +344,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
 | logsAgent.image.tag | string | `"3.6.11-so12"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| logsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
+| logsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
 | logsAgent.resources.limits.memory | string | `"192Mi"` | Memory resource limits. |
@@ -393,6 +399,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.httpTracing.enabled | bool | `true` | Enable / disable the process-agent HTTP tracing. |
 | nodeAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | nodeAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| nodeAgent.podAnnotations | object | `{}` | Additional annotations on the node agent pods. |
+| nodeAgent.podLabels | object | `{}` | Additional labels on the node agent pods. |
 | nodeAgent.priorityClassName | string | `""` | Priority class for nodeAgent pods. |
 | nodeAgent.protocolInspection.enabled | bool | `true` | Enable / disable the nodeAgent protocol inspection. |
 | nodeAgent.scaling.autoscalerLimits.agent.maximum.cpu | string | `"200m"` | Maximum CPU resource limits for main agent. |
@@ -567,6 +575,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | processAgent.softMemoryLimit.httpStatsBufferSize | int | `40000` | Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | remoteKubeCache.affinity | object | `{}` | Affinity settings for pod assignment. |
 | remoteKubeCache.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| remoteKubeCache.podAnnotations | object | `{}` | Additional annotations on the remote kube cache pods. |
+| remoteKubeCache.podLabels | object | `{}` | Additional labels on the remote kube cache pods. |
 | remoteKubeCache.resources.limits.cpu | string | `"200m"` | CPU resource limits. |
 | remoteKubeCache.resources.limits.memory | string | `"400Mi"` | Memory resource limits. |
 | remoteKubeCache.resources.requests.cpu | string | `"100m"` | CPU resource requests. |

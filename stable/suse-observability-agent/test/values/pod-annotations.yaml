@@ -1,0 +1,47 @@
+global:
+  extraAnnotations:
+    global.example.com/annotation: "global-value"
+  extraLabels:
+    global.example.com/label: "global-value"
+
+nodeAgent:
+  podAnnotations:
+    monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling: '{ "enabled": false}'
+    example.com/owner: "node-agent"
+  podLabels:
+    example.com/workload: "node-agent"
+  containers:
+    processAgent:
+      enabled: true
+
+processAgent:
+  podCorrelation:
+    enabled: true
+    remoteCache: true
+
+remoteKubeCache:
+  podAnnotations:
+    example.com/owner: "remote-kube-cache"
+  podLabels:
+    example.com/workload: "remote-kube-cache"
+
+clusterAgent:
+  podAnnotations:
+    monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling: '{ "enabled": false}'
+    example.com/owner: "cluster-agent"
+  podLabels:
+    example.com/workload: "cluster-agent"
+
+logsAgent:
+  enabled: true
+  podAnnotations:
+    example.com/owner: "logs-agent"
+  podLabels:
+    example.com/workload: "logs-agent"
+
+checksAgent:
+  enabled: true
+  podAnnotations:
+    example.com/owner: "checks-agent"
+  podLabels:
+    example.com/workload: "checks-agent"

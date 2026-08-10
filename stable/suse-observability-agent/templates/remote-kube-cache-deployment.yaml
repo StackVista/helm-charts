@@ -23,11 +23,17 @@ spec:
         {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
         {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
+      {{- with .Values.remoteKubeCache.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/component: remote-kube-cache
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
+      {{- with .Values.remoteKubeCache.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ .Release.Name }}-remote-kube-cache
       containers:

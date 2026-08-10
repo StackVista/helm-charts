@@ -257,6 +257,12 @@ nodeAgent:
     rollingUpdate:
       maxUnavailable: 100
 
+  # nodeAgent.podAnnotations -- Additional annotations on the node agent pods.
+  podAnnotations: {}
+
+  # nodeAgent.podLabels -- Additional labels on the node agent pods.
+  podLabels: {}
+
   # nodeAgent.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
 
@@ -311,6 +317,12 @@ processAgent:
   disabledProtocols: []
 
 remoteKubeCache:
+  # remoteKubeCache.podAnnotations -- Additional annotations on the remote kube cache pods.
+  podAnnotations: {}
+
+  # remoteKubeCache.podLabels -- Additional labels on the remote kube cache pods.
+  podLabels: {}
+
   # remoteKubeCache.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
 
@@ -513,6 +525,12 @@ clusterAgent:
       # clusterAgent.resources.requests.memory -- Memory resource requests.
       memory: "512Mi"
 
+  # clusterAgent.podAnnotations -- Additional annotations on the cluster agent pods.
+  podAnnotations: {}
+
+  # clusterAgent.podLabels -- Additional labels on the cluster agent pods.
+  podLabels: {}
+
   # clusterAgent.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
 
@@ -561,6 +579,12 @@ logsAgent:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 100
+
+  # logsAgent.podAnnotations -- Additional annotations on the logs agent pods.
+  podAnnotations: {}
+
+  # logsAgent.podLabels -- Additional labels on the logs agent pods.
+  podLabels: {}
 
   # logsAgent.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
@@ -655,6 +679,12 @@ checksAgent:
     type: RollingUpdate
     # rollingUpdate:
     #   maxUnavailable: 1
+
+  # checksAgent.podAnnotations -- Additional annotations on the checks agent pods.
+  podAnnotations: {}
+
+  # checksAgent.podLabels -- Additional labels on the checks agent pods.
+  podLabels: {}
 
   # checksAgent.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
