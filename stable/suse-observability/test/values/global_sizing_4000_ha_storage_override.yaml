@@ -1,0 +1,86 @@
+global:
+  imageRegistry: "my.registry.com"
+  suseObservability:
+    receiverApiKey: "test-key"
+    pullSecret:
+      username: "test"
+      password: "secret"
+    sizing:
+      profile: "4000-ha"
+    license: "test-license-key"
+    baseUrl: "https://test.example.com"
+    adminPassword: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
+
+pull-secret:
+  enabled: false
+
+stackstate:
+  components:
+    all:
+      metricStore:
+        remoteWriteEndpoint: "test-$vmInstance:8148"
+        queryApiEndpoint: "test:8148"
+    aiAssistant:
+      persistence:
+        size: 666Gi
+    server:
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+    vmagent:
+      persistence:
+        size: 999Gi
+    workloadObserver:
+      persistence:
+        size: 888Gi
+
+# User storage overrides that should win over sizing profile
+clickhouse:
+  persistence:
+    size: 1500Gi
+
+elasticsearch:
+  replicas: 7
+  esJavaOpts: "-Xmx16g -Xms16g -Des.allow_insecure_settings=true"
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 1200Gi
+
+kafka:
+  persistence:
+    size: 900Gi
+
+zookeeper:
+  persistence:
+    size: 32Gi
+
+hbase:
+  hdfs:
+    datanode:
+      persistence:
+        size: 2000Gi
+    namenode:
+      persistence:
+        size: 444Gi
+    secondarynamenode:
+      persistence:
+        size: 555Gi
+
+victoria-metrics-0:
+  server:
+    persistentVolume:
+      size: 1400Gi
+    retentionPeriod: 12
+
+victoria-metrics-1:
+  server:
+    persistentVolume:
+      size: 1400Gi
+    retentionPeriod: 12
+
+anomaly-detection:
+  enabled: false
+
+ai:
+  assistant:
+    enabled: "true"

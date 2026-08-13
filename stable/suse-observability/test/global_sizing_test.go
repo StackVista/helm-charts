@@ -127,6 +127,16 @@ func TestGlobalSizingReceiverSplitMode(t *testing.T) {
 				"suse-observability-receiver-process-agent",
 			},
 		},
+		{
+			name:        "4000-ha-split",
+			valuesFile:  "values/global_sizing_4000_ha.yaml",
+			expectSplit: true,
+			expectedDeployments: []string{
+				"suse-observability-receiver-base",
+				"suse-observability-receiver-logs",
+				"suse-observability-receiver-process-agent",
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -366,6 +376,18 @@ func TestGlobalSizingHbaseDeploymentMode(t *testing.T) {
 				"suse-observability-hbase-tephra-mono",
 			},
 		},
+		{
+			name:           "4000-ha-tephra-mode",
+			valuesFile:     "values/global_sizing_4000_ha.yaml",
+			expectMonoMode: false,
+			expectedStatefulSets: []string{
+				"suse-observability-hbase-tephra",
+			},
+			unexpectedStatefulSets: []string{
+				"suse-observability-hbase-stackgraph",
+				"suse-observability-hbase-tephra-mono",
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -418,6 +440,12 @@ func TestGlobalSizingResourcesAreSet(t *testing.T) {
 			name:          "500-ha-elasticsearch-statefulset",
 			valuesFile:    "values/global_sizing_500_ha.yaml",
 			componentName: "suse-observability-elasticsearch-master",
+			componentType: "statefulset",
+		},
+		{
+			name:          "4000-ha-hdfs-datanode-statefulset",
+			valuesFile:    "values/global_sizing_4000_ha.yaml",
+			componentName: "suse-observability-hbase-hdfs-dn",
 			componentType: "statefulset",
 		},
 	}
@@ -493,6 +521,20 @@ func TestGlobalSizingReplicaCounts(t *testing.T) {
 			componentName:       "suse-observability-correlate",
 			expectedMinReplicas: 3,
 		},
+		{
+			name:                "4000-ha-hbase-regionserver-multiple-replicas",
+			valuesFile:          "values/global_sizing_4000_ha.yaml",
+			componentName:       "suse-observability-hbase-hbase-rs",
+			expectedMinReplicas: 5,
+		},
+		{
+			// 4000-ha provisions 5 datanodes against dfs.replication=3, leaving spare
+			// capacity when HBase excludes a slow datanode from the WAL pipeline (STAC-25582).
+			name:                "4000-ha-hdfs-datanode-multiple-replicas",
+			valuesFile:          "values/global_sizing_4000_ha.yaml",
+			componentName:       "suse-observability-hbase-hdfs-dn",
+			expectedMinReplicas: 5,
+		},
 	}
 
 	for _, tc := range testCases {
@@ -524,51 +566,63 @@ func TestGlobalSizingReplicaCounts(t *testing.T) {
 // TestGlobalSizingProfileWinsOverDefaults verifies that when a sizing profile is active,
 // profile resources are used directly (not merged with/overridden by values.yaml defaults).
 func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
-	// Render 500-ha profile WITHOUT any resource overrides
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_sizing_500_ha.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
+	profiles := []struct {
+		name       string
+		valuesFile string
+	}{
+		{"500-ha", "values/global_sizing_500_ha.yaml"},
+		{"4000-ha", "values/global_sizing_4000_ha.yaml"},
+	}
 
-	// Check that Kafka resources are from profile, not from values.yaml defaults
-	t.Run("kafka-uses-profile-resources", func(t *testing.T) {
-		ss, exists := resources.Statefulsets["suse-observability-kafka"]
-		require.True(t, exists, "kafka StatefulSet should exist")
-		containers := ss.Spec.Template.Spec.Containers
-		require.NotEmpty(t, containers)
+	for _, profile := range profiles {
+		t.Run(profile.name, func(t *testing.T) {
+			// Render the profile WITHOUT any resource overrides
+			output := helmtestutil.RenderHelmTemplate(t, "suse-observability", profile.valuesFile)
+			resources := helmtestutil.NewKubernetesResources(t, output)
 
-		// Profile should set non-empty resources
-		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
-		assert.True(t, memLimit.Value() > 0,
-			"kafka memory limit should be > 0 from profile, got %s", memLimit.String())
-	})
+			// Check that Kafka resources are from profile, not from values.yaml defaults
+			t.Run("kafka-uses-profile-resources", func(t *testing.T) {
+				ss, exists := resources.Statefulsets["suse-observability-kafka"]
+				require.True(t, exists, "kafka StatefulSet should exist")
+				containers := ss.Spec.Template.Spec.Containers
+				require.NotEmpty(t, containers)
 
-	// Check that elasticsearch resources come from profile, not from subchart defaults
-	// Subchart default (elasticsearch/values.yaml) is 2Gi memory / 1000m CPU
-	// Profile should set something larger for 500-ha
-	t.Run("elasticsearch-uses-profile-resources", func(t *testing.T) {
-		ss, exists := resources.Statefulsets["suse-observability-elasticsearch-master"]
-		require.True(t, exists, "elasticsearch StatefulSet should exist")
-		containers := ss.Spec.Template.Spec.Containers
-		require.NotEmpty(t, containers)
+				// Profile should set non-empty resources
+				memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+				assert.True(t, memLimit.Value() > 0,
+					"kafka memory limit should be > 0 from profile, got %s", memLimit.String())
+			})
 
-		// elasticsearch subchart default memory limit is 2Gi
-		// Profile should set it higher
-		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
-		subchartDefaultMemLimit := resource.MustParse("2Gi")
-		assert.True(t, memLimit.Cmp(subchartDefaultMemLimit) > 0,
-			"elasticsearch memory limit should be greater than subchart default 2Gi, got %s", memLimit.String())
-	})
+			// Check that elasticsearch resources come from profile, not from subchart defaults
+			// Subchart default (elasticsearch/values.yaml) is 2Gi memory / 1000m CPU
+			// Profile should set something larger for the HA profiles
+			t.Run("elasticsearch-uses-profile-resources", func(t *testing.T) {
+				ss, exists := resources.Statefulsets["suse-observability-elasticsearch-master"]
+				require.True(t, exists, "elasticsearch StatefulSet should exist")
+				containers := ss.Spec.Template.Spec.Containers
+				require.NotEmpty(t, containers)
 
-	// Check that a stackstate component (correlate) gets profile resources
-	t.Run("correlate-uses-profile-resources", func(t *testing.T) {
-		dep, exists := resources.Deployments["suse-observability-correlate"]
-		require.True(t, exists, "correlate deployment should exist")
-		containers := dep.Spec.Template.Spec.Containers
-		require.NotEmpty(t, containers)
+				// elasticsearch subchart default memory limit is 2Gi
+				// Profile should set it higher
+				memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+				subchartDefaultMemLimit := resource.MustParse("2Gi")
+				assert.True(t, memLimit.Cmp(subchartDefaultMemLimit) > 0,
+					"elasticsearch memory limit should be greater than subchart default 2Gi, got %s", memLimit.String())
+			})
 
-		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
-		assert.True(t, memLimit.Value() > 0,
-			"correlate memory limit should be > 0 from profile, got %s", memLimit.String())
-	})
+			// Check that a stackstate component (correlate) gets profile resources
+			t.Run("correlate-uses-profile-resources", func(t *testing.T) {
+				dep, exists := resources.Deployments["suse-observability-correlate"]
+				require.True(t, exists, "correlate deployment should exist")
+				containers := dep.Spec.Template.Spec.Containers
+				require.NotEmpty(t, containers)
+
+				memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+				assert.True(t, memLimit.Value() > 0,
+					"correlate memory limit should be > 0 from profile, got %s", memLimit.String())
+			})
+		})
+	}
 }
 
 // TestGlobalSizingUserStorageOverrides tests that user-specified storage overrides take precedence over sizing profile defaults
@@ -617,6 +671,27 @@ func TestGlobalSizingUserStorageOverrides(t *testing.T) {
 				"suse-observability-elasticsearch-master": 5,
 			},
 			expectedEsJavaOpts: "-Xmx8g -Xms8g -Des.allow_insecure_settings=true",
+		},
+		{
+			name:       "4000-ha with storage overrides",
+			valuesFile: "values/global_sizing_4000_ha_storage_override.yaml",
+			expectedStorage: map[string]string{
+				"suse-observability-clickhouse-shard0":    "1500Gi",
+				"suse-observability-elasticsearch-master": "1200Gi",
+				"suse-observability-kafka":                "900Gi",
+				"suse-observability-zookeeper":            "32Gi",
+				"suse-observability-hbase-hdfs-dn":        "2000Gi",
+				"suse-observability-victoria-metrics-0":   "1400Gi",
+				"suse-observability-victoria-metrics-1":   "1400Gi",
+			},
+			expectedReplicas: map[string]int{
+				"suse-observability-elasticsearch-master": 7,
+			},
+			expectedEsJavaOpts: "-Xmx16g -Xms16g -Des.allow_insecure_settings=true",
+			expectedRetentionPeriod: map[string]string{
+				"suse-observability-victoria-metrics-0": "12",
+				"suse-observability-victoria-metrics-1": "12",
+			},
 		},
 	}
 
@@ -721,6 +796,25 @@ func TestGlobalSizingStorageDefaultsWithoutOverrides(t *testing.T) {
 				"suse-observability-victoria-metrics-0":   "50Gi",
 			},
 		},
+		{
+			name:       "4000-ha defaults",
+			valuesFile: "values/global_sizing_4000_ha.yaml",
+			expectedStorage: map[string]string{
+				// clickhouse is 50Gi here, LESS than 150-ha's 100Gi, because
+				// common.sizing.clickhouse.persistence.size has no branch for 250-ha,
+				// 500-ha or 4000-ha and they all hit the 50Gi else-fallback. Asserted
+				// as-is to document current behaviour; see STAC-25582.
+				"suse-observability-clickhouse-shard0":    "50Gi",
+				"suse-observability-elasticsearch-master": "250Gi",
+				"suse-observability-kafka":                "400Gi",
+				"suse-observability-zookeeper":            "8Gi",
+				"suse-observability-hbase-hdfs-dn":        "1000Gi",
+				"suse-observability-hbase-hdfs-nn":        "20Gi",
+				"suse-observability-hbase-hdfs-snn":       "20Gi",
+				"suse-observability-victoria-metrics-0":   "400Gi",
+				"suse-observability-victoria-metrics-1":   "400Gi",
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -761,6 +855,12 @@ func TestBackupPVCStorageWithSizingProfile(t *testing.T) {
 			valuesFile:      "values/global_sizing_10_nonha.yaml",
 			expectedPVC:     "suse-observability-backup-stackgraph-tmp-data",
 			expectedStorage: "50Gi",
+		},
+		{
+			name:            "4000-ha distributed backup PVC defaults to hdfs datanode size",
+			valuesFile:      "values/global_sizing_4000_ha.yaml",
+			expectedPVC:     "suse-observability-backup-stackgraph-tmp-data",
+			expectedStorage: "1000Gi",
 		},
 	}
 
