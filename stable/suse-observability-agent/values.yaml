@@ -565,12 +565,12 @@ logsAgent:
   resources:
     limits:
       # logsAgent.resources.limits.cpu -- CPU resource limits.
-      cpu: "1300m"
+      cpu: "200m"
       # logsAgent.resources.limits.memory -- Memory resource limits.
       memory: "192Mi"
     requests:
       # logsAgent.resources.requests.cpu -- CPU resource requests.
-      cpu: "20m"
+      cpu: "40m"
       # logsAgent.resources.requests.memory -- Memory resource requests.
       memory: "100Mi"
 

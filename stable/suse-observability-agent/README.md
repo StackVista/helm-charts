@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.41`
+Current chart version is `1.5.42`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -347,9 +347,9 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | logsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | logsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
-| logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
+| logsAgent.resources.limits.cpu | string | `"200m"` | CPU resource limits. |
 | logsAgent.resources.limits.memory | string | `"192Mi"` | Memory resource limits. |
-| logsAgent.resources.requests.cpu | string | `"20m"` | CPU resource requests. |
+| logsAgent.resources.requests.cpu | string | `"40m"` | CPU resource requests. |
 | logsAgent.resources.requests.memory | string | `"100Mi"` | Memory resource requests. |
 | logsAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the daemonset pods |
 | logsAgent.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
