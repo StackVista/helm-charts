@@ -16,4 +16,4 @@ otel:
           "kubevirt.io": true
     objects:
       pods:
-        labelSelector: "kubevirt.io=virt-launcher"
+        labelSelector: "kubevirt.io in (virt-launcher, virt-controller, virt-api, virt-operator, virt-handler)"
