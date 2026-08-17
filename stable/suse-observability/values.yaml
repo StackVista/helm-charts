@@ -1793,7 +1793,7 @@ stackstate:
         # stackstate.stackpacks.images[1].repository -- Repository of the `stackpacks` Docker image.
         repository: stackstate/contrib-stackpacks
         # stackstate.stackpacks.images[1].tag -- Tag used for the `stackpacks` Docker image
-        tag: "20260810143335-main-2ba911a"
+        tag: "20260817092822-main-ea42dc4"
         # stackstate.stackpacks.images[2].name -- name for the init container
       - name: suse
         # stackstate.stackpacks.images[2].registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
@@ -1803,7 +1803,7 @@ stackstate:
         # stackstate.stackpacks.images[2].repository -- Repository of the `stackpacks` Docker image.
         repository: stackstate/suse-stackpacks
         # stackstate.stackpacks.images[2].tag -- Tag used for the `stackpacks` Docker image
-        tag: "20260810142159-main-5610cbd"
+        tag: "20260817092829-main-41a7540"
         # stackstate.stackpacks.images[2].editions -- Editions that include the stackpacks
         editions: ["Prime"]
     # stackstate.stackpacks.extraImages -- Additional stackpack Docker images to mount after the built-in stackpack images.
