@@ -558,7 +558,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: "3.6.11-so12"
+    tag: "3.6.11-so13"
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -739,7 +739,7 @@ otel:
       # otel.k8sResourceCollector.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-      tag: "v0.0.53-agent"
+      tag: "v0.0.54-agent"
       # otel.k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
     pprof:
@@ -906,7 +906,7 @@ otel:
         # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
         repository: stackstate/sts-opentelemetry-collector
         # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
-        tag: "v0.0.53-agent"
+        tag: "v0.0.54-agent"
         # otel.prometheusScraping.collector.image.pullPolicy -- Container image pull policy for the Prometheus scraper collector.
         pullPolicy: IfNotPresent
 
@@ -966,7 +966,7 @@ otel:
         # otel.prometheusScraping.targetAllocator.image.repository -- SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release.
         repository: stackstate/opentelemetry-target-allocator
         # otel.prometheusScraping.targetAllocator.image.tag -- SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>).
-        tag: "0.153.0-so8"
+        tag: "0.153.0-so9"
         # otel.prometheusScraping.targetAllocator.image.pullPolicy -- Container image pull policy for the Target Allocator.
         pullPolicy: IfNotPresent
 
@@ -1045,7 +1045,7 @@ otel:
       # otel.telemetryGateway.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.telemetryGateway.image.tag -- Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
-      tag: "v0.0.53-agent"
+      tag: "v0.0.54-agent"
       # otel.telemetryGateway.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
 
@@ -1154,7 +1154,7 @@ httpHeaderInjectorWebhook:
       # sidecarInjector.image.repository - Repository for the docker image
       repository: "stackstate/generic-sidecar-injector"
       # sidecarInjector.image.tag - Tag for the docker image
-      tag: "b8ac81b7-1026-release"
+      tag: "0978b47b-1032-release"
 
   # certificatePrehook -- Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook
   certificatePrehook:
@@ -1162,7 +1162,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: "1.8.6-so18"
+      tag: "1.8.6-so19"
 
 ########################
 # Rbac Agent variables #
@@ -1188,7 +1188,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: "4ec35439-1024-release"
+        tag: "23f4b80a-1030-release"
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
