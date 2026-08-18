@@ -374,9 +374,11 @@ defaultConfigurationOverrides: |
         </default>
       </disks>
     </storage_configuration>
-    <!-- MergeTree settings for insert disk space protection -->
+    <!-- MergeTree settings for insert disk space protection and zookeeper znode size limiting -->
     <merge_tree>
       <min_free_disk_ratio_to_perform_insert>{{ .Values.mergeTree.minFreeDiskRatioToPerformInsert }}</min_free_disk_ratio_to_perform_insert>
+      <max_replicated_logs_to_keep>{{ .Values.mergeTree.maxReplicatedLogsToKeep }}</max_replicated_logs_to_keep>
+      <max_replicated_merges_in_queue>{{ .Values.mergeTree.maxReplicatedMergesInQueue }}</max_replicated_merges_in_queue>
     </merge_tree>
 
 
@@ -1030,6 +1032,8 @@ persistence:
 ##
 mergeTree:
   minFreeDiskRatioToPerformInsert: 0.10
+  maxReplicatedLogsToKeep: 250
+  maxReplicatedMergesInQueue: 250
 
 ## @section Init Container Parameters
 ##
