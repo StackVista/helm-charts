@@ -10,6 +10,7 @@ metadata:
 spec:
   schedule: "0 0 31 2 *"
   suspend: true
+  concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
       labels:

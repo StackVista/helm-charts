@@ -788,3 +788,45 @@ func TestStackGraphBackupHBaseRegionServerConsumesEnv(t *testing.T) {
 	resources := renderStackGraphBackupImplementation(t, "v2")
 	assertHBaseEnvConsumedBy(t, resources, "suse-observability-hbase-hbase-rs")
 }
+
+func renderBackupEnabled(t *testing.T) helmtestutil.KubernetesResources {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+	return helmtestutil.NewKubernetesResources(t, output)
+}
+
+// Admission policies in customer clusters (for example Kyverno) commonly reject any CronJob
+// that leaves concurrencyPolicy unset, so an omission blocks the whole chart from installing.
+func TestAllCronJobsSetConcurrencyPolicy(t *testing.T) {
+	resources := renderBackupEnabled(t)
+	require.NotEmpty(t, resources.CronJobs, "expected CronJobs to be rendered")
+
+	for name, cronjob := range resources.CronJobs {
+		assert.Contains(t,
+			[]batchv1beta1.ConcurrencyPolicy{batchv1beta1.ForbidConcurrent, batchv1beta1.ReplaceConcurrent},
+			cronjob.Spec.ConcurrencyPolicy,
+			"CronJob %s must set concurrencyPolicy to Forbid or Replace", name)
+	}
+}
+
+// With restartPolicy Never every retry leaves its failed Pod behind, so a backup-init that only
+// succeeds after a few attempts accumulates up to backoffLimit+1 Pods for an operator to delete
+// by hand. OnFailure restarts the container in place instead.
+func TestBackupInitRestartsInPlaceOnFailure(t *testing.T) {
+	resources := renderBackupEnabled(t)
+
+	job := findJob(&resources, "backup-init")
+	require.NotNil(t, job, "backup-init Job should be rendered")
+	assert.Equal(t, corev1.RestartPolicyOnFailure, job.Spec.Template.Spec.RestartPolicy,
+		"backup-init Job should restart its container in place rather than leaving failed Pods behind")
+
+	cronjob, ok := resources.CronJobs["suse-observability-backup-init"]
+	require.True(t, ok, "backup-init CronJob should be rendered")
+	assert.Equal(t, corev1.RestartPolicyOnFailure, cronjob.Spec.JobTemplate.Spec.Template.Spec.RestartPolicy,
+		"backup-init CronJob should restart its container in place rather than leaving failed Pods behind")
+}

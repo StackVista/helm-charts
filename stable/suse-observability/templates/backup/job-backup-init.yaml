@@ -50,7 +50,7 @@ template:
           - name: tmp-data-v2
             mountPath: /tmp-data-v2
     {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 4 }}
-    restartPolicy: Never
+    restartPolicy: OnFailure
 {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
     nodeSelector:
     {{- with .Values.stackstate.components.all.nodeSelector }}
