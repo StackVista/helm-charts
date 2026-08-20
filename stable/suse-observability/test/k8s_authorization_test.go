@@ -45,7 +45,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"agents", "apitokens", "metrics", "metricbindings", "settings", "stackpacks", "systemnotifications", "topology", "traces"},
+				Resources: []string{"agents", "apitokens", "metrics", "metricbindings", "settings", "stackpacks", "suppressions", "systemnotifications", "topology", "traces"},
 				Verbs:     []string{"get"},
 			},
 			{
@@ -60,7 +60,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"favoriteviews", "favoritedashboards"},
+				Resources: []string{"favoriteviews", "favoritedashboards", "suppressions"},
 				Verbs:     []string{"delete", "create"},
 			},
 		},
@@ -107,7 +107,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"agents", "apitokens", "metrics", "syncdata", "systemnotifications", "topology", "traces", "stackpacks"},
+				Resources: []string{"agents", "apitokens", "metrics", "syncdata", "systemnotifications", "topology", "traces", "stackpacks", "suppressions"},
 				Verbs:     []string{"get"},
 			},
 			{
@@ -122,12 +122,12 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"favoriteviews", "syncdata", "favoritedashboards"},
+				Resources: []string{"favoriteviews", "syncdata", "favoritedashboards", "suppressions"},
 				Verbs:     []string{"delete"},
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"favoriteviews", "favoritedashboards"},
+				Resources: []string{"favoriteviews", "favoritedashboards", "suppressions"},
 				Verbs:     []string{"create"},
 			},
 		},
@@ -153,7 +153,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"stackpacks"},
+				Resources: []string{"stackpacks", "suppressions"},
 				Verbs:     []string{"create", "get", "delete"},
 			},
 			{
