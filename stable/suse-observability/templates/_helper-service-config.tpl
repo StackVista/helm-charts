@@ -154,12 +154,13 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- end }}
 
 {{/* Output env vars that use valueFrom (cannot be merged via dict) */}}
-{{- if .Values.stackstate.java.trustStorePassword }}
+{{- $javaTrustStorePassword := fromYaml (include "stackstate.trustStore.java.password" .) }}
+{{- if $javaTrustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-common
-      key: javaTrustStorePassword
+      name: {{ $javaTrustStorePassword.name }}
+      key: {{ $javaTrustStorePassword.key }}
 {{- end }}
 {{- if or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled }}
 - name: "STS_SERVICE_NAME"
@@ -229,20 +230,17 @@ stackstate.traces.clickHouse = {{- include "stackstate.clickhouse.config" . }}
 {{- end -}}
 
 {{/*
-Secrets dict for custom certificates for stackstate services
+Custom certificates and trust stores to mount into /opt/docker/secrets for stackstate services, as a
+list of `name`/`key`/`path` entries. Each may live in a different secret, so the secret name is part
+of every entry.
 */}}
 {{- define "stackstate.service.mountsecrets" -}}
-{{- $mountSecrets := dict }}
-{{- if hasKey .Values.stackstate.authentication.ldap "ssl" }}
-  {{- if or .Values.stackstate.authentication.ldap.ssl.trustCertificates .Values.stackstate.authentication.ldap.ssl.trustCertificatesBase64Encoded }}
-    {{- $_ := set $mountSecrets "ldapTrustCertificates" "ldap-certificates.pem" }}
+{{- $mountSecrets := list }}
+{{- range $blob := tuple (dict "ref" "stackstate.trustStore.ldapCertificates" "path" "ldap-certificates.pem") (dict "ref" "stackstate.trustStore.ldap" "path" "ldap-cacerts") (dict "ref" "stackstate.trustStore.java" "path" "java-cacerts") }}
+  {{- $secret := fromYaml (include $blob.ref $) }}
+  {{- if $secret }}
+    {{- $mountSecrets = append $mountSecrets (merge (dict "path" $blob.path) $secret) }}
   {{- end }}
-  {{- if or .Values.stackstate.authentication.ldap.ssl.trustStore .Values.stackstate.authentication.ldap.ssl.trustStoreBase64Encoded }}
-    {{- $_ := set $mountSecrets "ldapTrustStore" "ldap-cacerts" }}
-  {{- end }}
-{{- end }}
-{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
-    {{- $_ := set $mountSecrets "javaTrustStore" "java-cacerts" }}
 {{- end }}
 {{ $mountSecrets | toYaml }}
 {{- end -}}
@@ -251,7 +249,7 @@ Secrets dict for custom certificates for stackstate services
 Mount secrets and log config in pod for stackstate services
 */}}
 {{- define "stackstate.service.pod.volumes" -}}
-{{- $mountSecrets := fromYaml (include "stackstate.service.mountsecrets" .root ) }}
+{{- $mountSecrets := fromYamlArray (include "stackstate.service.mountsecrets" .root ) }}
 - name: config-volume-log
   configMap:
     name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}-log
@@ -260,12 +258,14 @@ Mount secrets and log config in pod for stackstate services
     name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}
 {{- if $mountSecrets }}
 - name: service-secrets-volume
-  secret:
-    secretName: {{ template "common.fullname.short" .root }}-common
-    items:
-{{- range $key, $val := $mountSecrets }}
-    - key: {{ $key }}
-      path: {{ $val }}
+  projected:
+    sources:
+{{- range $mountSecrets }}
+    - secret:
+        name: {{ .name }}
+        items:
+        - key: {{ .key }}
+          path: {{ .path }}
 {{- end }}
 {{- end }}
 {{- end -}}
@@ -274,7 +274,7 @@ Mount secrets and log config in pod for stackstate services
 Mount secrets and log config in container for for stackstate services
 */}}
 {{- define "stackstate.service.container.volumes" -}}
-{{- $mountSecrets := fromYaml (include "stackstate.service.mountsecrets" .) }}
+{{- $mountSecrets := fromYamlArray (include "stackstate.service.mountsecrets" .) }}
 - name: config-volume-log
   mountPath: /opt/docker/etc_log
 - name: config-volume
@@ -292,10 +292,10 @@ NOTE: $JAVA_TRUSTSTORE_PASSWORD cannot be passed via JAVA_OPTS because the start
 does not expand variables within the JAVA_OPTS anymore
 */}}
 {{- define "stackstate.service.args" -}}
-{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+{{- if fromYaml (include "stackstate.trustStore.java" .) }}
 - -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
 - -Djavax.net.ssl.trustStoreType=jks
-{{- if .Values.stackstate.java.trustStorePassword }}
+{{- if fromYaml (include "stackstate.trustStore.java.password" .) }}
 - -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD)
 {{- end }}
 {{- end }}

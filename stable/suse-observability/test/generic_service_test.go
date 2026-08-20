@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 )
 
@@ -59,7 +60,8 @@ func assertTrustStoreOnPods(t *testing.T, resources helmtestutil.KubernetesResou
 					logConfigMapName = volume.ConfigMap.Name
 				}
 				if volume.Name == "service-secrets-volume" {
-					secretName = volume.Secret.SecretName
+					require.Len(t, volume.Projected.Sources, 1, "For pod "+podName)
+					secretName = volume.Projected.Sources[0].Secret.Name
 				}
 			}
 			assert.Equal(t, "suse-observability-"+podName+"-log", logConfigMapName, "For pod "+podName)

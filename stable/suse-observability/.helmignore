@@ -26,3 +26,6 @@ ci/
 auth-demo/
 restore/
 update-chart-dependencies.sh
+# Packaged into chart.Files and thus into the Helm release secret, which has a 1MB size limit.
+README.md.gotmpl
+linter_values.yaml

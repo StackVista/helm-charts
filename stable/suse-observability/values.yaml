@@ -1709,9 +1709,16 @@ stackstate:
         password: ""
   # stackstate.java -- Extra Java configuration for StackState
   java:
-    # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use
+    trustStoreFromExternalSecret:
+      # stackstate.java.trustStoreFromExternalSecret.name -- Name of an existing secret holding the Java TrustStore (cacerts) file. This is the preferred way to configure the trust store: it keeps the trust store out of the Helm release secret, which has a 1MB size limit. Takes precedence over `stackstate.java.trustStore` and `stackstate.java.trustStoreBase64Encoded`.
+      name: ""
+      # stackstate.java.trustStoreFromExternalSecret.key -- Key in the external secret holding the Java TrustStore (cacerts) file.
+      key: "java-cacerts"
+      # stackstate.java.trustStoreFromExternalSecret.passwordKey -- Optional key in the external secret holding the trust store password. When empty, `stackstate.java.trustStorePassword` is used instead.
+      passwordKey: ""
+    # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret.
     trustStore:
-    # stackstate.java.trustStoreBase64Encoded -- Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set.
+    # stackstate.java.trustStoreBase64Encoded -- Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret.
     trustStoreBase64Encoded:
     # stackstate.java.trustStorePassword -- Password to access the Java TrustStore (cacerts) file
     trustStorePassword:

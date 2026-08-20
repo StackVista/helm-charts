@@ -183,10 +183,10 @@ Authentication config
 {{- if $apiAuth.ldap.ssl }}
     ssl {
       sslType = {{ required "stackstate.authentication.ldap.ssl.type is required when configuring LDAP SSL" $apiAuth.ldap.ssl.type }}
-  {{- if or $apiAuth.ldap.ssl.trustCertificates $apiAuth.ldap.ssl.trustCertificatesBase64Encoded }}
+  {{- if fromYaml (include "stackstate.trustStore.ldapCertificates" $) }}
       trustCertificatesPath = "/opt/docker/secrets/ldap-certificates.pem"
   {{- end }}
-  {{- if or $apiAuth.ldap.ssl.trustStore $apiAuth.ldap.ssl.trustStoreBase64Encoded }}
+  {{- if fromYaml (include "stackstate.trustStore.ldap" $) }}
       trustStorePath = "/opt/docker/secrets/ldap-cacerts"
   {{- end }}
     }

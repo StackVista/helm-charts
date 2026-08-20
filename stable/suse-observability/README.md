@@ -1164,9 +1164,12 @@ If you encounter issues not covered here:
 | stackstate.features.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
 | stackstate.features.traces | boolean | `true` | Enable new traces UI and API |
 | stackstate.instanceDebugApi.enabled | bool | `false` |  |
-| stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
-| stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
-| stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. |
+| stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStoreFromExternalSecret":{"key":"java-cacerts","name":"","passwordKey":""},"trustStorePassword":null}` | Extra Java configuration for StackState |
+| stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret. |
+| stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret. |
+| stackstate.java.trustStoreFromExternalSecret.key | string | `"java-cacerts"` | Key in the external secret holding the Java TrustStore (cacerts) file. |
+| stackstate.java.trustStoreFromExternalSecret.name | string | `""` | Name of an existing secret holding the Java TrustStore (cacerts) file. This is the preferred way to configure the trust store: it keeps the trust store out of the Helm release secret, which has a 1MB size limit. Takes precedence over `stackstate.java.trustStore` and `stackstate.java.trustStoreBase64Encoded`. |
+| stackstate.java.trustStoreFromExternalSecret.passwordKey | string | `""` | Optional key in the external secret holding the trust store password. When empty, `stackstate.java.trustStorePassword` is used instead. |
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.k8sAuthorization.enabled | bool | `true` |  |
 | stackstate.license.fromExternalSecret | string | `nil` | Use an external secret for the license key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
@@ -1432,7 +1435,36 @@ stackstate:
           - dc: com
 ```
 
-The `trustStore` and `trustCertificates` values need to be set from the command line, as they typically contain binary data. A sample command for this looks like:
+The recommended way to provide the trust store and the certificates is to create a secret for them up
+front and refer to it from the values, so they never become part of the Helm release secret:
+
+```shell
+kubectl create secret generic ldap-truststore \
+--from-file=cacerts=./ldap-cacerts \
+--from-file=certificates.pem=./ldap-certificate.pem
+```
+
+```yaml
+stackstate:
+  authentication:
+    ldap:
+      ssl:
+        type: ssl
+        trustStoreFromExternalSecret:
+          name: ldap-truststore
+          key: cacerts
+        trustCertificatesFromExternalSecret:
+          name: ldap-truststore
+          key: certificates.pem
+```
+
+Only the blocks you set are used, so a secret holding just a trust store or just the certificates
+works too, and the two may live in different secrets. See
+[Configuring a Java trust store](#configuring-a-java-trust-store) for why an external secret is
+preferable.
+
+Alternatively the `trustStore` and `trustCertificates` values can be set from the command line, as
+they typically contain binary data:
 
 ```shell
 helm install \
@@ -1442,6 +1474,48 @@ helm install \
 ... \
 stackstate/stackstate
 ```
+
+### Configuring a Java trust store
+
+To make SUSE Observability trust certificates that are not in the default Java trust store, provide
+your own trust store (`cacerts`) file. Create a secret for it and refer to that secret from the
+values:
+
+```shell
+kubectl create secret generic java-truststore \
+--from-file=java-cacerts=./cacerts \
+--from-literal=java-cacerts-password=changeit
+```
+
+```yaml
+stackstate:
+  java:
+    trustStoreFromExternalSecret:
+      name: java-truststore
+      key: java-cacerts
+      passwordKey: java-cacerts-password
+```
+
+Use an external secret rather than the `stackstate.java.trustStore` and
+`stackstate.java.trustStoreBase64Encoded` values. Helm stores every value you supply in the release
+secret, and that secret is subject to the 1MB size limit of the underlying etcd object. A trust store
+of a few hundred KB is counted twice against that limit (once for the value, once for the secret
+rendered from it) and does not compress, which is enough on its own to make an upgrade fail.
+
+The `stackstate.java.trustStore` and `stackstate.java.trustStoreBase64Encoded` values still take a
+trust store inline and remain supported, but they are subject to the size limit described above:
+
+```shell
+helm install \
+--set-file stackstate.java.trustStore=./cacerts \
+--set stackstate.java.trustStorePassword=changeit \
+... \
+suse-observability/suse-observability
+```
+
+Note that when the trust store comes from an external secret, changing that secret does not restart
+the pods that mount it. Rotating a trust store therefore needs a manual restart of the SUSE
+Observability workloads.
 
 ### Configuring file based authentication
 

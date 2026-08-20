@@ -27,6 +27,8 @@ volumeMounts:
 {{- end -}}
 
 {{- define "stackstate.s3proxy.deployment.container.main" -}}
+{{- $javaTrustStore := fromYaml (include "stackstate.trustStore.java" .) -}}
+{{- $javaTrustStorePassword := fromYaml (include "stackstate.trustStore.java.password" .) -}}
 name: s3proxy
 image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.s3proxy.image.repository }}:{{ .Values.s3proxy.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.s3proxy.image.pullPolicy | quote }}
@@ -45,12 +47,12 @@ ports:
     containerPort: 9464
     protocol: TCP
 env:
-  {{- if .Values.stackstate.java.trustStorePassword }}
+  {{- if $javaTrustStorePassword }}
   - name: JAVA_TRUSTSTORE_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: {{ template "common.fullname.short" . }}-common
-        key: javaTrustStorePassword
+        name: {{ $javaTrustStorePassword.name }}
+        key: {{ $javaTrustStorePassword.key }}
   {{- end }}
   - name: S3PROXY_IDENTITY
     valueFrom:
@@ -96,7 +98,7 @@ env:
   - name: LOG_LEVEL
     value: {{ .Values.s3proxy.logLevel | quote }}
   - name: JAVA_OPTS
-    value: {{ include "stackstate.s3proxy.javaOpts" . }} -XX:+ExitOnOutOfMemoryError -XX:+UseG1GC {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
+    value: {{ include "stackstate.s3proxy.javaOpts" . }} -XX:+ExitOnOutOfMemoryError -XX:+UseG1GC {{- if $javaTrustStore }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if $javaTrustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
   {{- range $key, $value := .Values.s3proxy.extraEnv.open }}
   - name: {{ $key }}
     value: {{ $value | quote }}
@@ -114,7 +116,7 @@ volumeMounts:
     readOnly: true
   - name: settings-data
     mountPath: /settings-data
-  {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+  {{- if $javaTrustStore }}
   - name: common-secrets
     mountPath: /opt/s3proxy/secrets
     readOnly: true
@@ -145,6 +147,7 @@ readinessProbe:
 {{- $s3proxyMainContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.s3proxy.deployment.container.init" .) -}}
 {{- $s3proxyInitContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $javaTrustStore := fromYaml (include "stackstate.trustStore.java" .) -}}
 
 metadata:
   name: {{ include "stackstate.s3proxy.fullname" . }}
@@ -171,7 +174,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/s3proxy/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/s3proxy/secret.yaml") . | sha256sum }}
-        {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+        {{- if $javaTrustStore }}
         checksum/common-secret: {{ include (print $.Template.BasePath "/global/secret-common.yaml") . | sha256sum }}
         {{- end }}
         {{- include "common.metrics.annotations" (dict "metrics" .Values.s3proxy.metrics "port" "9464" "container_name" "s3proxy") | indent 8 }}
@@ -201,12 +204,12 @@ spec:
         - name: settings-data
           persistentVolumeClaim:
             claimName: {{ include "stackstate.backup.settingsPvcName" . }}
-        {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+        {{- if $javaTrustStore }}
         - name: common-secrets
           secret:
-            secretName: {{ template "common.fullname.short" . }}-common
+            secretName: {{ $javaTrustStore.name }}
             items:
-              - key: javaTrustStore
+              - key: {{ $javaTrustStore.key }}
                 path: java-cacerts
         {{- end }}
         {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
