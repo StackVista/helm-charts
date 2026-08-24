@@ -152,3 +152,18 @@ Custom certificates validation - fail if both configMapName and pemData are prov
 {{- fail "Error: Both global.customCertificates.configMapName and global.customCertificates.pemData are provided. Please use only one approach - either specify an external ConfigMap name OR provide PEM data directly, not both." }}
 {{- end }}
 {{- end -}}
+
+{{/*
+The container-level securityContext required by the restricted Pod Security Standard.
+Duplicated from the `common` library chart rather than included: this chart is also a
+dependency of the agent chart, which does not depend on `common`.
+*/}}
+{{- define "kubernetes-rbac-agent.container.restrictedSecurityContext" -}}
+allowPrivilegeEscalation: false
+capabilities:
+  drop:
+    - ALL
+runAsNonRoot: true
+seccompProfile:
+  type: RuntimeDefault
+{{- end -}}

@@ -233,18 +233,11 @@ hdfs:
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
     tag:
   volumePermissions:
-    # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required.
+    # hdfs.volumePermissions.enabled -- Whether to chown the data/name node volumes to the UID the HDFS containers run as. Use this when permissions on the volume mounts are wrong, for example after a storage class provisioned them root-owned. The init container runs as root while it does so, which no restricted Pod Security Standard allows, so the namespace needs an exemption.
     enabled: false
+    # hdfs.volumePermissions.securityContext -- Container securityContext for the volumePermissions init container, applied verbatim. It has to run as root to chown files it does not own; root's default capability set already covers that, so it needs neither privileged nor added capabilities. Add `privileged: true` only if a storage backend turns out to require it.
     securityContext:
-      # hdfs.volumePermissions.securityContext.enabled -- Whether to add a securityContext to the volumePermissions init container
-      enabled: false
-      # hdfs.volumePermissions.securityContext.privileged -- Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift)
-      privileged: true
-      # hdfs.volumePermissions.securityContext.allowPrivilegeEscalation -- Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed)
-      allowPrivilegeEscalation: true
-      # hdfs.volumePermissions.securityContext.runAsNonRoot -- Run the volumePermissions init container in non-root required mode (Do not change unless instructed)
       runAsNonRoot: false
-      # hdfs.volumePermissions.securityContext.runAsUser -- Run the volumePermissions init container with the specified UID (Do not change unless instructed)
       runAsUser: 0
   securityContext:
     # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.

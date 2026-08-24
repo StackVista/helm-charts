@@ -136,12 +136,8 @@ Current chart version is `0.2.160`
 | hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | hdfs.version | string | `"3.4.3-so1"` | Full HDFS image tag. |
-| hdfs.volumePermissions.enabled | bool | `false` | Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required. |
-| hdfs.volumePermissions.securityContext.allowPrivilegeEscalation | bool | `true` | Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed) |
-| hdfs.volumePermissions.securityContext.enabled | bool | `false` | Whether to add a securityContext to the volumePermissions init container |
-| hdfs.volumePermissions.securityContext.privileged | bool | `true` | Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift) |
-| hdfs.volumePermissions.securityContext.runAsNonRoot | bool | `false` | Run the volumePermissions init container in non-root required mode (Do not change unless instructed) |
-| hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
+| hdfs.volumePermissions.enabled | bool | `false` | Whether to chown the data/name node volumes to the UID the HDFS containers run as. Use this when permissions on the volume mounts are wrong, for example after a storage class provisioned them root-owned. The init container runs as root while it does so, which no restricted Pod Security Standard allows, so the namespace needs an exemption. |
+| hdfs.volumePermissions.securityContext | object | `{"runAsNonRoot":false,"runAsUser":0}` | Container securityContext for the volumePermissions init container, applied verbatim. It has to run as root to chown files it does not own; root's default capability set already covers that, so it needs neither privileged nor added capabilities. Add `privileged: true` only if a storage backend turns out to require it. |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackgraph.agentMetricsFilter | string | `""` | Configure metrics scraped by the agent |

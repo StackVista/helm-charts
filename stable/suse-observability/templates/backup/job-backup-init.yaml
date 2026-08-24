@@ -28,6 +28,8 @@ template:
             /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.s3proxy.endpoint" . }} -t 300
         image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
         imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+        securityContext:
+          {{- include "common.container.restrictedSecurityContext" . | nindent 10 }}
     containers:
       - name: configure
         image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -49,6 +51,8 @@ template:
             mountPath: /tmp-data
           - name: tmp-data-v2
             mountPath: /tmp-data-v2
+        securityContext:
+          {{- include "common.container.restrictedSecurityContext" . | nindent 10 }}
     {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 4 }}
     restartPolicy: OnFailure
 {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}

@@ -65,6 +65,8 @@ spec:
               mountPath: /scripts
               readOnly: true
           command: [ "/scripts/set-active.sh" ]
+          securityContext:
+            {{- include "common.container.restrictedSecurityContext" . | nindent 12 }}
       restartPolicy: Never
   {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.router.mode.nodeSelector }}
       nodeSelector:

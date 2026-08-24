@@ -538,6 +538,14 @@ initContainers:
       - -c
       - |
         /entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
 # initContainers:
 #   - name: test
 #     image: busybox:latest

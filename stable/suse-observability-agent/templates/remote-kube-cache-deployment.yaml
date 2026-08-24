@@ -64,7 +64,10 @@ spec:
           volumeMounts:
           {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 12 }}
           securityContext:
-            privileged: false
+            {{- include "stackstate-k8s-agent.container.restrictedSecurityContext" . | nindent 12 }}
+            {{- with .Values.remoteKubeCache.containerSecurityContext }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       nodeSelector:
         {{ template "label.os" . }}: {{ .Values.targetSystem }}
         {{- with .Values.remoteKubeCache.nodeSelector }}

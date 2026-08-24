@@ -9,6 +9,7 @@ spec:
   containers:
   - name: "{{ .Release.Name }}-{{ randAlpha 5 | lower }}-test"
     image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
+    securityContext: {{- toYaml .Values.securityContext | nindent 6 }}
     command:
       - "sh"
       - "-c"

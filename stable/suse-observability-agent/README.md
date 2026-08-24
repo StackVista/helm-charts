@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.44`
+Current chart version is `1.5.46`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -574,6 +574,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | processAgent.softMemoryLimit.httpObservationsBufferSize | int | `40000` | Sets a maximum for the number of http observations to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | processAgent.softMemoryLimit.httpStatsBufferSize | int | `40000` | Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | remoteKubeCache.affinity | object | `{}` | Affinity settings for pod assignment. |
+| remoteKubeCache.containerSecurityContext.runAsUser | int | `65534` | UID for the remote kube cache container. Its image declares no USER, so a UID is required to satisfy runAsNonRoot on plain Kubernetes. Set to null on OpenShift, where the restricted-v2 SCC assigns a UID from the namespace range and rejects an explicit one outside it. |
 | remoteKubeCache.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | remoteKubeCache.podAnnotations | object | `{}` | Additional annotations on the remote kube cache pods. |
 | remoteKubeCache.podLabels | object | `{}` | Additional labels on the remote kube cache pods. |

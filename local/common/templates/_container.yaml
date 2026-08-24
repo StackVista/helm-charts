@@ -35,3 +35,19 @@ securityContext:
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+The container-level securityContext required by the restricted Pod Security Standard,
+for containers declared directly rather than through `common.container` — init
+containers, job containers and subchart containers. Deliberately not values-driven:
+the restricted profile is a contract with the cluster, not a tuning knob.
+*/}}
+{{- define "common.container.restrictedSecurityContext" -}}
+allowPrivilegeEscalation: false
+capabilities:
+  drop:
+    - ALL
+runAsNonRoot: true
+seccompProfile:
+  type: RuntimeDefault
+{{- end -}}

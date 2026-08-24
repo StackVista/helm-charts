@@ -1,0 +1,29 @@
+stackstate:
+  apiKey: foobar
+  cluster:
+    name: some-k8s-cluster
+    token: some-token
+  url: https://my-suse-observability-instance.com/receiver
+
+logsAgent:
+  enabled: true
+
+httpHeaderInjectorWebhook:
+  enabled: true
+
+kubernetes-rbac-agent:
+  enabled: true
+
+processAgent:
+  podCorrelation:
+    enabled: true
+    remoteCache: true
+
+otel:
+  enabled: true
+  k8sResourceCollector:
+    enabled: true
+  telemetryGateway:
+    enabled: true
+  prometheusScraping:
+    enabled: true

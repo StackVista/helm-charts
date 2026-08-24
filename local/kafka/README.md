@@ -210,9 +210,12 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | metrics.kafka.certificatesSecret | string | `""` |  |
 | metrics.kafka.command | list | `[]` |  |
 | metrics.kafka.containerPorts.metrics | int | `9308` |  |
+| metrics.kafka.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
+| metrics.kafka.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | metrics.kafka.containerSecurityContext.enabled | bool | `true` |  |
 | metrics.kafka.containerSecurityContext.runAsNonRoot | bool | `true` |  |
 | metrics.kafka.containerSecurityContext.runAsUser | int | `1001` |  |
+| metrics.kafka.containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | metrics.kafka.enabled | bool | `false` |  |
 | metrics.kafka.extraFlags | object | `{}` |  |
 | metrics.kafka.extraVolumeMounts | list | `[]` |  |
@@ -325,9 +328,12 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | provisioning.auth.tls.truststorePasswordSecretKey | string | `"truststore-password"` |  |
 | provisioning.auth.tls.type | string | `"jks"` |  |
 | provisioning.command | list | `[]` |  |
+| provisioning.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
+| provisioning.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | provisioning.containerSecurityContext.enabled | bool | `true` |  |
 | provisioning.containerSecurityContext.runAsNonRoot | bool | `true` |  |
 | provisioning.containerSecurityContext.runAsUser | int | `1001` |  |
+| provisioning.containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | provisioning.enabled | bool | `false` |  |
 | provisioning.extraEnvVars | list | `[]` |  |
 | provisioning.extraEnvVarsCM | string | `""` |  |

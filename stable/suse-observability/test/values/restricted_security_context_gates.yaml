@@ -1,0 +1,46 @@
+stackstate:
+  components:
+    router:
+      mode:
+        status: automatic
+  features:
+    storeTransactionLogsToPVC:
+      enabled: true
+
+clickhouse:
+  volumePermissions:
+    enabled: true
+
+kafka:
+  metrics:
+    kafka:
+      enabled: true
+  provisioning:
+    enabled: true
+  volumePermissions:
+    enabled: true
+
+zookeeper:
+  volumePermissions:
+    enabled: true
+
+hbase:
+  hdfs:
+    volumePermissions:
+      enabled: true
+      securityContext:
+        enabled: true
+
+victoria-metrics-0:
+  server:
+    vmbackupmanager:
+      restore:
+        onStart:
+          enabled: true
+
+victoria-metrics-1:
+  server:
+    vmbackupmanager:
+      restore:
+        onStart:
+          enabled: true

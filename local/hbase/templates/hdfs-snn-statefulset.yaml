@@ -16,9 +16,6 @@ command:
   {{- end }}
 image: "{{ include "common.image.registry" (dict "image" .Values.global.wait.image "context" .) }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
-{{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
-securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
-{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
@@ -72,6 +69,12 @@ volumeMounts:
 {{- $stackstateHbaseHdfsSecondaryNamenodeContainer := (merge $overrideContainer $commonContainer) }}
 {{- $overrideContainer := fromYaml (include "hbase.hdfs.secondarynamenode.container.init" .) -}}
 {{- $stackstateHbaseHdfsSecondaryNamenodeInitContainer := (merge $overrideContainer $commonContainer) }}
+{{- /* Authoritative, not merged: this container chowns the data volume as root, and
+     sprig merge drops the values' runAsNonRoot: false as a zero value, leaving
+     runAsNonRoot: true with runAsUser: 0, which the kubelet refuses to create. */ -}}
+{{- if .Values.hdfs.volumePermissions.enabled }}
+{{- $_ := set $stackstateHbaseHdfsSecondaryNamenodeInitContainer "securityContext" (omit .Values.hdfs.volumePermissions.securityContext "enabled") }}
+{{- end }}
 metadata:
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: hdfs-snn

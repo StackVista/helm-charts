@@ -317,6 +317,10 @@ processAgent:
   disabledProtocols: []
 
 remoteKubeCache:
+  containerSecurityContext:
+    # remoteKubeCache.containerSecurityContext.runAsUser -- UID for the remote kube cache container. Its image declares no USER, so a UID is required to satisfy runAsNonRoot on plain Kubernetes. Set to null on OpenShift, where the restricted-v2 SCC assigns a UID from the namespace range and rejects an explicit one outside it.
+    runAsUser: 65534
+
   # remoteKubeCache.podAnnotations -- Additional annotations on the remote kube cache pods.
   podAnnotations: {}
 

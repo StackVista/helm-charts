@@ -50,6 +50,10 @@ proxyInit:
     tag: "1.0.0-so2"
 
 # sidecarInjector -- Service for injecting the proxy sidecar into pods
+containerSecurityContext:
+  # containerSecurityContext.runAsUser -- UID for the injector and certificate hook containers. Their images declare no USER, so a UID is required to satisfy runAsNonRoot on plain Kubernetes. Set to null on OpenShift, where the restricted-v2 SCC assigns a UID from the namespace range and rejects an explicit one outside it.
+  runAsUser: 65534
+
 sidecarInjector:
   image:
     # sidecarInjector.image.registry -- Registry for the docker image.

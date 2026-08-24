@@ -13,6 +13,8 @@ command:
   /entrypoint -c {{ join "," $hostList }} -t 1800
 image: "{{ include "stackstate.wait.image.registry" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+securityContext:
+{{- include "common.container.restrictedSecurityContext" . | nindent 2 }}
 {{- end }}
 {{- define "stackstate.clickhouseCleanup.job.container.main" -}}
 {{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}

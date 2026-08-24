@@ -54,6 +54,8 @@ spec:
         - name: k8s-resource-collector
           image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.otel.k8sResourceCollector.image.repository }}:{{ .Values.otel.k8sResourceCollector.image.tag }}"
           imagePullPolicy: "{{ .Values.otel.k8sResourceCollector.image.pullPolicy }}"
+          securityContext:
+            {{- include "stackstate-k8s-agent.container.restrictedSecurityContext" . | nindent 12 }}
           args:
             - --config=/etc/otel/config.yaml
           env:

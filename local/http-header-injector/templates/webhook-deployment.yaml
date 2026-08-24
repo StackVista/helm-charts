@@ -43,6 +43,8 @@ spec:
         - image: "{{ include "http-header-injector.image.registry" (merge $containerConfig .) }}/{{ .Values.sidecarInjector.image.repository }}:{{ .Values.sidecarInjector.image.tag }}"
           imagePullPolicy: {{ .Values.sidecarInjector.image.pullPolicy }}
           name: http-header-injector
+          securityContext:
+            {{- include "http-header-injector.container.restrictedSecurityContext" . | nindent 12 }}
           volumeMounts:
             - name: "{{ include "http-header-injector.webhook-config.name" . }}"
               mountPath: /etc/webhook/config

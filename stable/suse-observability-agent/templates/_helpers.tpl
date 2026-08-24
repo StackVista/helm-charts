@@ -596,3 +596,19 @@ exporters list when the signal is included in debug.pipelines.
 {{- if has $signal $pipelines }}, debug{{ end }}
 {{- end }}
 {{- end }}
+
+{{/*
+The container-level securityContext required by the restricted Pod Security Standard.
+Not applied to the node agent, process agent or logs agent: those need host access and
+can never satisfy restricted. See the required-privileges documentation.
+*/}}
+{{- define "stackstate-k8s-agent.container.restrictedSecurityContext" -}}
+allowPrivilegeEscalation: false
+capabilities:
+  drop:
+    - ALL
+privileged: false
+runAsNonRoot: true
+seccompProfile:
+  type: RuntimeDefault
+{{- end }}

@@ -134,7 +134,7 @@ spec:
             readOnlyRootFilesystem: false
         {{- else }}
           securityContext:
-            privileged: false
+            {{- include "stackstate-k8s-agent.container.restrictedSecurityContext" . | nindent 12 }}
         {{- end }}
         {{- with .Values.checksAgent.resources }}
           resources:

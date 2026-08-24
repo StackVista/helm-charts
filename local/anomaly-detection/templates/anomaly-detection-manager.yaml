@@ -106,6 +106,8 @@ spec:
       - name: spotlight
         image: "{{ include "anomaly-detection.image.registry" . }}/{{ .Values.image.spotlightRepository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        securityContext:
+          {{- include "common.container.restrictedSecurityContext" . | nindent 10 }}
         livenessProbe:
           httpGet:
             path: /liveness

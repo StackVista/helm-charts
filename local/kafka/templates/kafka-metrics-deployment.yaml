@@ -25,9 +25,6 @@ spec:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/component: cluster-metrics
         {{- include "kafka.commonLabels" . | nindent 8 }}
-        labels: {{- include "common.labels.standard" . | nindent 8 }}
-        app.kubernetes.io/component: cluster-metrics
-        {{- include "kafka.commonLabels" . | nindent 8 }}
         {{- if .Values.metrics.kafka.podLabels }}
         {{- include "common.tplvalues.render" (dict "value" .Values.metrics.kafka.podLabels "context" $) | nindent 8 }}
         {{- end }}

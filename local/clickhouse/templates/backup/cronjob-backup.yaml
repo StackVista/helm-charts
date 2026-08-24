@@ -48,6 +48,7 @@ spec:
                   subPath: {{ .script_name }}.sh
               securityContext:
                 runAsUser: 1001
+                {{- include "common.container.restrictedSecurityContext" . | nindent 16 }}
           {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 10 }}
           volumes:
             - name: clickhouse-backup-scripts

@@ -764,6 +764,8 @@ command:
 - '/bin/bash'
 - '-c'
 - 'kubectl get pod {{ template "common.fullname.short" . }}-server-0 --ignore-not-found && while (kubectl get pod {{ template "common.fullname.short" . }}-server-0 ) ; do echo "Waiting for {{ template "common.fullname.short" . }}-server-0 pod to terminate"; sleep 1; done'
+securityContext:
+{{- include "common.container.restrictedSecurityContext" . | nindent 2 }}
 {{- end -}}
 
 {{/*
@@ -779,6 +781,8 @@ command:
 - 'rm -Rf /opt/docker/logs/*'
 volumeMounts:
 {{ include "stackstate.service.transactionLog.volumeMount" . }}
+securityContext:
+{{- include "common.container.restrictedSecurityContext" . | nindent 2 }}
 {{- end -}}
 
 {{/*
@@ -795,6 +799,8 @@ command:
 volumeMounts:
   - name: tmp-volume
     mountPath: /tmp
+securityContext:
+{{- include "common.container.restrictedSecurityContext" . | nindent 2 }}
 {{- end -}}
 
 {{/*

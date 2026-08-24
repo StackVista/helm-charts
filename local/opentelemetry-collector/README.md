@@ -194,7 +194,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | imagePullSecrets | list | `[]` |  |
 | ingress.additionalIngresses | list | `[]` |  |
 | ingress.enabled | bool | `false` |  |
-| initContainers | list | `[{"command":["sh","-c","/entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300\n"],"image":"{{ include \"opentelemetry-collector.waitImageRegistry\" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}","imagePullPolicy":"IfNotPresent","name":"otel-collector-init"}]` | Wait for ClickHouse, vmagent, and Kafka to be reachable before starting the collector. |
+| initContainers | list | `[{"command":["sh","-c","/entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300\n"],"image":"{{ include \"opentelemetry-collector.waitImageRegistry\" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}","imagePullPolicy":"IfNotPresent","name":"otel-collector-init","securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}}]` | Wait for ClickHouse, vmagent, and Kafka to be reachable before starting the collector. |
 | lifecycleHooks | object | `{}` |  |
 | livenessProbe.httpGet.path | string | `"/"` |  |
 | livenessProbe.httpGet.port | int | `13133` |  |

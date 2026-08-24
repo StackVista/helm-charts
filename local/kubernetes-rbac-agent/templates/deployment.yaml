@@ -52,6 +52,8 @@ spec:
         - image: "{{ include "kubernetes-rbac-agent.image.registry" (merge $containerConfig .) }}/{{ .Values.containers.rbacAgent.image.repository }}:{{ .Values.containers.rbacAgent.image.tag }}"
           imagePullPolicy: {{ .Values.containers.rbacAgent.image.pullPolicy }}
           name: kubernetes-rbac-agent
+          securityContext:
+            {{- include "kubernetes-rbac-agent.container.restrictedSecurityContext" . | nindent 12 }}
           ports:
             - containerPort: 8080
           env:

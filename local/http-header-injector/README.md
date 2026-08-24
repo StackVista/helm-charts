@@ -21,6 +21,7 @@ going through the cluster for pods which have the annotation `http-header-inject
 | certificatePrehook.image.pullPolicy | string | `"IfNotPresent"` | Policy when pulling an image |
 | certificatePrehook.image.registry | string | `nil` | Registry for the docker image. |
 | certificatePrehook.image.tag | string | `"1.8.6-so5"` | The tag for the docker image |
+| containerSecurityContext.runAsUser | int | `65534` | UID for the injector and certificate hook containers. Their images declare no USER, so a UID is required to satisfy runAsNonRoot on plain Kubernetes. Set to null on OpenShift, where the restricted-v2 SCC assigns a UID from the namespace range and rejects an explicit one outside it. |
 | debug | bool | `false` | Enable debugging. This will leave leave artifacts around like the prehook jobs for further inspection |
 | global.extraAnnotations | object | `{}` | Extra annotations added ta all resources created by the helm chart |
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |

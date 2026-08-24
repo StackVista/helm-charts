@@ -113,6 +113,8 @@ volumeMounts:
     mountPath: /scripts
     readOnly: true
 command: ["/scripts/generate-cert.sh"]
+securityContext:
+  {{- include "http-header-injector.container.restrictedSecurityContext" . | nindent 2 }}
 {{- end }}
 
 {{- define "http-header-injector.cert-delete.container.main" }}
@@ -128,6 +130,8 @@ volumeMounts:
   - name: "{{ include "http-header-injector.cert-config.name" . }}"
     mountPath: /scripts
 command: [ "/scripts/delete-cert.sh" ]
+securityContext:
+  {{- include "http-header-injector.container.restrictedSecurityContext" . | nindent 2 }}
 {{- end }}
 
 {{- define "http-header-injector.patch-cabundle.container.main" }}
@@ -144,6 +148,8 @@ volumeMounts:
     mountPath: /scripts
     readOnly: true
 command: ["/scripts/inject-ca.sh"]
+securityContext:
+  {{- include "http-header-injector.container.restrictedSecurityContext" . | nindent 2 }}
 {{- end }}
 
 {{/*
@@ -161,5 +167,23 @@ Returns a YAML with extra labels.
 {{- define "http-header-injector.global.extraLabels" -}}
 {{- with .Values.global.extraLabels }}
 {{- toYaml . }}
+{{- end }}
+{{- end -}}
+
+{{/*
+The container-level securityContext required by the restricted Pod Security Standard.
+The four settings are fixed; only the UID is configurable, because neither the injector nor
+the container-tools image declares a USER but OpenShift assigns one from the namespace range.
+*/}}
+{{- define "http-header-injector.container.restrictedSecurityContext" -}}
+allowPrivilegeEscalation: false
+capabilities:
+  drop:
+    - ALL
+runAsNonRoot: true
+seccompProfile:
+  type: RuntimeDefault
+{{- with .Values.containerSecurityContext }}
+{{- toYaml . | nindent 0 }}
 {{- end }}
 {{- end -}}
