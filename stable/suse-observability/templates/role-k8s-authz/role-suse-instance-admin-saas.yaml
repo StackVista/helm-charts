@@ -31,7 +31,7 @@ rules:
     - topology
     - traces
     - stackpacks
-    - suppressions
+    - silencingrules
   verbs:
     - get
 - apiGroups:
@@ -55,7 +55,7 @@ rules:
     - favoriteviews
     - syncdata
     - favoritedashboards
-    - suppressions
+    - silencingrules
   verbs:
     - delete
 - apiGroups:
@@ -63,7 +63,7 @@ rules:
   resources:
     - favoriteviews
     - favoritedashboards
-    - suppressions
+    - silencingrules
   verbs:
     - create
 {{- end -}}

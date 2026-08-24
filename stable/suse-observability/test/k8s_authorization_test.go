@@ -45,7 +45,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"agents", "apitokens", "metrics", "metricbindings", "settings", "stackpacks", "suppressions", "systemnotifications", "topology", "traces"},
+				Resources: []string{"agents", "apitokens", "metrics", "metricbindings", "settings", "stackpacks", "silencingrules", "systemnotifications", "topology", "traces"},
 				Verbs:     []string{"get"},
 			},
 			{
@@ -60,7 +60,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"favoriteviews", "favoritedashboards", "suppressions"},
+				Resources: []string{"favoriteviews", "favoritedashboards", "silencingrules"},
 				Verbs:     []string{"delete", "create"},
 			},
 		},
@@ -107,7 +107,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"agents", "apitokens", "metrics", "syncdata", "systemnotifications", "topology", "traces", "stackpacks", "suppressions"},
+				Resources: []string{"agents", "apitokens", "metrics", "syncdata", "systemnotifications", "topology", "traces", "stackpacks", "silencingrules"},
 				Verbs:     []string{"get"},
 			},
 			{
@@ -122,12 +122,12 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"favoriteviews", "syncdata", "favoritedashboards", "suppressions"},
+				Resources: []string{"favoriteviews", "syncdata", "favoritedashboards", "silencingrules"},
 				Verbs:     []string{"delete"},
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"favoriteviews", "favoritedashboards", "suppressions"},
+				Resources: []string{"favoriteviews", "favoritedashboards", "silencingrules"},
 				Verbs:     []string{"create"},
 			},
 		},
@@ -153,7 +153,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"stackpacks", "suppressions"},
+				Resources: []string{"stackpacks", "silencingrules"},
 				Verbs:     []string{"create", "get", "delete"},
 			},
 			{

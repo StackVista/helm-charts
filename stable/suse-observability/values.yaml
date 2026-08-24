@@ -19,9 +19,9 @@ global:
     # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
     # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
     experimentalStackpacks: false
-    # global.features.experimentalSuppressions -- Enable Suppressions to signal to all components that they should support the Suppressions feature.
+    # global.features.experimentalSilencingRules -- Enable Silencing Rules to signal to all components that they should support the Silencing Rules feature.
     # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
-    experimentalSuppressions: false
+    experimentalSilencing: false
   # backup.enabled -- Enables backup/restore for all data
   backup:
     enabled: false
