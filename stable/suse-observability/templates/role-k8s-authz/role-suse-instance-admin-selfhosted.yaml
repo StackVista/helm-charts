@@ -30,6 +30,7 @@ rules:
     - instance.observability.cattle.io
   resources:
     - stackpacks
+    - silencingrules
   verbs:
     - create
     - get
