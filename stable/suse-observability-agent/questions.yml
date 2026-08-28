@@ -194,3 +194,15 @@ questions:
     description: "Enable the RBAC Agent for project-based authorization in SUSE Observability."
     default: "true"
     group: "RBAC Agent"
+  - variable: otel.enabled
+    label: "Enable OTEL"
+    type: boolean
+    description: "Enable Open Telemetry collector for ingestion and/or scraping"
+    default: "false"
+    group: "OTEL"
+  - variable: otel.integrations.rancherAgent
+    label: "Enable Rancher Manager URL enrichment"
+    type: boolean
+    description: "Collect Rancher URL and cluster ID from the Rancher Agent and include them as OTEL resource attributes."
+    default: "false"
+    group: "OTEL"
