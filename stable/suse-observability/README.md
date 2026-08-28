@@ -475,8 +475,8 @@ If you encounter issues not covered here:
 | gateway.timeouts | object | `{}` | Optional timeouts for the HTTPRoute rule. |
 | global.backup.enabled | bool | `false` |  |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
-| global.features | object | `{"experimentalSilencing":false,"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
-| global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
+| global.features | object | `{"experimentalSilencing":false,"experimentalStackpacks":true}` | Feature switches for SUSE Observability. |
+| global.features.experimentalStackpacks | bool | `true` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. When using global.suseObservability (global mode), set this to "registry.rancher.com" to match the default behavior of the suse-observability-values chart. |
 | global.receiverApiKey | string | `""` | Deprecated. Use global.suseObservability.receiverApiKey instead. |
