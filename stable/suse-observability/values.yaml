@@ -18,7 +18,7 @@ global:
   features:
     # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
     # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
-    experimentalStackpacks: false
+    experimentalStackpacks: true
     # global.features.experimentalSilencingRules -- Enable Silencing Rules to signal to all components that they should support the Silencing Rules feature.
     # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
     experimentalSilencing: false
