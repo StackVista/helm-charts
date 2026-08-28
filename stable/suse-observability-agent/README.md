@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.48`
+Current chart version is `1.5.49`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -204,7 +204,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | checksAgent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| checksAgent.image.tag | string | `"d8cd29db"` | Default container image tag. |
+| checksAgent.image.tag | string | `"6ec4155f"` | Default container image tag. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | checksAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -268,7 +268,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-k8s-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"d8cd29db"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"6ec4155f"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -315,7 +315,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so19"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so20"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxy.image.tag | string | `"1.38.3-so2"` |  |
@@ -342,7 +342,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.11-so13"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.11-so14"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | logsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |
@@ -366,7 +366,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
-| nodeAgent.containers.agent.image.tag | string | `"d8cd29db"` | Default container image tag. |
+| nodeAgent.containers.agent.image.tag | string | `"6ec4155f"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -389,7 +389,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
 | nodeAgent.containers.processAgent.image.registry | string | `nil` |  |
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
-| nodeAgent.containers.processAgent.image.tag | string | `"7d7d6c99"` | Default process-agent container image tag. |
+| nodeAgent.containers.processAgent.image.tag | string | `"3c6ccf04"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
 | nodeAgent.containers.processAgent.procVolumeReadOnly | bool | `true` | Configure whether /host/proc is read only for the process agent container |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | CPU resource limits. |

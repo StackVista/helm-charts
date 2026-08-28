@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 3.78.2
-version: 1.5.48
+version: 1.5.49
 description: Helm chart for the SUSE observability Agent.
 keywords:
 - monitoring
