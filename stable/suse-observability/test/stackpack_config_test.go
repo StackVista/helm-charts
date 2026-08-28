@@ -22,7 +22,7 @@ stackstate.stackPacks {
     }
   }
 
-  upgradeOnStartUp = ["kubernetes-v2","stackstate-k8s-agent-v2","open-telemetry","aad-v2","stackstate","test-stackpack-1"]
+  upgradeOnStartUp = ["kubernetes-v2","stackstate-k8s-agent-v2","open-telemetry","aad-v2","otel-k8s-crd","suse-observability","test-stackpack-1"]
   installOnStartUp += "prime-kubernetes"
   upgradeOnStartUp += "prime-kubernetes"
 }`
@@ -45,7 +45,7 @@ stackstate.stackPacks {
     }
   }
 
-  upgradeOnStartUp = ["kubernetes-v2","stackstate-k8s-agent-v2","open-telemetry","aad-v2","stackstate","test-stackpack-1"]
+  upgradeOnStartUp = ["kubernetes-v2","stackstate-k8s-agent-v2","open-telemetry","aad-v2","otel-k8s-crd","suse-observability","test-stackpack-1"]
   installOnStartUp += "prime-kubernetes"
   upgradeOnStartUp += "prime-kubernetes"
 }`
