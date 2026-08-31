@@ -33,10 +33,10 @@ sources:
     spec:
       image: "quay.io/stackstate/stackstate-server"
       architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.[0-9]+-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+$"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.[0-9]+-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+-2\\.5$"
       versionfilter:
         kind: regex/time
-        regex: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.([0-9]+)-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+$"
+        regex: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.([0-9]+)-{{ requiredEnv .stackstate.branchEnv }}-[a-f0-9]+-2\\.5$"
         pattern: "20060102150405"
   stackgraphVersion:
     name: "stackgraph version (com.stackstate.stackgraph.version label on stackstate-server, {{ requiredEnv .stackstate.branchEnv }})"
@@ -64,6 +64,8 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: stackstateServer
+    transformers:
+      - trimsuffix: "-2.5"
     spec:
       file: "stable/suse-observability/Chart.yaml"
       key: "$.appVersion"
@@ -72,6 +74,8 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: stackstateServer
+    transformers:
+      - trimsuffix: "-2.5"
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.all.image.tag"
