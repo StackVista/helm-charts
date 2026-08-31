@@ -25,7 +25,7 @@ jobs:
     if: ${{ github.repository == 'StackVista/helm-charts-internal' && (!inputs.dry_run) }}
     runs-on: docker
     container:
-      image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-d4e06284
+      image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-c30c515e
       options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
       credentials:
         username: ${{ vars.REGISTRY_USER }}
