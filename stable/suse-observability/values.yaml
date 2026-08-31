@@ -1813,7 +1813,7 @@ stackstate:
         # stackstate.stackpacks.images[2].repository -- Repository of the `stackpacks` Docker image.
         repository: stackstate/suse-stackpacks
         # stackstate.stackpacks.images[2].tag -- Tag used for the `stackpacks` Docker image
-        tag: "20260818125311-main-73cf9d9"
+        tag: "20260831092715-main-38a7cfc"
         # stackstate.stackpacks.images[2].editions -- Editions that include the stackpacks
         editions: ["Prime"]
     # stackstate.stackpacks.extraImages -- Additional stackpack Docker images to mount after the built-in stackpack images.
