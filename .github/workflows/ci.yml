@@ -350,6 +350,22 @@ jobs:
           else
             echo "::notice::no tests for ${{ matrix.chart }}, skipping"
           fi
+      - name: Shell self-checks (local/<chart>/scripts/*-test.sh)
+        shell: bash
+        env:
+          CHART: ${{ matrix.chart }}
+        run: |
+          shopt -s nullglob
+          checks=("local/$CHART/scripts/"*-test.sh)
+          if [ "${#checks[@]}" -eq 0 ]; then
+            echo "::notice::no shell self-checks for $CHART, skipping"
+            exit 0
+          fi
+          command -v jq >/dev/null 2>&1 || apk add --no-cache jq
+          for check in "${checks[@]}"; do
+            echo "Running $check"
+            bash "$check"
+          done
 
   # Runs `go test ./test/...` (the repo-root resource-usage suite) and uploads
   # `test/resource_usage.txt` — the historical record of projected pod/CPU/memory footprint.

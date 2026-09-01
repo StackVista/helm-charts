@@ -154,6 +154,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. |
 | backup.keepLastDaily | int | `7` | Number of daily backups to retain |
 | backup.keepLastWeekly | int | `4` | Number of weekly backups to retain (one per week, beyond the daily window) |
+| backup.minHistorySeconds | int | `86400` | Refuse the hourly backup when local storage holds no data older than this many seconds while the destination already holds a completed backup, so a freshly rebuilt instance cannot overwrite a backup it has not restored from. Set to 0 to disable the check. Must stay below `server.retentionPeriod` and at or under 40 days: above retention no data can ever be that old, so backups would be refused permanently rather than only after a redeploy, and above 40 days VictoriaMetrics ignores the query time range and the check silently passes instead. Note the `trial` sizing profile sets retention to 3d. |
 | backup.overrideS3Endpoint | string | `""` | Override location of S3 endpoints, it should point to storage service. **Do not change this value!** |
 | backup.s3Prefix | string | `nil` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
@@ -170,7 +171,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.supercronic.metrics.port | int | `9746` |  |
 | backup.vmbackup.image.registry | string | `"quay.io"` |  |
 | backup.vmbackup.image.repository | string | `"stackstate/vmbackup"` | Repository containing the image for the Victoria Metrics backup |
-| backup.vmbackup.image.tag | string | `"v1.109.0-4c7c50f9"` | Tag of the image for the Victoria Metrics backup |
+| backup.vmbackup.image.tag | string | `"1.144.0-so16"` | Tag of the image for the Victoria Metrics backup |
 | backup.vmbackup.resources.limits.cpu | string | `"100m"` |  |
 | backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
 | backup.vmbackup.resources.requests.cpu | string | `"10m"` |  |

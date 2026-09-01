@@ -594,6 +594,48 @@ func TestVictoriaMetricsBackupDisabledPerInstance(t *testing.T) {
 	assert.True(t, hasContainer(&vm1.Spec.Template.Spec, "vmbackup"), "victoria-metrics-1 should still have a vmbackup container")
 }
 
+// TestVictoriaMetricsBackupFreshInstanceGuard verifies that the hourly backup carries the
+// minimum-history threshold that stops a freshly rebuilt instance from overwriting the
+// backup it has not restored from yet.
+func TestVictoriaMetricsBackupFreshInstanceGuard(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                       "true",
+			"victoria-metrics-0.backup.minHistorySeconds": "3600",
+		},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	sts, ok := resources.Statefulsets["suse-observability-victoria-metrics-0"]
+	require.True(t, ok, "victoria-metrics-0 StatefulSet should exist")
+
+	var setupCron *corev1.Container
+	for i, c := range sts.Spec.Template.Spec.InitContainers {
+		if c.Name == "create-crontab" {
+			setupCron = &sts.Spec.Template.Spec.InitContainers[i]
+		}
+	}
+	require.NotNil(t, setupCron, "create-crontab init container should exist")
+
+	var threshold string
+	for _, e := range setupCron.Env {
+		if e.Name == "MIN_HISTORY_SECONDS" {
+			threshold = e.Value
+		}
+	}
+	assert.Equal(t, "3600", threshold, "MIN_HISTORY_SECONDS should follow backup.minHistorySeconds")
+
+	require.NotEmpty(t, setupCron.Args, "create-crontab should render crontab arguments")
+	crontab := setupCron.Args[len(setupCron.Args)-1]
+	assert.Contains(t, crontab, "MIN_HISTORY_SECONDS=$MIN_HISTORY_SECONDS", "hourly crontab entry should pass the threshold to the backup script")
+
+	scripts, ok := resources.ConfigMaps["suse-observability-victoria-metrics-0-scripts"]
+	require.True(t, ok, "victoria-metrics-0 scripts ConfigMap should exist")
+	assert.Contains(t, scripts.Data["run-victoria-metrics-backup.sh"], "assert_not_fresh_instance", "backup script should contain the fresh-instance guard")
+}
+
 func testJobsFromBackupRestoreScriptsConfigMap(t *testing.T, resources *helmtestutil.KubernetesResources) map[string]batchv1.Job {
 	// Find the backup-restore-scripts ConfigMap
 	var backupConfigMap *corev1.ConfigMap

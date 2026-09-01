@@ -714,6 +714,8 @@ backup:
     hourly: '25 * * * *'
     # -- Cron schedule for daily snapshot backups of Victoria Metrics
     daily: '55 0 * * *'
+  # -- Refuse the hourly backup when local storage holds no data older than this many seconds while the destination already holds a completed backup, so a freshly rebuilt instance cannot overwrite a backup it has not restored from. Set to 0 to disable the check. Must stay below `server.retentionPeriod` and at or under 40 days: above retention no data can ever be that old, so backups would be refused permanently rather than only after a redeploy, and above 40 days VictoriaMetrics ignores the query time range and the check silently passes instead. Note the `trial` sizing profile sets retention to 3d.
+  minHistorySeconds: 86400
   # -- Number of daily backups to retain
   keepLastDaily: 7
   # -- Number of weekly backups to retain (one per week, beyond the daily window)
@@ -745,7 +747,7 @@ backup:
       # -- Repository containing the image for the Victoria Metrics backup
       repository: stackstate/vmbackup
       # -- Tag of the image for the Victoria Metrics backup
-      tag: v1.109.0-4c7c50f9
+      tag: 1.144.0-so16
     resources:
       requests:
         cpu: 10m

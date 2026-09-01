@@ -52,7 +52,7 @@ spec:
           args:
             - -c
             - |
-              echo "$HOURLY_PATTERN BUCKET_NAME=$BUCKET_NAME S3_PREFIX=$S3_PREFIX S3_ENDPOINT=$S3_ENDPOINT /app/crontab/scripts/run-victoria-metrics-backup.sh hourly" > /app/crontab/vmbackup
+              echo "$HOURLY_PATTERN BUCKET_NAME=$BUCKET_NAME S3_PREFIX=$S3_PREFIX S3_ENDPOINT=$S3_ENDPOINT MIN_HISTORY_SECONDS=$MIN_HISTORY_SECONDS /app/crontab/scripts/run-victoria-metrics-backup.sh hourly" > /app/crontab/vmbackup
               echo "$DAILY_PATTERN BUCKET_NAME=$BUCKET_NAME S3_PREFIX=$S3_PREFIX S3_ENDPOINT=$S3_ENDPOINT KEEP_DAILY=$KEEP_DAILY KEEP_WEEKLY=$KEEP_WEEKLY /app/crontab/scripts/run-victoria-metrics-backup.sh daily" >> /app/crontab/vmbackup
           resources:
 {{ toYaml .Values.backup.setupCron.resources | indent 12 }}
@@ -67,6 +67,8 @@ spec:
               value: "{{ tpl .Values.backup.overrideS3Endpoint . }}"
             - name: S3_PREFIX
               value: {{ tpl .Values.backup.s3Prefix . | quote }}
+            - name: MIN_HISTORY_SECONDS
+              value: {{ .Values.backup.minHistorySeconds | quote }}
             - name: KEEP_DAILY
               value: {{ .Values.backup.keepLastDaily | quote }}
             - name: KEEP_WEEKLY

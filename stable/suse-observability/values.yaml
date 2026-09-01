@@ -2083,6 +2083,8 @@ victoria-metrics-0:
   backup:
     # victoria-metrics-0.backup.enabled -- Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true.
     enabled: true
+    # victoria-metrics-0.backup.minHistorySeconds -- Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted.
+    minHistorySeconds: 86400
     # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
@@ -2124,6 +2126,8 @@ victoria-metrics-1:
   backup:
     # victoria-metrics-1.backup.enabled -- Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true.
     enabled: true
+    # victoria-metrics-1.backup.minHistorySeconds -- Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted.
+    minHistorySeconds: 86400
     # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
