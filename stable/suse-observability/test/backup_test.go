@@ -705,7 +705,7 @@ func suspendValue(cj batchv1beta1.CronJob) bool {
 // TestStackGraphBackupImplementationV1 verifies that with the default/"v1" implementation both
 // StackGraph backup CronJobs are rendered, the v1 job is active and the v2 job is suspended.
 func TestStackGraphBackupImplementationV1(t *testing.T) {
-	for _, implementation := range []string{"", "v1"} {
+	for _, implementation := range []string{"v1"} {
 		t.Run("implementation="+implementation, func(t *testing.T) {
 			resources := renderStackGraphBackupImplementation(t, implementation)
 
@@ -738,15 +738,19 @@ func TestStackGraphBackupImplementationV2(t *testing.T) {
 // TestStackGraphBackupImplementationAll verifies that implementation=all keeps both StackGraph
 // backup CronJobs active simultaneously.
 func TestStackGraphBackupImplementationAll(t *testing.T) {
-	resources := renderStackGraphBackupImplementation(t, "all")
+	for _, implementation := range []string{"", "all"} {
+		t.Run("implementation="+implementation, func(t *testing.T) {
+			resources := renderStackGraphBackupImplementation(t, implementation)
 
-	v1, ok := resources.CronJobs["suse-observability-backup-sg"]
-	require.True(t, ok, "v1 StackGraph backup CronJob should exist")
-	v2, ok := resources.CronJobs["suse-observability-backup-sg-v2"]
-	require.True(t, ok, "v2 StackGraph backup CronJob should exist")
+			v1, ok := resources.CronJobs["suse-observability-backup-sg"]
+			require.True(t, ok, "v1 StackGraph backup CronJob should exist")
+			v2, ok := resources.CronJobs["suse-observability-backup-sg-v2"]
+			require.True(t, ok, "v2 StackGraph backup CronJob should exist")
 
-	assert.False(t, suspendValue(v1), "v1 backup CronJob should be active when implementation=all")
-	assert.False(t, suspendValue(v2), "v2 backup CronJob should be active when implementation=all")
+			assert.False(t, suspendValue(v1), "v1 backup CronJob should be active when implementation=all")
+			assert.False(t, suspendValue(v2), "v2 backup CronJob should be active when implementation=all")
+		})
+	}
 }
 
 // TestStackGraphBackupV2UsesV2Script verifies the v2 CronJob runs the dedicated v2 backup script
