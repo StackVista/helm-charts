@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.50`
+Current chart version is `1.5.51`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -308,7 +308,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
-| global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. When enabled, the cluster collector (CRD discovery) is automatically activated. |
+| global.features | object | `{}` |  |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | global.imageRegistry | string | `"quay.io"` | The image registry to use. |

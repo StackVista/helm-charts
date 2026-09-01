@@ -101,17 +101,6 @@ func TestK8sResourceCollectorDisabledByOtelMasterSwitch(t *testing.T) {
 	assertK8sResourceCollectorResourcesExist(t, resources, false)
 }
 
-func TestK8sResourceCollectorEnabledByExperimentalStackpacks(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t,
-		"suse-observability-agent",
-		"values/minimal.yaml",
-		"values/experimental-stackpacks.yaml",
-	)
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	assertK8sResourceCollectorResourcesExist(t, resources, true)
-}
-
 func assertK8sResourceCollectorResourcesExist(t *testing.T, resources helmtestutil.KubernetesResources, shouldExist bool) {
 	// All k8s-resource-collector resources should NOT exist
 	_, exists := resources.Deployments["suse-observability-agent-k8s-resource-collector"]

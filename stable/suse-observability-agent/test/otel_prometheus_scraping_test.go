@@ -51,19 +51,6 @@ func TestOtelPrometheusScrapingDisabledWhenScrapingFlagFalse(t *testing.T) {
 	assertOtelPrometheusScrapingResourcesExist(t, resources, false)
 }
 
-func TestOtelPrometheusScrapingEnabledByExperimentalStackpacks(t *testing.T) {
-	// experimentalStackpacks implicitly turns on the OTel master switch (the
-	// StackPacks 2.0 cluster collector is itself an OTel collector), so the
-	// Prometheus scraper renders without otel.enabled having to be set.
-	output := helmtestutil.RenderHelmTemplate(t,
-		"suse-observability-agent",
-		"values/minimal.yaml",
-		"values/experimental-stackpacks.yaml",
-	)
-	resources := helmtestutil.NewKubernetesResources(t, output)
-	assertOtelPrometheusScrapingResourcesExist(t, resources, true)
-}
-
 func TestOtelPrometheusScrapingEnabledRendersResources(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/otel-prometheus-scraping-enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)

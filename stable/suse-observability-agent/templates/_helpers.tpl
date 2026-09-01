@@ -433,12 +433,9 @@ Returns a dict equivalent to .Values.otel.k8sResourceCollector with integration 
 
 {{/*
 Determine whether OTel-based features are enabled on this agent.
-True when explicitly enabled OR when the experimentalStackpacks feature flag is set
-(the StackPacks 2.0 cluster collector is itself an OTel collector, so the OTel
-master switch is implicitly on when StackPacks 2.0 is requested).
 */}}
 {{- define "stackstate-k8s-agent.otel.enabled" -}}
-{{- if or .Values.otel.enabled (default false ((.Values.global).features).experimentalStackpacks) }}
+{{- if .Values.otel.enabled }}
 true
 {{- end }}
 {{- end -}}
