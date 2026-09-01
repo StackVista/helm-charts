@@ -33,7 +33,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | wait | stable/suse-observability/values.yaml | $.global.wait.image.tag | Tag format: `<semver>-so<release_increment>` |
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format `<semver>-so<release_increment>` |
-| spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
+| spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N`, optionally followed by `.rN` or `.rebuild.N` for immutable rebuilds |
 | sts-opentelemetry-collector | stable/suse-observability/values.yaml | $.opentelemetry-collector.image.tag | Server (full BOM) image. Tag format: `vX.Y.Z` (plain semver release tags only). Source `stsOpentelemetryCollector` |
 | sts-opentelemetry-collector (agent BOM) | stable/suse-observability-agent/values.yaml | $.otel.k8sResourceCollector.image.tag | Strict agent BOM variant of the same image. Tag format: `vX.Y.Z-agent`. Source `stsOpentelemetryAgentCollector` (regex/semver ranks on the semver core, writes the full `-agent` tag). When values change, Chart.yaml version is bumped via shell target |
 | sts-opentelemetry-collector (agent BOM) | stable/suse-observability-agent/values.yaml | $.otel.prometheusScraping.collector.image.tag | OTel Prometheus scraping collector — same agent BOM image/tag as k8sResourceCollector, separate tag entry for independent override |
@@ -46,6 +46,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 
 - **Standard:** `prefix-hash-release-buildId` (e.g. `v1.109.0-614527d8-release-138`), tagfilter `.*-[a-f0-9]{8}-release-[0-9]+$`
 - **SUSE Observability semver:** `<semver>-so<release_increment>` (e.g. `1.143.0-so2`)
+- **spotlight:** `X.Y.Z-snapshot.N`, with optional immutable rebuild suffix `.rN` or `.rebuild.N`
 - **workload-observer, kubernetes-rbac-agent:** `hash-buildId-release` (e.g. `f40221cf-76-release`), tagfilter `^[a-f0-9]{8}-[0-9]+-release$`
 - **suse-observability-mcp, suse-observability-borg:** `YYYYMMDDHHMMSS-hash` (e.g. `20260430073230-dc6221d7`), tagfilter `^[0-9]{14}-[0-9a-f]{8}$`; updatecli uses `regex/time` to select the newest timestamped tag
 - **sts-opentelemetry-collector (server):** `vX.Y.Z` (e.g. `v0.0.46`), tagfilter `^v[0-9]+\.[0-9]+\.[0-9]+$`

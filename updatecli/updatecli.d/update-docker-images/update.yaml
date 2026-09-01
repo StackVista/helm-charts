@@ -224,7 +224,7 @@ sources:
     spec:
       image: "quay.io/stackstate/spotlight"
       architecture: "linux/amd64"
-      tagfilter: "^\\d+\\.\\d+\\.\\d+-snapshot\\.\\d+$"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-snapshot\\.[0-9]+(\\.r[0-9]+|\\.rebuild\\.[0-9]+)?$"
       versionfilter:
         kind: semver
         pattern: ">=0.0.0-0"
