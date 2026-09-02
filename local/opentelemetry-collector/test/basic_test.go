@@ -113,26 +113,15 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 
 	defaultCollectorConfig := resources.ConfigMaps[fullName].Data["relay"]
 
-	assert.Contains(t, defaultCollectorConfig, "ststopology") // current topology connector
-	assert.NotContains(t, defaultCollectorConfig, "sts_settings_provider")
-	assert.NotContains(t, defaultCollectorConfig, "sts_kafka_exporter")
-	assert.NotContains(t, defaultCollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
-
-	// with the global.features.experimentalStackpacks set to true
-	output = helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
-	resources = helmtestutil.NewKubernetesResources(t, output)
-
-	stackPacks2CollectorConfig := resources.ConfigMaps[fullName].Data["relay"]
-
-	assert.Contains(t, stackPacks2CollectorConfig, "sts_settings_provider")
-	assert.Contains(t, stackPacks2CollectorConfig, "topology")       // new topology connector
-	assert.NotContains(t, stackPacks2CollectorConfig, "ststopology") // current topology connector
-	assert.Contains(t, stackPacks2CollectorConfig, "sts_kafka_exporter")
-	assert.Contains(t, stackPacks2CollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
+	assert.Contains(t, defaultCollectorConfig, "sts_settings_provider")
+	assert.Contains(t, defaultCollectorConfig, "topology")       // new topology connector
+	assert.NotContains(t, defaultCollectorConfig, "ststopology") // current topology connector
+	assert.Contains(t, defaultCollectorConfig, "sts_kafka_exporter")
+	assert.Contains(t, defaultCollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
 }
 
-func TestStackpacks2SendingQueueNoEnabledField(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
+func TestSendingQueueNoEnabledField(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	configYaml := resources.ConfigMaps[fullName].Data["relay"]

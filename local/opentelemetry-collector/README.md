@@ -178,8 +178,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | gateway.pathType | string | `"PathPrefix"` | Path match type for HTTPRoute. |
 | gateway.timeouts | object | `{}` | Optional timeouts for HTTPRoute rules. |
 | global.commonLabels | object | `{}` |  |
-| global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
-| global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
+| global.features | object | `{}` | Feature switches for SUSE Observability. |
 | global.wait.image.pullPolicy | string | `""` | Image pull policy for wait containers. |
 | global.wait.image.registry | string | `""` | Base container image registry for wait containers. |
 | global.wait.image.repository | string | `""` | Base container image repository for wait containers. |
