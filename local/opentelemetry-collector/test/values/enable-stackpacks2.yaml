@@ -1,7 +1,0 @@
-# Test configuration for enabling stackpacks 2.0
-mode: "deployment"
-global:
-  features:
-    experimentalStackpacks: true
-image:
-  repository: "otel/opentelemetry-collector"

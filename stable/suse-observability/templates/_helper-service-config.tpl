@@ -103,9 +103,6 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
 {{- end -}}
-{{- if .Values.global.features.experimentalStackpacks }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" "true" }}
-{{- end -}}
 {{- if .Values.global.features.experimentalSilencing }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableSilencing" "true" }}
 {{- end -}}

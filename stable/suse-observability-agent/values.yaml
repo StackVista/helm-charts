@@ -33,9 +33,7 @@ global:
   # global.extraAnnotations -- Extra annotations added ta all resources created by the helm chart
   extraAnnotations: {}
 
-  features:
-    # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. When enabled, the cluster collector (CRD discovery) is automatically activated.
-    experimentalStackpacks: false
+  features: {}
 
   # global.receiverApiKey -- This is deprecated and will be removed in a future version.
   # receiverApiKey:

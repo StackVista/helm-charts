@@ -809,7 +809,6 @@ Init container to load stackpacks from docker image
 {{- define "stackstate.initContainer.stackpacks" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $firstImage := first .Values.stackstate.stackpacks.images -}}
-{{- $stackpacksv2 := .Values.global.features.experimentalStackpacks | ternary "-2_0" "" -}}
 {{- $images := concat .Values.stackstate.stackpacks.images (.Values.stackstate.stackpacks.extraImages | default list) -}}
 {{- range $images }}
 {{- $image := . -}}
@@ -822,10 +821,9 @@ Init container to load stackpacks from docker image
 {{- if $imageEnabled }}
 {{- range $editions }}
 {{- if (eq $.Values.stackstate.deployment.edition .) }}
-{{- if (or $.Values.global.features.experimentalStackpacks $deriveTag) }}
 {{- $deploymentMode := $image.deploymentModeOverride | default $.Values.stackstate.deployment.mode | lower -}}
 {{- $tag := ternary
-    (printf "%s%s-%s-%s" $image.version $stackpacksv2 (lower $.Values.stackstate.deployment.edition) $deploymentMode)
+    (printf "%s-2_0-%s-%s" $image.version (lower $.Values.stackstate.deployment.edition) $deploymentMode)
     $image.tag
     $deriveTag
 }}
@@ -846,7 +844,6 @@ Init container to load stackpacks from docker image
     mountPath: /stackpack-scripts
   securityContext:
   {{- $commonContainer.securityContext | toYaml | nindent 8 }}
-{{- end }}
 {{- end }}
 {{- end -}}
 {{- end -}}

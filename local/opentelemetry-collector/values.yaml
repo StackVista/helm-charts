@@ -5,10 +5,7 @@ global:
   # Labels to apply to all resources
   commonLabels: {}
   # global.features -- Feature switches for SUSE Observability.
-  features:
-    # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
-    # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
-    experimentalStackpacks: false
+  features: {}
   # Wait image for init containers
   wait:
     image:

@@ -113,10 +113,9 @@ stackstate.stackPacks {
   Users can extend this list by setting: stackstate.stackpacks.upgradeOnStartup
 */ -}}
 {{- $defaultStackPacksToUpgrade := list "kubernetes-v2" "stackstate-k8s-agent-v2" "open-telemetry" "aad-v2" -}}
-{{- /* stackstate (v1) upgrades while the v2 feature flag is off; suse-observability (v2) takes over when enabled,
-       running the cross-name migration via successorMapping. Both must not be in the list simultaneously to
-       avoid concurrent upgrade tasks racing on the same config records. */ -}}
-{{- $stackpacks2ToUpgrade := .Values.global.features.experimentalStackpacks | ternary (list "otel-k8s-crd" "suse-observability") (list "stackstate") -}}
+{{- /* suse-observability (v2) upgrades from stackstate (v1), running the cross-name migration via successorMapping.
+       Both must not be in the list simultaneously to avoid concurrent upgrade tasks racing on the same config records.  */ -}}
+{{- $stackpacks2ToUpgrade := (list "otel-k8s-crd" "suse-observability") -}}
 {{- $userStackPacksToUpgrade := .Values.stackstate.stackpacks.upgradeOnStartup | default list -}}
 {{- $upgradeList := concat $defaultStackPacksToUpgrade $stackpacks2ToUpgrade $userStackPacksToUpgrade | uniq }}
 
