@@ -15,7 +15,7 @@ keywords:
 maintainers:
 - name: Bitnami
   url: https://github.com/bitnami/charts
-name: common
+name: bitnami-common
 sources:
 - https://github.com/bitnami/charts
 - https://www.bitnami.com/

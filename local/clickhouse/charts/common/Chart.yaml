@@ -16,7 +16,7 @@ keywords:
 maintainers:
 - name: VMware, Inc.
   url: https://github.com/bitnami/charts
-name: common
+name: bitnami-common
 sources:
 - https://github.com/bitnami/charts
 type: library

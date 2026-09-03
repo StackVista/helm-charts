@@ -102,8 +102,18 @@ spec:
         requests:
           {{ $storageSize := include "common.sizing.elasticsearch.storage" . | trim }}
           storage: {{ default $storageSize .Values.volumeClaimTemplate.resources.requests.storage | quote }}
-  {{- if (.Values.global).storageClass }}
+  {{- if .Values.volumeClaimTemplate.storageClassName }}
+    {{- if eq "-" .Values.volumeClaimTemplate.storageClassName }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.volumeClaimTemplate.storageClassName }}"
+    {{- end }}
+  {{- else if (.Values.global).storageClass }}
+    {{- if eq "-" .Values.global.storageClass }}
+      storageClassName: ""
+    {{- else }}
       storageClassName: "{{ .Values.global.storageClass }}"
+    {{- end }}
   {{- end }}
   {{- end }}
   template:

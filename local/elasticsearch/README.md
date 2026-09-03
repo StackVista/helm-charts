@@ -140,3 +140,4 @@ Official Elastic helm chart for Elasticsearch
 | updateStrategy | string | `"RollingUpdate"` |  |
 | volumeClaimTemplate.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | volumeClaimTemplate.resources.requests.storage | string | `nil` |  |
+| volumeClaimTemplate.storageClassName | string | `""` | Storage class for Elasticsearch data volumes. |

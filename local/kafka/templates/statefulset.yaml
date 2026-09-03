@@ -572,7 +572,7 @@ spec:
         resources:
           requests:
             storage: {{ $persistenceSize | quote }}
-        {{ include "kafka.storageClass" . | nindent 8 }}
+        {{ include "common.storage.class" (dict "persistence" .Values.persistence "global" .Values.global) | nindent 8 }}
         {{- if .Values.persistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.selector "context" $) | nindent 10 }}
         {{- end -}}
@@ -591,7 +591,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.logPersistence.size | quote }}
-        {{ include "kafka.storageClass" . | nindent 8 }}
+        {{ include "common.storage.class" (dict "persistence" .Values.logPersistence "global" .Values.global) | nindent 8 }}
         {{- if .Values.logPersistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" .Values.logPersistence.selector "context" $) | nindent 10 }}
         {{- end -}}

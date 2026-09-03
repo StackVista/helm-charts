@@ -3,11 +3,14 @@ annotations:
 apiVersion: v2
 appVersion: 3.7.0
 dependencies:
-  - name: common
+  - name: bitnami-common
     repository: file://charts/common
     tags:
       - bitnami-common
     version: 1.x.x
+  - name: common
+    repository: file://../common
+    version: "*"
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
     version: "*"

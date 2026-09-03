@@ -1,0 +1,125 @@
+global:
+  storageClass: global
+
+anomaly-detection:
+  enabled: true
+  manager:
+    persistentStorage:
+      storageClass: anomaly-detection
+
+backup:
+  configuration:
+    scheduled:
+      pvc:
+        storageClass: backup-configuration
+  stackGraph:
+    restore:
+      tempData:
+        storageClass: backup-stackgraph-restore
+    scheduled:
+      tempData:
+        storageClass: backup-stackgraph-scheduled
+    v2:
+      tempData:
+        storageClass: backup-stackgraph-v2
+  storage:
+    backend:
+      pvc:
+        enabled: true
+        storageClass: backup-backend
+    settingsPvc:
+      storageClass: backup-settings
+
+clickhouse:
+  persistence:
+    storageClass: clickhouse
+
+elasticsearch:
+  volumeClaimTemplate:
+    storageClassName: elasticsearch
+
+hbase:
+  hdfs:
+    datanode:
+      persistence:
+        storageClass: hbase-datanode
+    namenode:
+      persistence:
+        storageClass: hbase-namenode
+    secondarynamenode:
+      persistence:
+        storageClass: hbase-secondarynamenode
+  stackgraph:
+    persistence:
+      storageClass: hbase-stackgraph
+  tephra:
+    persistence:
+      storageClass: hbase-tephra
+
+kafka:
+  logPersistence:
+    enabled: true
+    storageClass: kafka-logs
+  persistence:
+    storageClass: kafka-data
+
+opentelemetry-collector:
+  mode: statefulset
+  statefulset:
+    volumeClaimTemplates:
+      - metadata:
+          name: data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: opentelemetry
+
+stackstate:
+  components:
+    aiAssistant:
+      persistence:
+        storageClass: ai-assistant
+    checks:
+      tmpToPVC:
+        storageClass: checks-tmp
+    healthSync:
+      tmpToPVC:
+        storageClass: health-sync-tmp
+    state:
+      tmpToPVC:
+        storageClass: state-tmp
+    sync:
+      tmpToPVC:
+        storageClass: sync-tmp
+    vmagent:
+      persistence:
+        storageClass: vmagent
+    workloadObserver:
+      persistence:
+        storageClass: workload-observer
+  features:
+    storeTransactionLogsToPVC:
+      enabled: true
+      storageClass: transaction-logs
+  stackpacks:
+    localpvc:
+      storageClass: stackpacks-local
+    pvc:
+      storageClass: stackpacks
+
+victoria-metrics-0:
+  server:
+    persistentVolume:
+      storageClass: victoria-metrics-0
+
+victoria-metrics-1:
+  server:
+    persistentVolume:
+      storageClass: victoria-metrics-1
+
+zookeeper:
+  persistence:
+    storageClass: zookeeper

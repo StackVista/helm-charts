@@ -16,8 +16,9 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../common | common | * |
 | file://../suse-observability-sizing | suse-observability-sizing | * |
-| file://charts/common | common | 2.x.x |
+| file://charts/common | bitnami-common | 2.x.x |
 ## Values
 
 | Key | Type | Default | Description |

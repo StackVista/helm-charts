@@ -96,6 +96,8 @@ networkHost: "0.0.0.0"
 
 volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
+  # volumeClaimTemplate.storageClassName -- Storage class for Elasticsearch data volumes.
+  storageClassName: ""
   resources:
     requests:
       storage: null

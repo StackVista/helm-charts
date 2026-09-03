@@ -15,9 +15,9 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | stackstate-common(common) | * |
+| file://../common | common | * |
 | file://../suse-observability-sizing | suse-observability-sizing | * |
-| file://charts/common | common | 2.x.x |
+| file://charts/common | bitnami-common | 2.x.x |
 ## Values
 
 | Key | Type | Default | Description |
