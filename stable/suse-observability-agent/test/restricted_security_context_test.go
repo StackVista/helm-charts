@@ -27,6 +27,26 @@ func TestRestrictedSecurityContext(t *testing.T) {
 	helmtestutil.AssertRestrictedSecurityContext(t, resources, exemptedContainers)
 }
 
+func TestRbacAgentHasNoFixedPodIdentity(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/restricted_security_context.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-agent-rbac-agent"]
+	require.True(t, ok)
+
+	podSpec := deployment.Spec.Template.Spec
+	require.NotNil(t, podSpec.SecurityContext)
+	assert.Nil(t, podSpec.SecurityContext.RunAsUser)
+	assert.Nil(t, podSpec.SecurityContext.RunAsGroup)
+	assert.Nil(t, podSpec.SecurityContext.FSGroup)
+	require.NotNil(t, podSpec.SecurityContext.RunAsNonRoot)
+	assert.True(t, *podSpec.SecurityContext.RunAsNonRoot)
+
+	require.Len(t, podSpec.Containers, 1)
+	container := podSpec.Containers[0]
+	assert.Contains(t, container.Env, corev1.EnvVar{Name: "STS_ROLE_TYPE", Value: "scope"})
+}
+
 // fullPrivilegesMode is a debugging escape hatch, so it is expected to break the profile for
 // the agent containers it targets. The rest of the chart must stay compliant.
 func TestRestrictedSecurityContextFullPrivilegesMode(t *testing.T) {

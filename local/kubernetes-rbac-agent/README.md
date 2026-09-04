@@ -36,10 +36,7 @@ to the SUSE Observability platform
 | containers.rbacAgent.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
 | containers.rbacAgent.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
 | containers.rbacAgent.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| containers.rbacAgent.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
-| containers.rbacAgent.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | containers.rbacAgent.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| containers.rbacAgent.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | global.apiKey.fromSecret | string | `nil` | The secret from which the receiver api key is taken. Will execute as a template. Overriding this will allow setting the api key from an externally provided secret. |
 | global.commonAnnotations | object | `{}` | Common annotations added to all resources created by the helm chart |
