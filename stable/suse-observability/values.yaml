@@ -1971,6 +1971,8 @@ s3proxy:
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
   logLevel: "info"
+  jetty:
+    maxThreads: 32
   resources:
     limits:
       cpu: 1000m

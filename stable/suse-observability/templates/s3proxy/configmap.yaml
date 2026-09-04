@@ -12,11 +12,13 @@ metadata:
   {{- end }}
 data:
   s3proxy-settings.properties: |
+    s3proxy.jetty.max-threads={{ .Values.s3proxy.jetty.maxThreads }}
     jclouds.provider=filesystem-nio2
     jclouds.filesystem.basedir=/settings-data
     s3proxy.bucket-locator.1={{ include "stackstate.s3proxy.localSettingsBucketName" . }}
   {{- if .Values.global.backup.enabled }}
   s3proxy-main.properties: |
+    s3proxy.jetty.max-threads={{ .Values.s3proxy.jetty.maxThreads }}
     {{- if include "stackstate.s3proxy.mainBackendUsesPVC" . }}
     jclouds.provider=filesystem-nio2
     jclouds.filesystem.basedir=/main-data

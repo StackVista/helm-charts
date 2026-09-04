@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.10.4-pre.64`
+Current chart version is `2.10.4-pre.65`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -590,6 +590,7 @@ If you encounter issues not covered here:
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
 | s3proxy.image.tag | string | `"3.2.0-so11"` | Image tag for S3Proxy |
+| s3proxy.jetty.maxThreads | int | `32` |  |
 | s3proxy.logLevel | string | `"info"` |  |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |

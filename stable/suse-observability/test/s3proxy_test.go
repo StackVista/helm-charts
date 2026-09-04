@@ -321,6 +321,46 @@ func TestS3ProxyConfigMapBuckets(t *testing.T) {
 	assert.Contains(t, mainProps, "s3proxy.bucket-locator.5=sts-victoria-metrics-backup", "Main properties should route victoria-metrics-0 backup bucket")
 }
 
+func TestS3ProxyJettyMaxThreads(t *testing.T) {
+	tests := []struct {
+		name       string
+		maxThreads string
+		expected   string
+	}{
+		{
+			name:     "default",
+			expected: "s3proxy.jetty.max-threads=32",
+		},
+		{
+			name:       "override",
+			maxThreads: "48",
+			expected:   "s3proxy.jetty.max-threads=48",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setValues := map[string]string{
+				"global.backup.enabled": "true",
+			}
+			if tt.maxThreads != "" {
+				setValues["s3proxy.jetty.maxThreads"] = tt.maxThreads
+			}
+
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+				ValuesFiles: []string{"values/full.yaml"},
+				SetValues:   setValues,
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+
+			configMap, ok := resources.ConfigMaps["suse-observability-s3proxy-config"]
+			require.True(t, ok, "S3Proxy ConfigMap should exist")
+			assert.Contains(t, configMap.Data["s3proxy-settings.properties"], tt.expected)
+			assert.Contains(t, configMap.Data["s3proxy-main.properties"], tt.expected)
+		})
+	}
+}
+
 // TestS3ProxyService verifies the S3Proxy service configuration
 func TestS3ProxyService(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
