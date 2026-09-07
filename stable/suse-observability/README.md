@@ -1174,6 +1174,7 @@ If you encounter issues not covered here:
 | stackstate.license.fromExternalSecret | string | `nil` | Use an external secret for the license key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
+| stackstate.silencing.maxSilenceTime | string | `"24 hours"` | The maximum duration a monitor check state can be silenced for. Accepts any HOCON duration, for example "24 hours" or "30 minutes". |
 | stackstate.stackpacks.extraImages | list | `[]` | Additional stackpack Docker images to mount after the built-in stackpack images. |
 | stackstate.stackpacks.images[0].deploymentModeOverride | string | `""` | Use the stackpacks from another deployment mode than StackState is running in |
 | stackstate.stackpacks.images[0].name | string | `"v1"` | name for the init container |
