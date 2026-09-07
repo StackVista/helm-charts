@@ -1,0 +1,4 @@
+clusterAgent:
+  enabled: false
+checksAgent:
+  enabled: false

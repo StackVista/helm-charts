@@ -1,4 +1,5 @@
 {{- if .Values.checksAgent.enabled }}
+{{- include "stackstate-k8s-agent.checksAgent.validate" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

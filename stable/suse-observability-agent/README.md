@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.5.52`
+Current chart version is `1.6.0`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -265,7 +265,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | clusterAgent.config.events.categories | object | `{}` | Custom mapping from Kubernetes event reason to StackState event category. Categories allowed: Alerts, Activities, Changes, Others |
 | clusterAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | clusterAgent.config.topology.collectionInterval | int | `90` | Interval for running topology collection, in seconds |
-| clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
+| clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. The node agent and the checks agent both depend on it, so disabling it also requires nodeAgent.enabled=false and checksAgent.enabled=false. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-k8s-cluster-agent"` | Base container image repository. |
 | clusterAgent.image.tag | string | `"ff38da51"` | Default container image tag. |
@@ -396,6 +396,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.containers.processAgent.resources.limits.memory | string | `"400Mi"` | Memory resource limits. |
 | nodeAgent.containers.processAgent.resources.requests.cpu | string | `"25m"` | CPU resource requests. |
 | nodeAgent.containers.processAgent.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
+| nodeAgent.enabled | bool | `true` | Enable / disable the node agent. The cluster agent cannot be disabled while this is enabled, because the node agent then falls back to reading cluster-wide metadata from the API server itself. |
 | nodeAgent.httpTracing.enabled | bool | `true` | Enable / disable the process-agent HTTP tracing. |
 | nodeAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | nodeAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |

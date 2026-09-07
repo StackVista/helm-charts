@@ -1,3 +1,5 @@
+{{- if .Values.nodeAgent.enabled }}
+{{- include "stackstate-k8s-agent.nodeAgent.validate" . }}
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -113,3 +115,4 @@ spec:
           name: {{ .Release.Name }}-node-agent
       {{- end }}
       {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 6 }}
+{{- end -}}

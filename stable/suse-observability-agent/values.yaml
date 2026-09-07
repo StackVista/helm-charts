@@ -93,6 +93,8 @@ all:
     enabled: false
 
 nodeAgent:
+  # nodeAgent.enabled -- Enable / disable the node agent. The cluster agent cannot be disabled while this is enabled, because the node agent then falls back to reading cluster-wide metadata from the API server itself.
+  enabled: true
   # nodeAgent.autoScalingEnabled -- Enable / disable autoscaling for the node agent pods.
   autoScalingEnabled: false
   containerRuntime:
@@ -454,7 +456,7 @@ clusterAgent:
     # clusterAgent.service.targetPort -- Change the Cluster Agent service targetPort
     targetPort: 5005
 
-  # clusterAgent.enabled -- Enable / disable the cluster agent.
+  # clusterAgent.enabled -- Enable / disable the cluster agent. The node agent and the checks agent both depend on it, so disabling it also requires nodeAgent.enabled=false and checksAgent.enabled=false.
   enabled: true
 
   # clusterAgent.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.

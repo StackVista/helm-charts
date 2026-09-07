@@ -1,3 +1,4 @@
+{{- if .Values.clusterAgent.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -167,3 +168,4 @@ spec:
           configMap:
             name: {{ .Release.Name }}-cluster-agent
         {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 8 }}
+{{- end -}}

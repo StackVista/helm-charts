@@ -1,3 +1,4 @@
+{{- if .Values.clusterAgent.enabled }}
 {{- $kubeRes := .Values.clusterAgent.collection.kubernetesResources }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -19,3 +20,4 @@ rules:
   - get
   - patch
   - update
+{{- end -}}

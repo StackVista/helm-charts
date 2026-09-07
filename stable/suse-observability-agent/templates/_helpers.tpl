@@ -350,6 +350,28 @@ checksum/custom-certificates: {{ include (print $.Template.BasePath "/custom-cer
 {{- end -}}
 
 {{/*
+Node agent validation - with no cluster agent to aggregate cluster-wide metadata, each node
+agent falls back to reading it from the API server itself: a Node get per host-metadata cycle
+and a cluster-wide Endpoints list every kubernetes_metadata_tag_update_freq seconds, per node.
+The agent is meant to be switched off as a whole rather than left in that state.
+*/}}
+{{- define "stackstate-k8s-agent.nodeAgent.validate" -}}
+{{- if not .Values.clusterAgent.enabled }}
+{{- fail "nodeAgent.enabled is true but clusterAgent.enabled is false. Without a cluster agent every node agent reads cluster-wide metadata from the API server itself, which scales with node count. Disable the node agent as well, or re-enable the cluster agent." }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Checks agent validation - the clusterchecks config provider fetches its check configurations
+from the cluster agent, so the checks agent has no source of work without one.
+*/}}
+{{- define "stackstate-k8s-agent.checksAgent.validate" -}}
+{{- if not .Values.clusterAgent.enabled }}
+{{- fail "checksAgent.enabled is true but clusterAgent.enabled is false. The checks agent receives its check configurations from the cluster agent via the clusterchecks config provider, so it would run with nothing to do. Set checksAgent.enabled to false as well, or re-enable the cluster agent." }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Custom certificates validation - fail if both configMapName and pemData are provided
 */}}
 {{- define "stackstate-k8s-agent.customCertificates.validate" -}}
@@ -374,7 +396,7 @@ Helpers for remote kube cache service (used by process-agent pod-correlation)
 {{- end -}}
 
 {{- define "stackstate-k8s-agent.processAgent.podCorrelation.remoteCache.enabled" -}}
-{{- if and .Values.nodeAgent.containers.processAgent.enabled .Values.processAgent.podCorrelation.enabled .Values.processAgent.podCorrelation.remoteCache }}
+{{- if and .Values.nodeAgent.enabled .Values.nodeAgent.containers.processAgent.enabled .Values.processAgent.podCorrelation.enabled .Values.processAgent.podCorrelation.remoteCache }}
 true
 {{- end }}
 {{- end -}}

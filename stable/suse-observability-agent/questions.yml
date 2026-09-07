@@ -112,12 +112,6 @@ questions:
         type: string
         description: "The memory limit for the Process Agent."
         default: "400Mi"
-  - variable: clusterAgent.enabled
-    label: "Enable Cluster Agent"
-    type: boolean
-    description: "Enable the Cluster Agent, which collects and forwards cluster-wide information from kubernetes."
-    default: "true"
-    group: "Cluster Agent"
   - variable: clusterAgent.collection.kubernetesResources.secrets
     label: "Collect Secret Resources"
     type: boolean

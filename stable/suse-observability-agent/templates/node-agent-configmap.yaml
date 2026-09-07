@@ -1,3 +1,4 @@
+{{- if .Values.nodeAgent.enabled }}
 {{- if .Values.nodeAgent.config.override }}
 apiVersion: v1
 kind: ConfigMap
@@ -13,5 +14,6 @@ data:
 {{- range .Values.nodeAgent.config.override }}
   {{ .path | replace "/" "_"}}_{{ .name }}: |
 {{ .data | indent 4 -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}

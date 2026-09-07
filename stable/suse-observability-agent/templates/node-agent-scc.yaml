@@ -1,3 +1,4 @@
+{{- if .Values.nodeAgent.enabled }}
 {{- if .Values.nodeAgent.scc.enabled }}
 allowHostDirVolumePlugin: true
 # was true
@@ -58,3 +59,4 @@ volumes:
   - hostPath
   - secret
 {{- end }}
+{{- end -}}

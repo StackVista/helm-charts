@@ -1,0 +1,6 @@
+clusterAgent:
+  enabled: false
+nodeAgent:
+  enabled: false
+checksAgent:
+  enabled: false
