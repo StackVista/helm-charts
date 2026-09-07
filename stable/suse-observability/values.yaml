@@ -1755,6 +1755,9 @@ stackstate:
   topology:
     # stackstate.topology.retentionHours -- (integer) Number of hours topology will be retained.
     retentionHours:
+  silencing:
+    # stackstate.silencing.maxSilenceTime -- (string) The maximum duration a monitor check state can be silenced for. Accepts any HOCON duration, for example "24 hours" or "30 minutes".
+    maxSilenceTime: "24 hours"
   instanceDebugApi:
     enabled: false
   stackpacks:

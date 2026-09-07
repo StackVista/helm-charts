@@ -66,6 +66,9 @@ env:
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService" "true" }}
 {{- end }}
+{{- if .Values.stackstate.silencing.maxSilenceTime }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_silencing_maxSilenceTime" (.Values.stackstate.silencing.maxSilenceTime | toString) }}
+{{- end }}
 {{- if .Values.ai.assistant.enabled }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_enableAi" "true" }}
   {{- $_ := set $deploymentEnv "AI_SERVICE_URL" (printf "http://%s:%s" (include "stackstate.ai-assistant.fullname" .) (include "stackstate.aiAssistant.port" .)) }}
