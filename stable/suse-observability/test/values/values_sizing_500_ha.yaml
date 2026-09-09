@@ -65,7 +65,6 @@ hbase:
     replicaCount: 2
 kafka:
   replicaCount: 3
-  transactionStateLogReplicationFactor: 1
   # numRecoveryThreadsPerDataDir has to be 2 times of cpu requests
   numRecoveryThreadsPerDataDir: 6
   resources:

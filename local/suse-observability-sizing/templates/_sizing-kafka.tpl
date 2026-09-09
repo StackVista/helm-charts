@@ -92,7 +92,7 @@ Usage: {{ include "common.sizing.kafka.transactionStateLogReplicationFactor" . }
 {{- define "common.sizing.kafka.transactionStateLogReplicationFactor" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}1
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
 {{- end }}
 {{- end }}
 {{- end }}

@@ -30,6 +30,9 @@ env:
 - name: KAFKA_REPLICAS
   {{ $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
   value: {{ include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.kafka.replicaCount) | quote }}
+- name: KAFKA_TRANSACTION_STATE_REPLICATION_FACTOR
+  {{ $sizingTransactionRF := include "common.sizing.kafka.transactionStateLogReplicationFactor" . | trim -}}
+  value: {{ default .Values.kafka.transactionStateLogReplicationFactor $sizingTransactionRF | quote }}
 - name: KAFKA_TOPIC_RETENTION
   value: {{ include "stackstate.kafka.topicRetention" . | quote }}
 - name: KAFKA_BROKERS
