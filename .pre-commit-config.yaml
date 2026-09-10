@@ -36,7 +36,7 @@ repos:
       args: ["--schemafile", "stable/stackstate-monitoring/dashboard-schema.json"]
     - id: check-metaschema
       files: stable/stackstate-monitoring/dashboard-schema.json
-- repo: git@gitlab.com:stackvista/devops/pre-commit-hooks.git
+- repo: git@github.com:StackVista/pre-commit-hooks.git
   rev: v1.0.10
   hooks:
   - id: jsonnet_format
