@@ -3,6 +3,7 @@ package test
 import (
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
@@ -114,10 +115,76 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 	defaultCollectorConfig := resources.ConfigMaps[fullName].Data["relay"]
 
 	assert.Contains(t, defaultCollectorConfig, "sts_settings_provider")
-	assert.Contains(t, defaultCollectorConfig, "topology")       // new topology connector
-	assert.NotContains(t, defaultCollectorConfig, "ststopology") // current topology connector
+	assert.Contains(t, defaultCollectorConfig, "topology")
+	assert.NotContains(t, defaultCollectorConfig, "ststopology")
 	assert.Contains(t, defaultCollectorConfig, "sts_kafka_exporter")
-	assert.Contains(t, defaultCollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
+	assert.Contains(t, defaultCollectorConfig, "trace_statements")
+}
+
+func TestCollectorConfigDefaultsAndOverrides(t *testing.T) {
+	for _, mode := range []string{"deployment", "daemonset", "statefulset"} {
+		for _, override := range []bool{false, true} {
+			name := mode + "/defaults"
+			if override {
+				name = mode + "/overrides"
+			}
+			t.Run(name, func(t *testing.T) {
+				values := map[string]string{"mode": mode}
+				limit, batchSize, timeout := 80, 10000, "30s"
+				if override {
+					values["config.processors.memory_limiter.limit_percentage"] = "70"
+					values["config.processors.batch.send_batch_size"] = "5000"
+					values["config.exporters.prometheusremotewrite/victoria-metrics.timeout"] = "45s"
+					limit, batchSize, timeout = 70, 5000, "45s"
+				}
+				output := helmtestutil.RenderHelmTemplateOptsNoError(t, releaseName, &helm.Options{
+					ValuesFiles: []string{"values/default.yaml"},
+					SetValues:   values,
+				})
+				resources := helmtestutil.NewKubernetesResources(t, output)
+				configName := fullName
+				if mode == "daemonset" {
+					configName += "-agent"
+				} else if mode == "statefulset" {
+					configName += "-statefulset"
+				}
+				require.Contains(t, resources.ConfigMaps, configName)
+				var config struct {
+					Processors map[string]map[string]interface{} `yaml:"processors"`
+					Exporters  map[string]map[string]interface{} `yaml:"exporters"`
+					Service    struct {
+						Pipelines map[string]struct {
+							Processors []string `yaml:"processors"`
+							Exporters  []string `yaml:"exporters"`
+						} `yaml:"pipelines"`
+					} `yaml:"service"`
+				}
+				require.NoError(t, yaml.Unmarshal([]byte(resources.ConfigMaps[configName].Data["relay"]), &config))
+				assert.Equal(t, map[string]interface{}{
+					"check_interval": "1s", "limit_percentage": limit, "spike_limit_percentage": 25,
+				}, config.Processors["memory_limiter"])
+				assert.Equal(t, batchSize, config.Processors["batch"]["send_batch_size"])
+				assert.Equal(t, "2s", config.Processors["batch"]["timeout"])
+				assert.Equal(t, timeout, config.Exporters["prometheusremotewrite/victoria-metrics"]["timeout"])
+				for _, pipeline := range []string{"traces", "metrics", "metrics/internal", "logs"} {
+					processors := config.Service.Pipelines[pipeline].Processors
+					require.NotEmpty(t, processors, pipeline)
+					assert.Equal(t, "memory_limiter", processors[0], pipeline)
+				}
+				for _, pipeline := range []string{"traces", "metrics", "logs", "traces/clickhouse", "metrics/internal", "metrics/victoria-metrics", "metrics/topology"} {
+					processors := config.Service.Pipelines[pipeline].Processors
+					require.NotEmpty(t, processors, pipeline)
+					assert.Equal(t, "batch", processors[len(processors)-1], pipeline)
+				}
+				for _, pipeline := range []string{"traces/topology", "metrics/topology", "logs/topology_input"} {
+					assert.Equal(t, []string{"topology"}, config.Service.Pipelines[pipeline].Exporters, pipeline)
+					assert.Contains(t, config.Service.Pipelines[pipeline].Processors, "resource/removeStsApiKey", pipeline)
+					assert.Contains(t, config.Service.Pipelines[pipeline].Processors, "attributes/removeStsApiKey", pipeline)
+				}
+				assert.Equal(t, []string{"sts_kafka_exporter"}, config.Service.Pipelines["logs/topology"].Exporters)
+			})
+		}
+	}
 }
 
 func TestSendingQueueNoEnabledField(t *testing.T) {

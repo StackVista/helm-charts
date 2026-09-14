@@ -1,5 +1,9 @@
 {{- define "opentelemetry-collector.baseConfig" -}}
-{{ .Files.Get "config/collector-config-stackpacks2.yaml" | nindent 2 }}
+{{- if .Values.alternateConfig }}
+{{- .Values.alternateConfig | toYaml }}
+{{- else }}
+{{- .Values.config | toYaml }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -31,32 +35,28 @@ Build config file for daemonset OpenTelemetry Collector
 Build config file for deployment OpenTelemetry Collector
 */}}
 {{- define "opentelemetry-collector.deploymentConfig" -}}
-{{- if .Values.alternateConfig }}
-  {{- .Values.alternateConfig | toYaml }}
-{{- else }}
-  {{- $values := deepCopy .Values }}
-  {{- $data := dict "Values" $values | mustMergeOverwrite (deepCopy .) }}
-  {{- $config := include "opentelemetry-collector.baseConfig" $data | fromYaml }}
-  {{- if .Values.presets.logsCollection.enabled }}
-  {{- $config = (include "opentelemetry-collector.applyLogsCollectionConfig" (dict "Values" $data "config" $config) | fromYaml) }}
-  {{- end }}
-  {{- if .Values.presets.hostMetrics.enabled }}
-  {{- $config = (include "opentelemetry-collector.applyHostMetricsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
-  {{- end }}
-  {{- if .Values.presets.kubeletMetrics.enabled }}
-  {{- $config = (include "opentelemetry-collector.applyKubeletMetricsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
-  {{- end }}
-  {{- if .Values.presets.kubernetesAttributes.enabled }}
-  {{- $config = (include "opentelemetry-collector.applyKubernetesAttributesConfig" (dict "Values" $data "config" $config) | fromYaml) }}
-  {{- end }}
-  {{- if .Values.presets.kubernetesEvents.enabled }}
-  {{- $config = (include "opentelemetry-collector.applyKubernetesEventsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
-  {{- end }}
-  {{- if .Values.presets.clusterMetrics.enabled }}
-  {{- $config = (include "opentelemetry-collector.applyClusterMetricsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
-  {{- end }}
-  {{- tpl (toYaml $config) . }}
+{{- $values := deepCopy .Values }}
+{{- $data := dict "Values" $values | mustMergeOverwrite (deepCopy .) }}
+{{- $config := include "opentelemetry-collector.baseConfig" $data | fromYaml }}
+{{- if .Values.presets.logsCollection.enabled }}
+{{- $config = (include "opentelemetry-collector.applyLogsCollectionConfig" (dict "Values" $data "config" $config) | fromYaml) }}
 {{- end }}
+{{- if .Values.presets.hostMetrics.enabled }}
+{{- $config = (include "opentelemetry-collector.applyHostMetricsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
+{{- end }}
+{{- if .Values.presets.kubeletMetrics.enabled }}
+{{- $config = (include "opentelemetry-collector.applyKubeletMetricsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
+{{- end }}
+{{- if .Values.presets.kubernetesAttributes.enabled }}
+{{- $config = (include "opentelemetry-collector.applyKubernetesAttributesConfig" (dict "Values" $data "config" $config) | fromYaml) }}
+{{- end }}
+{{- if .Values.presets.kubernetesEvents.enabled }}
+{{- $config = (include "opentelemetry-collector.applyKubernetesEventsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
+{{- end }}
+{{- if .Values.presets.clusterMetrics.enabled }}
+{{- $config = (include "opentelemetry-collector.applyClusterMetricsConfig" (dict "Values" $data "config" $config) | fromYaml) }}
+{{- end }}
+{{- tpl (toYaml $config) . }}
 {{- end }}
 
 {{- define "opentelemetry-collector.applyHostMetricsConfig" -}}

@@ -122,13 +122,31 @@ config:
     prometheus/internal:
       config:
         scrape_configs:
-          - job_name: "opentelemetry-collector-internal"
+          - job_name: opentelemetry-collector-internal
             scrape_interval: 10s
             static_configs:
-              - targets: ["localhost:8888"]  # by default, the collector exposes internal metrics on 127.0.0.1:8888
+              - targets:
+                  - localhost:8888
   connectors:
     stsservicegraph:
-      latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
+      latency_histogram_buckets:
+        - 2ms
+        - 4ms
+        - 6ms
+        - 8ms
+        - 10ms
+        - 50ms
+        - 100ms
+        - 200ms
+        - 400ms
+        - 800ms
+        - 1s
+        - 1400ms
+        - 2s
+        - 5s
+        - 10s
+        - 15s
+        - 30s
       dimensions:
         - service.namespace
         - service.instance.id
@@ -138,16 +156,28 @@ config:
         ttl: 30s
         max_items: 50000
     forward: {}
+    topology:
+      expression_cache:
+        enable_metrics: true
+        size: 100000
+        ttl: 0   # 0 == eviction disabled
+      tag_regex_cache:
+        enable_metrics: true
+        size: 2000
+        ttl: 0   # 0 == eviction disabled
+      tag_template_cache:
+        enable_metrics: true
+        size: 2000
+        ttl: 0   # 0 == eviction disabled
+      deduplication:
+        enabled: true
+        refresh_fraction: 0.5
+        cache:
+          enable_metrics: true
+          size: 100000
+          ttl: 1h
   processors:
     stsusage: {}
-    # Default memory limiter configuration for the collector based on k8s resource limits.
-    memory_limiter:
-      # check_interval is the time between measurements of memory usage.
-      check_interval: 1s
-      # By default limit_mib is set to 80% of ".Values.resources.limits.memory"
-      limit_percentage: 80
-      # By default spike_limit_mib is set to 25% of ".Values.resources.limits.memory"
-      spike_limit_percentage: 25
     batch:
       timeout: 2s
       send_batch_size: 10000
@@ -174,14 +204,23 @@ config:
     # extension point to massage data so it conforms to the semantic conventions
     transform/semconv:
       error_mode: ignore
-    # Using a relabel rule on the scrape_configs' metric_relabel_configs could also work, but that strips metric metadata
+      trace_statements:
+        - context: span
+          statements:
+            - delete_key(attributes, "peer.service") where attributes["db.system"] == "redis"
+        - context: span
+          statements:
+            - set(attributes["db.system"], "other_sql") where attributes["db.type"] == "sql" and attributes["db.system"] == nil
     transform/internalMetricsPrefix:
       metric_statements:
         - context: metric
           statements:
             - set(name, Concat(["otelcol_", name], "")) where not HasPrefix(name, "otelcol")
+    memory_limiter:
+      check_interval: 1s
+      limit_percentage: 80
+      spike_limit_percentage: 25
   exporters:
-    debug: {}
     clickhousests:
       endpoint: tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4
       username: admin
@@ -201,37 +240,58 @@ config:
         max_interval: 30s
         max_elapsed_time: 300s
     prometheusremotewrite/victoria-metrics:
-      endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
-      timeout: 30s
+      endpoint: http://suse-observability-vmagent:8429/api/v1/write
       resource_to_telemetry_conversion:
         enabled: true
-    ststopology:
-      endpoint: "${env:INTAKE_URL}"
+      timeout: 30s
+    sts_kafka_exporter:
+      brokers:
+        - suse-observability-kafka-headless:9092
+      topic: sts_topology_stream
+      read_timeout: 2s
+      produce_timeout: 5s
+      required_acks: none   # allowed: "none", "leader", "all"
+      timeout: 30s
+      sending_queue:
+        num_consumers: 10
+        queue_size: 1000
+      retry_on_failure:
+        enabled: true
+        initial_interval: 5s
+        max_interval: 30s
+        max_elapsed_time: 300s
+    debug: {}
   extensions:
     service_token_auth:
       endpoint:
-        url: "${env:API_URL}"
+        url: ${env:API_URL}
       cache:
         valid_size: 100
         valid_ttl: 5m
         invalid_size: 100
-      schema: "SUSEObservability"
+      schema: SUSEObservability
     # The health_check extension is mandatory for this chart.
     # Without the health_check extension the collector will fail the readiness and liveliness probes.
     # The health_check extension can be modified, but should never be removed.
     health_check:
       endpoint: ${env:MY_POD_IP}:13133
+    sts_settings_provider:
+      kafka:
+        brokers:
+          - suse-observability-kafka-headless:9092
+        topic: sts_internal_settings
   service:
     extensions:
       - health_check
       - service_token_auth
+      - sts_settings_provider
     telemetry:
       metrics:
         readers:
           - pull:
               exporter:
                 prometheus:
-                  host: '0.0.0.0'
+                  host: 0.0.0.0
                   port: 8888
     pipelines:
       traces:
@@ -246,7 +306,14 @@ config:
         exporters:
           - forward
           - stsservicegraph
-          - ststopology
+      traces/topology:
+        receivers:
+          - forward
+        processors:
+          - resource/removeStsApiKey
+          - attributes/removeStsApiKey
+        exporters:
+          - topology
       traces/clickhouse:
         receivers:
           - forward
@@ -290,9 +357,32 @@ config:
           - forward
           - stsservicegraph
         processors:
+          - resource/removeStsApiKey
+          - attributes/removeStsApiKey
           - batch
         exporters:
-          - ststopology
+          - topology
+      logs:
+        receivers:
+          - otlp
+        processors:
+          - memory_limiter
+          - batch
+        exporters:
+          - forward
+      logs/topology_input:
+        receivers:
+          - forward
+        processors:
+          - resource/removeStsApiKey
+          - attributes/removeStsApiKey
+        exporters:
+          - topology
+      logs/topology:
+        receivers:
+          - topology
+        exporters:
+          - sts_kafka_exporter
 
 # Helm currently has an issue (https://github.com/helm/helm/pull/12879) when using null to remove
 # default configuration from a subchart. The result is that you cannot remove default configuration
