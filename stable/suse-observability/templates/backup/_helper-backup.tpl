@@ -234,16 +234,18 @@ observability.suse.com/scalable-during-clickhouse-restore=true
 {{- end -}}
 
 {{- /*
-  Merge nodeSelector from stackstate.components.all and stackstate.components.backup.
-  backup.nodeSelector takes precedence over all.nodeSelector.
+  Merge nodeSelector from stackstate.components.all and the selected backup settings.
+  BackupSettings selects a stackstate.components key, defaulting to "backup".
+  Settings jobs pass "configurationBackup". Component values take precedence over all.
+  The same BackupSettings selection applies to affinity, tolerations, labels and annotations.
 
   Usage:
   {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
 */ -}}
 {{- define "stackstate.backup.nodeSelector" -}}
 {{- $allNodeSelector := .Values.stackstate.components.all.nodeSelector | default dict -}}
-{{- $backupNodeSelector := .Values.stackstate.components.backup.nodeSelector | default dict -}}
-{{- $merged := merge $backupNodeSelector $allNodeSelector -}}
+{{- $backupNodeSelector := (index .Values.stackstate.components (.BackupSettings | default "backup")).nodeSelector | default dict -}}
+{{- $merged := mergeOverwrite (deepCopy $allNodeSelector) $backupNodeSelector -}}
 {{- if $merged -}}
 nodeSelector:
   {{- toYaml $merged | nindent 2 }}
@@ -251,14 +253,14 @@ nodeSelector:
 {{- end -}}
 
 {{- /*
-  Merge affinity from stackstate.components.all and stackstate.components.backup.
-  backup.affinity takes precedence over all.affinity.
+  Merge affinity from stackstate.components.all and the selected backup settings.
+  Component affinity takes precedence over all.affinity.
 
   Usage:
   {{- include "stackstate.backup.affinity" . | nindent 8 }}
 */ -}}
 {{- define "stackstate.backup.affinity" -}}
-{{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
+{{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" (index .Values.stackstate.components (.BackupSettings | default "backup")).affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
   {{- if $affinity -}}
 affinity:
   {{- $affinity | nindent 2 }}
@@ -266,15 +268,15 @@ affinity:
 {{- end -}}
 
 {{- /*
-  Concatenate tolerations from stackstate.components.all and stackstate.components.backup.
-  Both lists are combined (backup tolerations are appended after all tolerations).
+  Concatenate tolerations from stackstate.components.all and the selected backup settings.
+  Component tolerations are appended after all tolerations.
 
   Usage:
   {{- include "stackstate.backup.tolerations" . | nindent 8 }}
 */ -}}
 {{- define "stackstate.backup.tolerations" -}}
 {{- $allTolerations := .Values.stackstate.components.all.tolerations | default list -}}
-{{- $backupTolerations := .Values.stackstate.components.backup.tolerations | default list -}}
+{{- $backupTolerations := (index .Values.stackstate.components (.BackupSettings | default "backup")).tolerations | default list -}}
 {{- $merged := concat $allTolerations $backupTolerations -}}
 {{- if $merged -}}
 tolerations:
@@ -285,16 +287,44 @@ tolerations:
 {{- /*
   Generate pod labels for backup components.
   Includes app.kubernetes.io/component label, global labels, and custom podLabels.
-  backup.podLabels takes precedence over global labels.
+  Pod labels from the selected backup settings take precedence over global labels,
+  including explicit empty strings.
+  BackupComponent optionally overrides the component label for StackGraph v2.
 
   Usage:
   {{- include "stackstate.backup.podLabels" . | nindent 8 }}
 */ -}}
 {{- define "stackstate.backup.podLabels" -}}
 {{- $globalLabels := include "suse-observability.labels.global" . | fromYaml | default dict -}}
-{{- $backupPodLabels := .Values.stackstate.components.backup.podLabels | default dict -}}
-{{- $merged := merge $backupPodLabels $globalLabels -}}
-{{- $merged = merge (dict "app.kubernetes.io/component" "backup") $merged -}}
+{{- $backupPodLabels := (index .Values.stackstate.components (.BackupSettings | default "backup")).podLabels | default dict -}}
+{{- $merged := mergeOverwrite (deepCopy $globalLabels) $backupPodLabels -}}
+{{- $merged = merge (dict "app.kubernetes.io/component" (.BackupComponent | default "backup")) $merged -}}
 labels:
   {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+
+{{- /*
+  Merge pod annotations without duplicate keys or modifying the input values.
+  Annotations from the selected backup settings take precedence over all components,
+  including explicit empty strings.
+*/ -}}
+{{- define "stackstate.backup.podAnnotations" -}}
+{{- $all := .Values.stackstate.components.all.podAnnotations | default dict -}}
+{{- $backup := (index .Values.stackstate.components (.BackupSettings | default "backup")).podAnnotations | default dict -}}
+{{- $merged := mergeOverwrite (deepCopy $all) $backup -}}
+{{- if $merged }}
+annotations:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- /*
+  Embedded backup jobs bypass common.container, but should use its security defaults.
+*/ -}}
+{{- define "stackstate.backup.containerSecurityContext" -}}
+{{- $container := include "common.container" . | fromYaml -}}
+{{- with $container.securityContext }}
+securityContext:
+  {{- toYaml . | nindent 2 }}
+{{- end -}}
 {{- end -}}

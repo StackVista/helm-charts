@@ -669,8 +669,8 @@ func testJobsFromBackupRestoreScriptsConfigMap(t *testing.T, resources *helmtest
 
 		// Unmarshal the YAML into a Job struct
 		var job batchv1.Job
-		err := yaml.Unmarshal([]byte(jobYaml), &job)
-		assert.NoError(t, err, "Job template '%s' should be valid YAML", jobTemplateKey)
+		err := yaml.UnmarshalStrict([]byte(jobYaml), &job)
+		require.NoError(t, err, "Job template '%s' should be valid YAML without duplicate keys", jobTemplateKey)
 		backupJobs[jobTemplateKey] = job
 	}
 	return backupJobs

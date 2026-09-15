@@ -12,16 +12,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
+      {{- include "stackstate.backup.podAnnotations" . | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -32,10 +24,12 @@ spec:
               /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/list-elasticsearch-snapshots.sh'
           env:
@@ -71,16 +65,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
+      {{- include "stackstate.backup.podAnnotations" . | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -91,10 +77,12 @@ spec:
               /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: restore
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/restore-elasticsearch-snapshot.sh'
           env:
@@ -136,16 +124,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
+      {{- include "stackstate.backup.podAnnotations" . | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -156,10 +136,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/list-stackgraph-backups.sh'
           env:
@@ -197,16 +179,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
+      {{- include "stackstate.backup.podAnnotations" . | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -217,10 +191,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: restore
           image: "{{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/restore-stackgraph-backup.sh'
           env:
@@ -274,6 +250,7 @@ spec:
 
 
 {{- define "job-configuration-list-backups.yaml" -}}
+{{- $settingsContext := merge (dict "BackupSettings" "configurationBackup") . }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -286,21 +263,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.configurationBackup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.configurationBackup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "stackstate.backup.podAnnotations" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" $settingsContext | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -311,10 +275,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/list-configuration-backups.sh'
           env:
@@ -326,38 +292,19 @@ spec:
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
-{{- if .Values.backup.stackGraph.securityContext.enabled }}
-      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- if .Values.backup.configuration.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.configurationBackup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
-    {{- if $affinity }}
-      affinity:
-        {{- $affinity | nindent 8 }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.configurationBackup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.affinity" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" $settingsContext | nindent 6 }}
       restartPolicy: Never
 {{- end -}}
 
 {{- define "job-configuration-restore-backup.yaml" -}}
+{{- $settingsContext := merge (dict "BackupSettings" "configurationBackup") . }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 {{- $serverServiceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 apiVersion: batch/v1
@@ -373,21 +320,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.configurationBackup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.configurationBackup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "stackstate.backup.podAnnotations" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" $settingsContext | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -398,10 +332,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: restore-settings
           image: "{{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/restore-configuration-backup.sh'
           envFrom:
@@ -431,39 +367,24 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+            - name: tmp
+              mountPath: /tmp
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
-{{- if .Values.backup.stackGraph.securityContext.enabled }}
-      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- if .Values.backup.configuration.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.configurationBackup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
-    {{- if $affinity }}
-      affinity:
-        {{- $affinity | nindent 8 }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.configurationBackup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.affinity" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" $settingsContext | nindent 6 }}
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
+        - name: tmp
+          emptyDir: {}
 {{- end -}}
 
 {{- define "job-configuration-download-backup.yaml" -}}
+{{- $settingsContext := merge (dict "BackupSettings" "configurationBackup") . }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -476,21 +397,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.configurationBackup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.configurationBackup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "stackstate.backup.podAnnotations" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" $settingsContext | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -501,10 +409,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: download
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/download-configuration-backup.sh'
           env:
@@ -517,39 +427,24 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+            - name: tmp
+              mountPath: /tmp
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.configuration.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.configurationBackup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
-    {{- if $affinity }}
-      affinity:
-        {{- $affinity | nindent 8 }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.configurationBackup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.affinity" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" $settingsContext | nindent 6 }}
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
+        - name: tmp
+          emptyDir: {}
 {{- end -}}
 
 {{- define "job-configuration-upload-backup.yaml" -}}
+{{- $settingsContext := merge (dict "BackupSettings" "configurationBackup") . }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -562,21 +457,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.configurationBackup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.configurationBackup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "stackstate.backup.podAnnotations" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" $settingsContext | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -587,10 +469,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: upload
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/upload-configuration-backup.sh'
           env:
@@ -607,29 +491,9 @@ spec:
 {{- if .Values.backup.configuration.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.configurationBackup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
-    {{- if $affinity }}
-      affinity:
-        {{- $affinity | nindent 8 }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.configurationBackup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.affinity" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" $settingsContext | nindent 6 }}
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
@@ -648,16 +512,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
+      {{- include "stackstate.backup.podAnnotations" . | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -668,10 +524,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/list-victoria-metrics-backups.sh'
           env:
@@ -707,16 +565,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
+      {{- include "stackstate.backup.podAnnotations" . | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -727,10 +577,12 @@ spec:
               /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
       containers:
         - name: restore
           image: "{{ include "stackstate.vmrestore.image.registry" . }}/{{ index .Values "victoria-metrics" "restore" "image" "repository" }}:{{ index .Values "victoria-metrics" "restore" "image" "tag" }}"
           imagePullPolicy: {{ index .Values "victoria-metrics" "restore" "image" "pullPolicy" | quote }}
+          {{- include "stackstate.backup.containerSecurityContext" . | nindent 10 }}
           command:
             - '/backup-restore-scripts/restore-victoria-metrics-backup.sh'
           args:

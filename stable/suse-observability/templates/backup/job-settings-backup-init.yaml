@@ -2,6 +2,7 @@
 PVC and Job are kept around to keep old settings backups available, they should be removed after several releases (i.e. Q3 2026 or later)
 */}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $settingsContext := merge (dict "BackupSettings" "configurationBackup") . }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -24,21 +25,8 @@ spec:
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
-    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.configurationBackup.podAnnotations }}
-      annotations:
-      {{- with .Values.stackstate.components.all.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.configurationBackup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "stackstate.backup.podAnnotations" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.podLabels" $settingsContext | nindent 6 }}
     spec:
       containers:
         - name: init
@@ -47,7 +35,6 @@ spec:
           command:
             - "echo"
             - "Init settings backup pvc"
-          {{- with .Values.stackstate.components.containerTools.resources }}
           securityContext:
             {{- $commonContainer.securityContext | toYaml | nindent 12 }}
           resources:
@@ -57,38 +44,17 @@ spec:
             requests:
               cpu: 10m
               memory: 100Mi
-          {{- end }}
           volumeMounts:
             - name: settings-backup-data
               mountPath: /settings-backup-data
 
     {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       restartPolicy: Never
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.configurationBackup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
-    {{- if $affinity }}
-      affinity:
-        {{- $affinity | nindent 8 }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.configurationBackup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.configurationBackup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-{{- if .Values.backup.stackGraph.securityContext.enabled }}
-      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- include "stackstate.backup.nodeSelector" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.affinity" $settingsContext | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" $settingsContext | nindent 6 }}
+{{- if .Values.backup.configuration.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
       volumes:
       - name: settings-backup-data
