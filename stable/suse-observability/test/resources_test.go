@@ -1,6 +1,7 @@
 package test
 
 import (
+	"maps"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -594,6 +595,14 @@ func TestResources(t *testing.T) {
 		},
 	}
 
+	withReplicationChecker := func(deployments map[string]expectedResources) map[string]expectedResources {
+		result := maps.Clone(deployments)
+		result["suse-observability-replication-checker"] = expectedResources{
+			cpuRequest: "10m", cpuLimit: "500m", memoryRequest: "64Mi", memoryLimit: "256Mi",
+		}
+		return result
+	}
+
 	testCases := []struct {
 		name         string
 		valuesFiles  []string
@@ -687,25 +696,25 @@ func TestResources(t *testing.T) {
 		{
 			name:         "global-150-ha",
 			valuesFiles:  []string{"values/global_sizing_150_ha.yaml"},
-			deployments:  expectedDeployments["150-ha"],
+			deployments:  withReplicationChecker(expectedDeployments["150-ha"]),
 			statefulsets: expectedStatefulsets["150-ha"],
 		},
 		{
 			name:         "global-250-ha",
 			valuesFiles:  []string{"values/global_sizing_250_ha.yaml"},
-			deployments:  expectedDeployments["250-ha"],
+			deployments:  withReplicationChecker(expectedDeployments["250-ha"]),
 			statefulsets: expectedStatefulsets["250-ha"],
 		},
 		{
 			name:         "global-500-ha",
 			valuesFiles:  []string{"values/global_sizing_500_ha.yaml"},
-			deployments:  expectedDeployments["500-ha"],
+			deployments:  withReplicationChecker(expectedDeployments["500-ha"]),
 			statefulsets: expectedStatefulsets["500-ha"],
 		},
 		{
 			name:         "global-4000-ha",
 			valuesFiles:  []string{"values/global_sizing_4000_ha.yaml"},
-			deployments:  expectedDeployments["4000-ha"],
+			deployments:  withReplicationChecker(expectedDeployments["4000-ha"]),
 			statefulsets: expectedStatefulsets["4000-ha"],
 		},
 		{
@@ -735,13 +744,13 @@ func TestResources(t *testing.T) {
 		{
 			name:         "150-ha-global-overrides",
 			valuesFiles:  []string{"values/global_sizing_150_ha.yaml", "values/resources_overrides.yaml"},
-			deployments:  expectedDeployments["150-ha-global-overrides"],
+			deployments:  withReplicationChecker(expectedDeployments["150-ha-global-overrides"]),
 			statefulsets: expectedStatefulsets["150-ha-global-overrides"],
 		},
 		{
 			name:         "4000-ha-global-overrides",
 			valuesFiles:  []string{"values/global_sizing_4000_ha.yaml", "values/resources_overrides.yaml"},
-			deployments:  expectedDeployments["4000-ha-global-overrides"],
+			deployments:  withReplicationChecker(expectedDeployments["4000-ha-global-overrides"]),
 			statefulsets: expectedStatefulsets["4000-ha-global-overrides"],
 		},
 	}

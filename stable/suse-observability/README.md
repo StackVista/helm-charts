@@ -40,6 +40,29 @@ helm install \
 stackstate/stackstate
 ```
 
+## Replication checks without a local CLI
+
+The stateless `replication-checker` Deployment lets you run `sts-backup replication check` through `kubectl`. It is enabled by default for HA sizing profiles and disabled for non-HA profiles and installations without a profile. Generated HA sizing files also enable it; regenerate older files or enable it explicitly. An explicit `true` or `false` overrides the built-in profile default:
+
+```yaml
+stackstate:
+  components:
+    replicationChecker:
+      enabled: false
+```
+
+The checker uses `stackstate.components.containerTools.image`, which must contain `sts-backup` v0.10.0 or later. Configure its resources under `stackstate.components.replicationChecker.resources`. It runs checks only when invoked and uses no persistent storage.
+
+```shell
+kubectl -n observability get deployments -l app.kubernetes.io/component=replication-checker
+kubectl -n observability exec deployment/<replication-checker-deployment> -c replication-checker -- \
+  sts-backup replication check --namespace observability --wait
+```
+
+Replace the namespace and Deployment name with those of your installation. Add `--output json` for automation and stop maintenance if the command returns nonzero. If the Pod reschedules or the exec session is interrupted, rerun the complete check successfully before disrupting another node. A successful report does not replace Longhorn health, capacity, backup, or node-removal checks.
+
+The checker has a dedicated service account with namespace-scoped permissions to list Pods and StatefulSets and create `pods/exec` requests. Although the checker runs read-only queries, `pods/exec` permits arbitrary commands in namespace Pods. Disabling the checker removes its Deployment, service account, Role, and RoleBinding. Workload-observer retains its original permissions.
+
 ## Simplified Sizing Configuration
 
 SUSE Observability now provides built-in sizing profiles that automatically configure all component resources, replica counts, storage sizes, and deployment modes with a single configuration value.
@@ -786,7 +809,7 @@ If you encounter issues not covered here:
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.8.6-so24"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.8.6-so25"` | Container image tag for container-tools containers. |
 | stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -993,6 +1016,16 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.split.processAgent.sizing.processAgentMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.processAgent.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.replicationChecker.affinity | object | `{}` | Affinity settings for replication checker Pod assignment. |
+| stackstate.components.replicationChecker.enabled | bool | `nil` | Enable the stateless replication checker. Null enables it only for built-in HA sizing profiles; true or false overrides the profile default. |
+| stackstate.components.replicationChecker.nodeSelector | object | `{}` | Node labels for replication checker Pod assignment. |
+| stackstate.components.replicationChecker.podAnnotations | object | `{}` | Extra annotations for replication checker Pods. |
+| stackstate.components.replicationChecker.replicaCount | int | `1` | Number of replication checker Pods. |
+| stackstate.components.replicationChecker.resources.limits.cpu | string | `"500m"` | CPU limit for the replication checker. |
+| stackstate.components.replicationChecker.resources.limits.memory | string | `"256Mi"` | Memory limit for the replication checker. |
+| stackstate.components.replicationChecker.resources.requests.cpu | string | `"10m"` | Requested CPU for the replication checker. |
+| stackstate.components.replicationChecker.resources.requests.memory | string | `"64Mi"` | Requested memory for the replication checker. |
+| stackstate.components.replicationChecker.tolerations | list | `[]` | Tolerations for replication checker Pod assignment. |
 | stackstate.components.router.accesslog.enabled | bool | `false` | Enable access logging on the router |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.router.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
@@ -1008,7 +1041,7 @@ If you encounter issues not covered here:
 | stackstate.components.router.mode.image.pullPolicy | string | `nil` | Image pull policy for router mode containers. |
 | stackstate.components.router.mode.image.registry | string | `"quay.io"` | Base container image registry for router mode containers. |
 | stackstate.components.router.mode.image.repository | string | `"stackstate/container-tools"` | Base container image repository for router mode containers. |
-| stackstate.components.router.mode.image.tag | string | `"1.8.6-so24"` | Container image tag for router mode containers. |
+| stackstate.components.router.mode.image.tag | string | `"1.8.6-so25"` | Container image tag for router mode containers. |
 | stackstate.components.router.mode.jobAnnotations | object | `{}` | Annotations for the router mode jobs. |
 | stackstate.components.router.mode.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.mode.podAnnotations | object | `{}` | Extra annotations for router mode job pods. |
@@ -1214,7 +1247,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-0.backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.6-so24"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.6-so25"` | Container-tools image for cron setup. Updated by updatecli. |
 | victoria-metrics-0.backup.vmbackup.image.tag | string | `"1.144.0-so19"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
@@ -1231,7 +1264,7 @@ If you encounter issues not covered here:
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.daily | string | `"5 1 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-1.backup.scheduled.hourly | string | `"35 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.6-so24"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.6-so25"` | Container-tools image for cron setup. Updated by updatecli. |
 | victoria-metrics-1.backup.vmbackup.image.tag | string | `"1.144.0-so19"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |

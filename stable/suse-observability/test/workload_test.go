@@ -130,7 +130,8 @@ func TestWorkloadGlobalHARendering(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Test that ONLY expected workloads are rendered (no more, no less)
-	testExactWorkloadsRendered(t, &resources, expectedWorkloadsHA, "HA")
+	expected := append([]string{"Deployment/suse-observability-replication-checker"}, expectedWorkloadsHA...)
+	testExactWorkloadsRendered(t, &resources, expected, "HA")
 }
 
 func TestWorkloadGlobalNonHARendering(t *testing.T) {

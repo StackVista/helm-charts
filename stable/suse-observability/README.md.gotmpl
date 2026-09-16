@@ -22,6 +22,29 @@ helm install \
 stackstate/stackstate
 ```
 
+## Replication checks without a local CLI
+
+The stateless `replication-checker` Deployment lets you run `sts-backup replication check` through `kubectl`. It is enabled by default for HA sizing profiles and disabled for non-HA profiles and installations without a profile. Generated HA sizing files also enable it; regenerate older files or enable it explicitly. An explicit `true` or `false` overrides the built-in profile default:
+
+```yaml
+stackstate:
+  components:
+    replicationChecker:
+      enabled: false
+```
+
+The checker uses `stackstate.components.containerTools.image`, which must contain `sts-backup` v0.10.0 or later. Configure its resources under `stackstate.components.replicationChecker.resources`. It runs checks only when invoked and uses no persistent storage.
+
+```shell
+kubectl -n observability get deployments -l app.kubernetes.io/component=replication-checker
+kubectl -n observability exec deployment/<replication-checker-deployment> -c replication-checker -- \
+  sts-backup replication check --namespace observability --wait
+```
+
+Replace the namespace and Deployment name with those of your installation. Add `--output json` for automation and stop maintenance if the command returns nonzero. If the Pod reschedules or the exec session is interrupted, rerun the complete check successfully before disrupting another node. A successful report does not replace Longhorn health, capacity, backup, or node-removal checks.
+
+The checker has a dedicated service account with namespace-scoped permissions to list Pods and StatefulSets and create `pods/exec` requests. Although the checker runs read-only queries, `pods/exec` permits arbitrary commands in namespace Pods. Disabling the checker removes its Deployment, service account, Role, and RoleBinding. Workload-observer retains its original permissions.
+
 ## Simplified Sizing Configuration
 
 SUSE Observability now provides built-in sizing profiles that automatically configure all component resources, replica counts, storage sizes, and deployment modes with a single configuration value.

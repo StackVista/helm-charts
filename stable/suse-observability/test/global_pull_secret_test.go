@@ -16,20 +16,22 @@ import (
 var expectedImagePullSecretsName = "suse-observability-pull-secret"
 
 func TestGlobalPullSecretHAMode(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_pull_secret_ha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_pull_secret_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	testGlobalPullSecretOnAllWorkloads(t, &resources, expectedImagePullSecretsName, "HA")
 }
 
 func TestGlobalPullSecretNonHAMode(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_pull_secret_nonha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_pull_secret_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	testGlobalPullSecretOnAllWorkloads(t, &resources, expectedImagePullSecretsName, "Non-HA")
 }
 
 func testGlobalPullSecretOnAllWorkloads(t *testing.T, resources *helmtestutil.KubernetesResources, expectedImagePullSecretsName string, mode string) {
+	require.Contains(t, resources.Deployments, "suse-observability-replication-checker")
+
 	for _, deployment := range resources.Deployments {
 		t.Run("Deployment_"+deployment.Name, func(t *testing.T) {
 			testDeploymentGlobalPullSecret(t, deployment, expectedImagePullSecretsName, mode)

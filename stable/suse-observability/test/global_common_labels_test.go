@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
@@ -27,7 +28,7 @@ var expectedGlobalLabelsNonHA = map[string]string{
 }
 
 func TestGlobalLabelsHAMode(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_ha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Test that global labels are applied to all workloads
@@ -35,7 +36,7 @@ func TestGlobalLabelsHAMode(t *testing.T) {
 }
 
 func TestGlobalLabelsNonHAMode(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_nonha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Test that global labels are applied to all workloads
@@ -43,6 +44,8 @@ func TestGlobalLabelsNonHAMode(t *testing.T) {
 }
 
 func testGlobalLabelsOnAllWorkloads(t *testing.T, resources *helmtestutil.KubernetesResources, expectedLabels map[string]string, mode string) {
+	require.Contains(t, resources.Deployments, "suse-observability-replication-checker")
+
 	// Test ALL Deployments - check both workload metadata and pod template labels
 	for _, deployment := range resources.Deployments {
 		testDeploymentGlobalLabels(t, deployment, expectedLabels, mode)

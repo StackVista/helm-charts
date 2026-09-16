@@ -79,6 +79,8 @@ stackstate:
       split: true
 
   components:
+    replicationChecker:
+      enabled: true
     all:
       extraEnv:
         open:

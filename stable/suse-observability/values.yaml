@@ -1181,7 +1181,7 @@ stackstate:
           # stackstate.components.router.mode.image.repository -- Base container image repository for router mode containers.
           repository: stackstate/container-tools
           # stackstate.components.router.mode.image.tag -- Container image tag for router mode containers.
-          tag: "1.8.6-so24"
+          tag: "1.8.6-so25"
           # stackstate.components.router.mode.image.pullPolicy -- Image pull policy for router mode containers.
           pullPolicy:
         # stackstate.components.router.mode.resources -- Resource allocation for `router.mode` pods.
@@ -1554,7 +1554,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: "1.8.6-so24"
+        tag: "1.8.6-so25"
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
       # stackstate.components.containerTools.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1597,6 +1597,30 @@ stackstate:
                       values:
                         - stackstate
                 topologyKey: kubernetes.io/hostname
+    replicationChecker:
+      # stackstate.components.replicationChecker.enabled -- (bool) Enable the stateless replication checker. Null enables it only for built-in HA sizing profiles; true or false overrides the profile default.
+      enabled: null
+      # stackstate.components.replicationChecker.replicaCount -- Number of replication checker Pods.
+      replicaCount: 1
+      # stackstate.components.replicationChecker.podAnnotations -- Extra annotations for replication checker Pods.
+      podAnnotations: {}
+      # stackstate.components.replicationChecker.nodeSelector -- Node labels for replication checker Pod assignment.
+      nodeSelector: {}
+      # stackstate.components.replicationChecker.tolerations -- Tolerations for replication checker Pod assignment.
+      tolerations: []
+      # stackstate.components.replicationChecker.affinity -- Affinity settings for replication checker Pod assignment.
+      affinity: {}
+      resources:
+        requests:
+          # stackstate.components.replicationChecker.resources.requests.cpu -- Requested CPU for the replication checker.
+          cpu: "10m"
+          # stackstate.components.replicationChecker.resources.requests.memory -- Requested memory for the replication checker.
+          memory: "64Mi"
+        limits:
+          # stackstate.components.replicationChecker.resources.limits.cpu -- CPU limit for the replication checker.
+          cpu: "500m"
+          # stackstate.components.replicationChecker.resources.limits.memory -- Memory limit for the replication checker.
+          memory: "256Mi"
     workloadObserver:
       # stackstate.components.workloadObserver.enabled -- Enable/disable the workload observer
       enabled: true
@@ -2093,7 +2117,7 @@ victoria-metrics-0:
     # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: "1.8.6-so24"
+        tag: "1.8.6-so25"
     # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
@@ -2136,7 +2160,7 @@ victoria-metrics-1:
     # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: "1.8.6-so24"
+        tag: "1.8.6-so25"
     # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:

@@ -16,20 +16,22 @@ import (
 var expectedImageRegistry = "global.image.registry.test"
 
 func TestGlobalImageRegistryHAMode(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_image_registry_ha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_image_registry_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	testGlobalImageRegistryOnAllWorkloads(t, &resources, expectedImageRegistry, "HA")
 }
 
 func TestGlobalImageRegistryNonHAMode(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_image_registry_nonha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_image_registry_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	testGlobalImageRegistryOnAllWorkloads(t, &resources, expectedImageRegistry, "Non-HA")
 }
 
 func testGlobalImageRegistryOnAllWorkloads(t *testing.T, resources *helmtestutil.KubernetesResources, expectedImageRegistry string, mode string) {
+	require.Contains(t, resources.Deployments, "suse-observability-replication-checker")
+
 	for _, deployment := range resources.Deployments {
 		testName := fmt.Sprintf("%s_%s_%s", mode, "Deployment", deployment.Name)
 		t.Run(testName, func(t *testing.T) {

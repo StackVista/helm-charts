@@ -88,6 +88,8 @@ stackstate:
       split: true
 
   components:
+    replicationChecker:
+      enabled: true
     kafkaTopicCreate:
       extraEnv:
         open:
