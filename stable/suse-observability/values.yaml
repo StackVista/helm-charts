@@ -92,6 +92,9 @@ backup:
   enabled: false
   # backup.initJobAnnotations -- Annotations for Backup-init Job.
   initJobAnnotations: {}
+  manualJobs:
+    # backup.manualJobs.containerSecurityContext -- Container security overrides for all manual Elasticsearch, StackGraph, configuration and VictoriaMetrics backup/restore Jobs embedded in the backup scripts ConfigMap, including their init containers. Merged over common.container.securityContext; explicit false and zero override inherited values. Does not affect scheduled backups, the settings-PVC initializer, or other workloads. Pod security remains controlled by the component's securityContext.
+    containerSecurityContext: {}
   storage:
     # backup.storage.settingsPvc -- PVC for local settings backup (always present)
     settingsPvc:

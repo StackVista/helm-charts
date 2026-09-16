@@ -487,6 +487,8 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+            - name: settings-backup-data
+              mountPath: /settings-backup-data
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.configuration.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
@@ -497,6 +499,9 @@ spec:
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
+        - name: settings-backup-data
+          persistentVolumeClaim:
+            claimName: {{ template "common.fullname.short" . }}-settings-backup-data
 {{- end -}}
 
 {{- define "job-victoria-metrics-list-backups.yaml" -}}

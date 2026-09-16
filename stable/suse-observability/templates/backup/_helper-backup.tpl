@@ -319,11 +319,14 @@ annotations:
 {{- end -}}
 
 {{- /*
-  Embedded backup jobs bypass common.container, but should use its security defaults.
+  Embedded manual backup jobs inherit common.container security defaults.
+  Manual-job overrides take precedence, including false and zero, without changing
+  common settings used by scheduled backup jobs and other workloads.
 */ -}}
 {{- define "stackstate.backup.containerSecurityContext" -}}
 {{- $container := include "common.container" . | fromYaml -}}
-{{- with $container.securityContext }}
+{{- $overrides := (.Values.backup.manualJobs | default dict).containerSecurityContext | default dict -}}
+{{- with mergeOverwrite (deepCopy ($container.securityContext | default dict)) $overrides }}
 securityContext:
   {{- toYaml . | nindent 2 }}
 {{- end -}}

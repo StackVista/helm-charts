@@ -314,3 +314,118 @@ func TestBackupConfigurationTemporaryStorage(t *testing.T) {
 		})
 	}
 }
+
+func TestBackupConfigurationUploadStorage(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"common.container.securityContext.readOnlyRootFilesystem": "true",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	job, ok := testJobsFromBackupRestoreScriptsConfigMap(t, &resources)["job-configuration-upload-backup.yaml"]
+	require.True(t, ok)
+	require.Len(t, job.Spec.Template.Spec.Containers, 1)
+	container := job.Spec.Template.Spec.Containers[0]
+	require.NotNil(t, container.SecurityContext)
+	require.NotNil(t, container.SecurityContext.ReadOnlyRootFilesystem)
+	assert.True(t, *container.SecurityContext.ReadOnlyRootFilesystem)
+
+	// The upload wrapper copies to this directory, and deletes the Job on exit.
+	// Keep the uploaded backup on the legacy settings PVC after that cleanup.
+	var mounts []corev1.VolumeMount
+	for _, mount := range container.VolumeMounts {
+		if mount.MountPath == "/settings-backup-data" {
+			mounts = append(mounts, mount)
+		}
+	}
+	require.Len(t, mounts, 1)
+	assert.False(t, mounts[0].ReadOnly)
+	var volumes []corev1.Volume
+	for _, volume := range job.Spec.Template.Spec.Volumes {
+		if volume.Name == mounts[0].Name {
+			volumes = append(volumes, volume)
+		}
+	}
+	require.Len(t, volumes, 1)
+	require.NotNil(t, volumes[0].PersistentVolumeClaim)
+	assert.False(t, volumes[0].PersistentVolumeClaim.ReadOnly)
+	assert.Equal(t, "suse-observability-settings-backup-data", volumes[0].PersistentVolumeClaim.ClaimName)
+	_, ok = resources.PersistentVolumeClaims[volumes[0].PersistentVolumeClaim.ClaimName]
+	assert.True(t, ok, "the upload destination PVC must be rendered")
+}
+
+func TestBackupManualJobContainerSecurityOverrides(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"common.container.securityContext.readOnlyRootFilesystem":           "true",
+			"backup.manualJobs.containerSecurityContext.runAsNonRoot":           "false",
+			"backup.manualJobs.containerSecurityContext.runAsUser":              "0",
+			"backup.manualJobs.containerSecurityContext.runAsGroup":             "0",
+			"backup.manualJobs.containerSecurityContext.readOnlyRootFilesystem": "false",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	jobs := testJobsFromBackupRestoreScriptsConfigMap(t, &resources)
+	require.NotEmpty(t, jobs)
+	for name, job := range jobs {
+		t.Run(name, func(t *testing.T) {
+			pod := job.Spec.Template.Spec
+			// Container overrides must take effect even when the pod still defaults
+			// to non-root. Explicit false and UID/GID zero must survive the merge.
+			require.NotNil(t, pod.SecurityContext)
+			require.NotNil(t, pod.SecurityContext.RunAsNonRoot)
+			assert.True(t, *pod.SecurityContext.RunAsNonRoot)
+			for _, container := range append(pod.InitContainers, pod.Containers...) {
+				sc := container.SecurityContext
+				require.NotNil(t, sc, container.Name)
+				require.NotNil(t, sc.RunAsNonRoot, container.Name)
+				assert.False(t, *sc.RunAsNonRoot, container.Name)
+				require.NotNil(t, sc.RunAsUser, container.Name)
+				assert.EqualValues(t, 0, *sc.RunAsUser, container.Name)
+				require.NotNil(t, sc.RunAsGroup, container.Name)
+				assert.EqualValues(t, 0, *sc.RunAsGroup, container.Name)
+				require.NotNil(t, sc.ReadOnlyRootFilesystem, container.Name)
+				assert.False(t, *sc.ReadOnlyRootFilesystem, container.Name)
+				require.NotNil(t, sc.AllowPrivilegeEscalation, container.Name)
+				assert.False(t, *sc.AllowPrivilegeEscalation, "other common defaults must be retained")
+				require.NotNil(t, sc.Capabilities, container.Name)
+				assert.Equal(t, []corev1.Capability{"ALL"}, sc.Capabilities.Drop)
+				require.NotNil(t, sc.SeccompProfile, container.Name)
+				assert.Equal(t, corev1.SeccompProfileTypeRuntimeDefault, sc.SeccompProfile.Type)
+			}
+		})
+	}
+	// A manual-job exception must not mutate the common context or weaken other workloads.
+	cronJob, ok := resources.CronJobs["suse-observability-backup-conf"]
+	require.True(t, ok)
+	api, ok := resources.Deployments["suse-observability-api"]
+	require.True(t, ok)
+	for _, pod := range []corev1.PodSpec{cronJob.Spec.JobTemplate.Spec.Template.Spec, api.Spec.Template.Spec} {
+		sc := pod.Containers[0].SecurityContext
+		require.NotNil(t, sc)
+		require.NotNil(t, sc.RunAsNonRoot)
+		assert.True(t, *sc.RunAsNonRoot)
+		require.NotNil(t, sc.ReadOnlyRootFilesystem)
+		assert.True(t, *sc.ReadOnlyRootFilesystem)
+	}
+}
+
+func TestBackupSettingsInitializerWithoutContainerToolsResources(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/backup_container_tools_resources_null.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	job := findJob(&resources, "init-pvc")
+	require.NotNil(t, job)
+	require.Len(t, job.Spec.Template.Spec.Containers, 1)
+	container := job.Spec.Template.Spec.Containers[0]
+	assert.Equal(t, resource.MustParse("10m"), *container.Resources.Requests.Cpu())
+	assert.Equal(t, resource.MustParse("10m"), *container.Resources.Limits.Cpu())
+	assert.Equal(t, resource.MustParse("100Mi"), *container.Resources.Requests.Memory())
+	assert.Equal(t, resource.MustParse("100Mi"), *container.Resources.Limits.Memory())
+	require.NotNil(t, container.SecurityContext)
+	require.NotNil(t, container.SecurityContext.RunAsNonRoot)
+	assert.True(t, *container.SecurityContext.RunAsNonRoot)
+	require.NotNil(t, container.SecurityContext.AllowPrivilegeEscalation)
+	assert.False(t, *container.SecurityContext.AllowPrivilegeEscalation)
+}
