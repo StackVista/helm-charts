@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	batchv1 "k8s.io/api/batch/v1"
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
@@ -57,10 +58,8 @@ func testJobPodSchedulingAndLabels(t *testing.T, resources *helmtestutil.Kuberne
 	})
 
 	t.Run("BackupConfInit", func(t *testing.T) {
-		configBackupJob := findJob(resources, "backup-conf")
-		if configBackupJob == nil {
-			t.Skip("backup-conf job not found")
-		}
+		configBackupJob := findJob(resources, "init-pvc")
+		require.NotNil(t, configBackupJob, "settings PVC initialization job should exist")
 
 		testPodAnnotations(t, configBackupJob.Spec.Template.Annotations, map[string]string{
 			"all-annotation":           "all-value",
@@ -246,91 +245,27 @@ func findCronJob(resources *helmtestutil.KubernetesResources, nameSubstring stri
 }
 
 func testJobSchedulingBackupConfigMapJobTemplates(t *testing.T, resources *helmtestutil.KubernetesResources) {
-	// Find the backup-restore-scripts ConfigMap
-	var backupConfigMap *corev1.ConfigMap
-	for _, cm := range resources.ConfigMaps {
-		if strings.HasSuffix(cm.Name, "-backup-restore-scripts") {
-			backupConfigMap = &cm
-			break
-		}
-	}
-
-	// Skip test if backup is not enabled (ConfigMap not found)
-	if backupConfigMap == nil {
-		return
-	}
-
-	// List of Job template keys that should have backup component settings
-	backupJobTemplateKeys := []string{
-		"job-elasticsearch-list-snapshots.yaml",
-		"job-elasticsearch-restore-snapshot.yaml",
-		"job-stackgraph-list-backups.yaml",
-		"job-stackgraph-restore-backup.yaml",
-	}
-
-	// Test each backup Job template in the ConfigMap
-	for _, jobTemplateKey := range backupJobTemplateKeys {
-		jobYaml, exists := backupConfigMap.Data[jobTemplateKey]
-		if !exists {
-			continue
-		}
-
-		var job batchv1.Job
-		err := yaml.Unmarshal([]byte(jobYaml), &job)
-		assert.NoError(t, err, "Job template '%s' should be valid YAML", jobTemplateKey)
-
-		testPodAnnotations(t, job.Spec.Template.Annotations, map[string]string{
-			"all-annotation":    "all-value",
-			"backup-annotation": "backup-value",
-		}, "ConfigMap Job", jobTemplateKey)
-
-		testPodLabels(t, job.Spec.Template.Labels, map[string]string{
-			"all-label":    "all-value",
-			"backup-label": "backup-value",
-		}, "ConfigMap Job", jobTemplateKey)
-
-		testNodeSelector(t, job.Spec.Template.Spec.NodeSelector, map[string]string{
-			"all-node":    "all-value",
-			"backup-node": "backup-value",
-		}, "ConfigMap Job", jobTemplateKey)
-
-		testAffinity(t, job.Spec.Template.Spec.Affinity, "ConfigMap Job", jobTemplateKey)
-		testTolerations(t, job.Spec.Template.Spec.Tolerations, "ConfigMap Job", jobTemplateKey)
-	}
-
-	// List of Job template keys that should have configurationBackup component settings
-	configBackupJobTemplateKeys := []string{
-		"job-configuration-list-backups.yaml",
-		"job-configuration-restore-backup.yaml",
-		"job-configuration-download-backup.yaml",
-		"job-configuration-upload-backup.yaml",
-	}
-
-	// Test each configuration backup Job template in the ConfigMap
-	for _, jobTemplateKey := range configBackupJobTemplateKeys {
-		jobYaml, exists := backupConfigMap.Data[jobTemplateKey]
-		if !exists {
-			continue
-		}
-
-		var job batchv1.Job
-		err := yaml.Unmarshal([]byte(jobYaml), &job)
-		assert.NoError(t, err, "Job template '%s' should be valid YAML", jobTemplateKey)
-
-		testPodAnnotations(t, job.Spec.Template.Annotations, map[string]string{
-			"all-annotation":           "all-value",
-			"config-backup-annotation": "config-value",
-		}, "ConfigMap Job", jobTemplateKey)
-
-		testPodLabels(t, job.Spec.Template.Labels, map[string]string{
-			"all-label":           "all-value",
-			"config-backup-label": "config-value",
-		}, "ConfigMap Job", jobTemplateKey)
-
-		testNodeSelector(t, job.Spec.Template.Spec.NodeSelector, map[string]string{
-			"all-node":           "all-value",
-			"config-backup-node": "config-value",
-		}, "ConfigMap Job", jobTemplateKey)
+	for jobTemplateKey, job := range testJobsFromBackupRestoreScriptsConfigMap(t, resources) {
+		t.Run(jobTemplateKey, func(t *testing.T) {
+			prefix, value := "backup", "backup-value"
+			if strings.Contains(jobTemplateKey, "configuration") {
+				prefix, value = "config-backup", "config-value"
+			}
+			testPodAnnotations(t, job.Spec.Template.Annotations, map[string]string{
+				"all-annotation":       "all-value",
+				prefix + "-annotation": value,
+			}, "ConfigMap Job", jobTemplateKey)
+			testPodLabels(t, job.Spec.Template.Labels, map[string]string{
+				"all-label":       "all-value",
+				prefix + "-label": value,
+			}, "ConfigMap Job", jobTemplateKey)
+			testNodeSelector(t, job.Spec.Template.Spec.NodeSelector, map[string]string{
+				"all-node":       "all-value",
+				prefix + "-node": value,
+			}, "ConfigMap Job", jobTemplateKey)
+			testAffinity(t, job.Spec.Template.Spec.Affinity, "ConfigMap Job", jobTemplateKey)
+			testTolerations(t, job.Spec.Template.Spec.Tolerations, "ConfigMap Job", jobTemplateKey)
+		})
 	}
 }
 

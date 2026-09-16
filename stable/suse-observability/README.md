@@ -400,6 +400,7 @@ If you encounter issues not covered here:
 | backup.elasticsearch.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.enabled | bool | `false` | Enables backup/restore for all data |
 | backup.initJobAnnotations | object | `{}` | Annotations for Backup-init Job. |
+| backup.manualJobs.containerSecurityContext | object | `{}` | Container security overrides for all manual Elasticsearch, StackGraph, configuration and VictoriaMetrics backup/restore Jobs embedded in the backup scripts ConfigMap, including their init containers. Merged over common.container.securityContext; explicit false and zero override inherited values. Does not affect scheduled backups, the settings-PVC initializer, or other workloads. Pod security remains controlled by the component's securityContext. |
 | backup.poddisruptionbudget.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable during the backup. |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the storage bucket to store StackGraph backups. |
 | backup.stackGraph.enabled | bool | `true` | Enable scheduled StackGraph backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
@@ -1555,6 +1556,67 @@ stackstate:
 ## Backup Storage Configuration
 
 SUSE Observability uses S3Proxy to provide an S3-compatible API for all backup operations. This enables consistent backup workflows regardless of whether you're using local storage or cloud providers like AWS S3 or Azure Blob Storage.
+
+### Upgrading backup job settings
+
+Backup job rendering now applies scheduling, metadata and security settings consistently.
+Before upgrading, check the following changes against your custom values and cluster policies:
+
+* **Manual job container security.** Newly created manual Elasticsearch, StackGraph,
+  configuration and VictoriaMetrics backup/restore Jobs inherit
+  `common.container.securityContext`, including init containers. This includes non-root
+  execution, dropped capabilities, seccomp and any read-only-root override. Existing Jobs
+  are not modified. A component's `securityContext.enabled: false` disables only its pod
+  security context; it does not disable container restrictions.
+
+  Prefer images that support non-root execution. If a custom image requires root, use
+  `backup.manualJobs.containerSecurityContext` to override the required fields for manual
+  Jobs without changing scheduled backups, the settings-PVC initializer or application
+  workloads:
+
+  ```yaml
+  backup:
+    manualJobs:
+      containerSecurityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
+  ```
+
+  These overrides apply to all embedded manual Jobs and their init containers. Unspecified
+  fields retain the common defaults; explicit `false` and `0` take precedence. Set
+  `readOnlyRootFilesystem: false` here only if your custom image requires a writable root
+  filesystem. Root execution also requires a namespace admission policy that permits it.
+  Configuration restore/download Jobs have writable `/tmp` storage. The configuration
+  upload Job mounts the existing settings PVC at `/settings-backup-data`, so uploads can
+  be written with a read-only root filesystem and survive deletion of the upload Job.
+
+* **Configuration pod security source.** Configuration backup CronJobs, manual Jobs and
+  the legacy settings-PVC initializer now consistently use
+  `backup.configuration.securityContext`. Copy configuration-specific overrides previously
+  supplied through `backup.stackGraph.securityContext`, including `enabled`, `runAsUser`,
+  `runAsGroup`, `runAsNonRoot` and `fsGroup`. Verify that the selected UID/GID can access
+  existing backup files. The settings apply to future CronJob runs and newly created
+  manual/initializer Jobs; existing Jobs and pods retain their original settings.
+
+* **Explicit empty component overrides.** Empty strings in
+  `stackstate.components.backup` and `stackstate.components.configurationBackup` node
+  selectors, pod annotations and pod labels now override inherited values. Remove a
+  component key to inherit its shared value instead of setting it to `""`. An empty
+  node-selector value requires a node with that empty label value; otherwise the pod
+  remains unschedulable.
+
+* **Reserved component labels.** New backup pods use
+  `app.kubernetes.io/component: backup`, except scheduled StackGraph v2 pods, which use
+  `backup-v2`. Custom labels can no longer replace these values. Update NetworkPolicy,
+  monitoring and operational selectors before upgrading; during the transition, account
+  for existing pods that retain their previous labels.
+
+* **Settings-PVC initializer resources.** The initializer always requests and limits
+  `10m` CPU and `100Mi` memory and receives the common container security context, even
+  when `stackstate.components.containerTools.resources` is `null`. Check namespace quotas,
+  LimitRanges and admission policies before upgrading. The fixed initializer resources
+  do not have a dedicated override.
 
 ### Architecture Overview
 

@@ -68,21 +68,8 @@ spec:
       ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
       template:
         metadata:
-        {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-          annotations:
-          {{- with .Values.stackstate.components.all.podAnnotations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.backup.podAnnotations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
-          labels:
-            app.kubernetes.io/component: backup
-            {{- include "suse-observability.labels.global" . | nindent 12 }}
-          {{- with .Values.stackstate.components.backup.podLabels }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- include "stackstate.backup.podAnnotations" . | nindent 10 }}
+          {{- include "stackstate.backup.podLabels" . | nindent 10 }}
         spec:
           initContainers:
           - {{- toYaml $stackgraphBackupInitContainer | nindent 12 }}
@@ -94,29 +81,9 @@ spec:
             - name: tmp-data
               persistentVolumeClaim:
                 claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
-        {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-          nodeSelector:
-          {{- with .Values.stackstate.components.all.nodeSelector }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.backup.nodeSelector }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
-        {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
-        {{- if $affinity }}
-          affinity:
-            {{- $affinity | nindent 12 }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-          tolerations:
-          {{- with .Values.stackstate.components.all.tolerations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.backup.tolerations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
+          {{- include "stackstate.backup.nodeSelector" . | nindent 10 }}
+          {{- include "stackstate.backup.affinity" . | nindent 10 }}
+          {{- include "stackstate.backup.tolerations" . | nindent 10 }}
         {{- if .Values.backup.stackGraph.securityContext.enabled }}
           securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
@@ -194,21 +161,8 @@ spec:
       ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
       template:
         metadata:
-        {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
-          annotations:
-          {{- with .Values.stackstate.components.all.podAnnotations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.backup.podAnnotations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
-          labels:
-            app.kubernetes.io/component: backup-v2
-            {{- include "suse-observability.labels.global" . | nindent 12 }}
-          {{- with .Values.stackstate.components.backup.podLabels }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- include "stackstate.backup.podAnnotations" . | nindent 10 }}
+          {{- include "stackstate.backup.podLabels" (merge (dict "BackupComponent" "backup-v2") .) | nindent 10 }}
         spec:
           initContainers:
           - {{- toYaml $stackgraphBackupV2InitContainer | nindent 12 }}
@@ -220,29 +174,9 @@ spec:
             - name: tmp-data
               persistentVolumeClaim:
                 claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
-        {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-          nodeSelector:
-          {{- with .Values.stackstate.components.all.nodeSelector }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.backup.nodeSelector }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
-        {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
-        {{- if $affinity }}
-          affinity:
-            {{- $affinity | nindent 12 }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-          tolerations:
-          {{- with .Values.stackstate.components.all.tolerations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.backup.tolerations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
+          {{- include "stackstate.backup.nodeSelector" . | nindent 10 }}
+          {{- include "stackstate.backup.affinity" . | nindent 10 }}
+          {{- include "stackstate.backup.tolerations" . | nindent 10 }}
         {{- if .Values.backup.stackGraph.securityContext.enabled }}
           securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
@@ -297,6 +231,7 @@ volumeMounts:
 {{- $configBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideInitContainer := fromYaml (include "stackstate.backup.configuration.container.init" .) -}}
 {{- $configBackupInitContainer := (merge $overrideInitContainer $commonContainer) }}
+{{- $settingsContext := merge (dict "BackupSettings" "configurationBackup") . }}
 {{- if eq (include "stackstate.backup.configuration.enabled" .) "true" }}
 apiVersion: batch/v1
 kind: CronJob
@@ -325,21 +260,8 @@ spec:
       {{- end }}
       template:
         metadata:
-        {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.configurationBackup.podAnnotations }}
-          annotations:
-          {{- with .Values.stackstate.components.all.podAnnotations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.configurationBackup.podAnnotations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
-          labels:
-            app.kubernetes.io/component: backup
-            {{- include "suse-observability.labels.global" . | nindent 12 }}
-          {{- with .Values.stackstate.components.configurationBackup.podLabels }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- include "stackstate.backup.podAnnotations" $settingsContext | nindent 10 }}
+          {{- include "stackstate.backup.podLabels" $settingsContext | nindent 10 }}
         spec:
           initContainers:
           - {{- toYaml $configBackupInitContainer | nindent 12 }}
@@ -351,31 +273,11 @@ spec:
           serviceAccountName: ""
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
-        {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
-          nodeSelector:
-          {{- with .Values.stackstate.components.all.nodeSelector }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.configurationBackup.nodeSelector }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
-        {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.configurationBackup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
-        {{- if $affinity }}
-          affinity:
-            {{- $affinity | nindent 12 }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.configurationBackup.tolerations }}
-          tolerations:
-          {{- with .Values.stackstate.components.all.tolerations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.stackstate.components.configurationBackup.tolerations }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        {{- end }}
+          {{- include "stackstate.backup.nodeSelector" $settingsContext | nindent 10 }}
+          {{- include "stackstate.backup.affinity" $settingsContext | nindent 10 }}
+          {{- include "stackstate.backup.tolerations" $settingsContext | nindent 10 }}
         {{- if .Values.backup.configuration.securityContext.enabled }}
-          securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
+          securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
           restartPolicy: Never
 {{- end }}
