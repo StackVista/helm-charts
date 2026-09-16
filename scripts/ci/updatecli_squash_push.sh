@@ -23,7 +23,8 @@
 #
 # Required env: GH_TOKEN (GitHub App installation token with contents:write).
 # Optional env: PUSH_CLONE_DIRECTORY (defaults to /tmp/updatecli-push),
-#               GITHUB_REPOSITORY  (defaults to StackVista/helm-charts-internal).
+#               GITHUB_REPOSITORY  (defaults to StackVista/helm-charts-internal),
+#               CHECK_ACCESS_ONLY=true (read target ref, never clone or write).
 set -euo pipefail
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -39,16 +40,40 @@ OUTPUT_BRANCH="${4:-$TARGET_BRANCH}"
 
 PUSH_CLONE_DIRECTORY="${PUSH_CLONE_DIRECTORY:-/tmp/updatecli-push}"
 REPO="${GITHUB_REPOSITORY:-StackVista/helm-charts-internal}"
-REPO_URL="https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+REPO_URL="https://x-access-token@github.com/${REPO}.git"
+
+# Keep the token out of argv and origin; override inherited checkout headers/helpers.
+UPDATECLI_GIT_AUTH_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+export UPDATECLI_GIT_AUTH_HEADER
+git() {
+  command git \
+    -c credential.helper= \
+    -c "http.${REPO_URL}.extraheader=" \
+    --config-env="http.${REPO_URL}.extraheader=UPDATECLI_GIT_AUTH_HEADER" \
+    "$@"
+}
+
+if [ "${CHECK_ACCESS_ONLY:-false}" = "true" ]; then
+  git ls-remote --exit-code --heads "$REPO_URL" "refs/heads/$TARGET_BRANCH"
+  exit $?
+fi
+
+# Only exit code 2 proves an absent ref. Authentication/network failures must fail CI.
+if git ls-remote --exit-code --heads "$REPO_URL" "refs/heads/$WORKING_BRANCH" >/dev/null; then
+  :
+else
+  status=$?
+  if [ "$status" -eq 2 ]; then
+    echo "Working branch '$WORKING_BRANCH' does not exist on origin; updatecli made no changes — nothing to push"
+    exit 0
+  fi
+  echo "ERROR: cannot read ${REPO} with the follow-up GH_TOKEN (git exit ${status}). Check token repository access and Git authentication; no changes were pushed." >&2
+  exit "$status"
+fi
 
 rm -rf "$PUSH_CLONE_DIRECTORY"
 git clone --branch "$TARGET_BRANCH" --single-branch "$REPO_URL" "$PUSH_CLONE_DIRECTORY"
 cd "$PUSH_CLONE_DIRECTORY"
-
-if ! git fetch origin "$WORKING_BRANCH" 2>/dev/null; then
-  echo "Working branch '$WORKING_BRANCH' does not exist on origin; updatecli made no changes — nothing to push"
-  exit 0
-fi
 
 # Uses curl + jq instead of `gh api graphql` because the stackstate-devops CI
 # container does not ship `gh`. $-variables in the query string are GraphQL
