@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 
-set -e
+set -eo pipefail
 
 # global
 is_ecr_re='\.ecr\..*\.amazonaws\.com'
 repo_and_tag_re='^([^/:]+/)?([^/:]+/[^/:]+):([^/:]+)$'
 nc="\033[0m"
 red="\\033[0;31m"
-helm_chart=stackstate-k8s
-helm_repository=https://helm.stackstate.io
-helm_values="backup.enabled=true,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy"
+helm_chart=suse-observability
+helm_repository=https://charts.rancher.com/server-charts/prime/suse-observability
+helm_values="stackstate.components.replicationChecker.enabled=true,global.backup.enabled=true,backup.storage.backend.pvc.enabled=true,s3proxy.credentials.accessKey=ABCDEFGH,s3proxy.credentials.secretKey=ABCDEFGHABCDEFGH,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy"
 dry_run=false
 
 # usage
 function usage() {
   cat <<EOF
-Copy Docker images needed for StackState chart to another Docker image registry
+Copy Docker images needed for SUSE Observability chart to another Docker image registry
 
 Environment Variables:
     STS_REGISTRY_USERNAME : StackState repository username (required)
@@ -53,6 +53,7 @@ shift $((OPTIND -1))
 
 # Create the regctl directory for storing the config between docker runs
 CFG_DIR=$(mktemp -d)
+trap 'rm -rf "$CFG_DIR"' EXIT
 
 docker container run -i --rm --net host -v "${CFG_DIR}:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest registry login -u "$STS_REGISTRY_USERNAME" -p "$STS_REGISTRY_PASSWORD" "quay.io"
 
@@ -62,7 +63,8 @@ fi
 
 #
 images=()
-while IFS='' read -r line; do images+=("$line"); done < <(helm template stackstate-k8s "$helm_chart" --repo "$helm_repository" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/')
+rendered_images="$(helm template suse-observability "$helm_chart" --repo "$helm_repository" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/')"
+while IFS='' read -r line; do images+=("$line"); done <<< "$rendered_images"
 # Remove duplicates
 IFS=" " read -r -a images <<< "$(echo "${images[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')"
 
@@ -87,5 +89,3 @@ do
         exit 1
     fi
 done
-
-rm -rf "${CFG_DIR}"

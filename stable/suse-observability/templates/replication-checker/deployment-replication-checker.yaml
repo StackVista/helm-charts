@@ -1,0 +1,80 @@
+{{- define "stackstate.replicationChecker.deployment.container.main" -}}
+name: replication-checker
+image: "{{ include "stackstate.containerTools.image.registry" . }}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+command: ["/bin/sh", "-c"]
+args: ["trap 'exit 0' TERM INT; sleep infinity & wait"]
+securityContext:
+  {{- include "common.container.restrictedSecurityContext" . | nindent 2 }}
+  readOnlyRootFilesystem: true
+{{- with .Values.stackstate.components.replicationChecker.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.replicationChecker.deployment" -}}
+{{- $commonContainer := omit (fromYaml (include "common.container" .)) "livenessProbe" "readinessProbe" -}}
+{{- $overrideContainer := fromYaml (include "stackstate.replicationChecker.deployment.container.main" .) -}}
+{{- $replicationCheckerMainContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ include "common.fullname.short" . }}-replication-checker
+  labels:
+    app.kubernetes.io/component: replication-checker
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.stackstate.components.replicationChecker.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: replication-checker
+  strategy:
+{{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
+    type: {{ ternary "Recreate" "RollingUpdate" (eq (int .Values.stackstate.components.replicationChecker.replicaCount) 1) }}
+{{- else }}
+    {{- toYaml .Values.stackstate.components.all.deploymentStrategy | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "replicationChecker") .) }}
+      labels:
+        app.kubernetes.io/component: replication-checker
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "common.fullname.short" . }}-replication-checker
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      containers:
+      - {{ toYaml $replicationCheckerMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.replicationChecker.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.replicationChecker.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.replicationChecker.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
+      affinity:
+        {{- $affinity | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.replicationChecker.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.replicationChecker.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+{{- end -}}
+
+{{- if eq (include "stackstate.replicationChecker.enabled" .) "true" }}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $replicationCheckerDeployment := fromYaml (include "stackstate.replicationChecker.deployment" .) -}}
+{{- toYaml (merge $replicationCheckerDeployment $commonDeployment) -}}
+{{- end }}

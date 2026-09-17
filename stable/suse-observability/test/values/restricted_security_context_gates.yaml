@@ -1,5 +1,7 @@
 stackstate:
   components:
+    replicationChecker:
+      enabled: true
     router:
       mode:
         status: automatic

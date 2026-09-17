@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -24,6 +25,91 @@ func TestGetImages(t *testing.T) {
 				return e == ""
 			}),
 	), images)
+}
+
+func TestGetImagesIncludesReplicationChecker(t *testing.T) {
+	image := "registry.example.com/stackstate/replication-checker:test"
+	chartDir := chartWithDistinctCheckerImage(t, image)
+	require.Contains(t, strings.Split(RunGetImagesScript(t, chartDir), "\n"), image)
+}
+
+func chartWithDistinctCheckerImage(t *testing.T, image string) string {
+	t.Helper()
+	tmpDir := t.TempDir()
+	require.NoError(t, exec.Command("cp", "-a", "..", filepath.Join(tmpDir, "chart")).Run())
+	chartDir := filepath.Join(tmpDir, "chart")
+	templatePath := filepath.Join(chartDir, "templates", "replication-checker", "deployment-replication-checker.yaml")
+	template, err := os.ReadFile(templatePath)
+	require.NoError(t, err)
+
+	// A distinct image prevents other container-tools users from masking an omitted checker.
+	imageLine := regexp.MustCompile(`(?m)^image:.*$`)
+	require.Len(t, imageLine.FindAll(template, -1), 1)
+	require.NoError(t, os.WriteFile(templatePath, imageLine.ReplaceAll(template, []byte("image: "+image)), 0o644))
+
+	return chartDir
+}
+
+func TestCopyImages(t *testing.T) {
+	image := "registry.example.com/stackstate/replication-checker:test"
+	chartDir := chartWithDistinctCheckerImage(t, image)
+	realHelm, err := exec.LookPath("helm")
+	require.NoError(t, err)
+
+	for _, tc := range []struct {
+		name       string
+		repository string
+		failRender bool
+	}{
+		{name: "default repository"},
+		{name: "repository override", repository: "https://charts.example.com"},
+		{name: "render failure", failRender: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			binDir := t.TempDir()
+			argsFile := filepath.Join(binDir, "helm-args")
+			require.NoError(t, os.WriteFile(filepath.Join(binDir, "docker"), []byte("#!/bin/bash\nexit 0\n"), 0o755))
+			require.NoError(t, os.WriteFile(filepath.Join(binDir, "helm"), []byte(`#!/bin/bash
+printf '%s\n' "$@" > "$COPY_TEST_HELM_ARGS"
+if [[ "$COPY_TEST_FAIL_RENDER" == true ]]; then
+  echo "chart lookup failed" >&2
+  exit 1
+fi
+args=("$@")
+exec "$COPY_TEST_REAL_HELM" "${args[@]:0:2}" "$COPY_TEST_CHART" "${args[@]:5}"
+`), 0o755))
+			t.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
+			t.Setenv("COPY_TEST_HELM_ARGS", argsFile)
+			t.Setenv("COPY_TEST_CHART", chartDir)
+			t.Setenv("COPY_TEST_REAL_HELM", realHelm)
+			t.Setenv("COPY_TEST_FAIL_RENDER", fmt.Sprint(tc.failRender))
+			t.Setenv("STS_REGISTRY_USERNAME", "test")
+			t.Setenv("STS_REGISTRY_PASSWORD", "test")
+			t.Setenv("DST_REGISTRY_USERNAME", "")
+			t.Setenv("DST_REGISTRY_PASSWORD", "")
+
+			args := []string{"-d", "mirror.example.com", "-t"}
+			repository := "https://charts.rancher.com/server-charts/prime/suse-observability"
+			if tc.repository != "" {
+				args = append(args, "-r", tc.repository)
+				repository = tc.repository
+			}
+			output, err := exec.Command(filepath.Join(chartDir, "installation", "copy_images.sh"), args...).CombinedOutput()
+			invocation, readErr := os.ReadFile(argsFile)
+			require.NoError(t, readErr)
+			helmArgs := strings.Split(strings.TrimSpace(string(invocation)), "\n")
+			require.GreaterOrEqual(t, len(helmArgs), 7)
+			require.Equal(t, []string{"template", "suse-observability", "suse-observability", "--repo", repository, "--set"}, helmArgs[:6])
+			if tc.failRender {
+				require.Error(t, err)
+				require.Contains(t, string(output), "chart lookup failed")
+				require.NotContains(t, string(output), "Copying ")
+				return
+			}
+			require.NoError(t, err, string(output))
+			require.Contains(t, string(output), "Copying "+image+" to mirror.example.com/stackstate/replication-checker:test (dry-run)")
+		})
+	}
 }
 
 func TestChangeImageSourceScriptRewritesImages(t *testing.T) {

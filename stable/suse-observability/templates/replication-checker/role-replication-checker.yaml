@@ -1,0 +1,23 @@
+{{- define "stackstate.role.replication-checker" -}}
+metadata:
+  name: {{ include "common.fullname.short" . }}-replication-checker
+  labels:
+    app.kubernetes.io/component: replication-checker
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+rules:
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["list"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+{{- end -}}
+
+{{- if eq (include "stackstate.replicationChecker.enabled" .) "true" }}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $replicationCheckerRole := fromYaml (include "stackstate.role.replication-checker" .) -}}
+{{- toYaml (merge $replicationCheckerRole $commonRole) -}}
+{{- end }}

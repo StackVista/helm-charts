@@ -1,0 +1,18 @@
+{{- define "stackstate.rolebinding.replication-checker" -}}
+metadata:
+  name: {{ include "common.fullname.short" . }}-replication-checker
+roleRef:
+  kind: Role
+  name: {{ include "common.fullname.short" . }}-replication-checker
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  namespace: {{ .Release.Namespace }}
+  name: {{ include "common.fullname.short" . }}-replication-checker
+{{- end -}}
+
+{{- if eq (include "stackstate.replicationChecker.enabled" .) "true" }}
+{{- $commonRoleBinding := fromYaml (include "common.rolebinding" .) -}}
+{{- $replicationCheckerRoleBinding := fromYaml (include "stackstate.rolebinding.replication-checker" .) -}}
+{{- toYaml (merge $replicationCheckerRoleBinding $commonRoleBinding) -}}
+{{- end }}

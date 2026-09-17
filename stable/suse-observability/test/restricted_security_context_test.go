@@ -69,6 +69,8 @@ func TestRestrictedSecurityContextFeatureGates(t *testing.T) {
 		"values/restricted_security_context_gates.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
+	require.Contains(t, resources.Deployments, "suse-observability-replication-checker")
+
 	exempted := maps.Clone(exemptedContainers)
 	maps.Copy(exempted, exemptedGatedContainers)
 

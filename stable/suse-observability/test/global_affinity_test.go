@@ -11,7 +11,7 @@ import (
 
 // TestGlobalHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in HA mode
 func TestGlobalHAAffinityNodeAffinity(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_ha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	validateGlobalNodeAffinity(t, resources)
@@ -19,7 +19,7 @@ func TestGlobalHAAffinityNodeAffinity(t *testing.T) {
 
 // TestGlobalNonHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in non-HA mode
 func TestGlobalNonHAAffinityNodeAffinity(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_nonha.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	validateGlobalNodeAffinity(t, resources)
@@ -52,6 +52,8 @@ func TestGlobalAffinityNodeAffinityInBackupRestoreScriptsConfigMap(t *testing.T)
 // validateGlobalNodeAffinity validates that all Deployments, StatefulSets, CronJobs, and Jobs
 // have the expected global nodeAffinity configuration applied
 func validateGlobalNodeAffinity(t *testing.T, resources helmtestutil.KubernetesResources) {
+	require.Contains(t, resources.Deployments, "suse-observability-replication-checker")
+
 	// Check all Deployments
 	for deploymentName, deployment := range resources.Deployments {
 		t.Run("Deployment/"+deploymentName, func(t *testing.T) {
