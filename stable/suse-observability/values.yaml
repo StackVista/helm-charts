@@ -1725,7 +1725,7 @@ stackstate:
       # stackstate.email.server.port -- Email server port
       port: 587
       auth:
-        # stackstate.email.auth.fromExternalSecret -- Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
+        # stackstate.email.server.auth.fromExternalSecret -- Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
         fromExternalSecret:
         # stackstate.email.server.auth.username -- Email server username
         username: ""

@@ -1185,6 +1185,7 @@ If you encounter issues not covered here:
 | stackstate.email | object | `{"additionalProperties":{"mail.smtp.auth":"true","mail.smtp.starttls.enable":"true"},"enabled":false,"sender":"","server":{"auth":{"fromExternalSecret":null,"password":"","username":""},"host":"","port":587,"protocol":"smtp"}}` | Email configuration for StackState |
 | stackstate.email.enabled | bool | `false` | Enable email notifications |
 | stackstate.email.sender | string | `""` | Email sender mail address |
+| stackstate.email.server.auth.fromExternalSecret | string | `nil` | Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
 | stackstate.email.server.auth.password | string | `""` | Email server password |
 | stackstate.email.server.auth.username | string | `""` | Email server username |
 | stackstate.email.server.host | string | `""` | Email server host |
