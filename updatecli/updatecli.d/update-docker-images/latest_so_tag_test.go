@@ -94,6 +94,26 @@ func TestLatestSoTagScript(t *testing.T) {
 		want  string
 	}{
 		{
+			name:  "published ClickHouse four-part release beats older three-part release",
+			pages: [][]string{{"26.5.1-so10"}, {"26.8.2.7-so2"}},
+			want:  "26.8.2.7-so2",
+		},
+		{
+			name:  "fourth upstream component sorts numerically before release increment",
+			pages: [][]string{{"26.8.2.9-so20", "26.8.2.10-so1", "26.8.2.10-so11", "26.8.2.10-so9"}},
+			want:  "26.8.2.10-so11",
+		},
+		{
+			name:  "newer three-part upstream version still wins",
+			pages: [][]string{{"26.8.2.10-so11", "26.9.1-so1"}},
+			want:  "26.9.1-so1",
+		},
+		{
+			name:  "four-part architecture and candidate tags are excluded",
+			pages: [][]string{{"26.8.2.7-so2", "26.8.2.7-so3-amd64", "26.8.2.7-so3-arm64", "26.8.2.8-so1-test", "26.8.2.8"}},
+			want:  "26.8.2.7-so2",
+		},
+		{
 			name:  "single-digit soN — picks numerically highest",
 			pages: [][]string{{"3.9.5-so7", "3.9.5-so8", "3.9.5-so9"}},
 			want:  "3.9.5-so9",
@@ -164,4 +184,13 @@ func TestLatestSoTagScript(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 		})
 	}
+}
+
+func TestLatestSoTagRejectsMissingRelease(t *testing.T) {
+	srv := mockQuayServer(t, [][]string{{"latest", "26.8.2.7-so2-amd64"}})
+	defer srv.Close()
+
+	got, err := runScript(t, srv, "testimage")
+	require.Error(t, err)
+	assert.Empty(t, got)
 }

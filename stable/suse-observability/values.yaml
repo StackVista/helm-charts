@@ -1461,7 +1461,7 @@ stackstate:
         # stackstate.components.clickhouseCleanup.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
         # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
-        tag: "26.5.1-so10"
+        tag: "26.8.2.7-so2"
         # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
@@ -1853,7 +1853,7 @@ stackstate:
 ##############################
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
-  imageTag: "8.19.16-so15"
+  imageTag: "8.19.16-so16"
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: null
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
@@ -1890,7 +1890,7 @@ hbase:
     # hbase.tephra.replicaCount -- Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
     replicaCount: null
   stackgraph:
-    version: "8.3.13"
+    version: "8.3.14"
 kafkaup-operator:
   enabled: true
   image:
@@ -2211,7 +2211,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: "26.5.1-so10"
+    tag: "26.8.2.7-so2"
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha).
   replicaCount: null
   persistence:

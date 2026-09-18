@@ -48,15 +48,7 @@ sources:
       - source#stackstateServer
     spec:
       command: |
-        set -euo pipefail
-        VERSION="$(skopeo inspect \
-          "docker://quay.io/stackstate/stackstate-server:{{ source "stackstateServer" }}" \
-          | jq -r '.Labels["com.stackstate.stackgraph.version"]')"
-        if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-          echo "com.stackstate.stackgraph.version label missing on stackstate-server image" >&2
-          exit 1
-        fi
-        printf '%s' "$VERSION"
+        bash updatecli/stackgraph-image-version.sh '{{ source "stackstateServer" }}'
 
 targets:
   stackstateAppVersion:

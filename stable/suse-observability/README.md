@@ -475,7 +475,7 @@ If you encounter issues not covered here:
 | clickhouse.backup.s3.secretName | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials. |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| clickhouse.image.tag | string | `"26.5.1-so10"` | Container image tag for 'clickhouse' containers. |
+| clickhouse.image.tag | string | `"26.8.2.7-so2"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.persistence.size | string | `nil` | Size of persistent volume for each clickhouse pod |
 | clickhouse.replicaCount | string | `nil` | Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha). |
 | clickhouse.resources | object | `{}` |  |
@@ -483,7 +483,7 @@ If you encounter issues not covered here:
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
 | elasticsearch.esJavaOpts | string | `nil` | JVM options |
-| elasticsearch.imageTag | string | `"8.19.16-so15"` | Elasticsearch image tag. Updated by updatecli. |
+| elasticsearch.imageTag | string | `"8.19.16-so16"` | Elasticsearch image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"1.10.0-so18"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
 | elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
@@ -533,7 +533,7 @@ If you encounter issues not covered here:
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.version | string | `"3.5.0-so17"` | Full HDFS image tag. Updated by updatecli. |
-| hbase.stackgraph.version | string | `"8.3.13"` |  |
+| hbase.stackgraph.version | string | `"8.3.14"` |  |
 | hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
@@ -783,7 +783,7 @@ If you encounter issues not covered here:
 | stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy `clickhouseCleanup` containers. |
 | stackstate.components.clickhouseCleanup.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | stackstate.components.clickhouseCleanup.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| stackstate.components.clickhouseCleanup.image.tag | string | `"26.5.1-so10"` | Container image tag for 'clickhouseCleanup' containers. |
+| stackstate.components.clickhouseCleanup.image.tag | string | `"26.8.2.7-so2"` | Container image tag for 'clickhouseCleanup' containers. |
 | stackstate.components.clickhouseCleanup.jobAnnotations | object | `{}` | Annotations for clickhouseCleanup job. |
 | stackstate.components.clickhouseCleanup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.clickhouseCleanup.podAnnotations | object | `{}` | Extra annotations for clickhouse cleanup job pods. |

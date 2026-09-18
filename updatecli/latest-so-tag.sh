@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Usage: latest-so-tag.sh <image>
 #
-# Returns the latest x.y.z-soN tag for quay.io/stackstate/<image>.
-# "Latest" means: highest x.y.z (compared numerically per component),
+# Returns the latest x.y.z-soN or x.y.z.w-soN tag for quay.io/stackstate/<image>.
+# "Latest" means: highest upstream version (compared numerically per component),
 # then highest soN (compared numerically).
 #
 # Rationale: updatecli's built-in versionfilter kinds (regex/semver, latest)
@@ -27,6 +27,14 @@ while true; do
 done
 
 printf '%s' "$all_tags" \
-    | grep -E '^[0-9]+\.[0-9]+\.[0-9]+-so[0-9]+$' \
-    | awk -F'[.-]' '{n=$4; sub(/^so/,"",n); printf "%010d%010d%010d%010d\t%s\n",$1,$2,$3,n,$0}' \
-    | sort | tail -1 | cut -f2
+    | jq -Rrs '
+        split("\n")
+        | map(select(test("^[0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?-so[0-9]+$")))
+        | if length == 0 then error("No release tags found")
+          else max_by(
+            split("-so") as $tag
+            | ($tag[0] | split(".") | map(tonumber)) as $version
+            | [$version[0], $version[1], $version[2], ($version[3] // 0), ($tag[1] | tonumber)]
+          )
+          end
+      '
