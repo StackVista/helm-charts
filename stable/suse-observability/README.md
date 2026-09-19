@@ -532,7 +532,7 @@ If you encounter issues not covered here:
 | hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.version | string | `"3.5.0-so17"` | Full HDFS image tag. Updated by updatecli. |
+| hbase.hdfs.version | string | `"3.5.0-so18"` | Full HDFS image tag. Updated by updatecli. |
 | hbase.stackgraph.version | string | `"8.3.14"` |  |
 | hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
@@ -1216,7 +1216,7 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.images[0].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[0].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[0].repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[0].version | string | `"20260918075814-master-da415a7"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
+| stackstate.stackpacks.images[0].version | string | `"20260919092831-master-ca3002f"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
 | stackstate.stackpacks.images[1].name | string | `"contrib"` | name for the init container |
 | stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
