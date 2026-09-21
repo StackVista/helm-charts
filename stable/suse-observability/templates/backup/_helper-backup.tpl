@@ -188,7 +188,7 @@ stackpacks/
     defaultMode: 0755
 - name: s3proxy-keys
   secret:
-    secretName: {{ include "stackstate.minio.keys" . }}
+    secretName: {{ include "stackstate.s3proxy.secretName" . }}
 - name: config-volume
   configMap:
     name: {{ template "common.fullname.short" . }}-sts-backup-conf

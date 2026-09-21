@@ -700,7 +700,7 @@ Logic validate the total shares of Es disk
 Determines the hostname prefix for the different stackstate services. This name is stable across subcharts
 */}}
 {{- define "stackstate.hostname.prefix" -}}
-{{- template "common.fullname.global" (merge (dict "Base" "suse-observability") .) }}
+{{- template "common.fullname.global" (merge (dict "Base" (include "suse-observability.resourcePrefix" .)) .) }}
 {{- end -}}
 
 {{/*

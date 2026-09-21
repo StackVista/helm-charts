@@ -23,7 +23,7 @@ env:
     "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
     "CORRELATE_WRITE_STS_METRICS" "false"
     "CORRELATE_WRITE_PROMETHEUS" "true"
-    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.fullname" .))
 }}
 {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}

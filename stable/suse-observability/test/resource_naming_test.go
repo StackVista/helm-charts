@@ -10,7 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/yaml"
 )
 
 func TestResourceNamingStatelessComponents(t *testing.T) {
@@ -178,6 +180,13 @@ func TestResourceNamingVictoriaMetricsInstances(t *testing.T) {
 				require.NotEmpty(t, pod.Containers)
 				require.NotEmpty(t, pod.InitContainers)
 				initCommand := strings.Join(pod.InitContainers[0].Command, " ")
+				scriptsName := "suse-observability-backup-restore-scripts"
+				if release != "suse-observability" {
+					scriptsName = release + "-" + scriptsName
+				}
+				require.Contains(t, resources.ConfigMaps, scriptsName)
+				restoreTemplate := resources.ConfigMaps[scriptsName].Data["job-victoria-metrics-restore-backup.yaml"]
+				require.NotEmpty(t, restoreTemplate)
 				for index := 0; index < 2; index++ {
 					name := fmt.Sprintf("suse-observability-victoria-metrics-%d", index)
 					endpoint := name + ":8428"
@@ -186,6 +195,21 @@ func TestResourceNamingVictoriaMetricsInstances(t *testing.T) {
 						require.Contains(t, resources.Services, name)
 						assert.Contains(t, pod.Containers[0].Args, argument)
 						assert.Contains(t, initCommand, endpoint)
+
+						require.Contains(t, resources.Statefulsets, name)
+						vm := resources.Statefulsets[name]
+						require.Len(t, vm.Spec.VolumeClaimTemplates, 1)
+						claimName := vm.Spec.VolumeClaimTemplates[0].Name + "-" + vm.Name + "-0"
+						var restoreJob batchv1.Job
+						rendered := strings.ReplaceAll(restoreTemplate, "REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME", fmt.Sprintf("victoria-metrics-%d", index))
+						require.NoError(t, yaml.Unmarshal([]byte(rendered), &restoreJob))
+						var claims []string
+						for _, volume := range restoreJob.Spec.Template.Spec.Volumes {
+							if volume.PersistentVolumeClaim != nil {
+								claims = append(claims, volume.PersistentVolumeClaim.ClaimName)
+							}
+						}
+						assert.Contains(t, claims, claimName, "restore must mount the existing StatefulSet's PVC")
 					} else {
 						assert.NotContains(t, resources.Services, name)
 						assert.NotContains(t, pod.Containers[0].Args, argument)
@@ -212,6 +236,35 @@ func TestResourceNamingBackupAndHTTPRoute(t *testing.T) {
 			backendName := string(route.Spec.Rules[0].BackendRefs[0].Name)
 			require.Contains(t, resources.Services, backendName)
 			assert.Equal(t, release, route.Labels["app.kubernetes.io/instance"])
+
+			const clickhouseName = "suse-observability-clickhouse"
+			require.Contains(t, resources.ConfigMaps, clickhouseName+"-backup")
+			require.Contains(t, resources.ConfigMaps, clickhouseName+"-backup-scripts")
+			require.Contains(t, resources.Services, clickhouseName+"-backup")
+			require.Contains(t, resources.Statefulsets, clickhouseName+"-shard0")
+			backupService := resources.Services[clickhouseName+"-backup"]
+			statefulset := resources.Statefulsets[clickhouseName+"-shard0"]
+			assert.Equal(t, statefulset.Name+"-0", backupService.Spec.Selector["statefulset.kubernetes.io/pod-name"])
+			for _, job := range []string{"full-backup", "incremental-backup"} {
+				require.Contains(t, resources.CronJobs, clickhouseName+"-"+job)
+				pod := resources.CronJobs[clickhouseName+"-"+job].Spec.JobTemplate.Spec.Template.Spec
+				require.Len(t, pod.Volumes, 1)
+				require.NotNil(t, pod.Volumes[0].ConfigMap)
+				assert.Equal(t, clickhouseName+"-backup-scripts", pod.Volumes[0].ConfigMap.Name)
+			}
 		})
+	}
+}
+
+func TestResourceNamingSharedPullSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "nightly", "values/global_suse_observability_pull_secret_ha.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	const secretName = "suse-observability-pull-secret"
+	require.Contains(t, resources.Secrets, secretName)
+	for _, deployment := range resources.Deployments {
+		assert.Contains(t, deployment.Spec.Template.Spec.ImagePullSecrets, corev1.LocalObjectReference{Name: secretName}, deployment.Name)
+	}
+	for _, statefulset := range resources.Statefulsets {
+		assert.Contains(t, statefulset.Spec.Template.Spec.ImagePullSecrets, corev1.LocalObjectReference{Name: secretName}, statefulset.Name)
 	}
 }

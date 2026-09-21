@@ -39,7 +39,7 @@ env:
     "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_maxIndicesRetained" (include "common.sizing.stackstate.e2es.retention" . | default (.Values.stackstate.components.e2es.retention | toString))
     "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .))
     "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
-    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.fullname" .))
 }}
 {{- if $diskSpaceMB }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB" (divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int | toString) }}

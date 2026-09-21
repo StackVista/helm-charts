@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: suse-observability-clickhouse-{{ .job_name }}
+  name: {{ include "clickhouse.backup.cronjob.fullname" . }}
   labels:
     app.kubernetes.io/name: clickhouse
     app.kubernetes.io/component: backup
@@ -53,7 +53,7 @@ spec:
           volumes:
             - name: clickhouse-backup-scripts
               configMap:
-                name: suse-observability-clickhouse-backup-scripts
+                name: {{ include "clickhouse.backup.scripts.fullname" . }}
                 defaultMode: 0550
         {{- with .Values.backup.nodeSelector }}
           nodeSelector:

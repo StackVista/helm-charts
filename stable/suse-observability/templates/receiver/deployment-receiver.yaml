@@ -72,7 +72,7 @@ env:
     "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
     "RECEIVER_WRITE_STS_METRICS" "false"
     "RECEIVER_WRITE_PROMETHEUS" "true"
-    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.fullname" .))
     "CONFIG_FORCE_stackstate_receiver_k8sLogs_replicas" $replicationFactor
     "CONFIG_FORCE_stackstate_receiver_k8sLogs.indexMaxAge" (printf "%s days" (include "suse-observability.global.receiverRetention" .))
     "CONFIG_FORCE_stackstate_receiver_agentLeases_agentServiceBaseUri" (printf "http://%s-%s-headless:7070/internal/api/agents" (include "common.fullname.short" .) (include "stackstate.api.name" .))

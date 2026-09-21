@@ -173,7 +173,7 @@ config: |-
     S3Locations: {{ include "backupS3Locations" . | nindent 6 }}
     restore:
       haMode: {{ include "victoria-metrics.ha.mode" . }}
-      persistentVolumeClaimPrefix: server-volume-suse-observability-
+      persistentVolumeClaimPrefix: {{ include "stackstate.victoriametrics.pvcPrefix" . }}
       scaleDownLabelSelector: {{ include "stackstate.backup.victoriametrics.restore.scaleDownLabelsCommaSeparated" . }}
       job:
         image: {{ include "stackstate.vmrestore.image.registry" . }}/{{ index .Values "victoria-metrics" "restore" "image" "repository" }}:{{ index .Values "victoria-metrics" "restore" "image" "tag" }}

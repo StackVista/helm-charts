@@ -44,7 +44,7 @@ env:
     "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")
     "METRICSTORE_URI" (include "stackstate.metrics.query.url" .)
     "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
-    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.fullname" .))
     "HADOOP_USER_NAME" "nobody"
     "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
 }}

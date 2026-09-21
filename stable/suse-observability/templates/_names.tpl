@@ -1,16 +1,8 @@
 {{/*
-Canonical prefix for migrated resources. Storage identities still use their existing helpers.
+Names for migrated resources. The canonical prefix is defined in the common chart.
 */}}
-{{- define "suse-observability.resourcePrefix" -}}
-suse-observability
-{{- end -}}
-
 {{- define "stackstate.httpRoute.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}
-{{- end -}}
-
-{{- define "suse-observability.pullSecret.name" -}}
-{{ include "suse-observability.resourcePrefix" . }}-pull-secret
 {{- end -}}
 
 {{/*
@@ -87,12 +79,11 @@ The parent ConfigMap keeps this name even when the collector's fullname is overr
 {{ include "suse-observability.resourcePrefix" . }}-elasticsearch
 {{- end -}}
 
-{{- define "stackstate.clickhouse.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-clickhouse
-{{- end -}}
-
-{{- define "stackstate.backup.clickhouse.backup.service" -}}
-{{ include "stackstate.clickhouse.fullname" . }}-backup
+{{/*
+Keep the existing VictoriaMetrics PVC prefix used by backup and restore.
+*/}}
+{{- define "stackstate.victoriametrics.pvcPrefix" -}}
+server-volume-{{ include "suse-observability.resourcePrefix" . }}-
 {{- end -}}
 
 {{/*
@@ -107,4 +98,69 @@ AI Assistant fullname helper
 */}}
 {{- define "stackstate.ai-assistant.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{/*
+S3Proxy secret name.
+*/}}
+{{- define "stackstate.s3proxy.secretName" -}}
+{{- if .Values.global.s3proxy.credentials.fromExternalSecret -}}
+{{- .Values.global.s3proxy.credentials.fromExternalSecret -}}
+{{- else -}}
+{{- include "stackstate.s3proxy.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+S3 backend secret name.
+Returns the external secret name if set, otherwise falls back to the s3proxy secret.
+*/}}
+{{- define "stackstate.s3proxy.s3BackendSecretName" -}}
+{{- if .Values.backup.storage.backend.s3.fromExternalSecret -}}
+{{- .Values.backup.storage.backend.s3.fromExternalSecret -}}
+{{- else -}}
+{{- include "stackstate.s3proxy.secretName" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Azure backend secret name.
+Returns the external secret name if set, otherwise falls back to the s3proxy secret.
+*/}}
+{{- define "stackstate.s3proxy.azureBackendSecretName" -}}
+{{- if .Values.backup.storage.backend.azure.fromExternalSecret -}}
+{{- .Values.backup.storage.backend.azure.fromExternalSecret -}}
+{{- else -}}
+{{- include "stackstate.s3proxy.secretName" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the main backup PVC name.
+For backward compatibility, we keep the old name "suse-observability-minio" since it was used in previous versions and may already exist in user clusters.
+*/}}
+{{- define "stackstate.backup.mainPvcName" -}}
+{{ include "suse-observability.resourcePrefix" . }}-minio
+{{- end -}}
+
+{{/*
+Service account name for S3Proxy.
+Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > S3Proxy fullname.
+Set an explicit name to reuse an existing service account name, e.g. for IAM role bindings.
+*/}}
+{{- define "stackstate.s3proxy.serviceAccountName" -}}
+{{- if .Values.s3proxy.serviceAccount.name -}}
+{{- .Values.s3proxy.serviceAccount.name -}}
+{{- else if and .Values.minio.serviceAccount .Values.minio.serviceAccount.name -}}
+{{- .Values.minio.serviceAccount.name -}}
+{{- else -}}
+{{- include "stackstate.s3proxy.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Logic to determine ElasticSearch host.
+*/}}
+{{- define "stackstate.es.host" -}}
+{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless
 {{- end -}}

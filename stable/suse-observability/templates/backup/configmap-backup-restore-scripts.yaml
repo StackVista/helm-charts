@@ -351,7 +351,7 @@ spec:
               value: "{{ include "stackstate.backup.yaml.maxSizeLimit" . }}"
             {{ end }}
             - name: PROMETHEUS_WRITE_ENDPOINT
-              value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+              value: http://{{ include "stackstate.vmagent.fullname" . }}:8429/api/v1/write
             - name: HADOOP_USER_NAME
               value: nobody
             - name: ZOOKEEPER_QUORUM
@@ -612,7 +612,7 @@ spec:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
         - name: victoria-metrics-storage
           persistentVolumeClaim:
-            claimName: server-volume-suse-observability-REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME-0
+            claimName: {{ include "stackstate.victoriametrics.pvcPrefix" . }}REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME-0
       {{- include "stackstate.backup.nodeSelector" . | nindent 6 }}
       {{- include "stackstate.backup.affinity" . | nindent 6 }}
       {{- include "stackstate.backup.tolerations" . | nindent 6 }}

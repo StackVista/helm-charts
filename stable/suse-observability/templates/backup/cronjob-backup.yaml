@@ -20,7 +20,7 @@ env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
   {{- include "stackstate.baseurls.envvars" .  | nindent 2 }}
   - name: PROMETHEUS_WRITE_ENDPOINT
-    value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+    value: http://{{ include "stackstate.vmagent.fullname" . }}:8429/api/v1/write
   - name: HADOOP_USER_NAME
     value: nobody
   - name: ZOOKEEPER_QUORUM
@@ -113,7 +113,7 @@ env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
   {{- include "stackstate.baseurls.envvars" .  | nindent 2 }}
   - name: PROMETHEUS_WRITE_ENDPOINT
-    value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+    value: http://{{ include "stackstate.vmagent.fullname" . }}:8429/api/v1/write
   - name: HADOOP_USER_NAME
     value: nobody
   - name: ZOOKEEPER_QUORUM
@@ -212,7 +212,7 @@ env:
     value: "{{ include "stackstate.backup.yaml.maxSizeLimit" . }}"
   {{ end }}
   - name: PROMETHEUS_WRITE_ENDPOINT
-    value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+    value: http://{{ include "stackstate.vmagent.fullname" . }}:8429/api/v1/write
   - name: HADOOP_USER_NAME
     value: nobody
   - name: ZOOKEEPER_QUORUM

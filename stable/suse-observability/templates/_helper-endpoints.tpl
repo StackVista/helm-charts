@@ -34,13 +34,6 @@ Logic to determine ElasticSearch endpoint.
 {{- end -}}
 
 {{/*
-Logic to determine ElasticSearch host.
-*/}}
-{{- define "stackstate.es.host" -}}
-{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless
-{{- end -}}
-
-{{/*
 Logic to determine Kafka endpoint.
 */}}
 {{- define "stackstate.kafka.endpoint" -}}
@@ -52,13 +45,6 @@ Logic to determine Router endpoint.
 */}}
 {{- define "stackstate.router.endpoint" -}}
 http://{{ template "stackstate.router.name" . }}:8080
-{{- end -}}
-
-{{/*
-Logic to determine MinIO keys.
-*/}}
-{{- define "stackstate.minio.keys" -}}
-{{- include "stackstate.s3proxy.secretName" . -}}
 {{- end -}}
 
 {{/*
@@ -101,13 +87,6 @@ Comma-separated list of the endpoints that need to be up and running before the 
 {{- include "stackstate.clickhouse.endpoint" . -}},
 {{- include "stackstate.kafka.endpoint" . -}},
 {{- include "stackgraph.hbase.waitfor" . -}}
-{{- end -}}
-
-{{/*
-Logic to determine Kafka endpoint.
-*/}}
-{{- define "stackstate.vmagent.endpoint" -}}
-{{- include "stackstate.vmagent.fullname" . -}}
 {{- end -}}
 
 {{/*

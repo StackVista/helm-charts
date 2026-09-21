@@ -79,7 +79,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.vmagent.container.init" .) -}}
 {{- $stsstackstateVmagentInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ include "stackstate.vmagent.endpoint" . }}
+  name: {{ include "stackstate.vmagent.fullname" . }}
   labels:
     app.kubernetes.io/component: vmagent
     {{- include "suse-observability.labels.global" . | nindent 4 }}

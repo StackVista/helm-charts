@@ -20,6 +20,6 @@ spec:
     app.kubernetes.io/component: clickhouse
     app.kubernetes.io/name: clickhouse
     shard: "0"
-    statefulset.kubernetes.io/pod-name: "suse-observability-clickhouse-shard0-0"
+    statefulset.kubernetes.io/pod-name: {{ include "clickhouse.backup.podName" . | quote }}
   type: ClusterIP
 {{- end }}
