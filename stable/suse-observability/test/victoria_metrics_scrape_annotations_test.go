@@ -1,6 +1,7 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"testing"
@@ -57,5 +58,42 @@ func TestVictoriaMetricsScrapeAnnotationsMatchContainer(t *testing.T) {
 			}
 			require.NotZero(t, instances, "expected at least one VictoriaMetrics StatefulSet")
 		})
+	}
+}
+
+// TestVictoriaMetricsScrapeFilters verifies that VictoriaMetrics and vmagent collect the same
+// metric families. Their allowlists are declared in two unrelated places - the subchart's
+// values and stackstate.vmagent.agentMetricsFilter — so they drift silently, and a family
+// missing from one of them leaves gaps in dashboards built for both.
+func TestVictoriaMetricsScrapeFilters(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_sizing_150_ha.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	scrapeFilter := func(stsName, container string) []string {
+		sts, ok := resources.Statefulsets[stsName]
+		require.True(t, ok, "%s StatefulSet should exist", stsName)
+
+		raw, ok := sts.Spec.Template.Annotations[fmt.Sprintf("ad.stackstate.com/%s.instances", container)]
+		require.True(t, ok, "%s should carry a scrape config for container %q", stsName, container)
+
+		var instances []struct {
+			Metrics []string `json:"metrics"`
+		}
+		require.NoError(t, json.Unmarshal([]byte(raw), &instances), "%s scrape config should be valid JSON", stsName)
+		require.Len(t, instances, 1, "%s should declare exactly one scrape instance", stsName)
+		return instances[0].Metrics
+	}
+
+	// The process_* entries are named individually rather than globbed: the rest of that family
+	// duplicates container_cpu_usage and container_memory_rss, which the node agent already collects.
+	expected := []string{"vm*", "go*", "process_open_fds", "process_max_fds", "process_cpu_cores_available"}
+
+	vmagent := scrapeFilter("suse-observability-vmagent", "vmagent")
+	assert.ElementsMatch(t, expected, vmagent, "vmagent scrape filter")
+
+	for _, instance := range []string{"0", "1"} {
+		name := "suse-observability-victoria-metrics-" + instance
+		assert.ElementsMatch(t, expected, scrapeFilter(name, "victoria-metrics-"+instance+"-server"),
+			"%s scrape filter should match vmagent's", name)
 	}
 }

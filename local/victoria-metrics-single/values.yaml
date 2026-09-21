@@ -175,7 +175,7 @@ server:
   podAnnotations:
     ad.stackstate.com/{{ include "victoria-metrics.name" . }}-{{ .Values.server.name }}.check_names: '["openmetrics"]'
     ad.stackstate.com/{{ include "victoria-metrics.name" . }}-{{ .Values.server.name }}.init_configs: "[{}]"
-    ad.stackstate.com/{{ include "victoria-metrics.name" . }}-{{ .Values.server.name }}.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
+    ad.stackstate.com/{{ include "victoria-metrics.name" . }}-{{ .Values.server.name }}.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*", "process_open_fds", "process_max_fds", "process_cpu_cores_available"] } ]'
     ad.stackstate.com/vmbackup.check_names: '["openmetrics"]'
     ad.stackstate.com/vmbackup.init_configs: "[{}]"
     ad.stackstate.com/vmbackup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'

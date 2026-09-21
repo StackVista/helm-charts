@@ -35,7 +35,7 @@ since the AI Assistant is an MCP client that requires the MCP server.
 {{- define "stackstate.cache.backend" -}}mapdb{{- end -}}
 {{- define "stackstate.metricStore.remoteWritePath" -}}/api/v1/write{{- end -}}
 {{- define "stackstate.metrics.defaultAgentMetricsFilter" -}}["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "pekko_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]{{- end -}}
-{{- define "stackstate.vmagent.agentMetricsFilter" -}}["vm*", "go*"]{{- end -}}
+{{- define "stackstate.vmagent.agentMetricsFilter" -}}["vm*", "go*", "process_open_fds", "process_max_fds", "process_cpu_cores_available"]{{- end -}}
 {{- define "stackstate.vmagent.fullname" -}}suse-observability-vmagent{{- end -}}
 {{- define "stackstate.kafka.fullname" -}}suse-observability-kafka{{- end -}}
 {{- define "stackstate.zookeeper.fullname" -}}suse-observability-zookeeper{{- end -}}
