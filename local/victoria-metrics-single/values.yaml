@@ -171,11 +171,11 @@ server:
   podLabels:
     stackstate-service: victoriametrics
     app.kubernetes.io/part-of: suse-observability
-  # -- Pod's annotations (Datadog autodiscovery for VM server + vmbackup metrics).
+  # -- Pod's annotations (Datadog autodiscovery for VM server + vmbackup metrics). Autodiscovery matches the key against the container name, so the server key must follow this instance's alias.
   podAnnotations:
-    ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
-    ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
-    ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
+    ad.stackstate.com/{{ include "victoria-metrics.name" . }}-{{ .Values.server.name }}.check_names: '["openmetrics"]'
+    ad.stackstate.com/{{ include "victoria-metrics.name" . }}-{{ .Values.server.name }}.init_configs: "[{}]"
+    ad.stackstate.com/{{ include "victoria-metrics.name" . }}-{{ .Values.server.name }}.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
     ad.stackstate.com/vmbackup.check_names: '["openmetrics"]'
     ad.stackstate.com/vmbackup.init_configs: "[{}]"
     ad.stackstate.com/vmbackup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
