@@ -1,6 +1,6 @@
 {{- define "stackstate.vmagent.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-vmagent
+  name: {{ template "stackstate.vmagent.fullname" . }}
 data:
   relabel_config.yaml: |
     # Copy kube_* metrics to not have the kube_* prefix

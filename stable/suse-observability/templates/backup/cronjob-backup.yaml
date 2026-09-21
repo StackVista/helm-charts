@@ -45,7 +45,7 @@ volumeMounts:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ template "namePrefix" . }}-backup-sg
+  name: {{ template "stackstate.backup.stackgraph.fullname" . }}
   labels:
     app.kubernetes.io/name: suse-observability
     app.kubernetes.io/component: backup-sg

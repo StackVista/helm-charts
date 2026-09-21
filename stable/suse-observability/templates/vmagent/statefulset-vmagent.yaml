@@ -131,7 +131,7 @@ spec:
       volumes:
         - name: vmagent-config
           configMap:
-            name: {{ template "common.fullname.short" . }}-vmagent
+            name: {{ template "stackstate.vmagent.fullname" . }}
   volumeClaimTemplates:
     - metadata:
         name: tmpdata

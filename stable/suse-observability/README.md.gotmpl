@@ -22,6 +22,19 @@ helm install \
 stackstate/stackstate
 ```
 
+## Resource naming
+
+The UI and replication checker now use the fixed names `suse-observability-ui` and
+`suse-observability-replication-checker`, including their component-specific supporting
+resources except the UI PodDisruptionBudget, which retains its existing name.
+The vmagent ConfigMap and S3Proxy ServiceMonitor also use the fixed `suse-observability` prefix.
+
+When upgrading a release with a different name, Helm replaces the renamed resources.
+Allow for a UI interruption and restart any active replication check after the upgrade.
+The vmagent pod configuration changes to reference its renamed ConfigMap.
+StatefulSet names, PVC names, HBase Services, and storage bindings are unchanged.
+Other components retain their existing naming until a later migration.
+
 ## Replication checks without a local CLI
 
 The stateless `replication-checker` Deployment lets you run `sts-backup replication check` through `kubectl`. It is enabled by default for HA sizing profiles and disabled for non-HA profiles and installations without a profile. Generated HA sizing files also enable it; regenerate older files or enable it explicitly. An explicit `true` or `false` overrides the built-in profile default:

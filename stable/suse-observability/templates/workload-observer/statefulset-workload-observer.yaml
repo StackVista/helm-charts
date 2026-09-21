@@ -44,7 +44,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.workloadObserver.container.main" .) -}}
 {{- $stsstackstateWorkloadObserverMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ include "namePrefix" . }}-workload-observer
+  name: {{ include "stackstate.workloadObserver.fullname" . }}
   labels:
     app.kubernetes.io/component: workload-observer
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -62,7 +62,7 @@ spec:
         app.kubernetes.io/component: workload-observer
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "namePrefix" . }}-workload-observer
+      serviceAccountName: {{ include "stackstate.workloadObserver.fullname" . }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $stsstackstateWorkloadObserverMainContainer | nindent 8 }}

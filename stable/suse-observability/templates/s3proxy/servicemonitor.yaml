@@ -1,16 +1,19 @@
 {{- define "s3proxy.servicemonitor" -}}
+{{- $metrics := include "stackstate.servicemonitor.extraLabels" . | fromYaml -}}
+{{- $_ := set (first $metrics.endpoints) "port" "http" -}}
 metadata:
   labels:
     app.kubernetes.io/component: s3proxy
   {{- with .Values.s3proxy.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname.short" . }}-s3proxy
+  name: {{ template "stackstate.s3proxy.fullname" . }}
 spec:
   selector:
     matchLabels:
+      app.kubernetes.io/name: s3proxy
       app.kubernetes.io/component: s3proxy
-  {{ include "s3proxy.servicemonitor.extraLabels" . | nindent 2 }}
+  {{ toYaml $metrics | nindent 2 }}
 {{- end -}}
 
 {{- if ( and (eq (include "stackstate.backup.anyEnabled" .) "true") .Values.s3proxy.metrics.enabled .Values.s3proxy.metrics.servicemonitor.enabled ) }}

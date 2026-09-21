@@ -1,13 +1,13 @@
 {{- define "stackstate.rolebinding.workload-observer" -}}
 metadata:
-  name: {{ include "namePrefix" . }}-workload-observer
+  name: {{ include "stackstate.workloadObserver.fullname" . }}
 roleRef:
   kind: Role
-  name: {{ include "namePrefix" . }}-workload-observer
+  name: {{ include "stackstate.workloadObserver.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: {{ include "namePrefix" . }}-workload-observer
+  name: {{ include "stackstate.workloadObserver.fullname" . }}
 {{- end -}}
 
 {{- if .Values.stackstate.components.workloadObserver.enabled }}

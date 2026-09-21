@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	corev1 "k8s.io/api/core/v1"
 )
 
 func TestOtelRouterRouteEnabled(t *testing.T) {
@@ -49,4 +50,47 @@ func TestOtelRouterClusterNameStableAcrossReleaseNames(t *testing.T) {
 		"router must use the stable otel-collector service name regardless of release name")
 	assert.NotContains(t, clusters, "address: \"prime-test-suse-observability-otel-collector\"",
 		"router must not use release-prefixed name for otel-collector (service does not exist)")
+}
+
+func TestOtelRouterFullnameOverride(t *testing.T) {
+	for _, release := range []string{"suse-observability", "nightly"} {
+		t.Run(release, func(t *testing.T) {
+			const collectorName = "custom-otel-collector"
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, release, &helm.Options{
+				ValuesFiles: []string{"values/full.yaml"},
+				SetValues: map[string]string{
+					"opentelemetry-collector.fullnameOverride": collectorName,
+				},
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Contains(t, resources.Services, collectorName)
+			require.Contains(t, resources.Statefulsets, collectorName)
+			assert.NotContains(t, resources.Services, "suse-observability-otel-collector")
+
+			const configName = "suse-observability-otel-collector"
+			require.Contains(t, resources.ConfigMaps, configName)
+			collector := resources.Statefulsets[collectorName]
+			require.NotEmpty(t, collector.Spec.Template.Spec.Containers)
+			for envName, key := range map[string]string{"API_URL": "api.url", "INTAKE_URL": "intake.url"} {
+				assert.NotEmpty(t, resources.ConfigMaps[configName].Data[key])
+				assert.Contains(t, collector.Spec.Template.Spec.Containers[0].Env, corev1.EnvVar{
+					Name: envName,
+					ValueFrom: &corev1.EnvVarSource{ConfigMapKeyRef: &corev1.ConfigMapKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{Name: configName},
+						Key:                  key,
+					}},
+				})
+			}
+
+			routerName := "suse-observability-router-active"
+			if release != "suse-observability" {
+				routerName = release + "-" + routerName
+			}
+			require.Contains(t, resources.ConfigMaps, routerName)
+			clusters := resources.ConfigMaps[routerName].Data["clusters.yaml"]
+			assert.Contains(t, clusters, `name: "`+collectorName+`"`)
+			assert.Contains(t, clusters, `address: "`+collectorName+`"`)
+			assert.NotContains(t, clusters, `address: "suse-observability-otel-collector"`)
+		})
+	}
 }

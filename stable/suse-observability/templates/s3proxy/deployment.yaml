@@ -107,7 +107,7 @@ env:
   - name: {{ $key }}
     valueFrom:
       secretKeyRef:
-        name: {{ include "stackstate.s3proxy.fullname" $ }}-extra-env
+        name: {{ include "stackstate.s3proxy.extraEnvSecret.fullname" $ }}
         key: {{ $key }}
   {{- end }}
 volumeMounts:
@@ -200,7 +200,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ include "stackstate.s3proxy.fullname" . }}-config
+            name: {{ include "stackstate.s3proxy.configmap.fullname" . }}
         - name: settings-data
           persistentVolumeClaim:
             claimName: {{ include "stackstate.backup.settingsPvcName" . }}

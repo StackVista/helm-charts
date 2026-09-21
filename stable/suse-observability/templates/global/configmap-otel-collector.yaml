@@ -1,6 +1,6 @@
 {{- define "stackstate.open-telemetry-collector.configmap" -}}
 metadata:
-  name: suse-observability-otel-collector
+  name: {{ include "stackstate.otelCollector.defaultFullname" . }}
 data:
   api.url:
   {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}

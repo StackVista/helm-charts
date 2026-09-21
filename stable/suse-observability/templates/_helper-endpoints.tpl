@@ -9,14 +9,14 @@ http://{{- include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEnd
 Logic to determine promql query endpoint. It
 */}}
 {{- define "stackstate.metrics.query.url" -}}
-http://suse-observability-victoriametrics:8428
+http://{{ include "stackstate.victoriametrics.fullname" . }}:8428
 {{- end -}}
 
 {{/*
 Logic to determine metric store host and port for single node deployment of Victoria Metrics.
 */}}
 {{- define "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" -}}
-suse-observability-victoria-metrics-{{ .instanceIndex }}:8428
+{{ include "stackstate.victoriametrics.instance.fullname" . }}:8428
 {{- end -}}
 
 {{/*
@@ -30,7 +30,7 @@ Logic to determine metric store consumer group
 Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "stackstate.es.endpoint" -}}
-{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless:9200
+{{- include "stackstate.es.host" . -}}:9200
 {{- end -}}
 
 {{/*

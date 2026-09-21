@@ -1,18 +1,4 @@
 {{/*
-Full name for S3Proxy resources.
-*/}}
-{{- define "stackstate.s3proxy.fullname" -}}
-suse-observability-s3proxy
-{{- end -}}
-
-{{/*
-Full name for S3Proxy resources.
-*/}}
-{{- define "stackstate.s3proxy.service.fullname" -}}
-suse-observability-s3proxy
-{{- end -}}
-
-{{/*
 S3Proxy secret name.
 */}}
 {{- define "stackstate.s3proxy.secretName" -}}
@@ -29,7 +15,7 @@ With bucket-locator middleware, all buckets are served from the same endpoint.
 The middleware routes requests to the appropriate backend based on bucket name.
 */}}
 {{- define "stackstate.s3proxy.endpoint" -}}
-{{ include "stackstate.s3proxy.service.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
+{{ include "stackstate.s3proxy.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
 {{- end -}}
 
 {{/*
@@ -295,10 +281,8 @@ suse-observability-minio
 
 {{/*
 Service account name for S3Proxy.
-Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > "suse-observability-minio" (default).
-The default "suse-observability-minio" matches the service account name that was created by the old
-Minio subchart (minio.fullnameOverride was set to "suse-observability-minio").
-This name is important because it may be referenced in IAM role bindings.
+Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > S3Proxy fullname.
+Set an explicit name to reuse an existing service account name, e.g. for IAM role bindings.
 */}}
 {{- define "stackstate.s3proxy.serviceAccountName" -}}
 {{- if .Values.s3proxy.serviceAccount.name -}}
@@ -306,7 +290,7 @@ This name is important because it may be referenced in IAM role bindings.
 {{- else if and .Values.minio.serviceAccount .Values.minio.serviceAccount.name -}}
 {{- .Values.minio.serviceAccount.name -}}
 {{- else -}}
-suse-observability-s3proxy
+{{- include "stackstate.s3proxy.fullname" . -}}
 {{- end -}}
 {{- end -}}
 

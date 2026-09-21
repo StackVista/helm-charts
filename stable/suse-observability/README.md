@@ -40,6 +40,19 @@ helm install \
 stackstate/stackstate
 ```
 
+## Resource naming
+
+The UI and replication checker now use the fixed names `suse-observability-ui` and
+`suse-observability-replication-checker`, including their component-specific supporting
+resources except the UI PodDisruptionBudget, which retains its existing name.
+The vmagent ConfigMap and S3Proxy ServiceMonitor also use the fixed `suse-observability` prefix.
+
+When upgrading a release with a different name, Helm replaces the renamed resources.
+Allow for a UI interruption and restart any active replication check after the upgrade.
+The vmagent pod configuration changes to reference its renamed ConfigMap.
+StatefulSet names, PVC names, HBase Services, and storage bindings are unchanged.
+Other components retain their existing naming until a later migration.
+
 ## Replication checks without a local CLI
 
 The stateless `replication-checker` Deployment lets you run `sts-backup replication check` through `kubectl`. It is enabled by default for HA sizing profiles and disabled for non-HA profiles and installations without a profile. Generated HA sizing files also enable it; regenerate older files or enable it explicitly. An explicit `true` or `false` overrides the built-in profile default:
@@ -631,7 +644,7 @@ If you encounter issues not covered here:
 | s3proxy.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | s3proxy.serviceAccount.annotations | object | `{}` | Annotations for the S3Proxy service account (e.g. for IAM roles). |
 | s3proxy.serviceAccount.create | bool | `true` | Whether to create the service account for S3Proxy. |
-| s3proxy.serviceAccount.name | string | `""` | Override the service account name. Defaults to "suse-observability-minio" for backward compatibility with the old Minio subchart (e.g. IAM role bindings). |
+| s3proxy.serviceAccount.name | string | `""` | Override the service account name. Falls back to the deprecated minio.serviceAccount.name if set, otherwise "suse-observability-s3proxy". Set an explicit name to preserve existing IAM role bindings. |
 | s3proxy.sizing.baseMemoryConsumption | string | `"250Mi"` | Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc) |
 | s3proxy.sizing.javaHeapMemoryFraction | string | `"70"` | Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap |
 | s3proxy.tolerations | list | `[]` | Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations) |

@@ -77,7 +77,7 @@ resources:
 {{- $evaluatedReplicaCount := ternary .Values.stackstate.components.ui.replicaCount (default 2 $sizingReplicaCount | int) (not (kindIs "invalid" .Values.stackstate.components.ui.replicaCount)) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-ui
+  name: {{ template "stackstate.ui.fullname" . }}
   labels:
     app.kubernetes.io/component: ui
     {{- include "suse-observability.labels.global" . | nindent 4 }}

@@ -1,6 +1,6 @@
 {{- define "stackstate.s3proxy.configmap" -}}
 metadata:
-  name: {{ include "stackstate.s3proxy.fullname" . }}-config
+  name: {{ include "stackstate.s3proxy.configmap.fullname" . }}
   labels:
     app.kubernetes.io/name: s3proxy
     app.kubernetes.io/component: s3proxy

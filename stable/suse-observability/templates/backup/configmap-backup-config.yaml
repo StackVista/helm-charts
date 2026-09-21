@@ -75,7 +75,7 @@ config: |-
   storage:
     globalBackupEnabled: {{ .Values.global.backup.enabled }}
     service:
-      name: {{ include "stackstate.s3proxy.service.fullname" . | quote }}
+      name: {{ include "stackstate.s3proxy.fullname" . | quote }}
       port: {{ include "stackstate.s3proxy.port" . }}
       localPortForwardPort: 9000
   stackpacks:
@@ -207,7 +207,7 @@ config: |-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}-backup-config
+  name: {{ include "stackstate.backup.config.fullname" . }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
 data:
