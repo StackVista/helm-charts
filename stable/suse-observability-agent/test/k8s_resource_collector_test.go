@@ -7,7 +7,37 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	"sigs.k8s.io/yaml"
 )
+
+func TestK8sResourceCollectorBatchesLogs(t *testing.T) {
+	for _, values := range []string{
+		"values/k8s-resource-collector-enabled.yaml",
+		"values/k8s-resource-collector-grpc.yaml",
+		"values/k8s-resource-collector-debug.yaml",
+	} {
+		t.Run(values, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", values)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			configMap, exists := resources.ConfigMaps["suse-observability-agent-k8s-resource-collector-config"]
+			require.True(t, exists)
+
+			var config struct {
+				Processors map[string]any
+				Service    struct {
+					Pipelines map[string]struct {
+						Processors []string
+					}
+				}
+			}
+			require.NoError(t, yaml.Unmarshal([]byte(configMap.Data["config.yaml"]), &config))
+			assert.Contains(t, config.Processors, "batch")
+			assert.Equal(t, []string{"batch"}, config.Service.Pipelines["logs/k8s-resource"].Processors)
+			assert.Equal(t, []string{"transform/pre-k8sattributes", "k8s_attributes", "transform/self-metrics", "batch"},
+				config.Service.Pipelines["metrics/self"].Processors)
+		})
+	}
+}
 
 func TestK8sResourceCollectorEnabled(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-resource-collector-enabled.yaml")

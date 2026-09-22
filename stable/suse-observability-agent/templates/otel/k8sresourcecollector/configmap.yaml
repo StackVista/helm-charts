@@ -219,7 +219,7 @@ data:
         # Kubernetes resource discovery - real-time watch of CRDs and custom resources
         logs/k8s-resource:
           receivers: [k8sresource]
-          processors: []
+          processors: [batch]
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.k8sResourceCollector.debug "signal" "logs") }}]
         # Collector self-metrics: scrape the local telemetry endpoint, enrich with
         # pod/cluster/service identity, then export to SUSE Observability so the
