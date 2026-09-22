@@ -1,0 +1,2708 @@
+{
+  "ClusterRole/existing-installation-authorization": {
+    "namespace": ""
+  },
+  "ClusterRole/observability-nightly-rbac-agent": {
+    "namespace": ""
+  },
+  "ClusterRoleBinding/existing-installation-authentication": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "ClusterRole",
+      "name": "system:auth-delegator"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "existing-installation-server",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "ClusterRoleBinding/existing-installation-authorization": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "ClusterRole",
+      "name": "existing-installation-authorization"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "existing-installation-server",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "ClusterRoleBinding/observability-nightly-rbac-agent": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "ClusterRole",
+      "name": "observability-nightly-rbac-agent"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "nightly-rbac-agent",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "ConfigMap/existing-installation-backup-log": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-backup-restore-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-correlate": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-correlate-log": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-e2es": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-e2es-log": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-receiver": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-receiver-log": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-router": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-router-active": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-server": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-server-log": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-stackpacks-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-sts-backup-conf": {
+    "namespace": ""
+  },
+  "ConfigMap/existing-installation-vmagent": {
+    "namespace": ""
+  },
+  "ConfigMap/nightly-backup-sts-hbase-backup": {
+    "namespace": ""
+  },
+  "ConfigMap/nightly-kafkaup-operator-kafkaup-config": {
+    "namespace": "observability"
+  },
+  "ConfigMap/nightly-rbac-agent-cluster-name": {
+    "namespace": ""
+  },
+  "ConfigMap/nightly-rbac-agent-url": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-backup-config": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-clickhouse": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-clickhouse-backup": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-clickhouse-backup-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-clickhouse-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-clickhouse-users-extra": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-kafka-jmx-configuration": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-kafka-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-otel-collector": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-otel-collector-statefulset": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-s3proxy-config": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-victoria-metrics-0-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-victoria-metrics-1-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-zookeeper": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-zookeeper-scripts": {
+    "namespace": "observability"
+  },
+  "CronJob/existing-installation-backup-conf": {
+    "containers/backup-settings/envFrom": [
+      {
+        "secretRef": {
+          "name": "existing-installation-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "serviceAccountName": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "existing-installation-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-sts-backup-conf"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "CronJob/existing-installation-backup-init": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "existing-installation-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "emptyDir": {},
+        "name": "workdir-container-tools"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-backup-stackgraph-tmp-data"
+        }
+      },
+      {
+        "name": "tmp-data-v2",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-backup-stackgraph-v2-tmp-data"
+        }
+      }
+    ]
+  },
+  "CronJob/existing-installation-backup-sg-v2": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "existing-installation-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-backup-stackgraph-v2-tmp-data"
+        }
+      }
+    ]
+  },
+  "CronJob/suse-observability-backup-sg": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "existing-installation-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-backup-stackgraph-tmp-data"
+        }
+      }
+    ]
+  },
+  "CronJob/suse-observability-clickhouse-full-backup": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 360,
+          "name": "suse-observability-clickhouse-backup-scripts"
+        },
+        "name": "clickhouse-backup-scripts"
+      }
+    ]
+  },
+  "CronJob/suse-observability-clickhouse-incremental-backup": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 360,
+          "name": "suse-observability-clickhouse-backup-scripts"
+        },
+        "name": "clickhouse-backup-scripts"
+      }
+    ]
+  },
+  "Deployment/existing-installation-correlate": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "correlate",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-correlate-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-correlate"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/existing-installation-e2es": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "e2es",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-e2es-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-e2es"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/existing-installation-receiver": {
+    "containers/receiver/envFrom": [
+      {
+        "secretRef": {
+          "name": "existing-installation-api-key",
+          "optional": true
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "receiver",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-receiver-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-receiver"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/existing-installation-replication-checker": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "replication-checker",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "existing-installation-replication-checker"
+  },
+  "Deployment/existing-installation-router": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "existing-installation-router",
+    "volumes": [
+      {
+        "configMap": {
+          "items": [
+            {
+              "key": "envoy.yaml",
+              "path": "envoy.yaml"
+            }
+          ],
+          "name": "existing-installation-router"
+        },
+        "name": "config"
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-router-active"
+        },
+        "name": "router-mode"
+      }
+    ]
+  },
+  "Deployment/existing-installation-server": {
+    "containers/server/envFrom": [
+      {
+        "secretRef": {
+          "name": "existing-installation-license"
+        }
+      },
+      {
+        "secretRef": {
+          "name": "existing-installation-api-key",
+          "optional": true
+        }
+      },
+      {
+        "secretRef": {
+          "name": "existing-installation-auth"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "server",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "existing-installation-server",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-server-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-server"
+        },
+        "name": "config-volume"
+      },
+      {
+        "name": "stackpacks",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-stackpacks"
+        }
+      },
+      {
+        "configMap": {
+          "defaultMode": 365,
+          "name": "existing-installation-stackpacks-scripts"
+        },
+        "name": "stackpack-scripts"
+      },
+      {
+        "name": "stackpacks-local",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-stackpacks-local"
+        }
+      }
+    ]
+  },
+  "Deployment/existing-installation-ui": {
+    "containers/ui/env/TEST_SECRET": {
+      "secretKeyRef": {
+        "key": "TEST_SECRET",
+        "name": "existing-installation-ui"
+      }
+    },
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ui",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "Deployment/nightly-hbase-console": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "console",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "nightly-hbase-console"
+  },
+  "Deployment/nightly-kafkaup-operator-kafkaup": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app": "nightly-kafkaup-operator-kafkaup"
+      }
+    },
+    "serviceAccountName": "nightly-kafkaup-operator-kafkaup",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "nightly-kafkaup-operator-kafkaup-config"
+        },
+        "name": "kafkaup-config-volume"
+      }
+    ]
+  },
+  "Deployment/nightly-prometheus-elasticsearch-exporter": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "prometheus-elasticsearch-exporter",
+        "release": "nightly"
+      }
+    },
+    "serviceAccountName": "default",
+    "volumes": null
+  },
+  "Deployment/nightly-rbac-agent": {
+    "containers/kubernetes-rbac-agent/envFrom": [
+      {
+        "configMapRef": {
+          "name": "nightly-rbac-agent-url"
+        }
+      },
+      {
+        "configMapRef": {
+          "name": "nightly-rbac-agent-cluster-name"
+        }
+      }
+    ],
+    "imagePullSecrets": [
+      {
+        "name": "nightly-rbac-agent-pull-secret"
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "nightly-rbac-agent"
+      }
+    },
+    "serviceAccountName": "nightly-rbac-agent",
+    "volumes": null
+  },
+  "Deployment/suse-observability-mcp": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "mcp",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "suse-observability-mcp"
+  },
+  "Deployment/suse-observability-s3proxy": {
+    "containers/s3proxy/env/S3PROXY_CREDENTIAL": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/s3proxy/env/S3PROXY_IDENTITY": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "s3proxy",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "s3proxy"
+      }
+    },
+    "serviceAccountName": "suse-observability-s3proxy",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "suse-observability-s3proxy-config"
+        },
+        "name": "config"
+      },
+      {
+        "name": "settings-data",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-backup-settings-data"
+        }
+      },
+      {
+        "name": "main-data",
+        "persistentVolumeClaim": {
+          "claimName": "suse-observability-minio"
+        }
+      }
+    ]
+  },
+  "Job/existing-installation-backup-init-\u003ctimestamp\u003e": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "existing-installation-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "existing-installation-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "emptyDir": {},
+        "name": "workdir-container-tools"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-backup-stackgraph-tmp-data"
+        }
+      },
+      {
+        "name": "tmp-data-v2",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-backup-stackgraph-v2-tmp-data"
+        }
+      }
+    ]
+  },
+  "Job/existing-installation-ch-clean\u003ctimestamp\u003e [hook=post-upgrade]": {
+    "namespace": ""
+  },
+  "Job/existing-installation-init-pvc-\u003ctimestamp\u003e": {
+    "namespace": "",
+    "volumes": [
+      {
+        "name": "settings-backup-data",
+        "persistentVolumeClaim": {
+          "claimName": "existing-installation-settings-backup-data"
+        }
+      }
+    ]
+  },
+  "Job/existing-installation-topic-create-\u003ctimestamp\u003e": {
+    "namespace": ""
+  },
+  "PersistentVolumeClaim/existing-installation-backup-settings-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "2Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/existing-installation-backup-stackgraph-tmp-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "250Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/existing-installation-backup-stackgraph-v2-tmp-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "20Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/existing-installation-settings-backup-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "1Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/existing-installation-stackpacks": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "1Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/existing-installation-stackpacks-local": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "1Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/suse-observability-minio": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "500Gi"
+        }
+      }
+    }
+  },
+  "Pod/nightly-\u003crandom\u003e-test [hook=test-success]": {
+    "namespace": ""
+  },
+  "PodDisruptionBudget/existing-installation-ai-assistant": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ai-assistant"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "ai-assistant"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-correlate": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "correlate"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "correlate"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-e2es": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "e2es"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "e2es"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-mcp": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "mcp"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "mcp"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-receiver": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "receiver"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "receiver"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-router": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "router"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "router"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-server": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "server"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "server"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-ui": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ui"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "ui"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-victoriametrics": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/instance": "nightly",
+        "stackstate-service": "victoriametrics"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/instance": "nightly",
+          "stackstate-service": "victoriametrics"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-vmagent": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "vmagent"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "vmagent"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/existing-installation-workload-observer": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "workload-observer"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "workload-observer"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/nightly-hbase-tephra": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "tephra"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "tephra"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/suse-observability-elasticsearch-master-pdb": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "suse-observability-elasticsearch-master"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app": "suse-observability-elasticsearch-master"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/suse-observability-kafka": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "kafka",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "kafka"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "kafka",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "kafka"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/suse-observability-zookeeper": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "zookeeper",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "zookeeper"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "zookeeper",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "zookeeper"
+        }
+      }
+    }
+  },
+  "Role/existing-installation-get-pods": {
+    "namespace": ""
+  },
+  "Role/existing-installation-instance-admin": {
+    "namespace": ""
+  },
+  "Role/existing-installation-instance-basic-access": {
+    "namespace": ""
+  },
+  "Role/existing-installation-instance-observer": {
+    "namespace": ""
+  },
+  "Role/existing-installation-instance-recommended-access": {
+    "namespace": ""
+  },
+  "Role/existing-installation-instance-troubleshooter": {
+    "namespace": ""
+  },
+  "Role/existing-installation-rbac-agent": {
+    "namespace": ""
+  },
+  "Role/existing-installation-replication-checker": {
+    "namespace": ""
+  },
+  "Role/nightly-hbase-hbase": {
+    "namespace": ""
+  },
+  "Role/nightly-kafkaup-operator-kafkaup": {
+    "namespace": ""
+  },
+  "Role/suse-observability-workload-observer": {
+    "namespace": ""
+  },
+  "RoleBinding/existing-installation-get-pods": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-get-pods"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "existing-installation-server"
+      }
+    ]
+  },
+  "RoleBinding/existing-installation-instance-admin": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-instance-admin"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "existing-installation-instance-admin"
+      }
+    ]
+  },
+  "RoleBinding/existing-installation-instance-basic-access": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-instance-basic-access"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "system:authenticated"
+      }
+    ]
+  },
+  "RoleBinding/existing-installation-instance-observer": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-instance-observer"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "existing-installation-instance-observer"
+      }
+    ]
+  },
+  "RoleBinding/existing-installation-instance-recommended-access": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-instance-recommended-access"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "system:authenticated"
+      }
+    ]
+  },
+  "RoleBinding/existing-installation-instance-troubleshooter": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-instance-troubleshooter"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "existing-installation-instance-troubleshooter"
+      }
+    ]
+  },
+  "RoleBinding/existing-installation-rbac-agent": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-rbac-agent"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "nightly-rbac-agent"
+      }
+    ]
+  },
+  "RoleBinding/existing-installation-replication-checker": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "existing-installation-replication-checker"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "existing-installation-replication-checker",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "RoleBinding/nightly-hbase-hbase": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "nightly-hbase-hbase"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "nightly-hbase-hbase",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "RoleBinding/nightly-kafkaup-operator-kafkaup-binding": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "nightly-kafkaup-operator-kafkaup"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "nightly-kafkaup-operator-kafkaup",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "RoleBinding/suse-observability-workload-observer": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "suse-observability-workload-observer"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "suse-observability-workload-observer"
+      }
+    ]
+  },
+  "Secret/existing-installation-api-key": {
+    "dataKeys": [
+      "API_KEY"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-auth": {
+    "dataKeys": [
+      "default_password"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-common": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-correlate": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-e2es": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-license": {
+    "dataKeys": [
+      "LICENSE_KEY"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-receiver": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-server": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/existing-installation-ui": {
+    "dataKeys": [
+      "TEST_SECRET"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/nightly-backup-sts-hbase-backup": {
+    "namespace": "",
+    "stringDataKeys": [
+      "HBASE_CONF_fs_s3a_bucket_sts__stackgraph__backup_access_key",
+      "HBASE_CONF_fs_s3a_bucket_sts__stackgraph__backup_secret_key"
+    ],
+    "type": "Opaque"
+  },
+  "Secret/nightly-pull-secret": {
+    "dataKeys": [
+      ".dockerconfigjson"
+    ],
+    "namespace": "",
+    "type": "kubernetes.io/dockerconfigjson"
+  },
+  "Secret/nightly-pull-secret [hook=pre-install,post-delete]": {
+    "dataKeys": [
+      ".dockerconfigjson"
+    ],
+    "namespace": "",
+    "type": "kubernetes.io/dockerconfigjson"
+  },
+  "Secret/nightly-rbac-agent-pull-secret": {
+    "dataKeys": [
+      ".dockerconfigjson"
+    ],
+    "namespace": "",
+    "type": "kubernetes.io/dockerconfigjson"
+  },
+  "Secret/suse-observability-backup-config": {
+    "namespace": "",
+    "stringDataKeys": [
+      "config"
+    ],
+    "type": "Opaque"
+  },
+  "Secret/suse-observability-clickhouse": {
+    "dataKeys": [
+      "admin-password"
+    ],
+    "namespace": "observability",
+    "type": "Opaque"
+  },
+  "Secret/suse-observability-s3proxy": {
+    "dataKeys": [
+      "accesskey",
+      "secretkey"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Service/existing-installation-backup-stackpacks": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "backup",
+        "port": 7090,
+        "protocol": "TCP",
+        "targetPort": "backup"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "server",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/existing-installation-correlate": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "correlate",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/existing-installation-e2es": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "e2es",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/existing-installation-receiver": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "receiver",
+        "port": 7077,
+        "protocol": "TCP",
+        "targetPort": "receiver"
+      },
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "receiver",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/existing-installation-server-headless": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "api",
+        "port": 7070,
+        "protocol": "TCP",
+        "targetPort": "api"
+      },
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      },
+      {
+        "name": "authz-api",
+        "port": 7075,
+        "protocol": "TCP",
+        "targetPort": "authz-api"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "server",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/existing-installation-ui": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "ui",
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": "ui"
+      },
+      {
+        "name": "metrics",
+        "port": 9113,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "ui",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/nightly-hbase-stackgraph": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "ftp-10125",
+        "port": 10125
+      },
+      {
+        "name": "ftp-10126",
+        "port": 10126
+      },
+      {
+        "name": "ftp",
+        "port": 10021
+      },
+      {
+        "name": "zk",
+        "port": 2182
+      },
+      {
+        "name": "master",
+        "port": 60001
+      },
+      {
+        "name": "masterinfo",
+        "port": 60011
+      },
+      {
+        "name": "rs",
+        "port": 60021
+      },
+      {
+        "name": "rsinfo",
+        "port": 60031
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "stackgraph",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/nightly-hbase-tephra": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "tephra",
+        "port": 15165
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "tephra",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/nightly-prometheus-elasticsearch-exporter": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9108,
+        "protocol": "TCP"
+      }
+    ],
+    "selector": {
+      "app": "prometheus-elasticsearch-exporter",
+      "release": "nightly"
+    }
+  },
+  "Service/nightly-suse-observability-router": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "router",
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": "router"
+      },
+      {
+        "name": "admin",
+        "port": 8001,
+        "protocol": "TCP",
+        "targetPort": "admin"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "router",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-ai-assistant": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8081,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "ai-assistant",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-clickhouse": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "nodePort": null,
+        "port": 8123,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "tcp",
+        "nodePort": null,
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": "tcp"
+      },
+      {
+        "name": "tcp-mysql",
+        "nodePort": null,
+        "port": 9004,
+        "protocol": "TCP",
+        "targetPort": "tcp-mysql"
+      },
+      {
+        "name": "tcp-postgresql",
+        "nodePort": null,
+        "port": 9005,
+        "protocol": "TCP",
+        "targetPort": "tcp-postgresql"
+      },
+      {
+        "name": "http-intersrv",
+        "nodePort": null,
+        "port": 9009,
+        "protocol": "TCP",
+        "targetPort": "http-intersrv"
+      },
+      {
+        "name": "http-metrics",
+        "nodePort": null,
+        "port": 8001,
+        "protocol": "TCP",
+        "targetPort": "http-metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "clickhouse",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "clickhouse"
+    }
+  },
+  "Service/suse-observability-clickhouse-backup": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "backup-api",
+        "port": 7171,
+        "protocol": "TCP",
+        "targetPort": "backup-api"
+      },
+      {
+        "name": "tcp",
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": "tcp"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "clickhouse",
+      "app.kubernetes.io/name": "clickhouse",
+      "shard": "0",
+      "statefulset.kubernetes.io/pod-name": "suse-observability-clickhouse-shard0-0"
+    }
+  },
+  "Service/suse-observability-clickhouse-headless": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8123,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "tcp",
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": "tcp"
+      },
+      {
+        "name": "tcp-mysql",
+        "port": 9004,
+        "protocol": "TCP",
+        "targetPort": "tcp-mysql"
+      },
+      {
+        "name": "tcp-postgresql",
+        "port": 9005,
+        "protocol": "TCP",
+        "targetPort": "tcp-postgresql"
+      },
+      {
+        "name": "http-intersrv",
+        "port": 9009,
+        "protocol": "TCP",
+        "targetPort": "http-intersrv"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "clickhouse",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "clickhouse"
+    }
+  },
+  "Service/suse-observability-elasticsearch-master": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9200,
+        "protocol": "TCP"
+      },
+      {
+        "name": "transport",
+        "port": 9300,
+        "protocol": "TCP"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "master",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "elasticsearch"
+    }
+  },
+  "Service/suse-observability-elasticsearch-master-headless": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9200
+      },
+      {
+        "name": "transport",
+        "port": 9300
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "master",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "elasticsearch"
+    }
+  },
+  "Service/suse-observability-kafka": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "nodePort": null,
+        "port": 9092,
+        "protocol": "TCP",
+        "targetPort": "kafka-client"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "kafka",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "kafka"
+    }
+  },
+  "Service/suse-observability-kafka-headless": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "port": 9092,
+        "protocol": "TCP",
+        "targetPort": "kafka-client"
+      },
+      {
+        "name": "tcp-internal",
+        "port": 9093,
+        "protocol": "TCP",
+        "targetPort": "kafka-internal"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "kafka",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "kafka"
+    }
+  },
+  "Service/suse-observability-kafka-jmx-metrics": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http-metrics",
+        "port": 5556,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "kafka",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "kafka"
+    }
+  },
+  "Service/suse-observability-mcp": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "mcp",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-otel-collector": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 8888,
+        "protocol": "TCP",
+        "targetPort": 8888
+      },
+      {
+        "appProtocol": "grpc",
+        "name": "otlp",
+        "port": 4317,
+        "protocol": "TCP",
+        "targetPort": 4317
+      },
+      {
+        "name": "otlp-http",
+        "port": 4318,
+        "protocol": "TCP",
+        "targetPort": 4318
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "opentelemetry-collector",
+      "component": "statefulset-collector"
+    }
+  },
+  "Service/suse-observability-otel-collector-grpc": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "appProtocol": "grpc",
+        "name": "otlp",
+        "port": 4317,
+        "protocol": "TCP",
+        "targetPort": 4317
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "opentelemetry-collector",
+      "component": "statefulset-collector"
+    }
+  },
+  "Service/suse-observability-s3proxy": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": 9000
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "s3proxy",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "s3proxy"
+    }
+  },
+  "Service/suse-observability-victoria-metrics-0": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8428,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "supercronic",
+        "port": 9746,
+        "protocol": "TCP",
+        "targetPort": "supercronic"
+      }
+    ],
+    "selector": {
+      "app": "server",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "victoria-metrics-0"
+    }
+  },
+  "Service/suse-observability-victoria-metrics-1": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8428,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "supercronic",
+        "port": 9746,
+        "protocol": "TCP",
+        "targetPort": "supercronic"
+      }
+    ],
+    "selector": {
+      "app": "server",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "victoria-metrics-1"
+    }
+  },
+  "Service/suse-observability-victoriametrics": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8428,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/instance": "nightly",
+      "stackstate-service": "victoriametrics"
+    }
+  },
+  "Service/suse-observability-vmagent": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8429,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "vmagent",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-zookeeper": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "nodePort": null,
+        "port": 2181,
+        "targetPort": "client"
+      },
+      {
+        "name": "tcp-follower",
+        "port": 2888,
+        "targetPort": "follower"
+      },
+      {
+        "name": "tcp-election",
+        "port": 3888,
+        "targetPort": "election"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "zookeeper",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "zookeeper"
+    }
+  },
+  "Service/suse-observability-zookeeper-headless": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "port": 2181,
+        "targetPort": "client"
+      },
+      {
+        "name": "tcp-follower",
+        "port": 2888,
+        "targetPort": "follower"
+      },
+      {
+        "name": "tcp-election",
+        "port": 3888,
+        "targetPort": "election"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "zookeeper",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "zookeeper"
+    }
+  },
+  "Service/suse-observability-zookeeper-metrics": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-metrics",
+        "port": 9141,
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "zookeeper",
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/name": "zookeeper"
+    }
+  },
+  "ServiceAccount/existing-installation-replication-checker": {
+    "namespace": ""
+  },
+  "ServiceAccount/existing-installation-router": {
+    "namespace": ""
+  },
+  "ServiceAccount/existing-installation-server": {
+    "namespace": ""
+  },
+  "ServiceAccount/nightly-hbase-console": {
+    "namespace": ""
+  },
+  "ServiceAccount/nightly-hbase-hbase": {
+    "namespace": ""
+  },
+  "ServiceAccount/nightly-hbase-hdfs": {
+    "namespace": ""
+  },
+  "ServiceAccount/nightly-hbase-tephra": {
+    "namespace": ""
+  },
+  "ServiceAccount/nightly-kafkaup-operator-kafkaup": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/nightly-rbac-agent": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/nightly-victoria-metrics-0": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/nightly-victoria-metrics-1": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-ai-assistant": {
+    "namespace": ""
+  },
+  "ServiceAccount/suse-observability-clickhouse": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-kafka": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-mcp": {
+    "namespace": ""
+  },
+  "ServiceAccount/suse-observability-otel-collector": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-s3proxy": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-workload-observer": {
+    "namespace": ""
+  },
+  "ServiceMonitor/existing-installation-correlate": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "correlate",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/existing-installation-e2es": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "e2es",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/existing-installation-receiver": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "receiver",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/existing-installation-router": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/existing-installation-server": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "server",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/existing-installation-ui": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ui",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "StatefulSet/nightly-hbase-stackgraph": {
+    "containers/stackgraph/envFrom": [
+      {
+        "configMapRef": {
+          "name": "nightly-backup-sts-hbase-backup"
+        }
+      },
+      {
+        "secretRef": {
+          "name": "nightly-backup-sts-hbase-backup"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "stackgraph",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "nightly-hbase-hbase",
+    "serviceName": "nightly-hbase-stackgraph",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "StatefulSet/nightly-hbase-tephra-mono": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "tephra",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "nightly-hbase-tephra",
+    "serviceName": "nightly-hbase-tephra",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "snapshot"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "1Gi"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-ai-assistant": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ai-assistant",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "suse-observability-ai-assistant",
+    "serviceName": "suse-observability-ai-assistant",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "1Gi"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-clickhouse-shard0": {
+    "containers/backup/env/BACKUP_CLICKHOUSE_ENABLED": {
+      "configMapKeyRef": {
+        "key": "backup_enabled",
+        "name": "suse-observability-clickhouse-backup"
+      }
+    },
+    "containers/backup/env/CLICKHOUSE_REPLICA_ID": {
+      "fieldRef": {
+        "apiVersion": "v1",
+        "fieldPath": "metadata.name"
+      }
+    },
+    "containers/backup/env/S3_ACCESS_KEY": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/backup/env/S3_SECRET_KEY": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/clickhouse/env/CLICKHOUSE_ADMIN_PASSWORD": {
+      "secretKeyRef": {
+        "key": "admin-password",
+        "name": "suse-observability-clickhouse"
+      }
+    },
+    "containers/clickhouse/env/CLICKHOUSE_REPLICA_ID": {
+      "fieldRef": {
+        "fieldPath": "metadata.name"
+      }
+    },
+    "containers/clickhouse/envFrom": null,
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "clickhouse",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "clickhouse"
+      }
+    },
+    "serviceAccountName": "suse-observability-clickhouse",
+    "serviceName": "suse-observability-clickhouse-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "annotations": null,
+          "labels": {
+            "app.kubernetes.io/component": "clickhouse",
+            "app.kubernetes.io/instance": "nightly",
+            "app.kubernetes.io/name": "clickhouse"
+          },
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "50Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-clickhouse-scripts"
+        },
+        "name": "scripts"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-clickhouse"
+        },
+        "name": "config"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-clickhouse-users-extra"
+        },
+        "name": "users-extra-config"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-clickhouse-backup"
+        },
+        "name": "clickhouse-backup-config"
+      },
+      {
+        "configMap": {
+          "defaultMode": 360,
+          "name": "suse-observability-clickhouse-backup"
+        },
+        "name": "clickhouse-backup-scripts"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-elasticsearch-master": {
+    "containers/elasticsearch/env/node.name": {
+      "fieldRef": {
+        "fieldPath": "metadata.name"
+      }
+    },
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "suse-observability-elasticsearch-master"
+      }
+    },
+    "serviceName": "suse-observability-elasticsearch-master-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": null
+  },
+  "StatefulSet/suse-observability-kafka": {
+    "containers/kafka/env/MY_POD_IP": {
+      "fieldRef": {
+        "fieldPath": "status.podIP"
+      }
+    },
+    "containers/kafka/env/MY_POD_NAME": {
+      "fieldRef": {
+        "fieldPath": "metadata.name"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "kafka",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "kafka"
+      }
+    },
+    "serviceAccountName": "suse-observability-kafka",
+    "serviceName": "suse-observability-kafka-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "100Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-kafka-scripts"
+        },
+        "name": "scripts"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-kafka-jmx-configuration"
+        },
+        "name": "jmx-config"
+      },
+      {
+        "emptyDir": {},
+        "name": "logs"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-otel-collector": {
+    "containers/opentelemetry-collector/env/API_URL": {
+      "configMapKeyRef": {
+        "key": "api.url",
+        "name": "suse-observability-otel-collector"
+      }
+    },
+    "containers/opentelemetry-collector/env/INTAKE_URL": {
+      "configMapKeyRef": {
+        "key": "intake.url",
+        "name": "suse-observability-otel-collector"
+      }
+    },
+    "containers/opentelemetry-collector/env/MY_POD_IP": {
+      "fieldRef": {
+        "apiVersion": "v1",
+        "fieldPath": "status.podIP"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "opentelemetry-collector",
+        "component": "statefulset-collector"
+      }
+    },
+    "serviceAccountName": "suse-observability-otel-collector",
+    "serviceName": "suse-observability-otel-collector",
+    "volumes": [
+      {
+        "configMap": {
+          "items": [
+            {
+              "key": "relay",
+              "path": "relay.yaml"
+            }
+          ],
+          "name": "suse-observability-otel-collector-statefulset"
+        },
+        "name": "opentelemetry-collector-configmap"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-victoria-metrics-0": {
+    "containers/vmbackup/env/AWS_ACCESS_KEY_ID": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/vmbackup/env/AWS_SECRET_ACCESS_KEY": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app": "server",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "victoria-metrics-0"
+      }
+    },
+    "serviceAccountName": "nightly-victoria-metrics-0",
+    "serviceName": "suse-observability-victoria-metrics-0",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "server-volume"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "emptyDir": {},
+        "name": "crontab"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-victoria-metrics-0-scripts"
+        },
+        "name": "run-backup-script"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-victoria-metrics-1": {
+    "containers/vmbackup/env/AWS_ACCESS_KEY_ID": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/vmbackup/env/AWS_SECRET_ACCESS_KEY": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app": "server",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "victoria-metrics-1"
+      }
+    },
+    "serviceAccountName": "nightly-victoria-metrics-1",
+    "serviceName": "suse-observability-victoria-metrics-1",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "server-volume"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "emptyDir": {},
+        "name": "crontab"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-victoria-metrics-1-scripts"
+        },
+        "name": "run-backup-script"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-vmagent": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "vmagent",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceName": "existing-installation",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "tmpdata"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "10Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "name": "existing-installation-vmagent"
+        },
+        "name": "vmagent-config"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-workload-observer": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "workload-observer",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "suse-observability-workload-observer",
+    "serviceName": "existing-installation",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "1Gi"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-zookeeper": {
+    "containers/zookeeper/env/POD_NAME": {
+      "fieldRef": {
+        "apiVersion": "v1",
+        "fieldPath": "metadata.name"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "zookeeper",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/name": "zookeeper"
+      }
+    },
+    "serviceAccountName": "default",
+    "serviceName": "suse-observability-zookeeper-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "annotations": null,
+          "labels": {
+            "app.kubernetes.io/part-of": "suse-observability"
+          },
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "8Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-zookeeper-scripts"
+        },
+        "name": "scripts"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-zookeeper"
+        },
+        "name": "config"
+      }
+    ]
+  }
+}

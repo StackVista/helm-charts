@@ -30,8 +30,14 @@ resources except the UI PodDisruptionBudget, which retains its existing name.
 The vmagent ConfigMap and S3Proxy ServiceMonitor also use the fixed `suse-observability` prefix.
 
 When upgrading a release with a different name, Helm replaces the renamed resources.
+This also applies to affected resources when using root `fullnameOverride`,
+`fullnamePrefix`, or `fullnameSuffix`, or `global.fullnamePrefix` / `global.fullnameSuffix`,
+even with the default release name. Update external manifests and automation that reference
+the previous UI or replication-checker resource names.
 Allow for a UI interruption and restart any active replication check after the upgrade.
-The vmagent pod configuration changes to reference its renamed ConfigMap.
+When the vmagent ConfigMap name changes, its existing StatefulSet rolls the pod to reference
+the new name. With the default single vmagent replica, including HA sizing profiles, this
+temporarily interrupts metrics ingestion. The persistent queue retains the same PVC.
 StatefulSet names, PVC names, HBase Services, and storage bindings are unchanged.
 Other components retain their existing naming until a later migration.
 
