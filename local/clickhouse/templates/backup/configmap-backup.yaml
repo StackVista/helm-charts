@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: suse-observability-clickhouse-backup
+  name: {{ include "stackstate.backup.clickhouse.backup.service" . }}
 data:
   backup_enabled: {{ and .Values.global.backup.enabled .Values.backup.enabled | quote }}
   entrypoint.sh: |

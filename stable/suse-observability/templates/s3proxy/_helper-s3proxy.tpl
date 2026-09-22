@@ -1,35 +1,10 @@
 {{/*
-Full name for S3Proxy resources.
-*/}}
-{{- define "stackstate.s3proxy.fullname" -}}
-suse-observability-s3proxy
-{{- end -}}
-
-{{/*
-Full name for S3Proxy resources.
-*/}}
-{{- define "stackstate.s3proxy.service.fullname" -}}
-suse-observability-s3proxy
-{{- end -}}
-
-{{/*
-S3Proxy secret name.
-*/}}
-{{- define "stackstate.s3proxy.secretName" -}}
-{{- if .Values.global.s3proxy.credentials.fromExternalSecret -}}
-{{- .Values.global.s3proxy.credentials.fromExternalSecret -}}
-{{- else -}}
-{{- include "stackstate.s3proxy.fullname" . -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 S3Proxy endpoint (single port 9000).
 With bucket-locator middleware, all buckets are served from the same endpoint.
 The middleware routes requests to the appropriate backend based on bucket name.
 */}}
 {{- define "stackstate.s3proxy.endpoint" -}}
-{{ include "stackstate.s3proxy.service.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
+{{ include "stackstate.s3proxy.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
 {{- end -}}
 
 {{/*
@@ -164,18 +139,6 @@ Get S3 backend endpoint (from new or legacy values).
 {{- end -}}
 
 {{/*
-S3 backend secret name.
-Returns the external secret name if set, otherwise falls back to the s3proxy secret.
-*/}}
-{{- define "stackstate.s3proxy.s3BackendSecretName" -}}
-{{- if .Values.backup.storage.backend.s3.fromExternalSecret -}}
-{{- .Values.backup.storage.backend.s3.fromExternalSecret -}}
-{{- else -}}
-{{- include "stackstate.s3proxy.secretName" . -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Get S3 backend access key (from new or legacy values).
 */}}
 {{- define "stackstate.s3proxy.s3BackendAccessKey" -}}
@@ -206,18 +169,6 @@ For legacy azuregateway, the account name was passed via minio.accessKey.
 {{- .Values.backup.storage.backend.azure.accountName -}}
 {{- else if and .Values.minio.azuregateway .Values.minio.azuregateway.enabled .Values.minio.accessKey (ne .Values.minio.accessKey "") (ne .Values.minio.accessKey "setme") -}}
 {{- .Values.minio.accessKey -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Azure backend secret name.
-Returns the external secret name if set, otherwise falls back to the s3proxy secret.
-*/}}
-{{- define "stackstate.s3proxy.azureBackendSecretName" -}}
-{{- if .Values.backup.storage.backend.azure.fromExternalSecret -}}
-{{- .Values.backup.storage.backend.azure.fromExternalSecret -}}
-{{- else -}}
-{{- include "stackstate.s3proxy.secretName" . -}}
 {{- end -}}
 {{- end -}}
 
@@ -283,31 +234,6 @@ Uses a consistent naming scheme: backup-settings-data
 */}}
 {{- define "stackstate.backup.settingsPvcName" -}}
 {{- include "common.fullname.short" . -}}-backup-settings-data
-{{- end -}}
-
-{{/*
-Get the main backup PVC name.
-For backward compatibility, we keep the old name "suse-observability-minio" since it was used in previous versions and may already exist in user clusters.
-*/}}
-{{- define "stackstate.backup.mainPvcName" -}}
-suse-observability-minio
-{{- end -}}
-
-{{/*
-Service account name for S3Proxy.
-Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > "suse-observability-minio" (default).
-The default "suse-observability-minio" matches the service account name that was created by the old
-Minio subchart (minio.fullnameOverride was set to "suse-observability-minio").
-This name is important because it may be referenced in IAM role bindings.
-*/}}
-{{- define "stackstate.s3proxy.serviceAccountName" -}}
-{{- if .Values.s3proxy.serviceAccount.name -}}
-{{- .Values.s3proxy.serviceAccount.name -}}
-{{- else if and .Values.minio.serviceAccount .Values.minio.serviceAccount.name -}}
-{{- .Values.minio.serviceAccount.name -}}
-{{- else -}}
-suse-observability-s3proxy
-{{- end -}}
 {{- end -}}
 
 {{/*

@@ -1,0 +1,3723 @@
+{
+  "ClusterRole/global-team-observability-suse-observability-prod-end-authorization": {
+    "namespace": ""
+  },
+  "ClusterRole/observability-suse-observability-rbac-agent": {
+    "namespace": ""
+  },
+  "ClusterRoleBinding/global-team-observability-suse-observability-prod-end-authentication": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "ClusterRole",
+      "name": "system:auth-delegator"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-api",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "ClusterRoleBinding/global-team-observability-suse-observability-prod-end-authorization": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "ClusterRole",
+      "name": "global-team-observability-suse-observability-prod-end-authorization"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-api",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "ClusterRoleBinding/observability-suse-observability-rbac-agent": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "ClusterRole",
+      "name": "observability-suse-observability-rbac-agent"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "suse-observability-rbac-agent",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "ConfigMap/global-suse-observability-backup-end-sts-hbase-backup": {
+    "namespace": ""
+  },
+  "ConfigMap/global-suse-observability-hbase-end-hbase-rs-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/global-suse-observability-hbase-end-hdfs-dn-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/global-suse-observability-kafkaup-operator-end-kafkaup-config": {
+    "namespace": "observability"
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-api": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-api-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-authorization-sync": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-authorization-sync-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-backup-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-backup-restore-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-checks": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-checks-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-correlate": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-correlate-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-e2es": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-e2es-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-health-sync": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-health-sync-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-initializer": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-initializer-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-notification": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-notification-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-receiver": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-receiver-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-router": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-router-active": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-slicing": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-slicing-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-stackpacks-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-state": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-state-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-sts-backup-conf": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-sync": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-sync-log": {
+    "namespace": ""
+  },
+  "ConfigMap/global-team-suse-observability-prod-end-vmagent": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-backup-config": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-clickhouse": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-clickhouse-backup": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-clickhouse-backup-scripts": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-clickhouse-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-clickhouse-users-extra": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-kafka-jmx-configuration": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-kafka-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-otel-collector": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-otel-collector-statefulset": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-rbac-agent-cluster-name": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-rbac-agent-url": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-s3proxy-config": {
+    "namespace": ""
+  },
+  "ConfigMap/suse-observability-victoria-metrics-0-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-victoria-metrics-1-scripts": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-zookeeper": {
+    "namespace": "observability"
+  },
+  "ConfigMap/suse-observability-zookeeper-scripts": {
+    "namespace": "observability"
+  },
+  "CronJob/global-team-suse-observability-prod-end-backup-conf": {
+    "containers/backup-settings/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "serviceAccountName": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "global-team-suse-observability-prod-end-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-sts-backup-conf"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "CronJob/global-team-suse-observability-prod-end-backup-init": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "global-team-suse-observability-prod-end-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "emptyDir": {},
+        "name": "workdir-container-tools"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-backup-stackgraph-tmp-data"
+        }
+      },
+      {
+        "name": "tmp-data-v2",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-backup-stackgraph-v2-tmp-data"
+        }
+      }
+    ]
+  },
+  "CronJob/global-team-suse-observability-prod-end-backup-sg-v2": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "global-team-suse-observability-prod-end-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-backup-stackgraph-v2-tmp-data"
+        }
+      }
+    ]
+  },
+  "CronJob/suse-observability-backup-sg": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "global-team-suse-observability-prod-end-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-backup-stackgraph-tmp-data"
+        }
+      }
+    ]
+  },
+  "CronJob/suse-observability-clickhouse-full-backup": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 360,
+          "name": "suse-observability-clickhouse-backup-scripts"
+        },
+        "name": "clickhouse-backup-scripts"
+      }
+    ]
+  },
+  "CronJob/suse-observability-clickhouse-incremental-backup": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 360,
+          "name": "suse-observability-clickhouse-backup-scripts"
+        },
+        "name": "clickhouse-backup-scripts"
+      }
+    ]
+  },
+  "Deployment/global-suse-observability-hbase-end-console": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "console",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-hbase-end-console"
+  },
+  "Deployment/global-suse-observability-kafkaup-operator-end-kafkaup": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app": "global-suse-observability-kafkaup-operator-end-kafkaup"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-kafkaup-operator-end-kafkaup",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-suse-observability-kafkaup-operator-end-kafkaup-config"
+        },
+        "name": "kafkaup-config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-api": {
+    "containers/api/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      },
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-api-key",
+          "optional": true
+        }
+      },
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-auth"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "api",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-api",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-api-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-api"
+        },
+        "name": "config-volume"
+      },
+      {
+        "name": "stackpacks",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-stackpacks"
+        }
+      },
+      {
+        "configMap": {
+          "defaultMode": 365,
+          "name": "global-team-suse-observability-prod-end-stackpacks-scripts"
+        },
+        "name": "stackpack-scripts"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-authorization-sync": {
+    "containers/authorization-sync/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "authorization-sync",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-authorization-sync",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-authorization-sync-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-authorization-sync"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-checks": {
+    "containers/checks/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "checks",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-checks",
+    "volumes": [
+      {
+        "name": "tmp-volume",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-checks-tmp"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-checks-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-checks"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-correlate": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "correlate",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-correlate-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-correlate"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-e2es": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "e2es",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-e2es-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-e2es"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-health-sync": {
+    "containers/health-sync/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "health-sync",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-health-sync",
+    "volumes": [
+      {
+        "name": "tmp-volume",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-health-sync-tmp"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-health-sync-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-health-sync"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-initializer": {
+    "containers/initializer/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "initializer",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-initializer",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-initializer-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-initializer"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-notification": {
+    "containers/notification/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "notification",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-notification",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-notification-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-notification"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-receiver": {
+    "containers/receiver/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-api-key",
+          "optional": true
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "receiver",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-receiver-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-receiver"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-replication-checker": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "replication-checker",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-replication-checker"
+  },
+  "Deployment/global-team-suse-observability-prod-end-router": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-router",
+    "volumes": [
+      {
+        "configMap": {
+          "items": [
+            {
+              "key": "envoy.yaml",
+              "path": "envoy.yaml"
+            }
+          ],
+          "name": "global-team-suse-observability-prod-end-router"
+        },
+        "name": "config"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-router-active"
+        },
+        "name": "router-mode"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-slicing": {
+    "containers/slicing/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "slicing",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-slicing",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-slicing-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-slicing"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-state": {
+    "containers/state/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "state",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-state",
+    "volumes": [
+      {
+        "name": "tmp-volume",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-state-tmp"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-state-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-state"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-sync": {
+    "containers/sync/envFrom": [
+      {
+        "secretRef": {
+          "name": "global-team-suse-observability-prod-end-license"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "sync",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "global-team-suse-observability-prod-end-sync",
+    "volumes": [
+      {
+        "name": "tmp-volume",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-sync-tmp"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-sync-log"
+        },
+        "name": "config-volume-log"
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-sync"
+        },
+        "name": "config-volume"
+      }
+    ]
+  },
+  "Deployment/global-team-suse-observability-prod-end-ui": {
+    "containers/ui/env/TEST_SECRET": {
+      "secretKeyRef": {
+        "key": "TEST_SECRET",
+        "name": "global-team-suse-observability-prod-end-ui"
+      }
+    },
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ui",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "Deployment/suse-observability-mcp": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "mcp",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "suse-observability-mcp"
+  },
+  "Deployment/suse-observability-prometheus-elasticsearch-exporter": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "prometheus-elasticsearch-exporter",
+        "release": "suse-observability"
+      }
+    },
+    "serviceAccountName": "default",
+    "volumes": null
+  },
+  "Deployment/suse-observability-rbac-agent": {
+    "containers/kubernetes-rbac-agent/envFrom": [
+      {
+        "configMapRef": {
+          "name": "suse-observability-rbac-agent-url"
+        }
+      },
+      {
+        "configMapRef": {
+          "name": "suse-observability-rbac-agent-cluster-name"
+        }
+      }
+    ],
+    "imagePullSecrets": [
+      {
+        "name": "suse-observability-rbac-agent-pull-secret"
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "suse-observability-rbac-agent"
+      }
+    },
+    "serviceAccountName": "suse-observability-rbac-agent",
+    "volumes": null
+  },
+  "Deployment/suse-observability-s3proxy": {
+    "containers/s3proxy/env/S3PROXY_CREDENTIAL": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/s3proxy/env/S3PROXY_IDENTITY": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "s3proxy",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "s3proxy"
+      }
+    },
+    "serviceAccountName": "suse-observability-s3proxy",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "suse-observability-s3proxy-config"
+        },
+        "name": "config"
+      },
+      {
+        "name": "settings-data",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-backup-settings-data"
+        }
+      },
+      {
+        "name": "main-data",
+        "persistentVolumeClaim": {
+          "claimName": "suse-observability-minio"
+        }
+      }
+    ]
+  },
+  "Job/global-team-suse-observability-prod-end-backup-init-\u003ctimestamp\u003e": {
+    "namespace": "",
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-backup-log"
+        },
+        "name": "backup-log"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "global-team-suse-observability-prod-end-backup-restore-scripts"
+        },
+        "name": "backup-restore-scripts"
+      },
+      {
+        "name": "s3proxy-keys",
+        "secret": {
+          "secretName": "suse-observability-s3proxy"
+        }
+      },
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-sts-backup-conf"
+        },
+        "name": "config-volume"
+      },
+      {
+        "emptyDir": {},
+        "name": "workdir-container-tools"
+      },
+      {
+        "name": "tmp-data",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-backup-stackgraph-tmp-data"
+        }
+      },
+      {
+        "name": "tmp-data-v2",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-backup-stackgraph-v2-tmp-data"
+        }
+      }
+    ]
+  },
+  "Job/global-team-suse-observability-prod-end-ch-clean\u003ctimestamp\u003e [hook=post-upgrade]": {
+    "namespace": ""
+  },
+  "Job/global-team-suse-observability-prod-end-init-pvc-\u003ctimestamp\u003e": {
+    "namespace": "",
+    "volumes": [
+      {
+        "name": "settings-backup-data",
+        "persistentVolumeClaim": {
+          "claimName": "global-team-suse-observability-prod-end-settings-backup-data"
+        }
+      }
+    ]
+  },
+  "Job/global-team-suse-observability-prod-end-topic-create-\u003ctimestamp\u003e": {
+    "namespace": ""
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-backup-settings-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "2Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-backup-stackgraph-tmp-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "250Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-backup-stackgraph-v2-tmp-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "20Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-checks-tmp": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "2Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-health-sync-tmp": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "2Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-settings-backup-data": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "1Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-stackpacks": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "1Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-state-tmp": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "2Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/global-team-suse-observability-prod-end-sync-tmp": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "2Gi"
+        }
+      }
+    }
+  },
+  "PersistentVolumeClaim/suse-observability-minio": {
+    "namespace": "",
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "500Gi"
+        }
+      }
+    }
+  },
+  "Pod/suse-observability-\u003crandom\u003e-test [hook=test-success]": {
+    "namespace": ""
+  },
+  "PodDisruptionBudget/global-suse-observability-hbase-end-hbase-master": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hbase-master"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hbase-master"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-suse-observability-hbase-end-hbase-rs": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hbase-rs"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hbase-rs"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-suse-observability-hbase-end-hdfs-dn": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hdfs-dn"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hdfs-dn"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-suse-observability-hbase-end-hdfs-nn": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hdfs-nn"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hdfs-nn"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-suse-observability-hbase-end-hdfs-snn": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hdfs-snn"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hdfs-snn"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-suse-observability-hbase-end-tephra": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "tephra"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "tephra"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-ai-assistant": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ai-assistant"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "ai-assistant"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-api": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "api"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "api"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-authorization-sync": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "authorization-sync"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "authorization-sync"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-checks": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "checks"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "checks"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-correlate": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "correlate"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "correlate"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-e2es": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "e2es"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "e2es"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-health-sync": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "health-sync"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "health-sync"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-mcp": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "mcp"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "mcp"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-notification": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "notification"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "notification"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-receiver": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "receiver"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "receiver"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-router": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "router"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "router"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-state": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "state"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "state"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-sync": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "sync"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "sync"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-ui": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ui"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "ui"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-victoriametrics": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/instance": "suse-observability",
+        "stackstate-service": "victoriametrics"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/instance": "suse-observability",
+          "stackstate-service": "victoriametrics"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-vmagent": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "vmagent"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "vmagent"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/global-team-suse-observability-prod-end-workload-observer": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "workload-observer"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "workload-observer"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/suse-observability-elasticsearch-master-pdb": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "suse-observability-elasticsearch-master"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app": "suse-observability-elasticsearch-master"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/suse-observability-kafka": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "kafka",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "kafka"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "kafka",
+          "app.kubernetes.io/instance": "suse-observability",
+          "app.kubernetes.io/name": "kafka"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/suse-observability-zookeeper": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "zookeeper",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "zookeeper"
+      }
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "zookeeper",
+          "app.kubernetes.io/instance": "suse-observability",
+          "app.kubernetes.io/name": "zookeeper"
+        }
+      }
+    }
+  },
+  "Role/global-suse-observability-hbase-end-hbase": {
+    "namespace": ""
+  },
+  "Role/global-suse-observability-kafkaup-operator-end-kafkaup": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-get-pods": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-instance-admin": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-instance-basic-access": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-instance-observer": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-instance-recommended-access": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-instance-troubleshooter": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-rbac-agent": {
+    "namespace": ""
+  },
+  "Role/global-team-suse-observability-prod-end-replication-checker": {
+    "namespace": ""
+  },
+  "Role/suse-observability-workload-observer": {
+    "namespace": ""
+  },
+  "RoleBinding/global-suse-observability-hbase-end-hbase": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-suse-observability-hbase-end-hbase"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "global-suse-observability-hbase-end-hbase",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "RoleBinding/global-suse-observability-kafkaup-operator-end-kafkaup-binding": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-suse-observability-kafkaup-operator-end-kafkaup"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "global-suse-observability-kafkaup-operator-end-kafkaup",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-get-pods": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-get-pods"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-api"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-authorization-sync"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-checks"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-initializer"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-slicing"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-state"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-sync"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-notification"
+      },
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-health-sync"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-instance-admin": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-instance-admin"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "global-team-suse-observability-prod-end-instance-admin"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-instance-basic-access": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-instance-basic-access"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "system:authenticated"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-instance-observer": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-instance-observer"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "global-team-suse-observability-prod-end-instance-observer"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-instance-recommended-access": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-instance-recommended-access"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "system:authenticated"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-instance-troubleshooter": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-instance-troubleshooter"
+    },
+    "subjects": [
+      {
+        "kind": "Group",
+        "name": "global-team-suse-observability-prod-end-instance-troubleshooter"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-rbac-agent": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-rbac-agent"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "suse-observability-rbac-agent"
+      }
+    ]
+  },
+  "RoleBinding/global-team-suse-observability-prod-end-replication-checker": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "global-team-suse-observability-prod-end-replication-checker"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "global-team-suse-observability-prod-end-replication-checker",
+        "namespace": "observability"
+      }
+    ]
+  },
+  "RoleBinding/suse-observability-workload-observer": {
+    "namespace": "",
+    "roleRef": {
+      "apiGroup": "rbac.authorization.k8s.io",
+      "kind": "Role",
+      "name": "suse-observability-workload-observer"
+    },
+    "subjects": [
+      {
+        "kind": "ServiceAccount",
+        "name": "suse-observability-workload-observer"
+      }
+    ]
+  },
+  "Secret/global-suse-observability-backup-end-sts-hbase-backup": {
+    "namespace": "",
+    "stringDataKeys": [
+      "HBASE_CONF_fs_s3a_bucket_sts__stackgraph__backup_access_key",
+      "HBASE_CONF_fs_s3a_bucket_sts__stackgraph__backup_secret_key"
+    ],
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-api": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-api-key": {
+    "dataKeys": [
+      "API_KEY"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-auth": {
+    "dataKeys": [
+      "default_password"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-authorization-sync": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-checks": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-common": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-correlate": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-e2es": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-health-sync": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-initializer": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-license": {
+    "dataKeys": [
+      "LICENSE_KEY"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-notification": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-receiver": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-slicing": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-state": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-sync": {
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/global-team-suse-observability-prod-end-ui": {
+    "dataKeys": [
+      "TEST_SECRET"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Secret/suse-observability-backup-config": {
+    "namespace": "",
+    "stringDataKeys": [
+      "config"
+    ],
+    "type": "Opaque"
+  },
+  "Secret/suse-observability-clickhouse": {
+    "dataKeys": [
+      "admin-password"
+    ],
+    "namespace": "observability",
+    "type": "Opaque"
+  },
+  "Secret/suse-observability-pull-secret": {
+    "dataKeys": [
+      ".dockerconfigjson"
+    ],
+    "namespace": "",
+    "type": "kubernetes.io/dockerconfigjson"
+  },
+  "Secret/suse-observability-pull-secret [hook=pre-install,post-delete]": {
+    "dataKeys": [
+      ".dockerconfigjson"
+    ],
+    "namespace": "",
+    "type": "kubernetes.io/dockerconfigjson"
+  },
+  "Secret/suse-observability-rbac-agent-pull-secret": {
+    "dataKeys": [
+      ".dockerconfigjson"
+    ],
+    "namespace": "",
+    "type": "kubernetes.io/dockerconfigjson"
+  },
+  "Secret/suse-observability-s3proxy": {
+    "dataKeys": [
+      "accesskey",
+      "secretkey"
+    ],
+    "namespace": "",
+    "type": "Opaque"
+  },
+  "Service/global-suse-observability-end-router": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "router",
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": "router"
+      },
+      {
+        "name": "admin",
+        "port": 8001,
+        "protocol": "TCP",
+        "targetPort": "admin"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "router",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-suse-observability-hbase-end-hbase-master": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "master",
+        "port": 16000
+      },
+      {
+        "name": "masterinfo",
+        "port": 16010
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "hbase-master",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/global-suse-observability-hbase-end-hbase-rs": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "rs",
+        "port": 16020
+      },
+      {
+        "name": "rsinfo",
+        "port": 16030
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "hbase-rs",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/global-suse-observability-hbase-end-hdfs-dn": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "dn",
+        "port": 50010
+      },
+      {
+        "name": "dninfo",
+        "port": 50075
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "hdfs-dn",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/global-suse-observability-hbase-end-hdfs-nn-headful": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "nn",
+        "port": 9000
+      },
+      {
+        "name": "nninfo",
+        "port": 50070
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "hdfs-nn",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/global-suse-observability-hbase-end-hdfs-snn": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "snn",
+        "port": 50090
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "hdfs-snn",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/global-suse-observability-hbase-end-tephra": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "tephra",
+        "port": 15165
+      },
+      {
+        "name": "metrics",
+        "port": 9404
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "tephra",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "hbase"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-api-headless": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "api",
+        "port": 7070,
+        "protocol": "TCP",
+        "targetPort": "api"
+      },
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "api",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-authorization-sync": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "authz-api",
+        "port": 7075,
+        "protocol": "TCP",
+        "targetPort": "authz-api"
+      },
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "authorization-sync",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-backup-stackpacks": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "backup",
+        "port": 7090,
+        "protocol": "TCP",
+        "targetPort": "backup"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "api",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-checks": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "checks",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-correlate": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "correlate",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-e2es": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "e2es",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-health-sync": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "health-sync",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-initializer": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "health",
+        "port": 1618,
+        "protocol": "TCP",
+        "targetPort": "health"
+      },
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "initializer",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-notification": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "notification",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-receiver": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "receiver",
+        "port": 7077,
+        "protocol": "TCP",
+        "targetPort": "receiver"
+      },
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "receiver",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-slicing": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "slicing",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-state": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "state",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-sync": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 9404,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "sync",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/global-team-suse-observability-prod-end-ui": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "ui",
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": "ui"
+      },
+      {
+        "name": "metrics",
+        "port": 9113,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "ui",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-ai-assistant": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8081,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "ai-assistant",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-clickhouse": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "nodePort": null,
+        "port": 8123,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "tcp",
+        "nodePort": null,
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": "tcp"
+      },
+      {
+        "name": "tcp-mysql",
+        "nodePort": null,
+        "port": 9004,
+        "protocol": "TCP",
+        "targetPort": "tcp-mysql"
+      },
+      {
+        "name": "tcp-postgresql",
+        "nodePort": null,
+        "port": 9005,
+        "protocol": "TCP",
+        "targetPort": "tcp-postgresql"
+      },
+      {
+        "name": "http-intersrv",
+        "nodePort": null,
+        "port": 9009,
+        "protocol": "TCP",
+        "targetPort": "http-intersrv"
+      },
+      {
+        "name": "http-metrics",
+        "nodePort": null,
+        "port": 8001,
+        "protocol": "TCP",
+        "targetPort": "http-metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "clickhouse",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "clickhouse"
+    }
+  },
+  "Service/suse-observability-clickhouse-backup": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "backup-api",
+        "port": 7171,
+        "protocol": "TCP",
+        "targetPort": "backup-api"
+      },
+      {
+        "name": "tcp",
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": "tcp"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "clickhouse",
+      "app.kubernetes.io/name": "clickhouse",
+      "shard": "0",
+      "statefulset.kubernetes.io/pod-name": "suse-observability-clickhouse-shard0-0"
+    }
+  },
+  "Service/suse-observability-clickhouse-headless": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8123,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "tcp",
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": "tcp"
+      },
+      {
+        "name": "tcp-mysql",
+        "port": 9004,
+        "protocol": "TCP",
+        "targetPort": "tcp-mysql"
+      },
+      {
+        "name": "tcp-postgresql",
+        "port": 9005,
+        "protocol": "TCP",
+        "targetPort": "tcp-postgresql"
+      },
+      {
+        "name": "http-intersrv",
+        "port": 9009,
+        "protocol": "TCP",
+        "targetPort": "http-intersrv"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "clickhouse",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "clickhouse"
+    }
+  },
+  "Service/suse-observability-elasticsearch-master": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9200,
+        "protocol": "TCP"
+      },
+      {
+        "name": "transport",
+        "port": 9300,
+        "protocol": "TCP"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "master",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "elasticsearch"
+    }
+  },
+  "Service/suse-observability-elasticsearch-master-headless": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9200
+      },
+      {
+        "name": "transport",
+        "port": 9300
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "master",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "elasticsearch"
+    }
+  },
+  "Service/suse-observability-kafka": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "nodePort": null,
+        "port": 9092,
+        "protocol": "TCP",
+        "targetPort": "kafka-client"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "kafka",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "kafka"
+    }
+  },
+  "Service/suse-observability-kafka-headless": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "port": 9092,
+        "protocol": "TCP",
+        "targetPort": "kafka-client"
+      },
+      {
+        "name": "tcp-internal",
+        "port": 9093,
+        "protocol": "TCP",
+        "targetPort": "kafka-internal"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "kafka",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "kafka"
+    }
+  },
+  "Service/suse-observability-kafka-jmx-metrics": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http-metrics",
+        "port": 5556,
+        "protocol": "TCP",
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "kafka",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "kafka"
+    }
+  },
+  "Service/suse-observability-mcp": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "mcp",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-otel-collector": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "metrics",
+        "port": 8888,
+        "protocol": "TCP",
+        "targetPort": 8888
+      },
+      {
+        "appProtocol": "grpc",
+        "name": "otlp",
+        "port": 4317,
+        "protocol": "TCP",
+        "targetPort": 4317
+      },
+      {
+        "name": "otlp-http",
+        "port": 4318,
+        "protocol": "TCP",
+        "targetPort": 4318
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "opentelemetry-collector",
+      "component": "statefulset-collector"
+    }
+  },
+  "Service/suse-observability-otel-collector-grpc": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "appProtocol": "grpc",
+        "name": "otlp",
+        "port": 4317,
+        "protocol": "TCP",
+        "targetPort": 4317
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "opentelemetry-collector",
+      "component": "statefulset-collector"
+    }
+  },
+  "Service/suse-observability-prometheus-elasticsearch-exporter": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9108,
+        "protocol": "TCP"
+      }
+    ],
+    "selector": {
+      "app": "prometheus-elasticsearch-exporter",
+      "release": "suse-observability"
+    }
+  },
+  "Service/suse-observability-s3proxy": {
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 9000,
+        "protocol": "TCP",
+        "targetPort": 9000
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "s3proxy",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "s3proxy"
+    }
+  },
+  "Service/suse-observability-victoria-metrics-0": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8428,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "supercronic",
+        "port": 9746,
+        "protocol": "TCP",
+        "targetPort": "supercronic"
+      }
+    ],
+    "selector": {
+      "app": "server",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "victoria-metrics-0"
+    }
+  },
+  "Service/suse-observability-victoria-metrics-1": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8428,
+        "protocol": "TCP",
+        "targetPort": "http"
+      },
+      {
+        "name": "supercronic",
+        "port": 9746,
+        "protocol": "TCP",
+        "targetPort": "supercronic"
+      }
+    ],
+    "selector": {
+      "app": "server",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "victoria-metrics-1"
+    }
+  },
+  "Service/suse-observability-victoriametrics": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8428,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/instance": "suse-observability",
+      "stackstate-service": "victoriametrics"
+    }
+  },
+  "Service/suse-observability-vmagent": {
+    "clusterIP": "None",
+    "namespace": "",
+    "ports": [
+      {
+        "name": "http",
+        "port": 8429,
+        "protocol": "TCP",
+        "targetPort": "http"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "vmagent",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "suse-observability"
+    }
+  },
+  "Service/suse-observability-zookeeper": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "nodePort": null,
+        "port": 2181,
+        "targetPort": "client"
+      },
+      {
+        "name": "tcp-follower",
+        "port": 2888,
+        "targetPort": "follower"
+      },
+      {
+        "name": "tcp-election",
+        "port": 3888,
+        "targetPort": "election"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "zookeeper",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "zookeeper"
+    }
+  },
+  "Service/suse-observability-zookeeper-headless": {
+    "clusterIP": "None",
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-client",
+        "port": 2181,
+        "targetPort": "client"
+      },
+      {
+        "name": "tcp-follower",
+        "port": 2888,
+        "targetPort": "follower"
+      },
+      {
+        "name": "tcp-election",
+        "port": 3888,
+        "targetPort": "election"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "zookeeper",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "zookeeper"
+    }
+  },
+  "Service/suse-observability-zookeeper-metrics": {
+    "namespace": "observability",
+    "ports": [
+      {
+        "name": "tcp-metrics",
+        "port": 9141,
+        "targetPort": "metrics"
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/component": "zookeeper",
+      "app.kubernetes.io/instance": "suse-observability",
+      "app.kubernetes.io/name": "zookeeper"
+    }
+  },
+  "ServiceAccount/global-suse-observability-hbase-end-console": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-suse-observability-hbase-end-hbase": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-suse-observability-hbase-end-hdfs": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-suse-observability-hbase-end-tephra": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-suse-observability-kafkaup-operator-end-kafkaup": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-api": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-authorization-sync": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-checks": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-health-sync": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-initializer": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-notification": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-replication-checker": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-router": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-slicing": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-state": {
+    "namespace": ""
+  },
+  "ServiceAccount/global-team-suse-observability-prod-end-sync": {
+    "namespace": ""
+  },
+  "ServiceAccount/suse-observability-ai-assistant": {
+    "namespace": ""
+  },
+  "ServiceAccount/suse-observability-clickhouse": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-kafka": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-mcp": {
+    "namespace": ""
+  },
+  "ServiceAccount/suse-observability-otel-collector": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-rbac-agent": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-s3proxy": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-victoria-metrics-0": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-victoria-metrics-1": {
+    "namespace": "observability"
+  },
+  "ServiceAccount/suse-observability-workload-observer": {
+    "namespace": ""
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-api": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "api",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-authorization-sync": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "authorization-sync",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-checks": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "checks",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-correlate": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "correlate",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-e2es": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "e2es",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-health-sync": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "health-sync",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-initializer": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "initializer",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-notification": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "notification",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-receiver": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "receiver",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-router": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-slicing": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "slicing",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-state": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "state",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-sync": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "sync",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "ServiceMonitor/global-team-suse-observability-prod-end-ui": {
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ui",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    }
+  },
+  "StatefulSet/global-suse-observability-hbase-end-hbase-master": {
+    "containers/master/env/HBASE_MASTER_NAMESPACE": {
+      "fieldRef": {
+        "fieldPath": "metadata.namespace"
+      }
+    },
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hbase-master",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-hbase-end-hbase",
+    "serviceName": "global-suse-observability-hbase-end-hbase-master"
+  },
+  "StatefulSet/global-suse-observability-hbase-end-hbase-rs": {
+    "containers/regionserver/env/POD_NAME": {
+      "fieldRef": {
+        "fieldPath": "metadata.name"
+      }
+    },
+    "containers/regionserver/env/POD_NAMESPACE": {
+      "fieldRef": {
+        "fieldPath": "metadata.namespace"
+      }
+    },
+    "containers/regionserver/envFrom": [
+      {
+        "configMapRef": {
+          "name": "global-suse-observability-backup-end-sts-hbase-backup"
+        }
+      },
+      {
+        "secretRef": {
+          "name": "global-suse-observability-backup-end-sts-hbase-backup"
+        }
+      }
+    ],
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hbase-rs",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-hbase-end-hbase",
+    "serviceName": "global-suse-observability-hbase-end-hbase-rs",
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "global-suse-observability-hbase-end-hbase-rs-scripts"
+        },
+        "name": "rs-scripts"
+      }
+    ]
+  },
+  "StatefulSet/global-suse-observability-hbase-end-hdfs-dn": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hdfs-dn",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-hbase-end-hdfs",
+    "serviceName": "global-suse-observability-hbase-end-hdfs-dn",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "global-suse-observability-hbase-end-hdfs-dn-scripts"
+        },
+        "name": "dn-scripts"
+      }
+    ]
+  },
+  "StatefulSet/global-suse-observability-hbase-end-hdfs-nn": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hdfs-nn",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-hbase-end-hdfs",
+    "serviceName": "global-suse-observability-hbase-end-hdfs-nn",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "20Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": null
+  },
+  "StatefulSet/global-suse-observability-hbase-end-hdfs-snn": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "hdfs-snn",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-hbase-end-hdfs",
+    "serviceName": "global-suse-observability-hbase-end-hdfs-snn",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "20Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": null
+  },
+  "StatefulSet/global-suse-observability-hbase-end-tephra": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "tephra",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "hbase"
+      }
+    },
+    "serviceAccountName": "global-suse-observability-hbase-end-tephra",
+    "serviceName": "global-suse-observability-hbase-end-tephra"
+  },
+  "StatefulSet/suse-observability-ai-assistant": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "ai-assistant",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "suse-observability-ai-assistant",
+    "serviceName": "suse-observability-ai-assistant",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "1Gi"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-clickhouse-shard0": {
+    "containers/backup/env/BACKUP_CLICKHOUSE_ENABLED": {
+      "configMapKeyRef": {
+        "key": "backup_enabled",
+        "name": "suse-observability-clickhouse-backup"
+      }
+    },
+    "containers/backup/env/CLICKHOUSE_REPLICA_ID": {
+      "fieldRef": {
+        "apiVersion": "v1",
+        "fieldPath": "metadata.name"
+      }
+    },
+    "containers/backup/env/S3_ACCESS_KEY": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/backup/env/S3_SECRET_KEY": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/clickhouse/env/CLICKHOUSE_ADMIN_PASSWORD": {
+      "secretKeyRef": {
+        "key": "admin-password",
+        "name": "suse-observability-clickhouse"
+      }
+    },
+    "containers/clickhouse/env/CLICKHOUSE_REPLICA_ID": {
+      "fieldRef": {
+        "fieldPath": "metadata.name"
+      }
+    },
+    "containers/clickhouse/envFrom": null,
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "clickhouse",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "clickhouse"
+      }
+    },
+    "serviceAccountName": "suse-observability-clickhouse",
+    "serviceName": "suse-observability-clickhouse-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "annotations": null,
+          "labels": {
+            "app.kubernetes.io/component": "clickhouse",
+            "app.kubernetes.io/instance": "suse-observability",
+            "app.kubernetes.io/name": "clickhouse"
+          },
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "50Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-clickhouse-scripts"
+        },
+        "name": "scripts"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-clickhouse"
+        },
+        "name": "config"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-clickhouse-users-extra"
+        },
+        "name": "users-extra-config"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-clickhouse-backup"
+        },
+        "name": "clickhouse-backup-config"
+      },
+      {
+        "configMap": {
+          "defaultMode": 360,
+          "name": "suse-observability-clickhouse-backup"
+        },
+        "name": "clickhouse-backup-scripts"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-elasticsearch-master": {
+    "containers/elasticsearch/env/node.name": {
+      "fieldRef": {
+        "fieldPath": "metadata.name"
+      }
+    },
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app": "suse-observability-elasticsearch-master"
+      }
+    },
+    "serviceName": "suse-observability-elasticsearch-master-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": null
+  },
+  "StatefulSet/suse-observability-kafka": {
+    "containers/kafka/env/MY_POD_IP": {
+      "fieldRef": {
+        "fieldPath": "status.podIP"
+      }
+    },
+    "containers/kafka/env/MY_POD_NAME": {
+      "fieldRef": {
+        "fieldPath": "metadata.name"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "kafka",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "kafka"
+      }
+    },
+    "serviceAccountName": "suse-observability-kafka",
+    "serviceName": "suse-observability-kafka-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "100Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-kafka-scripts"
+        },
+        "name": "scripts"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-kafka-jmx-configuration"
+        },
+        "name": "jmx-config"
+      },
+      {
+        "emptyDir": {},
+        "name": "logs"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-otel-collector": {
+    "containers/opentelemetry-collector/env/API_URL": {
+      "configMapKeyRef": {
+        "key": "api.url",
+        "name": "suse-observability-otel-collector"
+      }
+    },
+    "containers/opentelemetry-collector/env/INTAKE_URL": {
+      "configMapKeyRef": {
+        "key": "intake.url",
+        "name": "suse-observability-otel-collector"
+      }
+    },
+    "containers/opentelemetry-collector/env/MY_POD_IP": {
+      "fieldRef": {
+        "apiVersion": "v1",
+        "fieldPath": "status.podIP"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "opentelemetry-collector",
+        "component": "statefulset-collector"
+      }
+    },
+    "serviceAccountName": "suse-observability-otel-collector",
+    "serviceName": "suse-observability-otel-collector",
+    "volumes": [
+      {
+        "configMap": {
+          "items": [
+            {
+              "key": "relay",
+              "path": "relay.yaml"
+            }
+          ],
+          "name": "suse-observability-otel-collector-statefulset"
+        },
+        "name": "opentelemetry-collector-configmap"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-victoria-metrics-0": {
+    "containers/vmbackup/env/AWS_ACCESS_KEY_ID": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/vmbackup/env/AWS_SECRET_ACCESS_KEY": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app": "server",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "victoria-metrics-0"
+      }
+    },
+    "serviceAccountName": "suse-observability-victoria-metrics-0",
+    "serviceName": "suse-observability-victoria-metrics-0",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "server-volume"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "emptyDir": {},
+        "name": "crontab"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-victoria-metrics-0-scripts"
+        },
+        "name": "run-backup-script"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-victoria-metrics-1": {
+    "containers/vmbackup/env/AWS_ACCESS_KEY_ID": {
+      "secretKeyRef": {
+        "key": "accesskey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "containers/vmbackup/env/AWS_SECRET_ACCESS_KEY": {
+      "secretKeyRef": {
+        "key": "secretkey",
+        "name": "suse-observability-s3proxy"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app": "server",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "victoria-metrics-1"
+      }
+    },
+    "serviceAccountName": "suse-observability-victoria-metrics-1",
+    "serviceName": "suse-observability-victoria-metrics-1",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "server-volume"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "250Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "emptyDir": {},
+        "name": "crontab"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-victoria-metrics-1-scripts"
+        },
+        "name": "run-backup-script"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-vmagent": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "vmagent",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceName": "global-team-suse-observability-suse-observability-prod",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "tmpdata"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "10Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "name": "global-team-suse-observability-prod-end-vmagent"
+        },
+        "name": "vmagent-config"
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-workload-observer": {
+    "namespace": "",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "workload-observer",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "suse-observability"
+      }
+    },
+    "serviceAccountName": "suse-observability-workload-observer",
+    "serviceName": "global-team-suse-observability-suse-observability-prod",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "1Gi"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "StatefulSet/suse-observability-zookeeper": {
+    "containers/zookeeper/env/POD_NAME": {
+      "fieldRef": {
+        "apiVersion": "v1",
+        "fieldPath": "metadata.name"
+      }
+    },
+    "namespace": "observability",
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/component": "zookeeper",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/name": "zookeeper"
+      }
+    },
+    "serviceAccountName": "default",
+    "serviceName": "suse-observability-zookeeper-headless",
+    "volumeClaimTemplates": [
+      {
+        "metadata": {
+          "annotations": null,
+          "labels": {
+            "app.kubernetes.io/part-of": "suse-observability"
+          },
+          "name": "data"
+        },
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "8Gi"
+            }
+          }
+        }
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "suse-observability-zookeeper-scripts"
+        },
+        "name": "scripts"
+      },
+      {
+        "configMap": {
+          "name": "suse-observability-zookeeper"
+        },
+        "name": "config"
+      }
+    ]
+  }
+}

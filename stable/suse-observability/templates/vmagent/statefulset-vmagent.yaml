@@ -79,7 +79,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.vmagent.container.init" .) -}}
 {{- $stsstackstateVmagentInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ include "stackstate.vmagent.endpoint" . }}
+  name: {{ include "stackstate.vmagent.fullname" . }}
   labels:
     app.kubernetes.io/component: vmagent
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -131,7 +131,7 @@ spec:
       volumes:
         - name: vmagent-config
           configMap:
-            name: {{ template "common.fullname.short" . }}-vmagent
+            name: {{ template "stackstate.vmagent.fullname" . }}
   volumeClaimTemplates:
     - metadata:
         name: tmpdata

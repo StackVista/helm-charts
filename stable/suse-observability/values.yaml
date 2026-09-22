@@ -2033,7 +2033,7 @@ s3proxy:
   serviceAccount:
     # s3proxy.serviceAccount.create -- Whether to create the service account for S3Proxy.
     create: true
-    # s3proxy.serviceAccount.name -- Override the service account name. Defaults to "suse-observability-minio" for backward compatibility with the old Minio subchart (e.g. IAM role bindings).
+    # s3proxy.serviceAccount.name -- Override the service account name. Falls back to the deprecated minio.serviceAccount.name if set, otherwise "suse-observability-s3proxy". Set an explicit name to preserve existing IAM role bindings.
     name: ""
     # s3proxy.serviceAccount.annotations -- Annotations for the S3Proxy service account (e.g. for IAM roles).
     annotations: {}

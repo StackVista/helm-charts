@@ -163,7 +163,7 @@ data:
                     prefix: "/"
                   route:
                     timeout: 0s
-                    cluster: "{{ template "common.fullname.short" . }}-ui"
+                    cluster: "{{ template "stackstate.ui.fullname" . }}"
                   response_headers_to_add:
                     - header:
                         key: "X-Frame-Options"
@@ -311,7 +311,7 @@ data:
                   address: "{{ include "stackstate.otelCollector.fullname" . }}"
                   port_value: 4318
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
-      name: "{{ template "common.fullname.short" . }}-ui"
+      name: "{{ template "stackstate.ui.fullname" . }}"
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
       typed_extension_protocol_options:
@@ -327,7 +327,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "common.fullname.short" . }}-ui"
+                  address: "{{ template "stackstate.ui.fullname" . }}"
                   port_value: 8080
     {{- if eq (include "stackstate.mcp.enabled" .) "true" }}
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster

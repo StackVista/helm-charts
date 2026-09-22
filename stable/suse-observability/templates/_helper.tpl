@@ -36,12 +36,6 @@ since the AI Assistant is an MCP client that requires the MCP server.
 {{- define "stackstate.metricStore.remoteWritePath" -}}/api/v1/write{{- end -}}
 {{- define "stackstate.metrics.defaultAgentMetricsFilter" -}}["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "pekko_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]{{- end -}}
 {{- define "stackstate.vmagent.agentMetricsFilter" -}}["vm*", "go*", "process_open_fds", "process_max_fds", "process_cpu_cores_available"]{{- end -}}
-{{- define "stackstate.vmagent.fullname" -}}suse-observability-vmagent{{- end -}}
-{{- define "stackstate.kafka.fullname" -}}suse-observability-kafka{{- end -}}
-{{- define "stackstate.zookeeper.fullname" -}}suse-observability-zookeeper{{- end -}}
-{{- define "stackstate.elasticsearch.fullname" -}}suse-observability-elasticsearch{{- end -}}
-{{- define "stackstate.clickhouse.fullname" -}}suse-observability-clickhouse{{- end -}}
-{{- define "stackstate.backup.clickhouse.backup.service" -}}suse-observability-clickhouse-backup{{- end -}}
 {{- define "stackstate.kafka.topicRetention" -}}86400000{{- end -}}
 {{- define "stackstate.kafka.topic.stsMetricsV2.partitionCount" -}}10{{- end -}}
 
@@ -178,13 +172,6 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 {{- end -}}
 
 {{/*
-MCP fullname helper
-*/}}
-{{- define "stackstate.mcp.fullname" -}}
-suse-observability-mcp
-{{- end -}}
-
-{{/*
 MCP extra environment variables for mcp pods inherited through `stackstate.components.mcp.extraEnv`
 */}}
 {{- define "stackstate.mcp.envvars" -}}
@@ -203,13 +190,6 @@ MCP extra environment variables for mcp pods inherited through `stackstate.compo
       key: {{ $key }}
   {{- end }}
 {{- end }}
-{{- end -}}
-
-{{/*
-AI Assistant fullname helper
-*/}}
-{{- define "stackstate.ai-assistant.fullname" -}}
-suse-observability-ai-assistant
 {{- end -}}
 
 {{/*
@@ -267,7 +247,7 @@ UI extra environment variables for ui pods inherited through `stackstate.compone
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-ui
+      name: {{ template "stackstate.ui.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -614,23 +594,6 @@ Usage:
 {{- end -}}
 
 {{/*
-Name of the Secret holding the SUSE Observability registry pull credentials, used by all normal workloads.
-*/}}
-{{- define "suse-observability.pullSecret.name" -}}
-suse-observability-pull-secret
-{{- end -}}
-
-{{/*
-Name of the hook-managed copy of the pull secret. It is created during pre-install/pre-upgrade/post-delete
-hooks so that hook Jobs running before the normal Secret exists (or after it has been removed) can still pull
-images. It must differ from suse-observability.pullSecret.name so GitOps tools (ArgoCD/Flux) and
-`helm template | kubectl apply` never see two resources with the same name.
-*/}}
-{{- define "suse-observability.pullSecret.hookName" -}}
-suse-observability-pull-secret-hook
-{{- end -}}
-
-{{/*
 Return the proper Docker Image Registry Secret Names evaluating values as templates
 {{ include "stackstate.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
 Pass "autoSecretName" to override the automatically-included secret name, e.g. for hook Jobs that must
@@ -663,7 +626,6 @@ imagePullSecrets:
     {{- end }}
   {{- end }}
 {{- end -}}
-
 
 {{- define "stackstate.service.spec.poddisruptionbudget" -}}
 metadata:
@@ -738,7 +700,7 @@ Logic validate the total shares of Es disk
 Determines the hostname prefix for the different stackstate services. This name is stable across subcharts
 */}}
 {{- define "stackstate.hostname.prefix" -}}
-{{- template "common.fullname.global" (merge (dict "Base" "suse-observability") .) }}
+{{- template "common.fullname.global" (merge (dict "Base" (include "suse-observability.resourcePrefix" .)) .) }}
 {{- end -}}
 
 {{/*
@@ -999,14 +961,6 @@ true
 {{- end -}}
 
 {{/*
-Returns the otel-collector service name. The subchart uses fullnameOverride for a stable name
-independent of the Helm release name; the router must use this rather than common.fullname.short.
-*/}}
-{{- define "stackstate.otelCollector.fullname" -}}
-{{- index .Values "opentelemetry-collector" "fullnameOverride" | default "suse-observability-otel-collector" -}}
-{{- end -}}
-
-{{/*
 Get receiver split enabled flag with sizing profile evaluation
 Usage: {{ include "stackstate.receiver.split.enabled" . }}
 Returns: "true" or "false" string
@@ -1022,11 +976,4 @@ Returns: "true" or "false" string
 {{- else -}}
 {{- if .Values.stackstate.components.receiver.split.enabled }}true{{- else }}false{{- end -}}
 {{- end -}}
-{{- end -}}
-
-{{/*
-The prefix for the Chart-generated resource names.
-*/}}
-{{- define "namePrefix" -}}
-suse-observability
 {{- end -}}

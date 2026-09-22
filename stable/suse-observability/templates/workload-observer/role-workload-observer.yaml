@@ -1,6 +1,6 @@
 {{- define "stackstate.role.workload-observer" -}}
 metadata:
-  name: {{ include "namePrefix" . }}-workload-observer
+  name: {{ include "stackstate.workloadObserver.fullname" . }}
   labels:
     app.kubernetes.io/component: workload-observer
 rules:

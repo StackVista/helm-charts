@@ -23,7 +23,7 @@ Return the proper Docker Image Registry Secret Names
 {{- define "clickhouse.imagePullSecrets" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.pullSecret .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password -}}
 imagePullSecrets:
-- name: suse-observability-pull-secret
+- name: {{ include "suse-observability.pullSecret.name" . }}
 {{- else -}}
 {{- include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.volumePermissions.image) "global" .Values.global) -}}
 {{- end -}}

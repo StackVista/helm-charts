@@ -1,14 +1,14 @@
 {{- define "stackstate.rolebinding.replication-checker" -}}
 metadata:
-  name: {{ include "common.fullname.short" . }}-replication-checker
+  name: {{ include "stackstate.replicationChecker.fullname" . }}
 roleRef:
   kind: Role
-  name: {{ include "common.fullname.short" . }}-replication-checker
+  name: {{ include "stackstate.replicationChecker.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
   namespace: {{ .Release.Namespace }}
-  name: {{ include "common.fullname.short" . }}-replication-checker
+  name: {{ include "stackstate.replicationChecker.fullname" . }}
 {{- end -}}
 
 {{- if eq (include "stackstate.replicationChecker.enabled" .) "true" }}

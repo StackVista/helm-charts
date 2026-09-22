@@ -1506,22 +1506,21 @@ func TestS3ProxySecurityContextCustomValues(t *testing.T) {
 	assert.Equal(t, int64(1000), *podSecCtx.FSGroup, "Pod fsGroup should be custom value 1000")
 }
 
-// TestS3ProxyServiceAccountDefault verifies the default service account is created with backward-compatible name
+// TestS3ProxyServiceAccountDefault verifies the default service account uses the S3Proxy name.
 func TestS3ProxyServiceAccountDefault(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	// Service account should exist with backward-compatible name (same as old Minio subchart)
 	sa, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
-	require.True(t, ok, "S3Proxy service account should exist with backward-compatible name 'suse-observability-minio'")
-	assert.Equal(t, "suse-observability-s3proxy", sa.Name, "Service account name should match old Minio name for backward compatibility")
+	require.True(t, ok, "S3Proxy service account should exist with name 'suse-observability-s3proxy'")
+	assert.Equal(t, "suse-observability-s3proxy", sa.Name)
 
 	// Deployment should reference the service account
 	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy deployment should exist")
-	assert.Equal(t, "suse-observability-s3proxy", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should reference the backward-compatible service account name")
+	assert.Equal(t, "suse-observability-s3proxy", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should reference the default service account name")
 }
 
 // TestS3ProxyServiceAccountCustomName verifies a custom service account name can be set
@@ -1543,6 +1542,45 @@ func TestS3ProxyServiceAccountCustomName(t *testing.T) {
 	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy deployment should exist")
 	assert.Equal(t, "my-custom-sa", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should reference the custom service account name")
+}
+
+func TestS3ProxyServiceAccountCustomReleaseOverrides(t *testing.T) {
+	for _, tc := range []struct {
+		name       string
+		customName string
+		legacyName string
+		create     bool
+		expected   string
+	}{
+		{name: "custom takes precedence", customName: "custom-sa", legacyName: "legacy-sa", create: true, expected: "custom-sa"},
+		{name: "legacy fallback", legacyName: "legacy-sa", create: true, expected: "legacy-sa"},
+		{name: "existing account", customName: "existing-sa", expected: "existing-sa"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			create := "false"
+			if tc.create {
+				create = "true"
+			}
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", &helm.Options{
+				ValuesFiles: []string{"values/full.yaml"},
+				SetValues: map[string]string{
+					"s3proxy.serviceAccount.name":   tc.customName,
+					"minio.serviceAccount.name":     tc.legacyName,
+					"s3proxy.serviceAccount.create": create,
+				},
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			const deploymentName = "suse-observability-s3proxy"
+			require.Contains(t, resources.Deployments, deploymentName)
+			assert.Equal(t, tc.expected, resources.Deployments[deploymentName].Spec.Template.Spec.ServiceAccountName)
+			_, exists := resources.ServiceAccounts[tc.expected]
+			assert.Equal(t, tc.create, exists)
+			assert.NotContains(t, resources.ServiceAccounts, deploymentName)
+			if tc.customName != "" && tc.legacyName != "" {
+				assert.NotContains(t, resources.ServiceAccounts, tc.legacyName)
+			}
+		})
+	}
 }
 
 // TestS3ProxyServiceAccountAnnotations verifies annotations can be set on the service account (e.g. for IAM roles)

@@ -18,7 +18,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.replicationChecker.deployment.container.main" .) -}}
 {{- $replicationCheckerMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ include "common.fullname.short" . }}-replication-checker
+  name: {{ include "stackstate.replicationChecker.fullname" . }}
   labels:
     app.kubernetes.io/component: replication-checker
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -41,7 +41,7 @@ spec:
         app.kubernetes.io/component: replication-checker
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "common.fullname.short" . }}-replication-checker
+      serviceAccountName: {{ include "stackstate.replicationChecker.fullname" . }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $replicationCheckerMainContainer | nindent 8 }}

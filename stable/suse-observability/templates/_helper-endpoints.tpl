@@ -9,14 +9,14 @@ http://{{- include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEnd
 Logic to determine promql query endpoint. It
 */}}
 {{- define "stackstate.metrics.query.url" -}}
-http://suse-observability-victoriametrics:8428
+http://{{ include "stackstate.victoriametrics.fullname" . }}:8428
 {{- end -}}
 
 {{/*
 Logic to determine metric store host and port for single node deployment of Victoria Metrics.
 */}}
 {{- define "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" -}}
-suse-observability-victoria-metrics-{{ .instanceIndex }}:8428
+{{ include "stackstate.victoriametrics.instance.fullname" . }}:8428
 {{- end -}}
 
 {{/*
@@ -30,14 +30,7 @@ Logic to determine metric store consumer group
 Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "stackstate.es.endpoint" -}}
-{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless:9200
-{{- end -}}
-
-{{/*
-Logic to determine ElasticSearch host.
-*/}}
-{{- define "stackstate.es.host" -}}
-{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless
+{{- include "stackstate.es.host" . -}}:9200
 {{- end -}}
 
 {{/*
@@ -52,13 +45,6 @@ Logic to determine Router endpoint.
 */}}
 {{- define "stackstate.router.endpoint" -}}
 http://{{ template "stackstate.router.name" . }}:8080
-{{- end -}}
-
-{{/*
-Logic to determine MinIO keys.
-*/}}
-{{- define "stackstate.minio.keys" -}}
-{{- include "stackstate.s3proxy.secretName" . -}}
 {{- end -}}
 
 {{/*
@@ -101,13 +87,6 @@ Comma-separated list of the endpoints that need to be up and running before the 
 {{- include "stackstate.clickhouse.endpoint" . -}},
 {{- include "stackstate.kafka.endpoint" . -}},
 {{- include "stackgraph.hbase.waitfor" . -}}
-{{- end -}}
-
-{{/*
-Logic to determine Kafka endpoint.
-*/}}
-{{- define "stackstate.vmagent.endpoint" -}}
-{{- include "stackstate.vmagent.fullname" . -}}
 {{- end -}}
 
 {{/*
