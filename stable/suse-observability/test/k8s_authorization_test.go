@@ -24,7 +24,7 @@ var expectedRoles = map[string]v1.Role{
 		Rules: []v1.PolicyRule{
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"views", "settings", "metricbindings", "systemnotifications"},
+				Resources: []string{"views", "settings", "metricbindings", "systemnotifications", "silencingrules"},
 				Verbs:     []string{"get"},
 			},
 		},

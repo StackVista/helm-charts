@@ -52,6 +52,9 @@
         "create-otel-mappings",
         "update-otel-mappings",
         "delete-otel-mappings",
-        "execute-ai"
+        "execute-ai",
+        "get-silencing-rules",
+        "create-silencing-rules",
+        "delete-silencing-rules"
     ]
 }

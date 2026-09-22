@@ -21,6 +21,7 @@
         "create-favorite-dashboards",
         "delete-favorite-dashboards",
         "get-views",
-        "get-topology"
+        "get-topology",
+        "get-silencing-rules"
     ]
 }

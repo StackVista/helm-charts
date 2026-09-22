@@ -10,6 +10,7 @@ rules:
       - settings
       - metricbindings
       - systemnotifications
+      - silencingrules
     verbs:
       - get
 {{- end -}}
