@@ -36,6 +36,9 @@
         "update-stackpacks",
         "delete-stackpacks",
         "get-topology",
-        "execute-ai"
+        "execute-ai",
+        "get-silencing-rules",
+        "create-silencing-rules",
+        "delete-silencing-rules",
     ]
 }
