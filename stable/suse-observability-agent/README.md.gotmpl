@@ -9,13 +9,47 @@ Current chart version is `{{ template "chart.version" . }}`
 
 ## Required Values
 
-In order to successfully install this chart, you **must** provide the following variables:
+Provide the following values directly, or use existing Secrets as described below:
 
 * `stackstate.apiKey`
 * `stackstate.cluster.name`
 * `stackstate.url`
 
 The parameter `stackstate.cluster.name` is entered when installing the Cluster Agent StackPack.
+
+### Configuration from an existing Secret
+
+For Fleet or other GitOps deployments, provide the API key, cluster name and URL
+through a Secret in the agent's namespace instead of literal Helm values:
+
+```yaml
+global:
+  apiKey:
+    fromSecret: observability-agent-config
+  clusterName:
+    fromSecret: observability-agent-config
+  url:
+    fromSecret: observability-agent-config
+```
+
+The Secret must contain `STS_API_KEY`, `STS_CLUSTER_NAME` and `STS_URL`.
+Each setting may reference a different Secret; Secret names support Helm templates.
+`global.clusterName.fromSecret` takes precedence over `stackstate.cluster.name`,
+and `global.url.fromSecret` takes precedence over `stackstate.url`. Either setting
+can also be used independently with the remaining literal values.
+
+Use the same cluster-name format as `stackstate.cluster.name` (lowercase letters,
+digits, dots and dashes, starting and ending with a letter or digit). `STS_URL`
+must be an HTTP(S) receiver URL without a trailing slash. Logs and OTel endpoints
+are derived from it at runtime; explicit `otel.platformHttpOtlpEndpoint` and
+`otel.platformGrpcOtlpEndpoint` overrides still take precedence.
+
+The chart references the Secret without reading it during rendering, so Fleet
+does not need access to its contents. Provision the Secret before the agent pods
+start. Secret contents cannot be validated by Helm; restart agent workloads after
+updating the Secret to refresh their environment variables.
+
+### Installation with literal values
 
 The recommended namespace for this chart is `suse-observability-agent`.
 

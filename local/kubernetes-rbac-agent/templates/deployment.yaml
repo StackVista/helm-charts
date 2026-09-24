@@ -57,6 +57,20 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            {{- if .Values.global.url.fromSecret }}
+            - name: STS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .Values.global.url.fromSecret . | quote }}
+                  key: STS_URL
+            {{- end }}
+            {{- if .Values.global.clusterName.fromSecret }}
+            - name: STS_CLUSTER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .Values.global.clusterName.fromSecret . | quote }}
+                  key: STS_CLUSTER_NAME
+            {{- end }}
             - name: STS_NAMESPACE
               value: {{ .Release.Namespace | quote }}
             {{- if not (or .Values.global.apiKey.fromSecret .Values.apiKey) }}
@@ -87,14 +101,20 @@ spec:
             - name: "STS_SKIP_SSL_VALIDATION"
               value: "true"
             {{- end }}
+          {{- if or (not .Values.global.url.fromSecret) (not .Values.global.clusterName.fromSecret) .Values.global.apiKey.fromSecret .Values.apiKey }}
           envFrom:
+            {{- if not .Values.global.url.fromSecret }}
             - configMapRef:
                 name: {{ include "kubernetes-rbac-agent.url.configmap.name" .  }}
+            {{- end }}
+            {{- if not .Values.global.clusterName.fromSecret }}
             - configMapRef:
                 name: {{ include "kubernetes-rbac-agent.clusterName.configmap.name" .  }}
+            {{- end }}
           {{- if or .Values.global.apiKey.fromSecret .Values.apiKey }}
             - secretRef:
                 name: {{ include "kubernetes-rbac-agent.api-key.secret.name" .  }}
+          {{- end }}
           {{- end }}
           command: [ "/usr/bin/kubernetes-rbac-agent" ]
           args:

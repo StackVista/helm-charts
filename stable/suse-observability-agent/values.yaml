@@ -50,6 +50,11 @@ global:
   apiKey:
     fromSecret: '{{ include "stackstate-k8s-agent.secret.internal.name" . }}'
 
+  clusterName:
+    fromSecret: ""
+  url:
+    fromSecret: ""
+
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.

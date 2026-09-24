@@ -56,10 +56,11 @@ spec:
             - --config=/etc/otel/config.yaml
           env:
           {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
+          {{- include "stackstate-k8s-agent.platformUrlEnv" . | nindent 10 }}
           - name: PLATFORM_OTLP_ENDPOINT
             value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
           - name: K8S_CLUSTER_NAME
-            value: {{ .Values.stackstate.cluster.name | quote }}
+            {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 12 }}
           - name: SKIP_SSL_VALIDATION
             value: {{ or .Values.global.skipSslValidation .Values.otel.telemetryGateway.skipSslValidation | quote }}
           - name: POD_NAME

@@ -28,6 +28,11 @@ global:
     # Overriding this will allow setting the api key from an externally provided secret.
     fromSecret:
 
+  clusterName:
+    fromSecret: ""
+  url:
+    fromSecret: ""
+
   # global.customCertificates -- Custom certificates for HTTPS endpoints
   customCertificates:
     # global.customCertificates.enabled -- Enable custom certificate injection

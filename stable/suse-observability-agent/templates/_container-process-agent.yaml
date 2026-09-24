@@ -10,6 +10,8 @@
     - containerPort: 6063
   env:
     {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 4 }}
+    - name: STS_CLUSTER_NAME
+      {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 6 }}
     - name: STS_KUBERNETES_KUBELET_HOST
       valueFrom:
         fieldRef:
@@ -19,7 +21,7 @@
         fieldRef:
           fieldPath: spec.nodeName
     - name: STS_HOSTNAME
-      value: "$(KUBERNETES_HOSTNAME)-{{ .Values.stackstate.cluster.name}}"
+      value: {{ include "stackstate-k8s-agent.hostname" . | quote }}
     - name: HOST_PROC
       value: "/host/proc"
     - name: HOST_SYS
@@ -28,8 +30,6 @@
       value: "/host/etc"
     - name: KUBERNETES
       value: "true"
-    - name: STS_CLUSTER_NAME
-      value: {{ .Values.stackstate.cluster.name | quote }}
     - name: STS_LOG_LEVEL
       value: {{ .Values.nodeAgent.containers.processAgent.logLevel | default .Values.nodeAgent.logLevel | quote }}
     - name: STS_DISABLED_PROTOCOLS
@@ -51,7 +51,7 @@
     - name: STS_HTTP_OBSERVATIONS_BUFFER_SIZE
       value: {{ .Values.processAgent.softMemoryLimit.httpObservationsBufferSize | quote }}
     - name: STS_PROCESS_AGENT_URL
-      value: {{ include "stackstate-k8s-agent.stackstate.url" . }}
+      {{- include "stackstate-k8s-agent.urlEnvValue" . | nindent 6 }}
     - name: STS_SKIP_SSL_VALIDATION
       value: {{ or .Values.global.skipSslValidation .Values.nodeAgent.skipSslValidation | quote }}
     - name: STS_SKIP_KUBELET_TLS_VERIFY
