@@ -271,6 +271,82 @@ func TestFeaturesTracesDisabled(t *testing.T) {
 	assert.NotContains(t, configMap.Data["application_stackstate.conf"], expectedClickhouseConfig, "API configmap should not contain traces ClickHouse configuration when traces disabled")
 }
 
+func TestFeaturesOtelLogsDefault(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-api"]
+	require.True(t, ok, "API deployment should exist")
+
+	notExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_featureSwitches_otelLogs", Value: "true"}
+	assert.NotContains(t, deployment.Spec.Template.Spec.Containers[0].Env, notExpected, "API deployment should not have otelLogs feature flag by default")
+
+	receiverDeployment, ok := resources.Deployments["suse-observability-receiver"]
+	require.True(t, ok, "Receiver deployment should exist")
+
+	receiverNotExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelLogs", Value: "true"}
+	assert.NotContains(t, receiverDeployment.Spec.Template.Spec.Containers[0].Env, receiverNotExpected, "Receiver deployment should not have otelLogs feature flag by default")
+}
+
+func TestFeaturesOtelLogsEnabledSplit(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+		},
+		SetValues: map[string]string{
+			"global.features.experimentalOtelLogs": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-api"]
+	require.True(t, ok, "API deployment should exist")
+
+	expected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_featureSwitches_otelLogs", Value: "true"}
+	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "API deployment should have otelLogs feature flag enabled")
+
+	receiverDeployment, ok := resources.Deployments["suse-observability-receiver"]
+	require.True(t, ok, "Receiver deployment should exist")
+
+	receiverExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelLogs", Value: "true"}
+	assert.Contains(t, receiverDeployment.Spec.Template.Spec.Containers[0].Env, receiverExpected, "Receiver deployment should have otelLogs feature flag enabled")
+}
+
+func TestFeaturesOtelLogsEnabledNonSplit(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+			"values/split_disabled.yaml",
+		},
+		SetValues: map[string]string{
+			"global.features.experimentalOtelLogs": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-server"]
+	require.True(t, ok, "Server deployment should exist")
+
+	expected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_featureSwitches_otelLogs", Value: "true"}
+	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "Server deployment should have otelLogs feature flag enabled")
+}
+
 func TestFeaturesExperimentalRejected(t *testing.T) {
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{

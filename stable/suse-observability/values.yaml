@@ -19,6 +19,10 @@ global:
     # global.features.experimentalSilencingRules -- Enable Silencing Rules to signal to all components that they should support the Silencing Rules feature.
     # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
     experimentalSilencing: false
+    # global.features.experimentalOtelLogs -- Enable OpenTelemetry-based log ingestion to signal to all components that they should support it
+    # alongside legacy Elasticsearch-based log ingestion, preserving backwards compatibility between the two while OTel-based logs are
+    # rolled out. This is a preproduction feature, usage may change in upcoming releases.
+    experimentalOtelLogs: false
   # backup.enabled -- Enables backup/restore for all data
   backup:
     enabled: false

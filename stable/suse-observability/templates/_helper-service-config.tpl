@@ -106,6 +106,10 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- if .Values.global.features.experimentalSilencing }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableSilencing" "true" }}
 {{- end -}}
+{{- if .Values.global.features.experimentalOtelLogs }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_otelLogs" "true" }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelLogs" "true" }}
+{{- end -}}
 {{- if .Values.stackstate.topology.retentionHours }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackgraph_retentionWindowMs" (mul (.Values.stackstate.topology.retentionHours | int) (mul 60 (mul 60 1000)) | toString) }}
 {{- end }}

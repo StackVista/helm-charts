@@ -63,8 +63,8 @@ function listImages() {
   helm template "$helm_release" "$helm_chart_archive" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' > "$tmp_file"
   while IFS='' read -r line; do images+=("$line"); done < "$tmp_file"
 
-  # hbase in Mono mode, stackpacks2 enabled
-  helm_values="$helm_values_base,hbase.deployment.mode=Mono,global.features.experimentalSuppressions=true"
+  # hbase in Mono mode
+  helm_values="$helm_values_base,hbase.deployment.mode=Mono"
   helm template "$helm_release" "$helm_chart_archive" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' > "$tmp_file"
   while IFS='' read -r line; do images+=("$line"); done < "$tmp_file"
 
