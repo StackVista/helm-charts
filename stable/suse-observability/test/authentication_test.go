@@ -1,8 +1,12 @@
 package test
 
 import (
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 )
@@ -178,6 +182,50 @@ func TestAuthenticationRancherSecret(t *testing.T) {
 
 func TestAuthenticationRancher(t *testing.T) {
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/rancher_authentication.yaml", "values/split_disabled.yaml"}, expectedRancherAuthConfig, expectedRancherAuthEnabled)
+}
+
+func TestAuthenticationRancherScope(t *testing.T) {
+	for _, component := range []string{"api", "server"} {
+		for _, tc := range []struct {
+			name     string
+			value    string
+			expected string
+			error    string
+		}{
+			{name: "omitted", expected: `["openid", "profile", "offline_access"]`},
+			{name: "groups", value: "[openid, profile, offline_access, groups]", expected: `["openid","profile","offline_access","groups"]`},
+			{name: "custom", value: "[groups, openid]", expected: `["groups","openid"]`},
+			{name: "string", value: "openid groups", error: "must be an array of scopes"},
+			{name: "boolean", value: "false", error: "must be an array of scopes"},
+			{name: "map", value: "{openid: true}", error: "must be an array of scopes"},
+			{name: "empty", value: "[]", error: "must include openid"},
+			{name: "missing-openid", value: "[groups]", error: "must include openid"},
+			{name: "unknown", value: "[openid, email]", error: "only supports"},
+			{name: "non-string", value: "[openid, 123]", error: "only supports"},
+		} {
+			t.Run(component+"/"+tc.name, func(t *testing.T) {
+				values := []string{"values/full.yaml", "values/rancher_authentication.yaml"}
+				if component == "server" {
+					values = append(values, "values/split_disabled.yaml")
+				}
+				if tc.value != "" {
+					path := filepath.Join(t.TempDir(), "scope.yaml")
+					require.NoError(t, os.WriteFile(path, []byte("stackstate:\n  authentication:\n    rancher:\n      scope: "+tc.value+"\n"), 0600))
+					values = append(values, path)
+				}
+				output, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{ValuesFiles: values})
+				if tc.error != "" {
+					require.ErrorContains(t, err, "stackstate.authentication.rancher.scope "+tc.error)
+					return
+				}
+				require.NoError(t, err)
+				resources := helmtestutil.NewKubernetesResources(t, output)
+				config := resources.ConfigMaps["suse-observability-"+component].Data["application_stackstate.conf"]
+				require.Contains(t, config, strings.Replace(expectedRancherAuthConfig, `["openid", "profile", "offline_access"]`, tc.expected, 1))
+				require.Contains(t, config, expectedRancherAuthEnabled)
+			})
+		}
+	}
 }
 
 func TestAuthenticationRancherInvalid(t *testing.T) {

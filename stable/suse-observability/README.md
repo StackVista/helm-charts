@@ -667,7 +667,7 @@ If you encounter issues not covered here:
 | stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Keycloak (both default false). |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
 | stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to the provider (both default false). |
-| stackstate.authentication.rancher | object | `{}` | Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Rancher (both default false). |
+| stackstate.authentication.rancher | object | `{}` | Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). Optional `scope` array defaults to `[openid, profile, offline_access]`; add `groups` for Rancher 2.14 or later after allowing it on the OIDCClient. Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Rancher (both default false). |
 | stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]}` | Extend the default role names in StackState |
 | stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
 | stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], resourcePermissions: {}, viewPermissions: [], topologyScope: ""}} |
@@ -1395,6 +1395,27 @@ You can override and extend some of the OIDC config for Rancher with the followi
 - `discoveryUri`
 - `redirectUri`
 - `customParams`
+
+Set `stackstate.authentication.rancher.scope` to an array containing `openid` and any of `profile`, `offline_access`, and `groups`.
+When omitted, the scope remains `[openid, profile, offline_access]`.
+For Rancher versions before 2.14, omit this option because those versions do not support `groups`.
+
+For Rancher 2.14 or later, first allow `openid`, `profile`, `offline_access`, and `groups` in the OIDCClient's `spec.scopes`.
+Preserve any other scopes that the client requires.
+An empty `spec.scopes` does not allow `groups`; requesting it can cause `invalid_scope` and prevent login.
+Then configure SUSE Observability:
+
+```yaml
+stackstate:
+  authentication:
+    rancher:
+      scope: [openid, profile, offline_access, groups]
+```
+
+Use the same sequence after upgrading Rancher to 2.14 or later.
+After the Helm rollout, log out and log in again.
+Check that the new session contains the expected groups and grants access through an existing group binding.
+The Rancher preset keeps `usernameField = "sub"` and `groupsField = "groups"`.
 
 If you need to disable TLS verification due to a setup not using verifiable SSL certificates, you can disable SSL checks with some application config (don't use in production):
 ```yaml

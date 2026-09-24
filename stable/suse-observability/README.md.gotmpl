@@ -463,6 +463,27 @@ You can override and extend some of the OIDC config for Rancher with the followi
 - `redirectUri`
 - `customParams`
 
+Set `stackstate.authentication.rancher.scope` to an array containing `openid` and any of `profile`, `offline_access`, and `groups`.
+When omitted, the scope remains `[openid, profile, offline_access]`.
+For Rancher versions before 2.14, omit this option because those versions do not support `groups`.
+
+For Rancher 2.14 or later, first allow `openid`, `profile`, `offline_access`, and `groups` in the OIDCClient's `spec.scopes`.
+Preserve any other scopes that the client requires.
+An empty `spec.scopes` does not allow `groups`; requesting it can cause `invalid_scope` and prevent login.
+Then configure SUSE Observability:
+
+```yaml
+stackstate:
+  authentication:
+    rancher:
+      scope: [openid, profile, offline_access, groups]
+```
+
+Use the same sequence after upgrading Rancher to 2.14 or later.
+After the Helm rollout, log out and log in again.
+Check that the new session contains the expected groups and grants access through an existing group binding.
+The Rancher preset keeps `usernameField = "sub"` and `groupsField = "groups"`.
+
 If you need to disable TLS verification due to a setup not using verifiable SSL certificates, you can disable SSL checks with some application config (don't use in production):
 ```yaml
 stackstate:

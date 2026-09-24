@@ -1674,7 +1674,7 @@ stackstate:
     ldap: {}
     # stackstate.authentication.oidc -- Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to the provider (both default false).
     oidc: {}
-    # stackstate.authentication.rancher -- Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Rancher (both default false).
+    # stackstate.authentication.rancher -- Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). Optional `scope` array defaults to `[openid, profile, offline_access]`; add `groups` for Rancher 2.14 or later after allowing it on the OIDCClient. Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Rancher (both default false).
     rancher: {}
     # stackstate.authentication.file -- Configure users, their passwords and roles from (config) file
     file: {}

@@ -266,7 +266,22 @@ Authentication config
   {{- else }}
   redirectUri = "{{ include "suse-observability.global.baseUrl" . | trimSuffix "/" | required "Cannot configure Rancher authentication: baseUrl or receiver.baseUrl must be provided to construct the redirectUri." }}/loginCallback"
   {{- end }}
+  {{- if hasKey $apiAuth.rancher "scope" }}
+  {{- if not (kindIs "slice" $apiAuth.rancher.scope) }}
+  {{- fail "stackstate.authentication.rancher.scope must be an array of scopes" }}
+  {{- end }}
+  {{- range $apiAuth.rancher.scope }}
+  {{- if not (has . (list "openid" "profile" "offline_access" "groups")) }}
+  {{- fail "stackstate.authentication.rancher.scope only supports openid, profile, offline_access and groups" }}
+  {{- end }}
+  {{- end }}
+  {{- if not (has "openid" $apiAuth.rancher.scope) }}
+  {{- fail "stackstate.authentication.rancher.scope must include openid" }}
+  {{- end }}
+  scope = {{ $apiAuth.rancher.scope | toJson }}
+  {{- else }}
   scope = ["openid", "profile", "offline_access"]
+  {{- end }}
   jwsAlgorithm = "RS256"
   jwtClaims {
     usernameField = "sub"
