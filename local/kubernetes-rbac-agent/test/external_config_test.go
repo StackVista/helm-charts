@@ -1,6 +1,7 @@
 package test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -49,5 +50,69 @@ func TestLiteralConfiguration(t *testing.T) {
 			require.NotNil(t, source.ConfigMapRef)
 			assert.Contains(t, resources.ConfigMaps, source.ConfigMapRef.Name)
 		}
+	}
+}
+
+func TestApiKeyConfiguration(t *testing.T) {
+	for _, scenario := range []struct {
+		name       string
+		values     map[string]string
+		secretName string
+	}{
+		{
+			name:       "external API key with literal configuration",
+			values:     map[string]string{"global.apiKey.fromSecret": "\\{\\{ .Release.Name }}-shared"},
+			secretName: "rbac-agent-shared",
+		},
+		{
+			name:       "generated API key secret",
+			values:     map[string]string{"apiKey": "test-api-key"},
+			secretName: "rbac-agent-rbac-agent-api-key",
+		},
+		{
+			name: "external API key takes precedence",
+			values: map[string]string{
+				"global.apiKey.fromSecret": "shared",
+				"apiKey":                   "test-api-key",
+			},
+			secretName: "shared",
+		},
+		{name: "service account authentication"},
+	} {
+		t.Run(scenario.name, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "rbac-agent", &helm.Options{
+				ValuesFiles: []string{"../linter_values.yaml"},
+				SetValues:   scenario.values,
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Len(t, resources.Deployments, 1)
+			for _, deployment := range resources.Deployments {
+				container := deployment.Spec.Template.Spec.Containers[0]
+				require.Len(t, container.EnvFrom, 2)
+				for _, source := range container.EnvFrom {
+					assert.Nil(t, source.SecretRef, "API-key secrets must not import unrelated settings")
+					require.NotNil(t, source.ConfigMapRef)
+					assert.Contains(t, resources.ConfigMaps, source.ConfigMapRef.Name)
+				}
+				apiKeyPosition := slices.IndexFunc(container.Env, func(variable corev1.EnvVar) bool {
+					return variable.Name == "STS_API_KEY"
+				})
+				serviceAccount := corev1.EnvVar{Name: "STS_K8S_SERVICE_ACCOUNT", Value: "true"}
+				if scenario.secretName == "" {
+					assert.Equal(t, -1, apiKeyPosition)
+					assert.Contains(t, container.Env, serviceAccount)
+				} else {
+					require.NotEqual(t, -1, apiKeyPosition)
+					assert.Equal(t, corev1.EnvVar{
+						Name: "STS_API_KEY",
+						ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{
+							LocalObjectReference: corev1.LocalObjectReference{Name: scenario.secretName},
+							Key:                  "STS_API_KEY",
+						}},
+					}, container.Env[apiKeyPosition])
+					assert.NotContains(t, container.Env, serviceAccount)
+				}
+			}
+		})
 	}
 }

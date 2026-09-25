@@ -116,7 +116,12 @@ func TestExternalConfiguration(t *testing.T) {
 						assert.Less(t, envPosition(container.Env, "KUBERNETES_HOSTNAME"), envPosition(container.Env, hostname.Name))
 					}
 					if containerName == "kubernetes-rbac-agent" {
-						assert.Contains(t, container.EnvFrom, corev1.EnvFromSource{SecretRef: &corev1.SecretEnvSource{LocalObjectReference: corev1.LocalObjectReference{Name: "suse-observability-agent-config"}}})
+						for _, source := range container.EnvFrom {
+							assert.Nil(t, source.SecretRef, "API-key secrets must not import unrelated settings")
+						}
+						if scenario.clusterSecret && scenario.urlSecret {
+							assert.Empty(t, container.EnvFrom)
+						}
 						for _, source := range []struct {
 							name     string
 							external bool
@@ -128,9 +133,8 @@ func TestExternalConfiguration(t *testing.T) {
 								return actual.ConfigMapRef != nil && actual.ConfigMapRef.Name == source.name
 							}))
 						}
-					} else {
-						assertConfigEnv(t, container.Env, "STS_API_KEY", "STS_API_KEY", "suse-observability-agent-config", "", true)
 					}
+					assertConfigEnv(t, container.Env, "STS_API_KEY", "STS_API_KEY", "suse-observability-agent-config", "", true)
 				})
 			}
 			logsConfig := resources.ConfigMaps["suse-observability-agent-logs-agent"].Data["promtail.yaml"]
