@@ -29,8 +29,10 @@ global:
     fromSecret:
 
   clusterName:
+    # global.clusterName.fromSecret -- Name of an existing Secret containing STS_CLUSTER_NAME. Supports Helm templating. When set, takes precedence over clusterName.value and clusterName.fromConfigMap.
     fromSecret: ""
   url:
+    # global.url.fromSecret -- Name of an existing Secret containing STS_URL. Supports Helm templating. When set, takes precedence over url.value and url.fromConfigMap.
     fromSecret: ""
 
   # global.customCertificates -- Custom certificates for HTTPS endpoints

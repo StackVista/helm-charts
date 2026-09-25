@@ -51,8 +51,10 @@ global:
     fromSecret: '{{ include "stackstate-k8s-agent.secret.internal.name" . }}'
 
   clusterName:
+    # global.clusterName.fromSecret -- Name of an existing Secret containing STS_CLUSTER_NAME. Supports Helm templating. When set, takes precedence over stackstate.cluster.name.
     fromSecret: ""
   url:
+    # global.url.fromSecret -- Name of an existing Secret containing STS_URL. Supports Helm templating. When set, takes precedence over stackstate.url.
     fromSecret: ""
 
 # nameOverride -- Override the name of the chart.
