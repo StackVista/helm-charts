@@ -22,6 +22,21 @@ helm install \
 stackstate/stackstate
 ```
 
+## Bundled RBAC agent configuration
+
+The platform configures its bundled Kubernetes RBAC agent through the
+`kubernetes-rbac-agent.connection` template helper. By default, the agent connects to
+this installation's router and uses the Helm release name as its cluster name.
+The subchart's `kubernetes-rbac-agent.url` and `kubernetes-rbac-agent.clusterName`
+settings are ignored in platform installations, including inline values and
+external ConfigMap references retained from previous releases. Upgrades replace
+any previously customized nested connection with the platform's connection.
+Explicit `global.url.fromSecret` and `global.clusterName.fromSecret` settings retain
+precedence: each selects its value from the specified Secret and suppresses the
+corresponding internal ConfigMap.
+The standalone subchart and the SUSE Observability agent chart retain their own
+connection configuration.
+
 ## Resource naming
 
 The UI and replication checker now use the fixed names `suse-observability-ui` and

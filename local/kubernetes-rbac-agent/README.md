@@ -1,25 +1,51 @@
 # kubernetes-rbac-agent
 
-![Version: 0.0.27](https://img.shields.io/badge/Version-0.0.27-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
-
 Helm chart for deploying the kubernetes-rbac-agent, which pick up (cluster)role(bindings) from a k8s cluster and forwards them
 to the SUSE Observability platform
 
 **Homepage:** <https://github.com/StackVista/kubernetes-rbac-agent>
-
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
 | SUSE Observability Ops Team | <suse-observability-ops@suse.com> |  |
 
+## Connection configuration
+
+For standalone use, supply inline values:
+
+```yaml
+url:
+  value: https://observability.example/receiver
+clusterName:
+  value: my-cluster
+```
+
+Both inline values support Helm template expressions. Alternatively, use
+`url.fromConfigMap` and `clusterName.fromConfigMap` to select existing ConfigMaps
+containing `STS_URL` and `STS_CLUSTER_NAME`, respectively. External references take
+precedence when both sources are supplied; non-empty inline values still create
+the internal ConfigMaps.
+
+`global.url.fromSecret` and `global.clusterName.fromSecret` select existing Secrets
+containing `STS_URL` and `STS_CLUSTER_NAME`. Each takes precedence over its inline
+value and ConfigMap reference, and suppresses creation of the corresponding
+internal ConfigMap. Secret names support template expressions.
+
+Empty/null inline values require an external ConfigMap or Secret. The SUSE Observability
+platform overrides the `kubernetes-rbac-agent.connection` helper to supply its own
+router URL and release name, ignoring these connection settings for its bundled
+agent. Explicit global Secret references still take precedence. Standalone
+installations and the SUSE Observability agent chart retain their configurable
+connection settings.
+
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | apiKey | string | `nil` | Directly set the api key to use. Can be templated |
-| clusterName.fromConfigMap | string | `nil` |  |
-| clusterName.value | string | `nil` | Directly set the clusterName |
+| clusterName.fromConfigMap | string | `nil` | Set the cluster name through a config map. Needs to contain 'STS_CLUSTER_NAME' |
+| clusterName.value | string | `nil` | Directly set the clusterName. Can be templated |
 | containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | containers.rbacAgent.image.pullPolicy | string | `"IfNotPresent"` | Policy when pulling an image |
@@ -55,6 +81,5 @@ to the SUSE Observability platform
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | global.url.fromSecret | string | `""` | Name of an existing Secret containing STS_URL. Supports Helm templating. When set, takes precedence over url.value and url.fromConfigMap. |
 | roleType | string | `"instance"` | This agent collects two types of (cluster)role(bindings), instance and scope role bindings. Configured through this setting |
-| url.fromConfigMap | string | `nil` | Set the cluster name through a config map. Needs to contain 'STS_CLUSTER_NAME' |
+| url.fromConfigMap | string | `nil` | Set the url through a config map. Needs to contain 'STS_URL' |
 | url.value | string | `nil` | Directly set the url value to use. Can be templated |
-

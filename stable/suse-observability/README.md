@@ -40,6 +40,21 @@ helm install \
 stackstate/stackstate
 ```
 
+## Bundled RBAC agent configuration
+
+The platform configures its bundled Kubernetes RBAC agent through the
+`kubernetes-rbac-agent.connection` template helper. By default, the agent connects to
+this installation's router and uses the Helm release name as its cluster name.
+The subchart's `kubernetes-rbac-agent.url` and `kubernetes-rbac-agent.clusterName`
+settings are ignored in platform installations, including inline values and
+external ConfigMap references retained from previous releases. Upgrades replace
+any previously customized nested connection with the platform's connection.
+Explicit `global.url.fromSecret` and `global.clusterName.fromSecret` settings retain
+precedence: each selects its value from the specified Secret and suppresses the
+corresponding internal ConfigMap.
+The standalone subchart and the SUSE Observability agent chart retain their own
+connection configuration.
+
 ## Resource naming
 
 The UI and replication checker now use the fixed names `suse-observability-ui` and
@@ -585,7 +600,6 @@ If you encounter issues not covered here:
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
 | kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |
 | kafkaup-operator.startVersion | string | `"2.3.1"` |  |
-| kubernetes-rbac-agent.clusterName.value | string | `"{{ .Release.Name }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
@@ -597,7 +611,6 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
-| kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
 | minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","persistence":{"enabled":false},"s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
 | minio.accessKey | string | `""` | DEPRECATED: Use global.s3proxy.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |

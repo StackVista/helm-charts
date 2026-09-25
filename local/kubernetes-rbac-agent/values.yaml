@@ -50,15 +50,13 @@ apiKey:
 url:
   # url.value -- Directly set the url value to use. Can be templated
   value:
-
   # url.fromConfigMap -- Set the url through a config map. Needs to contain 'STS_URL'
   fromConfigMap:
 
 clusterName:
-  # clusterName.value -- Directly set the clusterName
+  # clusterName.value -- Directly set the clusterName. Can be templated
   value:
-
-  # url.fromConfigMap -- Set the cluster name through a config map. Needs to contain 'STS_CLUSTER_NAME'
+  # clusterName.fromConfigMap -- Set the cluster name through a config map. Needs to contain 'STS_CLUSTER_NAME'
   fromConfigMap:
 
 # roleType -- This agent collects two types of (cluster)role(bindings), instance and scope role bindings. Configured through this setting

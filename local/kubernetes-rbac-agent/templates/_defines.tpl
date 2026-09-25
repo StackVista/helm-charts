@@ -39,11 +39,13 @@
 {{- end }}
 
 {{- define "kubernetes-rbac-agent.url.configmap.name" -}}
-{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" .Values.url.fromConfigMap "internalName" "url") .) | quote }}
+{{- $connection := include "kubernetes-rbac-agent.connection" . | fromYaml -}}
+{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" $connection.url.fromConfigMap "internalName" "url") .) | quote }}
 {{- end }}
 
 {{- define "kubernetes-rbac-agent.clusterName.configmap.name" -}}
-{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" .Values.clusterName.fromConfigMap "internalName" "cluster-name") .) | quote }}
+{{- $connection := include "kubernetes-rbac-agent.connection" . | fromYaml -}}
+{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" $connection.clusterName.fromConfigMap "internalName" "cluster-name") .) | quote }}
 {{- end }}
 
 {{- define "kubernetes-rbac-agent.image.registry.global" -}}
