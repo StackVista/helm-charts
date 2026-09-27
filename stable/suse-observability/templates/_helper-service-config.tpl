@@ -67,6 +67,17 @@ Returns a string like "-Xmx1234m -Xms567m", omitting params when <= 0.
     {{- $deploymentEnv := dict "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .) "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .)) }}
     {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 */}}
+{{/*
+Compute the instrumentation namespace here instead of templating values.yaml.
+Component overrides take precedence over the shared value; an empty setting uses
+the chart name and release namespace. Explicit template values remain supported.
+*/}}
+{{- define "stackstate.otelInstrumentation.serviceNamespace" -}}
+{{- $instrumentation := .ServiceConfig.otelInstrumentation | default dict -}}
+{{- $shared := default (printf "%s-%s" .Chart.Name .Release.Namespace) .Values.stackstate.components.all.otelInstrumentation.serviceNamespace -}}
+{{- tpl (default $shared $instrumentation.serviceNamespace) . -}}
+{{- end -}}
+
 {{- define "stackstate.service.envvars" -}}
 {{/*
 Memory used by a JVM process can be calculated as follows:
@@ -118,7 +129,7 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
   {{- $_ := set $openEnvVars "OTEL_EXPORTER_OTLP_ENDPOINT" (index $otelInstrumentationServiceConfig "otlpExporterEndpoint" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterEndpoint) }}
   {{- $_ := set $openEnvVars "OTEL_EXPORTER_OTLP_PROTOCOL" (index $otelInstrumentationServiceConfig "otlpExporterProtocol" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterProtocol) }}
   {{- $_ := set $openEnvVars "OTEL_SERVICE_NAME" "stackstate-$(STS_SERVICE_NAME)" }}
-  {{- $_ := set $openEnvVars "OTEL_RESOURCE_ATTRIBUTES" (printf "service.namespace=%s,service.instance.id=$(POD_NAME)" (tpl (default .Values.stackstate.components.all.otelInstrumentation.serviceNamespace $otelInstrumentationServiceConfig.serviceNamespace) .)) }}
+  {{- $_ := set $openEnvVars "OTEL_RESOURCE_ATTRIBUTES" (printf "service.namespace=%s,service.instance.id=$(POD_NAME)" (include "stackstate.otelInstrumentation.serviceNamespace" .)) }}
 {{- end }}
 
 {{/* Merge deployment-specific env vars (passed via .DeploymentEnv, lower priority than user extraEnv) */}}

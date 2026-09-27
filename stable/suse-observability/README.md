@@ -55,6 +55,36 @@ corresponding internal ConfigMap.
 The standalone subchart and the SUSE Observability agent chart retain their own
 connection configuration.
 
+## Bundled backup and anomaly-detection connections
+
+The platform supplies VictoriaMetrics and ClickHouse backup endpoints and
+credential Secret names through `victoria-metrics.backup.connection` and
+`clickhouse.backup.connection`. Configure backup storage through
+`backup.storage.backend` and S3Proxy credentials through `global.s3proxy.credentials`,
+including `fromExternalSecret` for an existing Secret.
+
+The nested `victoria-metrics-{0,1}.backup.awsSecrets`,
+`victoria-metrics-{0,1}.backup.overrideS3Endpoint`, and
+`clickhouse.backup.s3.endpoint` / `secretName` settings are ignored in platform
+installations, including saved values from earlier releases. Backup buckets,
+prefixes, schedules and retention remain configurable.
+
+Bundled anomaly detection always uses this installation's router through
+`anomaly-detection.stackstate.instance`. A saved `anomaly-detection.stackstate.instance`
+value is ignored; authentication settings are unchanged. Standalone subcharts
+retain their configurable connections.
+
+Backup checksums now include the resolved connection rather than template text.
+The first upgrade changes the checksum and triggers a rollout of VictoriaMetrics
+instances with backups enabled and ClickHouse when global backups are enabled.
+Allow for interruptions while these pods restart. This refactor preserves
+StatefulSet/PVC identities and default backup destinations; previously customized
+nested connections switch to the platform connection.
+
+The OpenTelemetry instrumentation namespace defaults to
+`<chart-name>-<release-namespace>` in a helper. Explicit shared and per-component
+`otelInstrumentation.serviceNamespace` settings, including templates, still work.
+
 ## Resource naming
 
 The UI and replication checker now use the fixed names `suse-observability-ui` and
@@ -426,7 +456,6 @@ If you encounter issues not covered here:
 | anomaly-detection.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | anomaly-detection.image.spotlightRepository | string | `"stackstate/spotlight"` | Repository of the spotlight Docker image. |
 | anomaly-detection.image.tag | string | `"5.2.0-snapshot.225.rebuild.59"` | the chart image tag, e.g. 4.1.3-latest |
-| anomaly-detection.stackstate.instance | string | `"{{ include \"stackstate.router.endpoint\" . }}"` | **Required Stackstate instance URL. |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
 | backup.configuration.enabled | bool | `true` | Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled. |
@@ -505,8 +534,6 @@ If you encounter issues not covered here:
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
 | clickhouse.backup.image.tag | string | `"2.7.2-so17"` | Container image tag for 'clickhouse' backup containers. |
-| clickhouse.backup.s3.endpoint | string | `"{{ include \"stackstate.s3proxy.endpoint\" . }}"` | S3-compatible endpoint for backup storage (resolved from s3proxy). |
-| clickhouse.backup.s3.secretName | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials. |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
 | clickhouse.image.tag | string | `"26.8.2.7-so3"` | Container image tag for 'clickhouse' containers. |
@@ -731,7 +758,7 @@ If you encounter issues not covered here:
 | stackstate.components.all.otelInstrumentation.enabled | bool | `false` |  |
 | stackstate.components.all.otelInstrumentation.otlpExporterEndpoint | string | `""` |  |
 | stackstate.components.all.otelInstrumentation.otlpExporterProtocol | string | `"grpc"` |  |
-| stackstate.components.all.otelInstrumentation.serviceNamespace | string | `"{{ printf \"%s-%s\" .Chart.Name .Release.Namespace }}"` |  |
+| stackstate.components.all.otelInstrumentation.serviceNamespace | string | `""` | Instrumentation service namespace. Empty uses <chart-name>-<release-namespace>. Components can override this value. |
 | stackstate.components.all.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.all.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
@@ -1271,13 +1298,11 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.upgradeOnStartup | list | `[]` | Specify additional stackpacks that will, on startup only, be upgraded to the latest version available. Note: The following StackPacks are automatically upgraded with SUSE Observability: kubernetes-v2, open-telemetry, stackstate-k8s-agent-v2, aad-v2, plus either prime-kubernetes or community-kubernetes (based on stackstate.deployment.edition). When StackPacks 2.0 is disabled (default): stackstate is also upgraded. When StackPacks 2.0 is enabled: otel-k8s-crd and suse-observability are upgraded instead of stackstate (suse-observability triggers the cross-name migration from stackstate via successorMapping). Additional StackPacks declared in upgradeOnStartup will be merged with these defaults. |
 | stackstate.topology.retentionHours | integer | `nil` | Number of hours topology will be retained. |
 | stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
-| victoria-metrics-0.backup.awsSecrets | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials (resolved from s3proxy). |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-0.backup.enabled | bool | `true` | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | victoria-metrics-0.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
 | victoria-metrics-0.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
 | victoria-metrics-0.backup.minHistorySeconds | int | `86400` | Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted. |
-| victoria-metrics-0.backup.overrideS3Endpoint | string | `"http://{{ include \"stackstate.s3proxy.endpoint\" . }}"` | S3-compatible endpoint for backup storage (resolved from s3proxy). **Do not change this value!** |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-0.backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
@@ -1288,13 +1313,11 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.image.tag | string | `"1.144.0-so17"` | Victoria Metrics server image tag. Updated by updatecli. |
 | victoria-metrics-0.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-0.server.resources | object | `{}` |  |
-| victoria-metrics-1.backup.awsSecrets | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials (resolved from s3proxy). |
 | victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-1.backup.enabled | bool | `true` | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | victoria-metrics-1.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
 | victoria-metrics-1.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
 | victoria-metrics-1.backup.minHistorySeconds | int | `86400` | Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted. |
-| victoria-metrics-1.backup.overrideS3Endpoint | string | `"http://{{ include \"stackstate.s3proxy.endpoint\" . }}"` | S3-compatible endpoint for backup storage (resolved from s3proxy). **Do not change this value!** |
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.daily | string | `"5 1 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-1.backup.scheduled.hourly | string | `"35 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |

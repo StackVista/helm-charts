@@ -29,13 +29,6 @@ data:
 {{- end }}
 
 {{/*
-StackState URL function
-*/}}
-{{- define "anomaly-detection.stackstate.instance" -}}
-{{ tpl .Values.stackstate.instance . }}
-{{- end }}
-
-{{/*
 Return the image registry
 */}}
 {{- define "anomaly-detection.image.registry" -}}

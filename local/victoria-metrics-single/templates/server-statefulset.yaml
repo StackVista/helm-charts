@@ -1,5 +1,9 @@
 {{- if and .Values.server.enabled .Values.server.statefulSet.enabled (eq (include "victoria-metrics.isEnabled" .) "true") -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $configuration := include "victoria-metrics.backup.connection" . | fromYaml -}}
+{{- $backupConfiguration := omit .Values.backup "overrideS3Endpoint" "awsSecrets" -}}
+{{/* Hash the effective schedule: Helm can retain or omit an unused null legacy schedule key. */}}
+{{- $_ := set $backupConfiguration "scheduled" (dict "hourly" (include "victoria-metrics.backup.hourlySchedule" .) "daily" .Values.backup.scheduled.daily) -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -25,7 +29,7 @@ spec:
       annotations:
         checksum/scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
         {{- if and .Values.global.backup.enabled .Values.backup.enabled }}
-        {{- include "common.annotations.checksumObject" (dict "value" .Values.backup "name" "checksum/backup-config") | nindent 8 }}
+        {{- include "common.annotations.checksumObject" (dict "value" (dict "backup" $backupConfiguration "connection" $configuration) "name" "checksum/backup-config") | nindent 8 }}
         {{- include "common.annotations.checksumObject" (dict "value" .Values.global.s3proxy.credentials "name" "checksum/s3proxy-credentials") | nindent 8 }}
         {{- end }}
     {{- if .Values.server.podAnnotations }}
@@ -64,7 +68,7 @@ spec:
             - name: BUCKET_NAME
               value: "{{ tpl .Values.backup.bucketName . }}"
             - name: S3_ENDPOINT
-              value: "{{ tpl .Values.backup.overrideS3Endpoint . }}"
+              value: {{ $configuration.endpoint | quote }}
             - name: S3_PREFIX
               value: {{ tpl .Values.backup.s3Prefix . | quote }}
             - name: MIN_HISTORY_SECONDS
@@ -210,12 +214,12 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ tpl .Values.backup.awsSecrets .}}
+                  name: {{ $configuration.secretName | quote }}
                   key: accesskey
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ tpl .Values.backup.awsSecrets .}}
+                  name: {{ $configuration.secretName | quote }}
                   key: secretkey
           ports:
             - containerPort: {{ .Values.backup.supercronic.metrics.port }}
