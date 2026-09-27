@@ -4,6 +4,8 @@
   imagePullPolicy: "{{ .Values.nodeAgent.containers.agent.image.pullPolicy }}"
   env:
     {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 4 }}
+    - name: STS_CLUSTER_NAME
+      {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 6 }}
     - name: STS_KUBERNETES_KUBELET_HOST
       valueFrom:
         fieldRef:
@@ -13,7 +15,7 @@
         fieldRef:
           fieldPath: spec.nodeName
     - name: STS_HOSTNAME
-      value: "$(KUBERNETES_HOSTNAME)-{{ .Values.stackstate.cluster.name}}"
+      value: {{ include "stackstate-k8s-agent.hostname" . | quote }}
     - name: AGENT_VERSION
       value: {{ .Values.nodeAgent.containers.agent.image.tag | quote }}
     - name: HOST_PROC
@@ -29,8 +31,6 @@
       value: {{ .Release.Name }}-cluster-agent
     {{ include "stackstate-k8s-agent.clusterAgentAuthTokenEnv" . | nindent 4 }}
     {{- end }}
-    - name: STS_CLUSTER_NAME
-      value: {{ .Values.stackstate.cluster.name | quote }}
     - name: STS_SKIP_VALIDATE_CLUSTERNAME
       value: "true"
     - name: STS_CHECKS_TAG_CARDINALITY
@@ -54,7 +54,7 @@
     - name: STS_SKIP_SSL_VALIDATION
       value: {{ or .Values.global.skipSslValidation .Values.nodeAgent.skipSslValidation | quote }}
     - name: STS_STS_URL
-      value: {{ include "stackstate-k8s-agent.stackstate.url" . }}
+      {{- include "stackstate-k8s-agent.urlEnvValue" . | nindent 6 }}
     {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
     - name: STS_CRI_SOCKET_PATH
       value: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}

@@ -14,9 +14,11 @@ data:
   STS_CLUSTER_NAME: {{ tpl .Values.stackstate.cluster.name . | quote }}
 {{- end -}}
 
+{{- if not .Values.global.clusterName.fromSecret }}
 {{- if .Values.stackstate.cluster.name }}
 {{- $stackstateClusterNameInternalConfigMap := fromYaml (include "stackstate-k8s-agent.clusterName.configmap.internal" .) -}}
 {{- toYaml (merge $stackstateClusterNameInternalConfigMap) -}}
 {{- else }}
-{{- fail "Cluster name not defined, provide a clustername through stackstate.cluster.name" }}
+{{- fail "Cluster name not defined, provide stackstate.cluster.name or global.clusterName.fromSecret" }}
+{{- end }}
 {{- end }}

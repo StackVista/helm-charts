@@ -48,12 +48,14 @@ spec:
           imagePullPolicy: "{{ .Values.checksAgent.image.pullPolicy }}"
           env:
           {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
+          - name: STS_CLUSTER_NAME
+            {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 12 }}
           - name: KUBERNETES_HOSTNAME
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
           - name: STS_HOSTNAME
-            value: "$(KUBERNETES_HOSTNAME)-{{ .Values.stackstate.cluster.name}}"
+            value: {{ include "stackstate-k8s-agent.hostname" . | quote }}
           - name: AGENT_VERSION
             value: {{ .Values.checksAgent.image.tag | quote }}
           - name: LOG_LEVEL
@@ -65,8 +67,6 @@ spec:
             value: {{ .Release.Name }}-cluster-agent
           {{ include "stackstate-k8s-agent.clusterAgentAuthTokenEnv" . | nindent 10 }}
           {{- end }}
-          - name: STS_CLUSTER_NAME
-            value: {{ .Values.stackstate.cluster.name | quote }}
           - name: STS_SKIP_VALIDATE_CLUSTERNAME
             value: "true"
           - name: STS_CHECKS_TAG_CARDINALITY
@@ -86,7 +86,7 @@ spec:
           - name: STS_SKIP_SSL_VALIDATION
             value: {{ or .Values.global.skipSslValidation .Values.checksAgent.skipSslValidation | quote }}
           - name: STS_STS_URL
-            value: {{ include "stackstate-k8s-agent.stackstate.url" . }}
+            {{- include "stackstate-k8s-agent.urlEnvValue" . | nindent 12 }}
           {{- if .Values.global.proxy.url }}
           - name: STS_PROXY_HTTPS
             value: {{ .Values.global.proxy.url | quote }}

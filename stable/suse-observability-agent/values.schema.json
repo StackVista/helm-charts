@@ -8,12 +8,70 @@
     "stackstate",
     "clusterAgent"
   ],
+  "allOf": [
+    {
+      "anyOf": [
+        {
+          "properties": {
+            "stackstate": {
+              "required": ["url"],
+              "properties": {"url": {"type": "string", "minLength": 1}}
+            }
+          }
+        },
+        {
+          "required": ["global"],
+          "properties": {
+            "global": {
+              "required": ["url"],
+              "properties": {
+                "url": {
+                  "required": ["fromSecret"],
+                  "properties": {"fromSecret": {"type": "string", "minLength": 1}}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "anyOf": [
+        {
+          "properties": {
+            "stackstate": {
+              "required": ["cluster"],
+              "properties": {
+                "cluster": {
+                  "required": ["name"],
+                  "properties": {"name": {"type": "string", "minLength": 1}}
+                }
+              }
+            }
+          }
+        },
+        {
+          "required": ["global"],
+          "properties": {
+            "global": {
+              "required": ["clusterName"],
+              "properties": {
+                "clusterName": {
+                  "required": ["fromSecret"],
+                  "properties": {"fromSecret": {"type": "string", "minLength": 1}}
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
   "properties": {
     "stackstate": {
       "type": "object",
       "required": [
-        "cluster",
-        "url"
+        "cluster"
       ],
       "properties": {
         "apiKey": {
@@ -21,10 +79,9 @@
         },
         "cluster": {
           "type": "object",
-          "required": ["name"],
           "properties": {
             "name": {
-              "type": "string",
+              "type": ["string", "null"],
               "pattern": "^[a-z0-9]([a-z0-9\\-\\.]*[a-z0-9])$"
             },
             "authToken": {
@@ -33,7 +90,7 @@
           }
         },
         "url": {
-          "type": "string"
+          "type": ["string", "null"]
         }
       }
     },

@@ -31,7 +31,7 @@ data:
       # objects can add explicit non-CR watches (for example pods used by an integration).
       k8sresource:
         auth_type: serviceAccount
-        cluster_name: {{ .Values.stackstate.cluster.name | quote }}
+        cluster_name: {{ if .Values.global.clusterName.fromSecret }}"${env:K8S_CLUSTER_NAME}"{{ else }}{{ .Values.stackstate.cluster.name | quote }}{{ end }}
         snapshot_interval: {{ .Values.otel.k8sResourceCollector.crDiscovery.snapshotInterval }}
         discovery_mode: {{ .Values.otel.k8sResourceCollector.crDiscovery.discoveryMode }}
         max_cr_total_data_size_bytes: {{ .Values.otel.k8sResourceCollector.dataLimits.maxCrTotalDataSizeBytes | int }}

@@ -15,9 +15,11 @@ data:
   STS_STS_URL: {{ .Values.stackstate.url | quote }}
 {{- end -}}
 
+{{- if not .Values.global.url.fromSecret }}
 {{- if .Values.stackstate.url }}
 {{- $stackstateUrlInternalConfigMap := fromYaml (include "stackstate-k8s-agent.url.configmap.internal" .) -}}
 {{- toYaml (merge $stackstateUrlInternalConfigMap) -}}
 {{- else }}
-{{- fail "Url not defined, either provide a SUSE Observability platform url through stackstate.url" }}
+{{- fail "Url not defined, provide stackstate.url or global.url.fromSecret" }}
+{{- end }}
 {{- end }}

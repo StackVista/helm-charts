@@ -16,11 +16,11 @@ data:
       grpc_listen_port: 0
 
     clients:
-      - url: {{ tpl .Values.stackstate.url . }}/logs/k8s
+      - url: {{ if .Values.global.url.fromSecret }}${STS_URL}{{ else }}{{ tpl .Values.stackstate.url . }}{{ end }}/logs/k8s
         headers:
           sts-api-key: ${STS_API_KEY}
         external_labels:
-           sts_cluster_name: {{ .Values.stackstate.cluster.name | quote }}
+           sts_cluster_name: {{ if .Values.global.clusterName.fromSecret }}"${STS_CLUSTER_NAME}"{{ else }}{{ .Values.stackstate.cluster.name | quote }}{{ end }}
       {{- if .Values.global.proxy.url }}
         proxy_url: {{ .Values.global.proxy.url | quote }}
       {{- end }}

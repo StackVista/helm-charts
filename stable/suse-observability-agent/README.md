@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.6.13`
+Current chart version is `1.7.0`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -15,13 +15,47 @@ Current chart version is `1.6.13`
 
 ## Required Values
 
-In order to successfully install this chart, you **must** provide the following variables:
+Provide the following values directly, or use existing Secrets as described below:
 
 * `stackstate.apiKey`
 * `stackstate.cluster.name`
 * `stackstate.url`
 
 The parameter `stackstate.cluster.name` is entered when installing the Cluster Agent StackPack.
+
+### Configuration from an existing Secret
+
+For Fleet or other GitOps deployments, provide the API key, cluster name and URL
+through a Secret in the agent's namespace instead of literal Helm values:
+
+```yaml
+global:
+  apiKey:
+    fromSecret: observability-agent-config
+  clusterName:
+    fromSecret: observability-agent-config
+  url:
+    fromSecret: observability-agent-config
+```
+
+The Secret must contain `STS_API_KEY`, `STS_CLUSTER_NAME` and `STS_URL`.
+Each setting may reference a different Secret; Secret names support Helm templates.
+`global.clusterName.fromSecret` takes precedence over `stackstate.cluster.name`,
+and `global.url.fromSecret` takes precedence over `stackstate.url`. Either setting
+can also be used independently with the remaining literal values.
+
+Use the same cluster-name format as `stackstate.cluster.name` (lowercase letters,
+digits, dots and dashes, starting and ending with a letter or digit). `STS_URL`
+must be an HTTP(S) receiver URL without a trailing slash. Logs and OTel endpoints
+are derived from it at runtime; explicit `otel.platformHttpOtlpEndpoint` and
+`otel.platformGrpcOtlpEndpoint` overrides still take precedence.
+
+The chart references the Secret without reading it during rendering, so Fleet
+does not need access to its contents. Provision the Secret before the agent pods
+start. Secret contents cannot be validated by Helm; restart agent workloads after
+updating the Secret to refresh their environment variables.
+
+### Installation with literal values
 
 The recommended namespace for this chart is `suse-observability-agent`.
 
@@ -300,6 +334,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | global.apiKey.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from which the receiver api key is taken. Will execute as a template. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_API_KEY value |
 | global.clusterAgentAuthToken.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from from which the token for authenticating between node and cluster agent will be taken. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_CLUSTER_AGENT_AUTH_TOKEN value |
+| global.clusterName.fromSecret | string | `""` | Name of an existing Secret containing STS_CLUSTER_NAME. Supports Helm templating. When set, takes precedence over stackstate.cluster.name. |
 | global.customCertificates | object | `{"configMapName":"","enabled":false,"pemData":""}` | Custom certificates for HTTPS endpoints |
 | global.customCertificates.configMapName | string | `""` | Name of existing ConfigMap containing certificates (exclusive with pemData) |
 | global.customCertificates.enabled | bool | `false` | Enable custom certificate injection |
@@ -314,6 +349,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.imageRegistry | string | `"quay.io"` | The image registry to use. |
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
+| global.url.fromSecret | string | `""` | Name of an existing Secret containing STS_URL. Supports Helm templating. When set, takes precedence over stackstate.url. |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
 | httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so27"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |

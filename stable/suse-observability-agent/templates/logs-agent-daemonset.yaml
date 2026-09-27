@@ -49,6 +49,9 @@ spec:
           imagePullPolicy: "{{ .Values.logsAgent.image.pullPolicy }}"
           env:
           {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
+          {{- include "stackstate-k8s-agent.platformUrlEnv" . | nindent 10 }}
+          - name: STS_CLUSTER_NAME
+            {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 12 }}
           - name: "HOSTNAME" # needed when using kubernetes_sd_configs
             valueFrom:
               fieldRef:

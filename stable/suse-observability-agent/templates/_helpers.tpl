@@ -68,6 +68,43 @@ StackState URL function
 {{ tpl .Values.stackstate.url . | quote }}
 {{- end }}
 
+{{- define "stackstate-k8s-agent.clusterNameEnvValue" -}}
+{{- if .Values.global.clusterName.fromSecret }}
+valueFrom:
+  secretKeyRef:
+    name: {{ tpl .Values.global.clusterName.fromSecret . | quote }}
+    key: STS_CLUSTER_NAME
+{{- else }}
+value: {{ .Values.stackstate.cluster.name | quote }}
+{{- end }}
+{{- end }}
+
+{{- define "stackstate-k8s-agent.urlEnvValue" -}}
+{{- if .Values.global.url.fromSecret }}
+valueFrom:
+  secretKeyRef:
+    name: {{ tpl .Values.global.url.fromSecret . | quote }}
+    key: STS_URL
+{{- else }}
+value: {{ include "stackstate-k8s-agent.stackstate.url" . }}
+{{- end }}
+{{- end }}
+
+{{- define "stackstate-k8s-agent.hostname" -}}
+{{- if .Values.global.clusterName.fromSecret -}}
+$(KUBERNETES_HOSTNAME)-$(STS_CLUSTER_NAME)
+{{- else -}}
+$(KUBERNETES_HOSTNAME)-{{ .Values.stackstate.cluster.name }}
+{{- end -}}
+{{- end }}
+
+{{- define "stackstate-k8s-agent.platformUrlEnv" -}}
+{{- if .Values.global.url.fromSecret }}
+- name: STS_URL
+  {{- include "stackstate-k8s-agent.urlEnvValue" . | nindent 2 }}
+{{- end }}
+{{- end }}
+
 {{/*
 Derive platform OTLP endpoint from StackState URL or use explicit override.
 Default: appends /otel to stackstate.url.
@@ -90,6 +127,8 @@ when both are set. See stackstate-k8s-agent.platform.otlp.useGrpc.
     {{- fail "otel.platformGrpcOtlpEndpoint must include a port (format: host:port, e.g. otlp-my-instance.example.com:443)" -}}
   {{- end -}}
   {{- $endpoint -}}
+{{- else if .Values.global.url.fromSecret -}}
+  $(STS_URL)/otel
 {{- else -}}
   {{- printf "%s/otel" (tpl .Values.stackstate.url . | trimSuffix "/") -}}
 {{- end -}}
