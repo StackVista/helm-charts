@@ -18,6 +18,21 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | file://../common | common | * |
 | file://../suse-observability-sizing | suse-observability-sizing | * |
 | file://charts/common | bitnami-common | 2.x.x |
+
+## Backup connection configuration
+
+Standalone installations configure `backup.s3.endpoint` (without the URL scheme)
+and `backup.s3.secretName`; both support template expressions. The SUSE Observability
+platform supplies its S3Proxy connection instead and ignores these nested inputs.
+
+Template authors must resolve `clickhouse.backup.connection` with `fromYaml` into
+`$configuration`, then read `$configuration.endpoint` and `$configuration.secretName`.
+Do not read `.Values.backup.s3` outside `_configuration.tpl`: that bypasses the
+parent configuration. A regression test checks direct access.
+
+Backup checksums include the resolved connection. Upgrading to this implementation
+changes the checksum once when global backups are enabled, triggering a pod rollout.
+
 ## Values
 
 | Key | Type | Default | Description |

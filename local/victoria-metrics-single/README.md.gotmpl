@@ -10,6 +10,22 @@ We use the single node deployment of Victoria Metrics - each node has own copy o
 
 ## Backups
 
+### Connection configuration
+
+Standalone installations configure `backup.overrideS3Endpoint` (including the URL
+scheme) and `backup.awsSecrets`; both support template expressions. The SUSE
+Observability platform supplies its S3Proxy connection instead and ignores these
+nested inputs.
+
+Template authors must resolve `victoria-metrics.backup.connection` with `fromYaml`
+into `$configuration`, then read `$configuration.endpoint` and
+`$configuration.secretName`. Do not read `.Values.backup.overrideS3Endpoint` or
+`.Values.backup.awsSecrets` outside `_configuration.tpl`: that bypasses the parent
+configuration. A regression test checks direct access.
+
+Backup checksums include the resolved connection. Upgrading to this implementation
+changes the checksum once when backups are enabled, triggering a pod rollout.
+
 ### Motivation
 
 Victoria Metrics provides a tool named `vmbackup` to backup all data stored in the database. The tool requires to have

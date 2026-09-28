@@ -37,6 +37,36 @@ corresponding internal ConfigMap.
 The standalone subchart and the SUSE Observability agent chart retain their own
 connection configuration.
 
+## Bundled backup and anomaly-detection connections
+
+The platform supplies VictoriaMetrics and ClickHouse backup endpoints and
+credential Secret names through `victoria-metrics.backup.connection` and
+`clickhouse.backup.connection`. Configure backup storage through
+`backup.storage.backend` and S3Proxy credentials through `global.s3proxy.credentials`,
+including `fromExternalSecret` for an existing Secret.
+
+The nested `victoria-metrics-{0,1}.backup.awsSecrets`,
+`victoria-metrics-{0,1}.backup.overrideS3Endpoint`, and
+`clickhouse.backup.s3.endpoint` / `secretName` settings are ignored in platform
+installations, including saved values from earlier releases. Backup buckets,
+prefixes, schedules and retention remain configurable.
+
+Bundled anomaly detection always uses this installation's router through
+`anomaly-detection.stackstate.instance`. A saved `anomaly-detection.stackstate.instance`
+value is ignored; authentication settings are unchanged. Standalone subcharts
+retain their configurable connections.
+
+Backup checksums now include the resolved connection rather than template text.
+The first upgrade changes the checksum and triggers a rollout of VictoriaMetrics
+instances with backups enabled and ClickHouse when global backups are enabled.
+Allow for interruptions while these pods restart. This refactor preserves
+StatefulSet/PVC identities and default backup destinations; previously customized
+nested connections switch to the platform connection.
+
+The OpenTelemetry instrumentation namespace defaults to
+`<chart-name>-<release-namespace>` in a helper. Explicit shared and per-component
+`otelInstrumentation.serviceNamespace` settings, including templates, still work.
+
 ## Resource naming
 
 The UI and replication checker now use the fixed names `suse-observability-ui` and

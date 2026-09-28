@@ -8,8 +8,17 @@ Current chart version is `{{ template "chart.version" . }}`
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:
+
 * `stackstate.instance`
 * `global.receiverApiKey`
+
+The SUSE Observability platform supplies its local router URL and ignores this
+setting for bundled anomaly detection. Standalone installations retain support
+for a configured URL, including template expressions.
+
+Templates must call `anomaly-detection.stackstate.instance` instead of reading
+`.Values.stackstate.instance` directly. The helper lets a parent chart supply the
+connection consistently to both workloads; a regression test checks direct access.
 
 Install them on the command line on Helm with the following command:
 

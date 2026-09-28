@@ -400,7 +400,8 @@ stackstate:
         enabled: false
         otlpExporterEndpoint: ""
         otlpExporterProtocol: grpc
-        serviceNamespace: '{{ printf "%s-%s" .Chart.Name .Release.Namespace }}'
+        # stackstate.components.all.otelInstrumentation.serviceNamespace -- Instrumentation service namespace. Empty uses <chart-name>-<release-namespace>. Components can override this value.
+        serviceNamespace: ""
       securityContext:
         # stackstate.components.all.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
@@ -2087,9 +2088,6 @@ anomaly-detection:
     registry: quay.io
     # anomaly-detection.image.spotlightRepository -- Repository of the spotlight Docker image.
     spotlightRepository: stackstate/spotlight
-  stackstate:
-    # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL.
-    instance: '{{ include "stackstate.router.endpoint" . }}'
 cluster-role:
   # cluster-role.enabled -- Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
   enabled: true
@@ -2139,10 +2137,6 @@ victoria-metrics-0:
     keepLastDaily: 7
     # victoria-metrics-0.backup.keepLastWeekly -- Number of weekly backups to retain
     keepLastWeekly: 4
-    # victoria-metrics-0.backup.awsSecrets -- Name of the secret containing S3 credentials (resolved from s3proxy).
-    awsSecrets: '{{ include "stackstate.s3proxy.secretName" . }}'
-    # victoria-metrics-0.backup.overrideS3Endpoint -- S3-compatible endpoint for backup storage (resolved from s3proxy). **Do not change this value!**
-    overrideS3Endpoint: 'http://{{ include "stackstate.s3proxy.endpoint" . }}'
 victoria-metrics-1:
   enabled: true
   server:
@@ -2182,10 +2176,6 @@ victoria-metrics-1:
     keepLastDaily: 7
     # victoria-metrics-1.backup.keepLastWeekly -- Number of weekly backups to retain
     keepLastWeekly: 4
-    # victoria-metrics-1.backup.awsSecrets -- Name of the secret containing S3 credentials (resolved from s3proxy).
-    awsSecrets: '{{ include "stackstate.s3proxy.secretName" . }}'
-    # victoria-metrics-1.backup.overrideS3Endpoint -- S3-compatible endpoint for backup storage (resolved from s3proxy). **Do not change this value!**
-    overrideS3Endpoint: 'http://{{ include "stackstate.s3proxy.endpoint" . }}'
 victoria-metrics:
   restore:
     image:
@@ -2232,11 +2222,6 @@ clickhouse:
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
       tag: "2.7.2-so17"
-    s3:
-      # clickhouse.backup.s3.endpoint -- S3-compatible endpoint for backup storage (resolved from s3proxy).
-      endpoint: '{{ include "stackstate.s3proxy.endpoint" . }}'
-      # clickhouse.backup.s3.secretName -- Name of the secret containing S3 credentials.
-      secretName: '{{ include "stackstate.s3proxy.secretName" . }}'
 opentelemetry-collector:
   image:
     # opentelemetry-collector.image.registry -- Base container image registry.

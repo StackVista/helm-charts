@@ -4,6 +4,7 @@ SPDX-License-Identifier: APACHE-2.0
 */}}
 
 {{- $replicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . -}}
+{{- $configuration := include "clickhouse.backup.connection" . | fromYaml -}}
 {{- $shards := .Values.shards | int }}
 {{- range $i, $e := until $shards }}
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" $ }}
@@ -35,7 +36,7 @@ spec:
         checksum/config-users-extra: {{ include (print $.Template.BasePath "/configmap-users-extra.yaml") $ | sha256sum }}
         {{- if $.Values.global.backup.enabled }}
         {{- include "common.annotations.checksumObject" (dict "value" $.Values.global.s3proxy.credentials "name" "checksum/s3proxy-credentials") | nindent 8 }}
-        {{- include "common.annotations.checksumObject" (dict "value" $.Values.backup "name" "checksum/backup-config") | nindent 8 }}
+        {{- include "common.annotations.checksumObject" (dict "value" (dict "backup" (omit $.Values.backup "s3") "connection" $configuration) "name" "checksum/backup-config") | nindent 8 }}
         {{- end }}
         {{- if $.Values.podAnnotations }}
         {{- include "common.tplvalues.render" (dict "value" $.Values.podAnnotations "context" $) | nindent 8 }}
@@ -396,12 +397,12 @@ spec:
             - name: S3_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: '{{ tpl $.Values.backup.s3.secretName $ }}'
+                  name: {{ $configuration.secretName | quote }}
                   key: accesskey
             - name: S3_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: '{{ tpl $.Values.backup.s3.secretName $ }}'
+                  name: {{ $configuration.secretName | quote }}
                   key: secretkey
             {{- end }}
           resources:
