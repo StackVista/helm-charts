@@ -44,7 +44,7 @@ func TestAPIResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 				api := tc.prefix + "-api"
 				if split {
 					assertAPIConfigurationReferences(t, resources, api, api, api+"-log", api)
-					// An unmigrated component still resolves its legacy names.
+					// Other components retain their existing configuration names.
 					initializer := tc.prefix + "-initializer"
 					require.Contains(t, resources.Deployments, initializer)
 					assertLegacyConfigurationReferences(t, resources, initializer)

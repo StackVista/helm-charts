@@ -87,7 +87,7 @@ env:
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_enabled" "true" }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_featureSwitches_receiveRbacData" "true" }}
 {{- end }}
-{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv "extraEnvSecretName" (include "stackstate.receiver.secret.fullname" .)) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.receiver.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
@@ -177,7 +177,7 @@ spec:
       containers:
       - {{ toYaml $stsstackstateReceiverMainContainer | nindent 8 }}
       volumes:
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "receiver" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.receiver.configmap.fullname" .) "logConfigMapName" (include "stackstate.receiver.log.configmap.fullname" .) "root" .) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector (or .Values.stackstate.components.receiver.nodeSelector .TypeConfig.nodeSelector) }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

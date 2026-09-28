@@ -111,6 +111,70 @@ State, sync and slicing configuration resources retain their existing names.
 {{ template "common.fullname.short" . }}-slicing
 {{- end -}}
 
+{{/*
+Server, receiver, correlate, initializer and e2es retain their existing configuration names.
+Split receiver and correlate Deployments share their component configuration resources.
+*/}}
+{{- define "stackstate.server.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.server.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-server-log
+{{- end -}}
+
+{{- define "stackstate.server.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.receiver.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.receiver.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-log
+{{- end -}}
+
+{{- define "stackstate.receiver.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.correlate.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate
+{{- end -}}
+
+{{- define "stackstate.correlate.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate-log
+{{- end -}}
+
+{{- define "stackstate.correlate.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate
+{{- end -}}
+
+{{- define "stackstate.initializer.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.initializer.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer-log
+{{- end -}}
+
+{{- define "stackstate.initializer.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.e2es.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
+{{- define "stackstate.e2es.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es-log
+{{- end -}}
+
+{{- define "stackstate.e2es.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
 {{- define "stackstate.httpRoute.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}
 {{- end -}}

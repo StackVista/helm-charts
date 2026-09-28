@@ -25,7 +25,7 @@ env:
     "CORRELATE_WRITE_PROMETHEUS" "true"
     "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.fullname" .))
 }}
-{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv "extraEnvSecretName" (include "stackstate.correlate.secret.fullname" .)) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.correlate.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
@@ -110,7 +110,7 @@ spec:
       containers:
       - {{ toYaml $stsstackstateCorrelateMainContainer | nindent 8 }}
       volumes:
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "correlate" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.correlate.configmap.fullname" .) "logConfigMapName" (include "stackstate.correlate.log.configmap.fullname" .) "root" .) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector (or .Values.stackstate.components.correlate.nodeSelector .TypeConfig.nodeSelector) }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

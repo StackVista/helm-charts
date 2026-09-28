@@ -1,6 +1,6 @@
 {{- define "stackstate.correlate.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-correlate
+  name: {{ include "stackstate.correlate.configmap.fullname" . }}
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.correlate "context" $) | nindent 0 -}}
 {{- end -}}
 

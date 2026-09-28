@@ -1,6 +1,6 @@
 {{- define "stackstate.server.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ include "stackstate.server.configmap.fullname" . }}
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.server "context" $) | nindent 0 -}}
 {{- include "stackstate.configmap.server-and-api" . | nindent 4 -}}
 {{- end -}}
