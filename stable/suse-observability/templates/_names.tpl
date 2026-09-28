@@ -1,6 +1,25 @@
 {{/*
-Names for migrated resources. The canonical prefix is defined in the common chart.
+Resource-name helpers shared by declarations and consumers.
+The canonical prefix is defined in the common chart. Helpers retaining legacy
+names are documented below so extraction can precede an actual naming migration.
 */}}
+
+{{/*
+API configuration resource names. Preserve the existing naming expressions;
+moving declarations and references to these helpers must not rename resources.
+*/}}
+{{- define "stackstate.api.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.api.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-api-log
+{{- end -}}
+
+{{- define "stackstate.api.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
 {{- define "stackstate.httpRoute.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}
 {{- end -}}

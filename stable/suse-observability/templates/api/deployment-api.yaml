@@ -82,7 +82,7 @@ env:
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_enableAi" "true" }}
   {{- $_ := set $deploymentEnv "AI_SERVICE_URL" (printf "http://%s:%s" (include "stackstate.ai-assistant.fullname" .) (include "stackstate.aiAssistant.port" .)) }}
 {{- end }}
-{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv "extraEnvSecretName" (include "stackstate.api.secret.fullname" .)) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.api.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) $serviceConfig .) }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
@@ -216,7 +216,7 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "api" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.api.configmap.fullname" .) "logConfigMapName" (include "stackstate.api.log.configmap.fullname" .) "root" .) | nindent 8 }}
         {{- if include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .) }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "api" "root" . ) | nindent 8 }}
         {{- end }}

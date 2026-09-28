@@ -193,11 +193,18 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- end }}
 {{/* Output secret env vars */}}
 {{- if $secretEnvVars }}
+  {{- $extraEnvSecretName := .extraEnvSecretName }}
+  {{- if hasKey . "extraEnvSecretName" }}
+    {{- $extraEnvSecretName = required "stackstate.service.envvars: extraEnvSecretName must not be empty when secret environment variables are configured" $extraEnvSecretName }}
+  {{- else }}
+    {{/* Temporary legacy fallback for components not yet passing a resolved Secret name. */}}
+    {{- $extraEnvSecretName = printf "%s-%s" (include "common.fullname.short" .) .ServiceName }}
+  {{- end }}
   {{- range $key :=  (keys $secretEnvVars | sortAlpha)  }}
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-{{ $.ServiceName }}
+      name: {{ $extraEnvSecretName }}
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -258,16 +265,30 @@ of every entry.
 {{- end -}}
 
 {{/*
-Mount secrets and log config in pod for stackstate services
+Mount secrets and log config in pod for stackstate services.
+Pass configMapName and logConfigMapName resolved by the resource naming helpers.
+The pod_name fallback is temporary until all components pass explicit names.
 */}}
 {{- define "stackstate.service.pod.volumes" -}}
+{{- $configMapName := .configMapName -}}
+{{- if hasKey . "configMapName" -}}
+  {{- $configMapName = required "stackstate.service.pod.volumes: configMapName must not be empty" $configMapName -}}
+{{- else -}}
+  {{- $configMapName = printf "%s-%s" (include "common.fullname.short" .root) .pod_name -}}
+{{- end -}}
+{{- $logConfigMapName := .logConfigMapName -}}
+{{- if hasKey . "logConfigMapName" -}}
+  {{- $logConfigMapName = required "stackstate.service.pod.volumes: logConfigMapName must not be empty" $logConfigMapName -}}
+{{- else -}}
+  {{- $logConfigMapName = printf "%s-%s-log" (include "common.fullname.short" .root) .pod_name -}}
+{{- end -}}
 {{- $mountSecrets := fromYamlArray (include "stackstate.service.mountsecrets" .root ) }}
 - name: config-volume-log
   configMap:
-    name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}-log
+    name: {{ $logConfigMapName }}
 - name: config-volume
   configMap:
-    name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}
+    name: {{ $configMapName }}
 {{- if $mountSecrets }}
 - name: service-secrets-volume
   projected:
