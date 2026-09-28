@@ -72,6 +72,45 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{ template "common.fullname.short" . }}-authorization-sync
 {{- end -}}
 
+{{/*
+State, sync and slicing configuration resources retain their existing names.
+*/}}
+{{- define "stackstate.state.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.state.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-state-log
+{{- end -}}
+
+{{- define "stackstate.state.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.sync.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-sync-log
+{{- end -}}
+
+{{- define "stackstate.sync.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.slicing.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.slicing.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing-log
+{{- end -}}
+
+{{- define "stackstate.slicing.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
 {{- define "stackstate.httpRoute.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}
 {{- end -}}

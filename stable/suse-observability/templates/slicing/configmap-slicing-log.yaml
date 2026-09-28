@@ -1,6 +1,6 @@
 {{- define "stackstate.slicing.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-slicing-log
+  name: {{ include "stackstate.slicing.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) .Values.stackstate.components.slicing.additionalLogging -}}

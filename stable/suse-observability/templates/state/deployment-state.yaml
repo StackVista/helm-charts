@@ -63,7 +63,7 @@ env:
     "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
     "CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds" "86400"
 }}
-{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv "extraEnvSecretName" (include "stackstate.state.secret.fullname" .)) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.state.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) $serviceConfig .) }}/{{ .Values.stackstate.components.state.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
@@ -193,7 +193,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "common.fullname.short" . }}-state-tmp
         {{- end}}
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "state" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.state.configmap.fullname" .) "logConfigMapName" (include "stackstate.state.log.configmap.fullname" .) "root" .) | nindent 8 }}
         {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "state" "root" . ) | nindent 8 }}
         {{- end }}

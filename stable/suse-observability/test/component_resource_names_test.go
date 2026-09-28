@@ -19,6 +19,9 @@ var explicitConfigurationComponents = []struct{ key, suffix string }{
 	{"notification", "notification"},
 	{"healthSync", "health-sync"},
 	{"authorizationSync", "authorization-sync"},
+	{"state", "state"},
+	{"sync", "sync"},
+	{"slicing", "slicing"},
 }
 
 func TestComponentResourceNamesPreserveLegacyConfiguration(t *testing.T) {
@@ -62,7 +65,7 @@ func TestComponentResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 				}
 				fallback := "server"
 				if split {
-					fallback = "sync"
+					fallback = "initializer"
 				}
 				assertLegacyConfigurationReferences(t, resources, tc.prefix+"-"+fallback)
 			})
@@ -106,7 +109,7 @@ func TestComponentConfigurationReferencesFollowDedicatedHelpers(t *testing.T) {
 		assert.NotContains(t, resources.ConfigMaps, deployment+"-log")
 		assert.NotContains(t, resources.Secrets, deployment)
 	}
-	assertLegacyConfigurationReferences(t, resources, "nightly-suse-observability-sync")
+	assertLegacyConfigurationReferences(t, resources, "nightly-suse-observability-initializer")
 }
 
 func componentResourceNameTestValues() map[string]string {

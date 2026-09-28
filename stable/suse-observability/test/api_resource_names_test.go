@@ -45,9 +45,9 @@ func TestAPIResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 				if split {
 					assertAPIConfigurationReferences(t, resources, api, api, api+"-log", api)
 					// An unmigrated component still resolves its legacy names.
-					sync := tc.prefix + "-sync"
-					require.Contains(t, resources.Deployments, sync)
-					assertLegacyConfigurationReferences(t, resources, sync)
+					initializer := tc.prefix + "-initializer"
+					require.Contains(t, resources.Deployments, initializer)
+					assertLegacyConfigurationReferences(t, resources, initializer)
 				} else {
 					assert.NotContains(t, resources.Deployments, api)
 					assert.NotContains(t, resources.ConfigMaps, api)
@@ -108,7 +108,7 @@ func TestAPIConfigurationReferencesFollowDedicatedHelpers(t *testing.T) {
 			assert.NotContains(t, resources.ConfigMaps, "nightly-suse-observability-api")
 			assert.NotContains(t, resources.ConfigMaps, "nightly-suse-observability-api-log")
 			assert.NotContains(t, resources.Secrets, "nightly-suse-observability-api")
-			assertLegacyConfigurationReferences(t, resources, "nightly-suse-observability-sync")
+			assertLegacyConfigurationReferences(t, resources, "nightly-suse-observability-initializer")
 		})
 	}
 }
