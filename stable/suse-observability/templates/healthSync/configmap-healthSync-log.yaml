@@ -1,6 +1,6 @@
 {{- define "stackstate.healthSync.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-health-sync-log
+  name: {{ include "stackstate.healthSync.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) .Values.stackstate.components.healthSync.additionalLogging -}}

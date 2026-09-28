@@ -1,6 +1,6 @@
 {{- define "stackstate.checks.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-checks-log
+  name: {{ include "stackstate.checks.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) .Values.stackstate.components.checks.additionalLogging -}}

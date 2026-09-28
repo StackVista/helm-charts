@@ -20,6 +20,58 @@ moving declarations and references to these helpers must not rename resources.
 {{ template "common.fullname.short" . }}-api
 {{- end -}}
 
+{{/*
+Checks, notification and synchronization configuration resources retain their
+legacy names while declarations and consumers move to dedicated helpers.
+*/}}
+{{- define "stackstate.checks.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.checks.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-checks-log
+{{- end -}}
+
+{{- define "stackstate.checks.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.notification.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-notification-log
+{{- end -}}
+
+{{- define "stackstate.notification.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.healthSync.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync-log
+{{- end -}}
+
+{{- define "stackstate.healthSync.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync-log
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
 {{- define "stackstate.httpRoute.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}
 {{- end -}}

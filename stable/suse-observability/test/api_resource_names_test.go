@@ -45,9 +45,9 @@ func TestAPIResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 				if split {
 					assertAPIConfigurationReferences(t, resources, api, api, api+"-log", api)
 					// An unmigrated component still resolves its legacy names.
-					checks := tc.prefix + "-checks"
-					require.Contains(t, resources.Deployments, checks)
-					assertLegacyConfigurationReferences(t, resources, checks)
+					sync := tc.prefix + "-sync"
+					require.Contains(t, resources.Deployments, sync)
+					assertLegacyConfigurationReferences(t, resources, sync)
 				} else {
 					assert.NotContains(t, resources.Deployments, api)
 					assert.NotContains(t, resources.ConfigMaps, api)
@@ -108,7 +108,7 @@ func TestAPIConfigurationReferencesFollowDedicatedHelpers(t *testing.T) {
 			assert.NotContains(t, resources.ConfigMaps, "nightly-suse-observability-api")
 			assert.NotContains(t, resources.ConfigMaps, "nightly-suse-observability-api-log")
 			assert.NotContains(t, resources.Secrets, "nightly-suse-observability-api")
-			assertLegacyConfigurationReferences(t, resources, "nightly-suse-observability-checks")
+			assertLegacyConfigurationReferences(t, resources, "nightly-suse-observability-sync")
 		})
 	}
 }
@@ -131,6 +131,11 @@ func apiResourceNameTestOptions(values map[string]string) *helm.Options {
 
 func assertAPIConfigurationReferences(t *testing.T, resources helmtestutil.KubernetesResources, deployment, config, logging, secret string) {
 	t.Helper()
+	assertConfigurationReferences(t, resources, deployment, config, logging, secret, map[string]string{"SHARED_SETTING": "api-value", "API_ONLY": "api-only-value"})
+}
+
+func assertConfigurationReferences(t *testing.T, resources helmtestutil.KubernetesResources, deployment, config, logging, secret string, expectedSecretData map[string]string) {
+	t.Helper()
 	require.Contains(t, resources.Deployments, deployment)
 	require.Contains(t, resources.ConfigMaps, config)
 	require.Contains(t, resources.ConfigMaps, logging)
@@ -139,7 +144,7 @@ func assertAPIConfigurationReferences(t *testing.T, resources helmtestutil.Kuber
 	found := map[string]bool{}
 	for _, container := range resources.Deployments[deployment].Spec.Template.Spec.Containers {
 		for _, env := range container.Env {
-			if expected, ok := map[string]string{"SHARED_SETTING": "api-value", "API_ONLY": "api-only-value"}[env.Name]; ok {
+			if expected, ok := expectedSecretData[env.Name]; ok {
 				require.NotNil(t, env.ValueFrom)
 				require.NotNil(t, env.ValueFrom.SecretKeyRef)
 				assert.Equal(t, secret, env.ValueFrom.SecretKeyRef.Name)
@@ -149,7 +154,7 @@ func assertAPIConfigurationReferences(t *testing.T, resources helmtestutil.Kuber
 			}
 		}
 	}
-	assert.Len(t, found, 2)
+	assert.Len(t, found, len(expectedSecretData))
 }
 
 func assertLegacyConfigurationReferences(t *testing.T, resources helmtestutil.KubernetesResources, component string) {

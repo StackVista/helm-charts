@@ -1,6 +1,6 @@
 {{- define "stackstate.notification.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-notification-log
+  name: {{ include "stackstate.notification.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) .Values.stackstate.components.notification.additionalLogging -}}

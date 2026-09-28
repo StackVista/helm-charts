@@ -1,6 +1,6 @@
 {{- define "stackstate.checks.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-checks
+  name: {{ include "stackstate.checks.configmap.fullname" . }}
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.checks "context" $) | nindent 0 -}}
 {{- end -}}
 

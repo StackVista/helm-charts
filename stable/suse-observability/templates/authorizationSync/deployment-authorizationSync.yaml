@@ -44,7 +44,7 @@ env:
     "HADOOP_USER_NAME" "nobody"
     "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
 }}
-{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv "extraEnvSecretName" (include "stackstate.authorizationSync.secret.fullname" .)) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.authorizationSync.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.authorizationSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
@@ -164,7 +164,7 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "authorization-sync" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.authorizationSync.configmap.fullname" .) "logConfigMapName" (include "stackstate.authorizationSync.log.configmap.fullname" .) "root" .) | nindent 8 }}
         {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "authorization-sync" "root" . ) | nindent 8 }}
         {{- end }}
