@@ -55,7 +55,7 @@ spec:
       containers:
       - {{ toYaml (merge $eventsToEsContainer $commonE2esContainer $commonContainer) | nindent 8 }}
       volumes:
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "e2es" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.e2es.configmap.fullname" .) "logConfigMapName" (include "stackstate.e2es.log.configmap.fullname" .) "root" .) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.e2es.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

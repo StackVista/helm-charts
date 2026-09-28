@@ -1,6 +1,6 @@
 {{- define "stackstate.authorizationSync.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-authorization-sync-log
+  name: {{ include "stackstate.authorizationSync.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) .Values.stackstate.components.authorizationSync.additionalLogging -}}

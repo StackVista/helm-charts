@@ -1,6 +1,6 @@
 {{- define "stackstate.authorizationSync.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-authorization-sync
+  name: {{ include "stackstate.authorizationSync.configmap.fullname" . }}
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.authorizationSync "context" $) | nindent 0 }}
 {{- end -}}
 

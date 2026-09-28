@@ -1,6 +1,6 @@
 {{- define "stackstate.state.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-state
+  name: {{ include "stackstate.state.configmap.fullname" . }}
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.state "context" $) | nindent 0 -}}
 {{- end -}}
 

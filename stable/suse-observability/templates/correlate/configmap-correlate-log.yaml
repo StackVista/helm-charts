@@ -1,6 +1,6 @@
 {{- define "stackstate.correlate.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-correlate-log
+  name: {{ include "stackstate.correlate.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.correlate-base-log" .) .Values.stackstate.components.correlate.additionalLogging -}}

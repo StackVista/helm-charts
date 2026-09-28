@@ -1,6 +1,6 @@
 {{- define "stackstate.healthSync.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-health-sync
+  name: {{ include "stackstate.healthSync.configmap.fullname" . }}
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.healthSync "context" $) | nindent 0 -}}
 {{- end -}}
 

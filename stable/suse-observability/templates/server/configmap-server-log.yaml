@@ -1,6 +1,6 @@
 {{- define "stackstate.server.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-server-log
+  name: {{ include "stackstate.server.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s\n%s\n%s" (include "stackstate.configmap.server-base-log" .) (include "stackstate.configmap.sync-log" .) (include "stackstate.configmap.stackpack-log" .) .Values.stackstate.components.server.additionalLogging -}}

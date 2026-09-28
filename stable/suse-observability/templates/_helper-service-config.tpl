@@ -62,10 +62,13 @@ Returns a string like "-Xmx1234m -Xms567m", omitting params when <= 0.
     5. Chart defaults (hardcoded values in this helper)
 
     This allows users to override any pre-defined env var via extraEnv.
+    Pass extraEnvSecretName resolved by the component's Secret naming helper.
+    It is required when the merged extraEnv.secret settings contain any entries;
+    ServiceName is not used to construct resource names.
 
-    Usage:
+    Usage (API component):
     {{- $deploymentEnv := dict "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .) "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .)) }}
-    {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
+    {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv "extraEnvSecretName" (include "stackstate.api.secret.fullname" .)) . $serviceConfig) }}
 */}}
 {{/*
 Compute the instrumentation namespace here instead of templating values.yaml.
@@ -193,11 +196,12 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- end }}
 {{/* Output secret env vars */}}
 {{- if $secretEnvVars }}
+  {{- $extraEnvSecretName := required "stackstate.service.envvars: extraEnvSecretName must not be empty when secret environment variables are configured" .extraEnvSecretName }}
   {{- range $key :=  (keys $secretEnvVars | sortAlpha)  }}
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-{{ $.ServiceName }}
+      name: {{ $extraEnvSecretName }}
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -258,16 +262,23 @@ of every entry.
 {{- end -}}
 
 {{/*
-Mount secrets and log config in pod for stackstate services
+Mount secrets and log config in pod for stackstate services.
+Requires configMapName and logConfigMapName resolved by the resource naming helpers,
+and root containing the chart context for certificate and trust store mounts.
+
+Usage (API component):
+{{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.api.configmap.fullname" .) "logConfigMapName" (include "stackstate.api.log.configmap.fullname" .) "root" .) }}
 */}}
 {{- define "stackstate.service.pod.volumes" -}}
+{{- $configMapName := required "stackstate.service.pod.volumes: configMapName must not be empty" .configMapName -}}
+{{- $logConfigMapName := required "stackstate.service.pod.volumes: logConfigMapName must not be empty" .logConfigMapName -}}
 {{- $mountSecrets := fromYamlArray (include "stackstate.service.mountsecrets" .root ) }}
 - name: config-volume-log
   configMap:
-    name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}-log
+    name: {{ $logConfigMapName }}
 - name: config-volume
   configMap:
-    name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}
+    name: {{ $configMapName }}
 {{- if $mountSecrets }}
 - name: service-secrets-volume
   projected:

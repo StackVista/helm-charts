@@ -1,6 +1,6 @@
 {{- define "stackstate.e2es.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-e2es-log
+  name: {{ include "stackstate.e2es.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.e2es-base-log" .) .Values.stackstate.components.e2es.additionalLogging -}}

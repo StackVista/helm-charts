@@ -1,6 +1,6 @@
 {{- define "stackstate.initializer.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-initializer-log
+  name: {{ include "stackstate.initializer.log.configmap.fullname" . }}
 data:
   logback.xml: |
 {{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) .Values.stackstate.components.initializer.additionalLogging -}}

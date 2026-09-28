@@ -44,7 +44,7 @@ env:
 {{- if $diskSpaceMB }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB" (divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int | toString) }}
 {{- end }}
-{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv "extraEnvSecretName" (include "stackstate.e2es.secret.fullname" .)) $serviceConfig .) }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .E2esConfig.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .E2esConfig.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .E2esConfig.image.pullPolicy | quote }}
 livenessProbe:

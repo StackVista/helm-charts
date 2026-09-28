@@ -1,6 +1,180 @@
 {{/*
-Names for migrated resources. The canonical prefix is defined in the common chart.
+Resource-name helpers shared by declarations and consumers.
+The canonical prefix is defined in the common chart. Helpers retaining legacy
+names are documented below so extraction can precede an actual naming migration.
 */}}
+
+{{/*
+API configuration resource names. Preserve the existing naming expressions;
+moving declarations and references to these helpers must not rename resources.
+*/}}
+{{- define "stackstate.api.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.api.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-api-log
+{{- end -}}
+
+{{- define "stackstate.api.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{/*
+Checks, notification and synchronization configuration resources retain their
+legacy names while declarations and consumers move to dedicated helpers.
+*/}}
+{{- define "stackstate.checks.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.checks.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-checks-log
+{{- end -}}
+
+{{- define "stackstate.checks.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.notification.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-notification-log
+{{- end -}}
+
+{{- define "stackstate.notification.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.healthSync.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync-log
+{{- end -}}
+
+{{- define "stackstate.healthSync.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync-log
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{/*
+State, sync and slicing configuration resources retain their existing names.
+*/}}
+{{- define "stackstate.state.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.state.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-state-log
+{{- end -}}
+
+{{- define "stackstate.state.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.sync.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-sync-log
+{{- end -}}
+
+{{- define "stackstate.sync.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.slicing.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.slicing.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing-log
+{{- end -}}
+
+{{- define "stackstate.slicing.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{/*
+Server, receiver, correlate, initializer and e2es retain their existing configuration names.
+Split receiver and correlate Deployments share their component configuration resources.
+*/}}
+{{- define "stackstate.server.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.server.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-server-log
+{{- end -}}
+
+{{- define "stackstate.server.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.receiver.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.receiver.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-log
+{{- end -}}
+
+{{- define "stackstate.receiver.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.correlate.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate
+{{- end -}}
+
+{{- define "stackstate.correlate.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate-log
+{{- end -}}
+
+{{- define "stackstate.correlate.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate
+{{- end -}}
+
+{{- define "stackstate.initializer.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.initializer.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer-log
+{{- end -}}
+
+{{- define "stackstate.initializer.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.e2es.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
+{{- define "stackstate.e2es.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es-log
+{{- end -}}
+
+{{- define "stackstate.e2es.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
 {{- define "stackstate.httpRoute.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}
 {{- end -}}
