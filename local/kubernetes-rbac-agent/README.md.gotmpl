@@ -1,0 +1,35 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+{{ template "chart.homepageLine" . }}
+{{ template "chart.maintainersSection" . }}
+
+## Connection configuration
+
+For standalone use, supply inline values:
+
+```yaml
+url:
+  value: https://observability.example/receiver
+clusterName:
+  value: my-cluster
+```
+
+Both inline values support Helm template expressions. Alternatively, use
+`url.fromConfigMap` and `clusterName.fromConfigMap` to select existing ConfigMaps
+containing `STS_URL` and `STS_CLUSTER_NAME`, respectively. External references take
+precedence when both sources are supplied; non-empty inline values still create
+the internal ConfigMaps.
+
+`global.url.fromSecret` and `global.clusterName.fromSecret` select existing Secrets
+containing `STS_URL` and `STS_CLUSTER_NAME`. Each takes precedence over its inline
+value and ConfigMap reference, and suppresses creation of the corresponding
+internal ConfigMap. Secret names support template expressions.
+
+Empty/null inline values require an external ConfigMap or Secret. The SUSE Observability
+platform overrides the `kubernetes-rbac-agent.connection` helper to supply its own
+router URL and release name, ignoring these connection settings for its bundled
+agent. Explicit global Secret references still take precedence. Standalone
+installations and the SUSE Observability agent chart retain their configurable
+connection settings.
+
+{{ template "chart.valuesSection" . }}

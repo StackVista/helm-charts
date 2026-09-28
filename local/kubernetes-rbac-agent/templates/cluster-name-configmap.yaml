@@ -1,4 +1,5 @@
 {{- define "kubernetes-rbac-agent.clusterName.configmap.internal" -}}
+{{- $connection := include "kubernetes-rbac-agent.connection" . | fromYaml -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,14 +12,15 @@ metadata:
     {{- include "kubernetes-rbac-agent.global.commonAnnotations" . | indent 4 }}
   name: {{ template "kubernetes-rbac-agent.clusterName.configmap.internal.name" . }}
 data:
-  STS_CLUSTER_NAME: {{ tpl .Values.clusterName.value . | quote }}
+  STS_CLUSTER_NAME: {{ tpl $connection.clusterName.value . | quote }}
 {{- end -}}
 
 {{- if not .Values.global.clusterName.fromSecret }}
-{{- if .Values.clusterName.value }}
+{{- $connection := include "kubernetes-rbac-agent.connection" . | fromYaml -}}
+{{- if $connection.clusterName.value }}
 {{- $stackstateClusterNameInternalConfigMap := fromYaml (include "kubernetes-rbac-agent.clusterName.configmap.internal" .) -}}
 {{- toYaml (merge $stackstateClusterNameInternalConfigMap) -}}
-{{- else if not (.Values.clusterName.fromConfigMap) }}
+{{- else if not ($connection.clusterName.fromConfigMap) }}
 {{- fail "ClusterName not defined, either provide a SUSE Observability platform url through clusterName.value" }}
 {{- end }}
 {{- end }}
