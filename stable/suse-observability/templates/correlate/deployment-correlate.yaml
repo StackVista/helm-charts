@@ -1,7 +1,3 @@
-{{- define "stackstate.correlate.name.postfix" -}}
-  {{- if .CorrelateType }}-{{ .CorrelateType }}{{ else }}{{ end }}
-{{- end -}}
-
 {{- define "stackstate.correlate.deployment.container.init" -}}
 name: correlate-init
 command:
@@ -71,7 +67,7 @@ resources:
 {{- $sizingReplicaCount := include "common.sizing.stackstate.correlate.replicaCount" . | trim -}}
 {{- $evaluatedReplicaCount := ternary .TypeConfig.replicaCount (default 1 $sizingReplicaCount | int) (not (kindIs "invalid" .TypeConfig.replicaCount)) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
+  name: {{ include "stackstate.correlate.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
     app.kubernetes.io/component-group: correlate

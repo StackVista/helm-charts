@@ -1,6 +1,6 @@
 {{- define "stackstate.api.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-api-headless
+  name: {{ include "stackstate.api.service.fullname" . }}
   labels:
     app.kubernetes.io/component: api
 spec:

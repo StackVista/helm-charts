@@ -1,6 +1,6 @@
 {{- define "stackstate.authorizationSync.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-authorization-sync
+  name: {{ include "stackstate.authorizationSync.service.fullname" . }}
   labels:
     app.kubernetes.io/component: authorization-sync
 spec:

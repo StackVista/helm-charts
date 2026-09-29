@@ -1,14 +1,3 @@
-{{- define "stackstate.api.name" -}}
-  {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}api{{ else }}server{{ end }}
-{{- end -}}
-
-{{- define "stackstate.authSync.name" -}}
-  {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}authorization-sync{{ else }}server-headless{{ end }}
-{{- end -}}
-
-{{- define "stackstate.receiver.name.postfix" -}}
-  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
-{{- end -}}
 {{- define "stackstate.receiver.deployment.container.init" -}}
 name: receiver-init
 command:
@@ -75,15 +64,15 @@ env:
     "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.fullname" .))
     "CONFIG_FORCE_stackstate_receiver_k8sLogs_replicas" $replicationFactor
     "CONFIG_FORCE_stackstate_receiver_k8sLogs.indexMaxAge" (printf "%s days" (include "suse-observability.global.receiverRetention" .))
-    "CONFIG_FORCE_stackstate_receiver_agentLeases_agentServiceBaseUri" (printf "http://%s-%s-headless:7070/internal/api/agents" (include "common.fullname.short" .) (include "stackstate.api.name" .))
-    "CONFIG_FORCE_stackstate_receiver_authorizationService_authorizationServiceBaseUri" (printf "http://%s-%s-headless:7070/api/user/authorization" (include "common.fullname.short" .) (include "stackstate.api.name" .))
+    "CONFIG_FORCE_stackstate_receiver_agentLeases_agentServiceBaseUri" (printf "http://%s:7070/internal/api/agents" (include "stackstate.api.target.service.fullname" .))
+    "CONFIG_FORCE_stackstate_receiver_authorizationService_authorizationServiceBaseUri" (printf "http://%s:7070/api/user/authorization" (include "stackstate.api.target.service.fullname" .))
 }}
 {{- if $diskSpaceMB }}
   {{- $diskSpaceValue := divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .Values.stackstate.components.receiver.esDiskSpaceShare) 100 | int }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB" ($diskSpaceValue | toString) }}
 {{- end }}
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
-  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_authorizationSyncApiBaseUri" (printf "http://%s-%s:7075/rbac" (include "common.fullname.short" .) (include "stackstate.authSync.name" .)) }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_authorizationSyncApiBaseUri" (printf "http://%s:7075/rbac" (include "stackstate.authorizationSync.target.service.fullname" .)) }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_enabled" "true" }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_featureSwitches_receiveRbacData" "true" }}
 {{- end }}
@@ -135,7 +124,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.receiver.deployment.container.init" .) -}}
 {{- $stsstackstateReceiverInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" . }}
+  name: {{ include "stackstate.receiver.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
     app.kubernetes.io/component-group: receiver

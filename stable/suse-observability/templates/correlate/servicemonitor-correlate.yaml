@@ -1,7 +1,3 @@
-{{- define "stackstate.correlate.name.postfix" -}}
-  {{- if .CorrelateType }}-{{ .CorrelateType }}{{ else }}{{ end }}
-{{- end -}}
-
 {{- define "stackstate.correlate.servicemonitor" -}}
 metadata:
   labels:

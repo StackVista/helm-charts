@@ -135,7 +135,7 @@ volumeMounts:
 {{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ include "stackstate.server.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: server
     stackstate.com/connects-to-stackgraph: "true"

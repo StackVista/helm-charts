@@ -338,3 +338,106 @@ Logic to determine ElasticSearch host.
 {{- define "stackstate.es.host" -}}
 {{- include "stackstate.elasticsearch.fullname" . -}}-master-headless
 {{- end -}}
+
+{{/* Deployment identities are extracted independently of configuration resources.
+Preserve the existing names while moving declarations to dedicated helpers. */}}
+{{- define "stackstate.api.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.checks.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{/* Deployment names for state, sync, slicing, server, initializer and e2es
+retain their existing release and override behavior. */}}
+{{- define "stackstate.state.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.slicing.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.server.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.initializer.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.e2es.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
+{{/* Split worker suffixes are shared by Deployments, Services and ServiceMonitors.
+Keep their existing names and type-dependent suffixes unchanged. */}}
+{{- define "stackstate.receiver.name.postfix" -}}
+  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
+{{- end -}}
+
+{{- define "stackstate.receiver.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" . }}
+{{- end -}}
+
+{{- define "stackstate.correlate.name.postfix" -}}
+  {{- if .CorrelateType }}-{{ .CorrelateType }}{{ else }}{{ end }}
+{{- end -}}
+
+{{- define "stackstate.correlate.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
+{{- end -}}
+
+{{/* Service identities retain their existing release and override behavior. */}}
+{{- define "stackstate.api.service.fullname" -}}
+{{ template "common.fullname.short" . }}-api-headless
+{{- end -}}
+
+{{- define "stackstate.server.service.fullname" -}}
+{{ template "common.fullname.short" . }}-server-headless
+{{- end -}}
+
+{{- define "stackstate.initializer.service.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.service.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{/* API clients use the API Service in split mode and the server Service otherwise.
+This selects a Service identity; Envoy cluster identifiers remain independent. */}}
+{{- define "stackstate.api.target.service.fullname" -}}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) -}}
+{{- include "stackstate.api.service.fullname" . -}}
+{{- else -}}
+{{- include "stackstate.server.service.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Authorization clients use authorization-sync in split mode and the server
+Service otherwise. */}}
+{{- define "stackstate.authorizationSync.target.service.fullname" -}}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) -}}
+{{- include "stackstate.authorizationSync.service.fullname" . -}}
+{{- else -}}
+{{- include "stackstate.server.service.fullname" . -}}
+{{- end -}}
+{{- end -}}

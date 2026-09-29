@@ -1,7 +1,3 @@
-{{- define "stackstate.receiver.name.postfix" -}}
-  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
-{{- end -}}
-
 {{- define "stackstate.receiver.service" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" .  }}

@@ -1,6 +1,6 @@
 {{- define "stackstate.initializer.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-initializer
+  name: {{ include "stackstate.initializer.service.fullname" . }}
   labels:
     app.kubernetes.io/component: initializer
 spec:

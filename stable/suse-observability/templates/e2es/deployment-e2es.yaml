@@ -21,7 +21,7 @@ volumeMounts:
 {{- $commonE2esInitContainer := fromYaml (include "stackstate.e2es.deployment.common.initcontainer" .) -}}
 {{- $eventsToEsContainer := fromYaml (include "stackstate.e2es.deployment.container" .) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-e2es
+  name: {{ include "stackstate.e2es.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: e2es
     {{- include "suse-observability.labels.global" . | nindent 4 }}
