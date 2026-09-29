@@ -1,6 +1,6 @@
 {{- define "stackstate.healthSync.txlog.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-health-sync-txlog
+  name: {{ include "stackstate.healthSync.txlog.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce
@@ -15,7 +15,7 @@ spec:
 
 {{- define "stackstate.healthSync.tmp.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-health-sync-tmp
+  name: {{ include "stackstate.healthSync.tmp.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce

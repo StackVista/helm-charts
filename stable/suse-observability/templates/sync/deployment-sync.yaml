@@ -189,11 +189,11 @@ spec:
         {{- if .Values.stackstate.components.sync.tmpToPVC }}
         - name: tmp-volume
           persistentVolumeClaim:
-            claimName: {{ template "common.fullname.short" . }}-sync-tmp
+            claimName: {{ include "stackstate.sync.tmp.persistentvolumeclaim.fullname" . }}
         {{- end}}
         {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.sync.configmap.fullname" .) "logConfigMapName" (include "stackstate.sync.log.configmap.fullname" .) "root" .) | nindent 8 }}
         {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
-        {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "sync" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.transactionLog.volume" (dict "claimName" (include "stackstate.sync.txlog.persistentvolumeclaim.fullname" .)) | nindent 8 }}
         {{- end }}
 {{- end -}}
 

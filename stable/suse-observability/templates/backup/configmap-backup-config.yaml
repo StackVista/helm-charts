@@ -84,7 +84,7 @@ config: |-
     platformVersion: {{ if and .Values.testHelper .Values.testHelper.chartVersion -}}{{ .Values.testHelper.chartVersion | quote }}{{- else -}}{{ .Chart.Version | quote }}{{- end }}
     localStackPacksUri: {{ include "stackstate.localStackPacksUri" . | quote }}
     {{- if eq $deploymentMode "Mono" }}
-    pvc: {{ template "common.fullname.short" . }}-stackpacks-local
+    pvc: {{ include "stackstate.stackpacks.local.persistentvolumeclaim.fullname" . }}
     {{- end }}
     backupDir: {{ include "stackstate.stackpacks.backup.dir" . | quote }}
   stackgraph:

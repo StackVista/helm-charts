@@ -746,3 +746,66 @@ Service otherwise. */}}
 {{- include "stackstate.server.service.fullname" . -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Persistent claim identities retain their legacy expressions, independently of
+Deployment names. Do not switch these helpers to a canonical prefix without a
+storage migration plan: changing a claim name does not move its existing data.
+Stackpack claims are also consumed by the backup configuration.
+*/}}
+{{- define "stackstate.api.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-api-txlog
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync-txlog
+{{- end -}}
+
+{{- define "stackstate.checks.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-checks-txlog
+{{- end -}}
+
+{{- define "stackstate.checks.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-checks-tmp
+{{- end -}}
+
+{{- define "stackstate.healthSync.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync-txlog
+{{- end -}}
+
+{{- define "stackstate.healthSync.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync-tmp
+{{- end -}}
+
+{{- define "stackstate.notification.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-notification-txlog
+{{- end -}}
+
+{{- define "stackstate.state.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-state-txlog
+{{- end -}}
+
+{{- define "stackstate.state.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-state-tmp
+{{- end -}}
+
+{{- define "stackstate.sync.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-sync-txlog
+{{- end -}}
+
+{{- define "stackstate.sync.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-sync-tmp
+{{- end -}}
+
+{{- define "stackstate.stackpacks.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-stackpacks
+{{- end -}}
+
+{{- define "stackstate.stackpacks.local.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-stackpacks-local
+{{- end -}}
+
+{{/* Keep the stackpack scripts ConfigMap independent of the stackpack PVCs. */}}
+{{- define "stackstate.stackpacks.scripts.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-stackpacks-scripts
+{{- end -}}

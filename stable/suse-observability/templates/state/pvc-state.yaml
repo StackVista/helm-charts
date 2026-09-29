@@ -1,6 +1,6 @@
 {{- define "stackstate.state.txlog.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-state-txlog
+  name: {{ include "stackstate.state.txlog.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce
@@ -15,7 +15,7 @@ spec:
 
 {{- define "stackstate.state.tmp.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-state-tmp
+  name: {{ include "stackstate.state.tmp.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce
