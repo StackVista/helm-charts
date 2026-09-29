@@ -36,6 +36,69 @@ independent for customer templates that reference existing names.
 {{- end -}}
 
 {{/*
+Router mode configuration and hook identities retain their legacy names.
+Automatic-mode scripts write the automatic ConfigMap; active and maintenance
+ConfigMaps are chart-managed alternatives. Keep each identity independent.
+*/}}
+{{- define "stackstate.router.mode.active.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-active
+{{- end -}}
+
+{{- define "stackstate.router.mode.maintenance.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-maintenance
+{{- end -}}
+
+{{- define "stackstate.router.mode.automatic.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-automatic
+{{- end -}}
+
+{{/* Resolve the ConfigMap mounted by the router and reject unsupported modes. */}}
+{{- define "stackstate.router.mode.configmap.fullname" -}}
+{{- if eq .Values.stackstate.components.router.mode.status "active" -}}
+{{ include "stackstate.router.mode.active.configmap.fullname" . }}
+{{- else if eq .Values.stackstate.components.router.mode.status "maintenance" -}}
+{{ include "stackstate.router.mode.maintenance.configmap.fullname" . }}
+{{- else if eq .Values.stackstate.components.router.mode.status "automatic" -}}
+{{ include "stackstate.router.mode.automatic.configmap.fullname" . }}
+{{- else -}}
+{{- fail "stackstate.components.router.mode.status must be one of: active, maintenance, automatic" -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "stackstate.router.mode.scripts.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode-scripts
+{{- end -}}
+
+{{- define "stackstate.router.mode.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode-scripts
+{{- end -}}
+
+{{- define "stackstate.router.mode.role.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode
+{{- end -}}
+
+{{- define "stackstate.router.mode.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode
+{{- end -}}
+
+{{/* Preserve Helm's per-render timestamps and Argo CD's generated-name prefixes. */}}
+{{- define "stackstate.router.mode.active.job.fullname" -}}
+{{ template "common.fullname.short" . }}-set-active-{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.router.mode.maintenance.job.fullname" -}}
+{{ template "common.fullname.short" . }}-set-maintenance-{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.router.mode.active.job.generateName" -}}
+set-active-
+{{- end -}}
+
+{{- define "stackstate.router.mode.maintenance.job.generateName" -}}
+set-maintenance-
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}

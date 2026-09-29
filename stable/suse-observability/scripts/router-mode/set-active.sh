@@ -8,7 +8,7 @@ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "common.fullname.short" . }}-router-automatic
+  name: {{ include "stackstate.router.mode.automatic.configmap.fullname" . }}
   namespace: {{ .Release.Namespace }}
 {{ template "stackstate.router.configmap.data" (merge (dict "RouterState" "active") .) }}
 EOF

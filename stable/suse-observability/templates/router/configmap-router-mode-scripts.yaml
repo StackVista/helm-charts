@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "common.fullname.short" . }}-router-mode-scripts
+  name: {{ include "stackstate.router.mode.scripts.configmap.fullname" . }}
   labels:
     app.kubernetes.io/component: router-mode
   annotations:

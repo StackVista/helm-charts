@@ -79,7 +79,7 @@ spec:
             path: envoy.yaml
       - name: router-mode
         configMap:
-          name: {{ template "common.fullname.short" . }}-router-{{ .Values.stackstate.components.router.mode.status }}
+          name: {{ include "stackstate.router.mode.configmap.fullname" . }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.router.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

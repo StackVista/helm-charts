@@ -3,7 +3,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ template "common.fullname.short" . }}-router-mode
+  name: {{ include "stackstate.router.mode.rolebinding.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/component: router-mode
@@ -19,9 +19,9 @@ metadata:
     {{- end }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "common.fullname.short" . }}-router-mode-scripts
+    name: {{ include "stackstate.router.mode.serviceaccount.fullname" . }}
 roleRef:
   kind: Role
-  name: {{ template "common.fullname.short" . }}-router-mode
+  name: {{ include "stackstate.router.mode.role.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
   {{- end }}
