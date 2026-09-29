@@ -99,6 +99,19 @@ set-maintenance-
 {{- end -}}
 
 {{/*
+Internally managed license and email Secrets retain their legacy resource names.
+External-secret selection stays in the existing stackstate.secret.name helpers;
+customer-provided names must not receive a chart prefix.
+*/}}
+{{- define "stackstate.license.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-license
+{{- end -}}
+
+{{- define "stackstate.email.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-email
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}

@@ -13,7 +13,11 @@ Pick an external or predefined internal secret.
 Secret for license.
 */}}
 {{- define "stackstate.secret.name.license" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.license.fromExternalSecret "internalSecretName" "license") .) | quote }}
+{{- if .Values.stackstate.license.fromExternalSecret -}}
+{{ .Values.stackstate.license.fromExternalSecret | quote }}
+{{- else -}}
+{{ include "stackstate.license.secret.fullname" . | quote }}
+{{- end -}}
 {{- end }}
 
 {{/*
@@ -35,7 +39,11 @@ Secret for auth.
 Secret for email.
 */}}
 {{- define "stackstate.secret.name.email" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.email.server.auth.fromExternalSecret "internalSecretName" "email") .) | quote }}
+{{- if .Values.stackstate.email.server.auth.fromExternalSecret -}}
+{{ .Values.stackstate.email.server.auth.fromExternalSecret | quote }}
+{{- else -}}
+{{ include "stackstate.email.secret.fullname" . | quote }}
+{{- end -}}
 {{- end }}
 
 {{/*
