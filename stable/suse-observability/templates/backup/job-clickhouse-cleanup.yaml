@@ -57,9 +57,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
-  generateName: ch-clean
+  generateName: {{ include "stackstate.backup.clickhouse.cleanup.job.generateName" . }}
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-ch-clean{{ now | date "02t150405" }}
+  name: {{ include "stackstate.backup.clickhouse.cleanup.job.fullname" . }}
   {{- end }}
   labels:
     app.kubernetes.io/component: ch-clean

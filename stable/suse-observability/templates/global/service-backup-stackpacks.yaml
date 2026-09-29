@@ -1,6 +1,6 @@
 {{- define "stackstate.backup.stackpacks.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-stackpacks
+  name: {{ include "stackstate.backup.stackpacks.service.fullname" . }}
   labels:
     app.kubernetes.io/component: stackpacks-backup
 spec:

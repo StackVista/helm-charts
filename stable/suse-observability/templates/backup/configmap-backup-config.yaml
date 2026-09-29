@@ -91,7 +91,7 @@ config: |-
     bucket: {{ .Values.backup.stackGraph.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix | quote }}
     restore:
-      loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
+      loggingConfigConfigMap: {{ include "stackstate.backup.log.configmap.fullname" . }}
 
       scaleDownLabelSelector: {{ include "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
@@ -123,11 +123,11 @@ config: |-
     bucket: {{ .Values.backup.configuration.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix | quote }}
     restore:
-      loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
+      loggingConfigConfigMap: {{ include "stackstate.backup.log.configmap.fullname" . }}
 
       scaleDownLabelSelector: {{ include "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
-      pvc: {{ template "common.fullname.short" . }}-settings-backup-data
+      pvc: {{ include "stackstate.backup.configuration.persistentvolumeclaim.fullname" . }}
       job:
         image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
@@ -207,7 +207,7 @@ config: |-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "stackstate.backup.config.fullname" . }}
+  name: {{ include "stackstate.backup.config.configmap.fullname" . }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
 data:
