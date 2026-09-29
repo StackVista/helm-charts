@@ -1,11 +1,3 @@
-{{- define "stackstate.api.name" -}}
-  {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}api{{ else }}server{{ end }}
-{{- end -}}
-
-{{- define "stackstate.authSync.name" -}}
-  {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}authorization-sync{{ else }}server-headless{{ end }}
-{{- end -}}
-
 {{- define "stackstate.receiver.deployment.container.init" -}}
 name: receiver-init
 command:
