@@ -427,6 +427,14 @@ Preserve the namespace handling and truncation of the existing common helpers. *
 {{ template "common.fullname.cluster.unique" . }}-authentication
 {{- end -}}
 
+{{- define "stackstate.rbacAgent.role.fullname" -}}
+{{ template "common.fullname.short" . }}-rbac-agent
+{{- end -}}
+
+{{- define "stackstate.rbacAgent.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-rbac-agent
+{{- end -}}
+
 {{/* ServiceAccount identities remain independent of Deployment and Service names.
 Preserve the existing release and override behavior. */}}
 {{- define "stackstate.api.serviceaccount.fullname" -}}

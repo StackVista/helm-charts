@@ -122,3 +122,92 @@ func TestInternalRBACNamesUseDedicatedHelpers(t *testing.T) {
 		}
 	}
 }
+
+func TestRBACAgentNamesPreserveApplicationSubjects(t *testing.T) {
+	chart := filepath.Join(t.TempDir(), "chart")
+	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
+	namesPath := filepath.Join(chart, "templates", "_names.tpl")
+	data, err := os.ReadFile(namesPath)
+	require.NoError(t, err)
+	content := string(data)
+	for helper, name := range map[string]string{
+		"stackstate.rbacAgent.role.fullname":        "explicit-agent-role",
+		"stackstate.rbacAgent.rolebinding.fullname": "explicit-agent-binding",
+	} {
+		definition := regexp.MustCompile(`(?s)\{\{- define "` + regexp.QuoteMeta(helper) + `" -\}\}.*?\{\{- end -\}\}`)
+		require.Len(t, definition.FindAllString(content, -1), 1, helper)
+		content = definition.ReplaceAllString(content, `{{- define "`+helper+`" -}}`+name+`{{- end -}}`)
+	}
+	require.NoError(t, os.WriteFile(namesPath, []byte(content), 0600))
+	valuesFile, err := filepath.Abs("values/full.yaml")
+	require.NoError(t, err)
+
+	for _, serverSplit := range []bool{false, true} {
+		for _, authorization := range []bool{false, true} {
+			for _, mode := range []string{"SelfHosted", "Saas"} {
+				t.Run(fmt.Sprintf("server=%t/authorization=%t/mode=%s", serverSplit, authorization, mode), func(t *testing.T) {
+					options := apiResourceNameTestOptions(map[string]string{
+						"stackstate.features.server.split":    fmt.Sprint(serverSplit),
+						"stackstate.k8sAuthorization.enabled": fmt.Sprint(authorization),
+						"stackstate.deployment.mode":          mode,
+					})
+					before := helmtestutil.NewKubernetesResources(t, helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", options))
+					options.ValuesFiles = []string{valuesFile}
+					output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+					require.NoError(t, err)
+					after := helmtestutil.NewKubernetesResources(t, output)
+					legacy := "nightly-suse-observability-rbac-agent"
+					if authorization {
+						require.Contains(t, before.Roles, legacy)
+						expectedRole := before.Roles[legacy]
+						expectedRole.Name = "explicit-agent-role"
+						delete(before.Roles, legacy)
+						before.Roles[expectedRole.Name] = expectedRole
+						require.Contains(t, before.RoleBindings, legacy)
+						expectedBinding := before.RoleBindings[legacy]
+						assert.Equal(t, legacy, expectedBinding.RoleRef.Name)
+						expectedBinding.Name = "explicit-agent-binding"
+						expectedBinding.RoleRef.Name = "explicit-agent-role"
+						delete(before.RoleBindings, legacy)
+						before.RoleBindings[expectedBinding.Name] = expectedBinding
+					} else {
+						assert.NotContains(t, before.Roles, legacy)
+						assert.NotContains(t, after.Roles, "explicit-agent-role")
+						assert.NotContains(t, before.RoleBindings, legacy)
+						assert.NotContains(t, after.RoleBindings, "explicit-agent-binding")
+					}
+					assert.Equal(t, before.Roles, after.Roles)
+					assert.Equal(t, before.RoleBindings, after.RoleBindings)
+
+					component := "server"
+					if serverSplit {
+						component = "api"
+					}
+					configName := "nightly-suse-observability-" + component
+					require.Contains(t, after.ConfigMaps, configName)
+					config := after.ConfigMaps[configName].Data["application_stackstate.conf"]
+					subject := "stackstate.authorization.staticSubjects."
+					if mode == "Saas" {
+						subject = "stackstate.api.authorization.staticSubjects."
+					}
+					if authorization {
+						assert.Contains(t, config, subject+legacy+`: { systemPermissions: ["update-permissions"] }`)
+					} else {
+						assert.NotContains(t, config, subject+legacy)
+					}
+					assert.NotContains(t, config, "explicit-agent-role")
+					assert.NotContains(t, config, "explicit-agent-binding")
+					assert.Equal(t, before.ConfigMaps, after.ConfigMaps)
+					assert.Equal(t, before.Deployments, after.Deployments)
+					assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+					assert.Equal(t, before.ClusterRoles, after.ClusterRoles)
+					assert.Equal(t, before.ClusterRoleBindings, after.ClusterRoleBindings)
+					assert.Equal(t, before.Services, after.Services)
+					assert.Equal(t, before.Secrets, after.Secrets)
+					assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+					assert.Equal(t, before.Statefulsets, after.Statefulsets)
+				})
+			}
+		}
+	}
+}

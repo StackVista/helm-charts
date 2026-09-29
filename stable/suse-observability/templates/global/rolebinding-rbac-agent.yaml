@@ -1,9 +1,9 @@
 {{- define "stackstate.rolebinding.rbac-agent" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-rbac-agent
+  name: {{ include "stackstate.rbacAgent.rolebinding.fullname" . }}
 roleRef:
   kind: Role
-  name: {{ template "stackstate.rbacAgent.roleName" . }}
+  name: {{ include "stackstate.rbacAgent.role.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
