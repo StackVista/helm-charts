@@ -131,3 +131,27 @@ func TestMcpServerPublicExposureUsesIngressWhenEnabled(t *testing.T) {
 	assert.Contains(t, routerConfigMap.Data["listeners.yaml"], "prefix: \"/mcp\"")
 	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "address: \"suse-observability-mcp\"")
 }
+
+func TestMcpServerSilencingFollowsFeatureSwitch(t *testing.T) {
+	silencingEnv := corev1.EnvVar{Name: "STS_SILENCING_ENABLED", Value: "true"}
+
+	for _, enabled := range []string{"false", "true"} {
+		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+			ValuesFiles: []string{"values/full.yaml"},
+			SetValues: map[string]string{
+				"global.features.experimentalSilencing": enabled,
+			},
+		})
+
+		resources := helmtestutil.NewKubernetesResources(t, output)
+		deployment, ok := resources.Deployments["suse-observability-mcp"]
+		require.True(t, ok, "MCP server deployment should exist")
+
+		env := deployment.Spec.Template.Spec.Containers[0].Env
+		if enabled == "true" {
+			assert.Contains(t, env, silencingEnv)
+		} else {
+			assert.NotContains(t, env, silencingEnv)
+		}
+	}
+}

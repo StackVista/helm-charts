@@ -175,6 +175,10 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 MCP extra environment variables for mcp pods inherited through `stackstate.components.mcp.extraEnv`
 */}}
 {{- define "stackstate.mcp.envvars" -}}
+{{- if .Values.global.features.experimentalSilencing }}
+- name: STS_SILENCING_ENABLED
+  value: "true"
+{{- end }}
 {{- if .Values.stackstate.components.mcp.extraEnv.open }}
   {{- range $key, $value := .Values.stackstate.components.mcp.extraEnv.open  }}
 - name: {{ $key }}
