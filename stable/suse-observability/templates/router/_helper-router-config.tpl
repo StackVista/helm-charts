@@ -234,7 +234,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-headless"
+                  address: "{{ include "stackstate.api.target.service.fullname" . }}"
                   port_value: 7070
         {{- end }}
       {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}

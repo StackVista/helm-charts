@@ -5,7 +5,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}{{ include "stackstate.initializer.service.fullname" . }}:1618{{ else }}{{ include "stackstate.server.service.fullname" . }}:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
@@ -97,7 +97,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}{{ include "stackstate.initializer.service.fullname" . }}:1618{{ else }}{{ include "stackstate.server.service.fullname" . }}:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
@@ -190,7 +190,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}{{ include "stackstate.initializer.service.fullname" . }}:1618{{ else }}{{ include "stackstate.server.service.fullname" . }}:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}

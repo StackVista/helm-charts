@@ -6,13 +6,13 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ include "stackstate.initializer.service.fullname" . }}:1618 -t 300
 {{- else }}
 command:
   - sh
   - -c
   - |
-    /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{- .Release.Name }}-hbase-stackgraph:2182,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+    /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{- .Release.Name }}-hbase-stackgraph:2182,{{ include "stackstate.initializer.service.fullname" . }}:1618 -t 300
 {{- end }}
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}

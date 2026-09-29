@@ -404,3 +404,40 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{- define "stackstate.correlate.deployment.fullname" -}}
 {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
 {{- end -}}
+
+{{/* Service identities retain their existing release and override behavior. */}}
+{{- define "stackstate.api.service.fullname" -}}
+{{ template "common.fullname.short" . }}-api-headless
+{{- end -}}
+
+{{- define "stackstate.server.service.fullname" -}}
+{{ template "common.fullname.short" . }}-server-headless
+{{- end -}}
+
+{{- define "stackstate.initializer.service.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.service.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{/* API clients use the API Service in split mode and the server Service otherwise.
+This selects a Service identity; Envoy cluster identifiers remain independent. */}}
+{{- define "stackstate.api.target.service.fullname" -}}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) -}}
+{{- include "stackstate.api.service.fullname" . -}}
+{{- else -}}
+{{- include "stackstate.server.service.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Authorization clients use authorization-sync in split mode and the server
+Service otherwise. */}}
+{{- define "stackstate.authorizationSync.target.service.fullname" -}}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) -}}
+{{- include "stackstate.authorizationSync.service.fullname" . -}}
+{{- else -}}
+{{- include "stackstate.server.service.fullname" . -}}
+{{- end -}}
+{{- end -}}
