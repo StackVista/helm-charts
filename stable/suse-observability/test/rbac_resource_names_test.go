@@ -211,3 +211,98 @@ func TestRBACAgentNamesPreserveApplicationSubjects(t *testing.T) {
 		}
 	}
 }
+
+func TestInstanceRBACNamesPreserveExternalGroups(t *testing.T) {
+	chart := filepath.Join(t.TempDir(), "chart")
+	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
+	namesPath := filepath.Join(chart, "templates", "_names.tpl")
+	data, err := os.ReadFile(namesPath)
+	require.NoError(t, err)
+	content := string(data)
+	roles := map[string]string{
+		"admin": "admin", "observer": "observer", "troubleshooter": "troubleshooter",
+		"basicAccess": "basic-access", "recommendedAccess": "recommended-access",
+	}
+	for role, suffix := range roles {
+		for _, kind := range []string{"role", "rolebinding"} {
+			helper := "stackstate.k8s.authorization.instance." + role + "." + kind + ".fullname"
+			definition := regexp.MustCompile(`(?s)\{\{- define "` + regexp.QuoteMeta(helper) + `" -\}\}.*?\{\{- end -\}\}`)
+			require.Len(t, definition.FindAllString(content, -1), 1, helper)
+			content = definition.ReplaceAllString(content, `{{- define "`+helper+`" -}}explicit-`+suffix+`-`+kind+`{{- end -}}`)
+		}
+	}
+	require.NoError(t, os.WriteFile(namesPath, []byte(content), 0600))
+	valuesFile, err := filepath.Abs("values/full.yaml")
+	require.NoError(t, err)
+
+	for _, serverSplit := range []bool{false, true} {
+		for _, mode := range []string{"SelfHosted", "Saas"} {
+			for _, instanceRoles := range []bool{false, true} {
+				for _, authorization := range []bool{false, true} {
+					t.Run(fmt.Sprintf("server=%t/mode=%s/instance-roles=%t/authorization=%t", serverSplit, mode, instanceRoles, authorization), func(t *testing.T) {
+						options := apiResourceNameTestOptions(map[string]string{
+							"stackstate.features.server.split":    fmt.Sprint(serverSplit),
+							"stackstate.deployment.mode":          mode,
+							"stackstate.features.role-k8s-authz":  fmt.Sprint(instanceRoles),
+							"stackstate.k8sAuthorization.enabled": fmt.Sprint(authorization),
+						})
+						before := helmtestutil.NewKubernetesResources(t, helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", options))
+						options.ValuesFiles = []string{valuesFile}
+						output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+						require.NoError(t, err)
+						after := helmtestutil.NewKubernetesResources(t, output)
+						for role, suffix := range roles {
+							legacy := "nightly-suse-observability-instance-" + suffix
+							roleName := "explicit-" + suffix + "-role"
+							bindingName := "explicit-" + suffix + "-rolebinding"
+							enabled := instanceRoles
+							if role == "basicAccess" {
+								enabled = authorization
+							}
+							if !enabled {
+								assert.NotContains(t, before.Roles, legacy)
+								assert.NotContains(t, before.RoleBindings, legacy)
+								assert.NotContains(t, after.Roles, roleName)
+								assert.NotContains(t, after.RoleBindings, bindingName)
+								continue
+							}
+							require.Contains(t, before.Roles, legacy)
+							expectedRole := before.Roles[legacy]
+							expectedRole.Name = roleName
+							delete(before.Roles, legacy)
+							before.Roles[roleName] = expectedRole
+
+							require.Contains(t, before.RoleBindings, legacy)
+							expectedBinding := before.RoleBindings[legacy]
+							assert.Equal(t, legacy, expectedBinding.RoleRef.Name)
+							expectedBinding.Name = bindingName
+							expectedBinding.RoleRef.Name = roleName
+							delete(before.RoleBindings, legacy)
+							before.RoleBindings[bindingName] = expectedBinding
+							require.Contains(t, after.RoleBindings, bindingName)
+							subjects := after.RoleBindings[bindingName].Subjects
+							require.Len(t, subjects, 1)
+							assert.Equal(t, "Group", subjects[0].Kind)
+							group := legacy
+							if role == "basicAccess" || role == "recommendedAccess" {
+								group = "system:authenticated"
+							}
+							assert.Equal(t, group, subjects[0].Name, "Group identity must not follow resource-name helpers")
+						}
+						assert.Equal(t, before.Roles, after.Roles)
+						assert.Equal(t, before.RoleBindings, after.RoleBindings)
+						assert.Equal(t, before.ClusterRoles, after.ClusterRoles)
+						assert.Equal(t, before.ClusterRoleBindings, after.ClusterRoleBindings)
+						assert.Equal(t, before.ConfigMaps, after.ConfigMaps)
+						assert.Equal(t, before.Deployments, after.Deployments)
+						assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+						assert.Equal(t, before.Services, after.Services)
+						assert.Equal(t, before.Secrets, after.Secrets)
+						assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+						assert.Equal(t, before.Statefulsets, after.Statefulsets)
+					})
+				}
+			}
+		}
+	}
+}

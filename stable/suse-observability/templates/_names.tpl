@@ -435,6 +435,48 @@ Preserve the namespace handling and truncation of the existing common helpers. *
 {{ template "common.fullname.short" . }}-rbac-agent
 {{- end -}}
 
+{{/* Instance Role identities may be referenced by customer-managed bindings.
+Preserve their legacy names. External group identities remain independent. */}}
+{{- define "stackstate.k8s.authorization.instance.admin.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-admin
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.admin.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-admin
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.observer.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-observer
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.observer.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-observer
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.troubleshooter.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-troubleshooter
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.troubleshooter.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-troubleshooter
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.basicAccess.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-basic-access
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.basicAccess.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-basic-access
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.recommendedAccess.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-recommended-access
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.recommendedAccess.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-recommended-access
+{{- end -}}
+
 {{/* ServiceAccount identities remain independent of Deployment and Service names.
 Preserve the existing release and override behavior. */}}
 {{- define "stackstate.api.serviceaccount.fullname" -}}

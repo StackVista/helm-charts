@@ -1,7 +1,7 @@
 {{- /* Does not use common.role: custom K8s authorization binding with specific structure */ -}}
 {{- define "stackstate.k8s.authorization.instance.recommendedaccess.role" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-instance-recommended-access
+  name: {{ include "stackstate.k8s.authorization.instance.recommendedAccess.role.fullname" . }}
 rules:
   - apiGroups:
       - instance.observability.cattle.io
