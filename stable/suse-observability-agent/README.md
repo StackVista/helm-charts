@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.2`
+Current chart version is `1.7.3`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -345,7 +345,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. The node agent and the checks agent both depend on it, so disabling it also requires nodeAgent.enabled=false and checksAgent.enabled=false. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-k8s-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"0812a1b8"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"dd1cba03"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -406,7 +406,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"4dbfd257-1041-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"4dbfd257-1045-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -525,7 +525,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"v0.0.58-agent"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"v0.0.60-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | otel.k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
 | otel.k8sResourceCollector.leaderElection.leaseName | string | `"k8sresourcereceiver"` | Name of the Lease object. Must be unique per collector deployment. |
@@ -570,7 +570,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
 | otel.prometheusScraping.collector.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Prometheus scraper collector. |
 | otel.prometheusScraping.collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently. |
-| otel.prometheusScraping.collector.image.tag | string | `"v0.0.58-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
+| otel.prometheusScraping.collector.image.tag | string | `"v0.0.60-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |
@@ -621,7 +621,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.enabled | bool | `false` | Enable the telemetry gateway for OTLP push-based telemetry. Metrics and traces are forwarded to SUSE Observability; log signals are accepted for debug visibility only and written to the gateway pod logs. Requires otel.enabled=true. |
 | otel.telemetryGateway.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.telemetryGateway.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.telemetryGateway.image.tag | string | `"v0.0.58-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
+| otel.telemetryGateway.image.tag | string | `"v0.0.60-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.telemetryGateway.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.telemetryGateway.podAnnotations | object | `{}` | Additional annotations for gateway pods. |
 | otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |
@@ -644,7 +644,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otelLogsAgent.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy. |
 | otelLogsAgent.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for the logs Collector image. |
 | otelLogsAgent.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Container image repository for the logs Collector. |
-| otelLogsAgent.image.tag | string | `"v0.0.59-agent"` | Collector image tag for Promtail-compatible pod-log export. |
+| otelLogsAgent.image.tag | string | `"v0.0.60-agent"` | Collector image tag for Promtail-compatible pod-log export. |
 | otelLogsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otelLogsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | otelLogsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |
