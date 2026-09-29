@@ -8,7 +8,7 @@ roleRef:
 subjects:
 {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-api
+  name: {{ include "stackstate.api.serviceaccount.fullname" . }}
 - kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-authorization-sync
 - kind: ServiceAccount
@@ -27,7 +27,7 @@ subjects:
   name: {{ template "common.fullname.short" . }}-health-sync
 {{- else }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ include "stackstate.server.serviceaccount.fullname" . }}
 {{- end -}}
 {{- end -}}
 

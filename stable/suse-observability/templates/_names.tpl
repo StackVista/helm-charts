@@ -405,6 +405,16 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
 {{- end -}}
 
+{{/* ServiceAccount identities remain independent of Deployment and Service names.
+Preserve the existing release and override behavior. */}}
+{{- define "stackstate.api.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.server.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
 {{/* Service identities retain their existing release and override behavior. */}}
 {{- define "stackstate.checks.service.fullname" -}}
 {{ template "common.fullname.short" . }}-checks

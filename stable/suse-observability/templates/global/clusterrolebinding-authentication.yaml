@@ -5,11 +5,11 @@ roleRef:
   name: 'system:auth-delegator'
 subjects:
 {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
-- name: {{ template "common.fullname.short" . }}-api
+- name: {{ include "stackstate.api.serviceaccount.fullname" . }}
   namespace: {{ .Release.Namespace }}
   kind: ServiceAccount
 {{- else }}
-- name: {{ template "common.fullname.short" . }}-server
+- name: {{ include "stackstate.server.serviceaccount.fullname" . }}
   namespace: {{ .Release.Namespace }}
   kind: ServiceAccount
 {{- end -}}
