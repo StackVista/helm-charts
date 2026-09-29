@@ -121,6 +121,14 @@ Secret selection remains in stackstate.secret.name.auth.
 {{- end -}}
 
 {{/*
+The receiver API-key Secret declaration and legacy lookup retain this identity.
+External selection and optional Secret creation remain separate from naming.
+*/}}
+{{- define "stackstate.apiKey.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-api-key
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}

@@ -1,5 +1,7 @@
 {{/*
 Pick an external or predefined internal secret.
+Legacy interface retained for templates outside this chart. Chart-owned
+selectors below use dedicated internal resource-name helpers.
 */}}
 {{- define "stackstate.secret.externalOrInternal" -}}
 {{- if .externalSecret }}
@@ -24,7 +26,11 @@ Secret for license.
 Secret for api key.
 */}}
 {{- define "stackstate.secret.name.apiKey" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.apiKey.fromExternalSecret "internalSecretName" "api-key") .) | quote }}
+{{- if .Values.stackstate.apiKey.fromExternalSecret -}}
+{{ .Values.stackstate.apiKey.fromExternalSecret | quote }}
+{{- else -}}
+{{ include "stackstate.apiKey.secret.fullname" . | quote }}
+{{- end -}}
 {{- end }}
 
 {{/*
