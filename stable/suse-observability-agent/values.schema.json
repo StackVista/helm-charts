@@ -130,6 +130,108 @@
           }
         }
       }
+    },
+    "logsAgent": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "otelLogsAgent": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "image",
+        "resources",
+        "skipSslValidation",
+        "serviceaccount"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "image": {
+          "type": "object",
+          "required": [
+            "repository",
+            "tag",
+            "pullPolicy"
+          ],
+          "properties": {
+            "repository": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tag": {
+              "type": "string",
+              "minLength": 1
+            },
+            "pullPolicy": {
+              "type": "string",
+              "enum": [
+                "Always",
+                "IfNotPresent",
+                "Never"
+              ]
+            },
+            "pullSecretName": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          }
+        },
+        "resources": {
+          "type": "object",
+          "required": [
+            "limits"
+          ],
+          "properties": {
+            "limits": {
+              "type": "object",
+              "required": [
+                "memory"
+              ],
+              "properties": {
+                "memory": {
+                  "type": [
+                    "string",
+                    "number"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "skipSslValidation": {
+          "type": "boolean"
+        },
+        "serviceaccount": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "global": {
+      "type": "object",
+      "properties": {
+        "features": {
+          "type": "object",
+          "properties": {
+            "experimentalOtelLogsAgent": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
     }
   }
 }

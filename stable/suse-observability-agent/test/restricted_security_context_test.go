@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -21,10 +22,25 @@ var exemptedContainers = map[string]string{
 }
 
 func TestRestrictedSecurityContext(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/restricted_security_context.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	helmtestutil.AssertRestrictedSecurityContext(t, resources, exemptedContainers)
+	for _, otel := range []bool{false, true} {
+		t.Run(fmt.Sprintf("otelLogs=%t", otel), func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+				ValuesFiles: []string{"values/restricted_security_context.yaml", "values/logs-otel-base.yaml"},
+				SetValues: map[string]string{
+					"global.features.experimentalOtelLogsAgent": fmt.Sprint(otel),
+				},
+			})
+			assertUniqueLogsManifests(t, output)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			security := logsContainer(t, resources).SecurityContext
+			require.NotNil(t, security)
+			require.NotNil(t, security.SELinuxOptions)
+			require.NotNil(t, security.Privileged)
+			assert.False(t, *security.Privileged)
+			assert.Equal(t, "spc_t", security.SELinuxOptions.Type)
+			helmtestutil.AssertRestrictedSecurityContext(t, resources, exemptedContainers)
+		})
+	}
 }
 
 func TestRbacAgentHasNoFixedPodIdentity(t *testing.T) {

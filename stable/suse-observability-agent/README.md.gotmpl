@@ -82,6 +82,49 @@ helm install \
 stackstate/suse-observability-agent
 ```
 
+## OpenTelemetry pod logs
+
+`global.features.experimentalOtelLogsAgent: true` selects OpenTelemetry for the
+existing logs DaemonSet. The flag is false by default. `logsAgent.enabled` controls
+Promtail; `otelLogsAgent.enabled` controls OpenTelemetry. Both enable settings
+default to true. Disabling the selected collector produces no logs workload and
+does not fall back to the other collector. Both are independent of `otel.enabled`.
+
+Configure each collector through its own values section, including resources,
+scheduling, Pod labels/annotations and ServiceAccount annotations. The OTel
+collector sends Promtail-compatible Kubernetes logs to `stackstate.url` plus
+`/logs/k8s`. Use an ingest URL ending in `/stsAgent` for `stackstate.url`.
+The exporter uses `global.proxy.url`, custom certificates and the combined
+global/`otelLogsAgent` TLS verification setting. Enable `global.customCertificates` with
+inline `pemData` or an existing `configMapName`. All certificate files from the
+ConfigMap are mounted read-only at `/etc/pki/tls/certs`, alongside system trust;
+inline PEM is stored as `tls.pem`. Restart the pods after changing an external CA
+ConfigMap; external changes do not trigger a chart checksum or live trust reload.
+
+Filelog checkpoints use an `emptyDir`. Container restart preserves
+it; Pod replacement, switching from Promtail, rollback and re-enablement can replay
+available logs. Promtail offsets are not converted. The collector reads existing
+files from the beginning when checkpoints are absent. Export retries can also
+produce duplicates. Collection excludes the logs agent's own container.
+
+The Filelog container uses Promtail's existing root, unprivileged SELinux context
+and read-only host mounts. Its memory limiter uses two-thirds of
+`otelLogsAgent.resources.limits.memory`, with one-sixth reserved for spikes. A memory
+limit is required. Health probes distinguish readiness from liveness so export
+outages do not trigger liveness restarts. Metrics use the existing OpenMetrics
+scrape annotations, independently of other OTel workloads.
+
+Filelog and export bounds are fixed in `templates/otel-logs-agent-configmap.yaml`
+for this experimental iteration. Export is synchronous, with the exporter queue
+disabled and no asynchronous batch processor. The fixed pod termination grace
+allows in-flight exports to finish.
+
+Select its image through `otelLogsAgent.image` and configure pull secrets through
+`otelLogsAgent.image.pullSecretName` or `global.imagePullSecrets`;
+`logsAgent.image` remains the Promtail image.
+The installation image scripts enumerate both modes and accept
+additional Helm arguments after `--`, including separate image overrides.
+
 ## Integration overlays
 
 The `integrations/` directory contains opt-in values overlays that pre-configure the `k8sResourceCollector` for individual SUSE stackpacks. Each overlay enables the API groups consumed by that stackpack's component- and relation-mappings under both `crdDiscovery.apiGroupFilters.include` and `rbac.crdApiGroups` (the latter only matters when `rbac.useWildcard: false`).

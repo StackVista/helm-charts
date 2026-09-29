@@ -20,6 +20,7 @@ on:
   push:
     paths:
       - 'updatecli/**'
+      - '.github/workflows/updatecli.yml'
   workflow_dispatch:
     inputs:
       pipeline:
@@ -97,7 +98,7 @@ jobs:
         username: ${{ vars.REGISTRY_USER }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     env:
-      TARGET_BRANCH: ${{ github.base_ref || 'master' }}
+      TARGET_BRANCH: ${{ github.ref_type == 'branch' && github.ref_name || 'master' }}
       STACKSTATE_SOURCE_BRANCH: master
       STACKPACKS_SOURCE_BRANCH: master
       STACKPACKS_CONTRIB_SOURCE_BRANCH: main

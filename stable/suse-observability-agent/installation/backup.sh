@@ -6,7 +6,7 @@ set -euo pipefail
 repo_and_tag_re='^([^/:]+/)?([^/:]+/[^/:]+):([^/:]+)$'
 helm_release=release
 helm_chart="stackstate/suse-observability-agent"
-helm_values="http-header-injector-webhook.enabled=true,stackstate.apiKey=APIKEY,stackstate.cluster.name=dummy-cluster,stackstate.url=http://dummy.url.io"
+helm_values="httpHeaderInjectorWebhook.enabled=true,stackstate.apiKey=APIKEY,stackstate.cluster.name=dummy-cluster,stackstate.url=https://dummy.stackstate.io/stsAgent,kubernetes-rbac-agent.enabled=true,otel.enabled=true,otel.prometheusScraping.enabled=true,otel.prometheusScraping.monitorCrds.enabled=true,otel.prometheusScraping.targetAllocator.mtlsEnabled=false"
 dry_run=false
 
 # usage
@@ -18,6 +18,8 @@ Arguments:
     -c : Helm chart (default: $helm_chart)
     -h : Show this help text
     -t : Dry-run
+
+Pass additional Helm arguments after -- (for example, -- -f custom-values.yaml).
 EOF
 }
 
@@ -34,9 +36,22 @@ while getopts "c:hr:t" opt; do
 done
 shift $((OPTIND -1))
 
-#
+helm_manifests=""
+for otel_logs in false true; do
+  logs_collector=logsAgent
+  if [[ "${otel_logs}" == true ]]; then
+    logs_collector=otelLogsAgent
+  fi
+  if ! rendered=$(helm template "${helm_release}" "${helm_chart}" --set "${helm_values}" "$@" --set "${logs_collector}.enabled=true" --set "global.features.experimentalOtelLogsAgent=${otel_logs}"); then
+    echo "Failed to render from Helm chart (global.features.experimentalOtelLogsAgent=${otel_logs})" >&2
+    exit 1
+  fi
+  helm_manifests+="${rendered}"$'\n'
+done
+rendered_images=$(printf '%s' "${helm_manifests}" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' | sort -u)
+
 images=()
-while IFS='' read -r line; do images+=("$line"); done < <(helm template "$helm_release" "$helm_chart" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' | sort | uniq)
+while IFS='' read -r line; do images+=("$line"); done <<< "${rendered_images}"
 for src_image in "${images[@]}"
 do
     if [[ "$src_image" =~ $repo_and_tag_re ]]; then

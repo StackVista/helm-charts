@@ -167,7 +167,8 @@ checksum/override-configmap: {{ include (print $.Template.BasePath "/node-agent-
 {{- end }}
 
 {{- define "stackstate-k8s-agent.logsAgent.configmap.override.checksum" -}}
-checksum/override-configmap: {{ include (print $.Template.BasePath "/logs-agent-configmap.yaml") . | sha256sum }}
+{{- $template := ternary "otel/logsagent/configmap.yaml" "logs-agent-configmap.yaml" .Values.global.features.experimentalOtelLogsAgent -}}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/" $template) . | sha256sum }}
 {{- end }}
 
 {{- define "stackstate-k8s-agent.checksAgent.configmap.override.checksum" -}}
@@ -670,3 +671,30 @@ runAsNonRoot: true
 seccompProfile:
   type: RuntimeDefault
 {{- end }}
+
+{{- define "stackstate-k8s-agent.logsAgent.memoryMiB" -}}
+{{- $quantity := dig "limits" "memory" "" .Values.otelLogsAgent.resources | toString -}}
+{{- if not (regexMatch "^\\+?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([EPTGMK]i|[EPTGMkmun]|[eE][+-]?[0-9]+)?$" $quantity) -}}
+{{- fail "otelLogsAgent.resources.limits.memory must be a positive Kubernetes memory quantity for OTel logs" -}}
+{{- end -}}
+{{- $unit := regexFind "([EPTGMK]i|[EPTGMkmun])$" $quantity -}}
+{{- $units := dict "" 1.0 "n" 0.000000001 "u" 0.000001 "m" 0.001 "k" 1000.0 "M" 1000000.0 "G" 1000000000.0 "T" 1000000000000.0 "P" 1000000000000000.0 "E" 1000000000000000000.0 "Ki" 1024.0 "Mi" 1048576.0 "Gi" 1073741824.0 "Ti" 1099511627776.0 "Pi" 1125899906842624.0 "Ei" 1152921504606846976.0 -}}
+{{- $mib := divf (mulf (trimSuffix $unit $quantity | float64) (index $units $unit)) 1048576.0 | floor | int -}}
+{{- if lt $mib 3 -}}{{- fail "otelLogsAgent.resources.limits.memory must be at least 3Mi for OTel logs" -}}{{- end -}}
+{{- $mib -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.logsAgent.validate" -}}
+{{- if not .Values.global.clusterName.fromSecret -}}
+{{- if or (not .Values.stackstate.cluster.name) (contains "\"" .Values.stackstate.cluster.name) (contains "\\" .Values.stackstate.cluster.name) (regexMatch "[[:cntrl:]]" .Values.stackstate.cluster.name) -}}
+{{- fail "OTel logs cluster names must not require Promtail label escaping" -}}
+{{- end -}}
+{{- end -}}
+{{- if not .Values.global.url.fromSecret -}}
+{{- $url := tpl .Values.stackstate.url . | trimAll "/" -}}
+{{- $parsed := urlParse $url -}}
+{{- if or (not (has $parsed.scheme (list "http" "https"))) (not $parsed.host) $parsed.userinfo $parsed.query $parsed.fragment (not (hasSuffix "/stsAgent" $parsed.path)) -}}
+{{- fail "OTel logs require an HTTP(S) stackstate.url ending in /stsAgent without credentials, query or fragment" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.1`
+Current chart version is `1.7.2`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -87,6 +87,49 @@ helm install \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
 stackstate/suse-observability-agent
 ```
+
+## OpenTelemetry pod logs
+
+`global.features.experimentalOtelLogsAgent: true` selects OpenTelemetry for the
+existing logs DaemonSet. The flag is false by default. `logsAgent.enabled` controls
+Promtail; `otelLogsAgent.enabled` controls OpenTelemetry. Both enable settings
+default to true. Disabling the selected collector produces no logs workload and
+does not fall back to the other collector. Both are independent of `otel.enabled`.
+
+Configure each collector through its own values section, including resources,
+scheduling, Pod labels/annotations and ServiceAccount annotations. The OTel
+collector sends Promtail-compatible Kubernetes logs to `stackstate.url` plus
+`/logs/k8s`. Use an ingest URL ending in `/stsAgent` for `stackstate.url`.
+The exporter uses `global.proxy.url`, custom certificates and the combined
+global/`otelLogsAgent` TLS verification setting. Enable `global.customCertificates` with
+inline `pemData` or an existing `configMapName`. All certificate files from the
+ConfigMap are mounted read-only at `/etc/pki/tls/certs`, alongside system trust;
+inline PEM is stored as `tls.pem`. Restart the pods after changing an external CA
+ConfigMap; external changes do not trigger a chart checksum or live trust reload.
+
+Filelog checkpoints use an `emptyDir`. Container restart preserves
+it; Pod replacement, switching from Promtail, rollback and re-enablement can replay
+available logs. Promtail offsets are not converted. The collector reads existing
+files from the beginning when checkpoints are absent. Export retries can also
+produce duplicates. Collection excludes the logs agent's own container.
+
+The Filelog container uses Promtail's existing root, unprivileged SELinux context
+and read-only host mounts. Its memory limiter uses two-thirds of
+`otelLogsAgent.resources.limits.memory`, with one-sixth reserved for spikes. A memory
+limit is required. Health probes distinguish readiness from liveness so export
+outages do not trigger liveness restarts. Metrics use the existing OpenMetrics
+scrape annotations, independently of other OTel workloads.
+
+Filelog and export bounds are fixed in `templates/otel-logs-agent-configmap.yaml`
+for this experimental iteration. Export is synchronous, with the exporter queue
+disabled and no asynchronous batch processor. The fixed pod termination grace
+allows in-flight exports to finish.
+
+Select its image through `otelLogsAgent.image` and configure pull secrets through
+`otelLogsAgent.image.pullSecretName` or `global.imagePullSecrets`;
+`logsAgent.image` remains the Promtail image.
+The installation image scripts enumerate both modes and accept
+additional Helm arguments after `--`, including separate image overrides.
 
 ## Integration overlays
 
@@ -343,7 +386,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
-| global.features | object | `{}` |  |
+| global.features.experimentalOtelLogsAgent | bool | `false` | Select the experimental OTel pod-log collector instead of Promtail; the selected collector must also be enabled. |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | global.imageRegistry | string | `"quay.io"` | The image registry to use. |
@@ -375,7 +418,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | kubernetes-rbac-agent.roleType | string | `"scope"` |  |
 | kubernetes-rbac-agent.url.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.url.configmap.internal.name\" . }}"` |  |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
-| logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
+| logsAgent.enabled | bool | `true` | Enable Promtail pod-log collection when the experimental OTel logs selector is false. |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
 | logsAgent.image.tag | string | `"3.6.11-so19"` | Default container image tag. |
@@ -596,6 +639,26 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | otel.telemetryGateway.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond | int | `500` | Maximum traces spans per second exported by the gateway. |
+| otelLogsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
+| otelLogsAgent.enabled | bool | `true` | Enable OTel pod-log collection when global.features.experimentalOtelLogsAgent is true. |
+| otelLogsAgent.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy. |
+| otelLogsAgent.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for the logs Collector image. |
+| otelLogsAgent.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Container image repository for the logs Collector. |
+| otelLogsAgent.image.tag | string | `"v0.0.59-agent"` | Collector image tag for Promtail-compatible pod-log export. |
+| otelLogsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| otelLogsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
+| otelLogsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |
+| otelLogsAgent.priorityClassName | string | `""` | Priority class for otelLogsAgent pods. |
+| otelLogsAgent.resources.limits.cpu | string | `"200m"` | CPU resource limits. |
+| otelLogsAgent.resources.limits.memory | string | `"192Mi"` | Memory resource limits. |
+| otelLogsAgent.resources.requests.cpu | string | `"40m"` | CPU resource requests. |
+| otelLogsAgent.resources.requests.memory | string | `"100Mi"` | Memory resource requests. |
+| otelLogsAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the daemonset pods |
+| otelLogsAgent.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
+| otelLogsAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| otelLogsAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
+| otelLogsAgent.updateStrategy.rollingUpdate.maxUnavailable | int | `100` | Maximum unavailable logs-agent pods during a rolling update, as a count or percentage. |
+| otelLogsAgent.updateStrategy.type | string | `"RollingUpdate"` | DaemonSet update strategy type. |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
 | processAgent.disabledProtocols | list | `[]` | List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled. |

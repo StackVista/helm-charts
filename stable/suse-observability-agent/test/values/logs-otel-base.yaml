@@ -1,0 +1,4 @@
+stackstate:
+  cluster:
+    authToken: synthetic-logs-chart-test-token
+  url: https://my-suse-observability-instance.com/receiver/stsAgent

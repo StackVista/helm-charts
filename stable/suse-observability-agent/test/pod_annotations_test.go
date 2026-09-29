@@ -1,8 +1,10 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
@@ -10,7 +12,24 @@ import (
 )
 
 func TestPodAnnotationsAndLabels(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/pod-annotations.yaml")
+	for _, otel := range []bool{false, true} {
+		t.Run(fmt.Sprintf("otelLogs=%t", otel), func(t *testing.T) {
+			assertPodAnnotationsAndLabels(t, otel)
+		})
+	}
+}
+
+func assertPodAnnotationsAndLabels(t *testing.T, otel bool) {
+	t.Helper()
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: []string{"values/minimal.yaml", "values/logs-otel-base.yaml", "values/pod-annotations.yaml"},
+		SetValues: map[string]string{
+			"global.features.experimentalOtelLogsAgent":        fmt.Sprint(otel),
+			"otelLogsAgent.podAnnotations.example\\.com/owner": "otel-logs-agent",
+			"otelLogsAgent.podLabels.example\\.com/workload":   "otel-logs-agent",
+		},
+	})
+	assertUniqueLogsManifests(t, output)
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	podTemplates := map[string]corev1.PodTemplateSpec{}
@@ -40,6 +59,9 @@ func TestPodAnnotationsAndLabels(t *testing.T) {
 		"suse-observability-agent-checks-agent":      "checks-agent",
 		"suse-observability-agent-logs-agent":        "logs-agent",
 		"suse-observability-agent-remote-kube-cache": "remote-kube-cache",
+	}
+	if otel {
+		expectedOwner[logsAgentName] = "otel-logs-agent"
 	}
 
 	for name, expected := range expectedOwner {

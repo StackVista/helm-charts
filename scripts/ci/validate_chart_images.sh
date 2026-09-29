@@ -99,7 +99,7 @@ export GREEN RED NO_COLOR
 # xargs exits non-zero (123) if any invocation exited non-zero.
 xargsExit=0
 # shellcheck disable=SC2016
-xargs -a "${imagesFile}" -P 8 -I{} bash -c 'checkImage "$@"' _ {} > "${resultsFile}" || xargsExit=$?
+xargs -P 8 -I{} bash -c 'checkImage "$@"' _ {} < "${imagesFile}" > "${resultsFile}" || xargsExit=$?
 
 # Stable, readable output: OK lines first (sorted), then MISSING lines (sorted).
 grep -E $'^\033\\[0;32m' "${resultsFile}" | sort

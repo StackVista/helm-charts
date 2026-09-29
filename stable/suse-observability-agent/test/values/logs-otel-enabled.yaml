@@ -1,0 +1,5 @@
+global:
+  features:
+    experimentalOtelLogsAgent: true
+otelLogsAgent:
+  enabled: true

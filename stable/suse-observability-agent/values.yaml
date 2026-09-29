@@ -33,7 +33,9 @@ global:
   # global.extraAnnotations -- Extra annotations added ta all resources created by the helm chart
   extraAnnotations: {}
 
-  features: {}
+  features:
+    # global.features.experimentalOtelLogsAgent -- Select the experimental OTel pod-log collector instead of Promtail; the selected collector must also be enabled.
+    experimentalOtelLogsAgent: false
 
   # global.receiverApiKey -- This is deprecated and will be removed in a future version.
   # receiverApiKey:
@@ -556,7 +558,7 @@ openShiftLogging:
   installSecret: false
 
 logsAgent:
-  # logsAgent.enabled -- Enable / disable k8s pod log collection
+  # logsAgent.enabled -- Enable Promtail pod-log collection when the experimental OTel logs selector is false.
   enabled: true
 
   # logsAgent.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
@@ -608,6 +610,64 @@ logsAgent:
 
   serviceaccount:
     # logsAgent.serviceaccount.annotations -- Annotations for the service account for the daemonset pods
+    annotations: {}
+
+otelLogsAgent:
+  # otelLogsAgent.enabled -- Enable OTel pod-log collection when global.features.experimentalOtelLogsAgent is true.
+  enabled: true
+
+  # otelLogsAgent.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
+  skipSslValidation: false
+
+  # otelLogsAgent.priorityClassName -- Priority class for otelLogsAgent pods.
+  priorityClassName: ""
+
+  image:
+    # otelLogsAgent.image.repository -- Container image repository for the logs Collector.
+    repository: stackstate/sts-opentelemetry-collector
+    # otelLogsAgent.image.tag -- Collector image tag for Promtail-compatible pod-log export.
+    tag: "v0.0.59-agent"
+    # otelLogsAgent.image.pullPolicy -- Container image pull policy.
+    pullPolicy: IfNotPresent
+    # otelLogsAgent.image.pullSecretName -- Name of ImagePullSecret to use for the logs Collector image.
+    pullSecretName:
+  resources:
+    limits:
+      # otelLogsAgent.resources.limits.cpu -- CPU resource limits.
+      cpu: "200m"
+      # otelLogsAgent.resources.limits.memory -- Memory resource limits.
+      memory: "192Mi"
+    requests:
+      # otelLogsAgent.resources.requests.cpu -- CPU resource requests.
+      cpu: "40m"
+      # otelLogsAgent.resources.requests.memory -- Memory resource requests.
+      memory: "100Mi"
+
+  # otelLogsAgent.updateStrategy -- The update strategy for the DaemonSet object.
+  updateStrategy:
+    # otelLogsAgent.updateStrategy.type -- DaemonSet update strategy type.
+    type: RollingUpdate
+    rollingUpdate:
+      # otelLogsAgent.updateStrategy.rollingUpdate.maxUnavailable -- Maximum unavailable logs-agent pods during a rolling update, as a count or percentage.
+      maxUnavailable: 100
+
+  # otelLogsAgent.podAnnotations -- Additional annotations on the logs agent pods.
+  podAnnotations: {}
+
+  # otelLogsAgent.podLabels -- Additional labels on the logs agent pods.
+  podLabels: {}
+
+  # otelLogsAgent.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # otelLogsAgent.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # otelLogsAgent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+  serviceaccount:
+    # otelLogsAgent.serviceaccount.annotations -- Annotations for the service account for the daemonset pods
     annotations: {}
 
 checksAgent:

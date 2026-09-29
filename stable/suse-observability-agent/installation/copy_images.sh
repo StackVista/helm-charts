@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -eo pipefail
 
 # global
 is_ecr_re='\.ecr\..*\.amazonaws\.com'
@@ -9,7 +9,7 @@ nc="\033[0m"
 red="\\033[0;31m"
 helm_release=release
 helm_chart="stackstate/suse-observability-agent"
-helm_values="http-header-injector-webhook.enabled=true,stackstate.apiKey=APIKEY,logsAgent.enabled=true,stackstate.cluster.name=dummy-cluster,stackstate.url=http://dummy.url.io"
+helm_values="httpHeaderInjectorWebhook.enabled=true,stackstate.apiKey=APIKEY,stackstate.cluster.name=dummy-cluster,stackstate.url=https://dummy.stackstate.io/stsAgent,kubernetes-rbac-agent.enabled=true,otel.enabled=true,otel.prometheusScraping.enabled=true,otel.prometheusScraping.monitorCrds.enabled=true,otel.prometheusScraping.targetAllocator.mtlsEnabled=false"
 dry_run=false
 
 # usage
@@ -26,6 +26,8 @@ Arguments:
     -d : Destination Docker image registry (required)
     -h : Show this help text
     -t : Dry-run
+
+Pass additional Helm arguments after -- (for example, -- -f custom-values.yaml).
 EOF
 }
 
@@ -46,15 +48,30 @@ shift $((OPTIND -1))
 
 [ -z "$dest_registry" ] && echo -e "${red}Provide the destination registry with the -d flag${nc}" && usage && exit 1
 
-CFG_DIR=$(mktemp -d)
+helm_manifests=""
+for otel_logs in false true; do
+  logs_collector=logsAgent
+  if [[ "${otel_logs}" == true ]]; then
+    logs_collector=otelLogsAgent
+  fi
+  if ! rendered=$(helm template "${helm_release}" "${helm_chart}" --set "${helm_values}" "$@" --set "${logs_collector}.enabled=true" --set "global.features.experimentalOtelLogsAgent=${otel_logs}"); then
+    echo "Failed to render from Helm chart (global.features.experimentalOtelLogsAgent=${otel_logs})" >&2
+    exit 1
+  fi
+  helm_manifests+="${rendered}"$'\n'
+done
+rendered_images=$(printf '%s' "${helm_manifests}" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' | sort -u)
 
-if [ -n "$DST_REGISTRY_USERNAME" ] && [ -n "$DST_REGISTRY_PASSWORD" ]; then
+CFG_DIR=$(mktemp -d)
+trap 'rm -rf "${CFG_DIR}"' EXIT
+
+if ! $dry_run && [ -n "$DST_REGISTRY_USERNAME" ] && [ -n "$DST_REGISTRY_PASSWORD" ]; then
     docker container run -i --rm --net host -v "${CFG_DIR}:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest registry login -u "$DST_REGISTRY_USERNAME" -p "$DST_REGISTRY_PASSWORD" "$dest_registry"
 fi
 
 #
 images=()
-while IFS='' read -r line; do images+=("$line"); done < <(helm template "$helm_release" "$helm_chart" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' | sort | uniq)
+while IFS='' read -r line; do images+=("$line"); done <<< "${rendered_images}"
 for src_image in "${images[@]}"
 do
     if [[ "$src_image" =~ $repo_and_tag_re ]]; then
@@ -76,5 +93,3 @@ do
         exit 1
     fi
 done
-
-rm -rf "${CFG_DIR}"

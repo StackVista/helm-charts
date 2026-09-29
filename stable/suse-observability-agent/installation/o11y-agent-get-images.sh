@@ -21,6 +21,7 @@ Arguments:
     -h : Show this help text
 
 One of -f or -d can be set, the script's default behavior is to use the directory relative to installation.
+Pass additional Helm arguments after -- (for example, -- -f custom-values.yaml).
 EOF
 }
 
@@ -49,6 +50,7 @@ while getopts ":f:d:h" opt; do
       ;;
   esac
 done
+shift $((OPTIND -1))
 
 
 # Check if all required options are provided
@@ -74,7 +76,7 @@ if [[ -n "${helm_chart_dir}" ]] && [ ! -d "${helm_chart_dir}" ]; then
 fi
 
 # Helm values to enable non-default features and get their images.
-helm_values="httpHeaderInjectorWebhook.enabled=true,stackstate.apiKey=APIKEY,logsAgent.enabled=true,stackstate.cluster.name=dummy-cluster,stackstate.url=https://dummy.stackstate.io,kubernetes-rbac-agent.enabled=true,otel.enabled=true,otel.prometheusScraping.enabled=true,otel.prometheusScraping.monitorCrds.enabled=true,otel.prometheusScraping.targetAllocator.mtlsEnabled=false"
+helm_values="httpHeaderInjectorWebhook.enabled=true,stackstate.apiKey=APIKEY,stackstate.cluster.name=dummy-cluster,stackstate.url=https://dummy.stackstate.io/stsAgent,kubernetes-rbac-agent.enabled=true,otel.enabled=true,otel.prometheusScraping.enabled=true,otel.prometheusScraping.monitorCrds.enabled=true,otel.prometheusScraping.targetAllocator.mtlsEnabled=false"
 helm_release=release
 
 if [[ -z ${helm_chart_archive} ]]; then
@@ -83,14 +85,18 @@ else
   helm_chart="${helm_chart_archive}"
 fi
 
-# Render the manifests from the Helm chart, skipping known warnings.
-helm_manifests=$(helm template ${helm_release} "${helm_chart}" --set "${helm_values}" 2>/dev/stdout | grep -Ev "coalesce.go:")
-# shellcheck disable=SC2181
-if [ $? -ne 0 ]; then
-  echo "${helm_manifests}"
-  echo -e "${RED}Failed to render from Helm chart${NO_COLOR}" >&2
-  exit 1
-fi
+helm_manifests=""
+for otel_logs in false true; do
+  logs_collector=logsAgent
+  if [[ "${otel_logs}" == true ]]; then
+    logs_collector=otelLogsAgent
+  fi
+  if ! rendered=$(helm template "${helm_release}" "${helm_chart}" --set "${helm_values}" "$@" --set "${logs_collector}.enabled=true" --set "global.features.experimentalOtelLogsAgent=${otel_logs}"); then
+    echo -e "${RED}Failed to render from Helm chart (global.features.experimentalOtelLogsAgent=${otel_logs})${NO_COLOR}" >&2
+    exit 1
+  fi
+  helm_manifests+="${rendered}"$'\n'
+done
 
 # Extract images from the Helm manifests
-echo "${helm_manifests}" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' | sort | uniq
+printf '%s' "${helm_manifests}" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' | sort -u
