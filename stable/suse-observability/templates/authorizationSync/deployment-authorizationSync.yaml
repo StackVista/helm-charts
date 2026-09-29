@@ -96,7 +96,7 @@ volumeMounts:
 {{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-authorization-sync
+  name: {{ include "stackstate.authorizationSync.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: authorization-sync
     stackstate.com/connects-to-stackgraph: "true"

@@ -85,7 +85,7 @@ volumeMounts:
 
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-initializer
+  name: {{ include "stackstate.initializer.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: initializer
     stackstate.com/connects-to-stackgraph: "true"

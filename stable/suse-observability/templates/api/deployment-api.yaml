@@ -140,7 +140,7 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "stackstate.api.deployment.container.init" .) -}}
 {{- $stsStackstateApiInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-api
+  name: {{ include "stackstate.api.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: api
     stackstate.com/connects-to-stackgraph: "true"

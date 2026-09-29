@@ -115,7 +115,7 @@ volumeMounts:
 {{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-sync
+  name: {{ include "stackstate.sync.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: sync
     stackstate.com/connects-to-stackgraph: "true"

@@ -113,7 +113,7 @@ volumeMounts:
 {{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-health-sync
+  name: {{ include "stackstate.healthSync.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: health-sync
     stackstate.com/connects-to-stackgraph: "true"

@@ -91,7 +91,7 @@ volumeMounts:
 {{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-slicing
+  name: {{ include "stackstate.slicing.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: slicing
     stackstate.com/connects-to-stackgraph: "true"

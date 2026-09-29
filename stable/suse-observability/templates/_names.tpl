@@ -338,3 +338,51 @@ Logic to determine ElasticSearch host.
 {{- define "stackstate.es.host" -}}
 {{- include "stackstate.elasticsearch.fullname" . -}}-master-headless
 {{- end -}}
+
+{{/* Deployment identities are extracted independently of configuration resources.
+Preserve the existing names while moving declarations to dedicated helpers. */}}
+{{- define "stackstate.api.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.checks.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{/* Deployment names for state, sync, slicing, server, initializer and e2es
+retain their existing release and override behavior. */}}
+{{- define "stackstate.state.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.slicing.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.server.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.initializer.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.e2es.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
