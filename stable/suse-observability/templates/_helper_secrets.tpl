@@ -31,7 +31,11 @@ Secret for api key.
 Secret for auth.
 */}}
 {{- define "stackstate.secret.name.auth" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.authentication.fromExternalSecret "internalSecretName" "auth") .) | quote }}
+{{- if .Values.stackstate.authentication.fromExternalSecret -}}
+{{ .Values.stackstate.authentication.fromExternalSecret | quote }}
+{{- else -}}
+{{ include "stackstate.auth.secret.fullname" . | quote }}
+{{- end -}}
 {{- end }}
 
 

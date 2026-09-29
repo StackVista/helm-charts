@@ -112,6 +112,15 @@ customer-provided names must not receive a chart prefix.
 {{- end -}}
 
 {{/*
+The authentication Secret declaration and existing-password lookup share this
+legacy identity. Renaming it requires a credential migration strategy; external
+Secret selection remains in stackstate.secret.name.auth.
+*/}}
+{{- define "stackstate.auth.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-auth
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}
