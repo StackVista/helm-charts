@@ -26,6 +26,16 @@ hook resources, whose naming and upgrade contracts are separate.
 {{- end -}}
 
 {{/*
+The router Service uses the global hostname prefix so bundled subcharts resolve
+the same address. Preserve its global overrides and truncation semantics; local
+workload overrides do not apply. Keep the legacy stackstate.router.name helper
+independent for customer templates that reference existing names.
+*/}}
+{{- define "stackstate.router.service.fullname" -}}
+{{ template "stackstate.hostname.prefix" . }}-router
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}

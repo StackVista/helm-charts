@@ -44,7 +44,7 @@ Logic to determine Kafka endpoint.
 Logic to determine Router endpoint.
 */}}
 {{- define "stackstate.router.endpoint" -}}
-http://{{ template "stackstate.router.name" . }}:8080
+http://{{ include "stackstate.router.service.fullname" . }}:8080
 {{- end -}}
 
 {{/*

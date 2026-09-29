@@ -1,6 +1,6 @@
 {{- /* Does not use common: Gateway API resource type, no common template exists */ -}}
 {{- if .Values.gateway.enabled -}}
-{{- $routerName := (include "stackstate.router.name" .) -}}
+{{- $routerName := (include "stackstate.router.service.fullname" .) -}}
 {{- $baseUrl := include "suse-observability.global.baseUrl" . | trim -}}
 {{- $baseUrlHost := "" -}}
 {{- $baseUrlPath := "" -}}

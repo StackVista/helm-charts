@@ -708,7 +708,9 @@ Determines the hostname prefix for the different stackstate services. This name 
 {{- end -}}
 
 {{/*
-Determines the hostname fr the router. This name is stable across subcharts
+Legacy router hostname helper, also callable from customer values via tpl.
+Preserve its naming semantics independently of stackstate.router.service.fullname.
+Chart-owned Service references use that dedicated resource helper instead.
 */}}
 {{- define "stackstate.router.name" -}}
 {{- template "stackstate.hostname.prefix" . }}-router
