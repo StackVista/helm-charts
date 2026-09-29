@@ -422,6 +422,36 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{ template "common.fullname.short" . }}-authorization-sync
 {{- end -}}
 
+{{- define "stackstate.receiver.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.receiver.base.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-base
+{{- end -}}
+
+{{- define "stackstate.receiver.logs.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-logs
+{{- end -}}
+
+{{- define "stackstate.receiver.processAgent.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-process-agent
+{{- end -}}
+
+{{- define "stackstate.correlate.service.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
+{{- end -}}
+
+{{/* Collector requests use the base receiver in split mode and the single
+receiver otherwise. */}}
+{{- define "stackstate.receiver.target.service.fullname" -}}
+{{- if eq (include "stackstate.receiver.split.enabled" .) "true" -}}
+{{- include "stackstate.receiver.base.service.fullname" . -}}
+{{- else -}}
+{{- include "stackstate.receiver.service.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
 {{/* API clients use the API Service in split mode and the server Service otherwise.
 This selects a Service identity; Envoy cluster identifiers remain independent. */}}
 {{- define "stackstate.api.target.service.fullname" -}}

@@ -1,6 +1,6 @@
 {{- define "stackstate.correlate.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
+  name: {{ include "stackstate.correlate.service.fullname" . }}
   labels:
     app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
     app.kubernetes.io/component-group: correlate

@@ -1,6 +1,6 @@
 {{- define "stackstate.receiver.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" .  }}
+  name: {{ .ServiceFullname }}
   labels:
     app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" .  }}
     app.kubernetes.io/component-group: receiver
@@ -23,19 +23,19 @@ spec:
 {{- $commonService := fromYaml (include "common.service" .) -}}
 
 {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
-{{- $receiverBaseArgs := merge (dict "ReceiverType" "base") . -}}
+{{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "ServiceFullname" (include "stackstate.receiver.base.service.fullname" .)) . -}}
 {{- $stackstateReceiverBaseService := fromYaml (include "stackstate.receiver.service" $receiverBaseArgs) -}}
 {{- toYaml (merge $stackstateReceiverBaseService $commonService) }}
 ---
-{{ $receiverLogsArgs := merge (dict "ReceiverType" "logs") . -}}
+{{ $receiverLogsArgs := merge (dict "ReceiverType" "logs" "ServiceFullname" (include "stackstate.receiver.logs.service.fullname" .)) . -}}
 {{- $stackstateReceiverLogsService := fromYaml (include "stackstate.receiver.service" $receiverLogsArgs) -}}
 {{ toYaml (merge $stackstateReceiverLogsService $commonService) }}
 ---
-{{ $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent") . -}}
+{{ $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "ServiceFullname" (include "stackstate.receiver.processAgent.service.fullname" .)) . -}}
 {{- $stackstateReceiverProcessAgentService := fromYaml (include "stackstate.receiver.service" $receiverProcessAgentArgs) -}}
 {{ toYaml (merge $stackstateReceiverProcessAgentService $commonService) -}}
 {{ else }}
-{{- $receiverArgs := merge (dict "ReceiverType" "") . -}}
+{{- $receiverArgs := merge (dict "ReceiverType" "" "ServiceFullname" (include "stackstate.receiver.service.fullname" .)) . -}}
 {{- $stackstateReceiverService := fromYaml (include "stackstate.receiver.service" $receiverArgs) -}}
 {{- toYaml (merge $stackstateReceiverService $commonService) }}
 {{- end -}}

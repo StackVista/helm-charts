@@ -2,18 +2,8 @@
 metadata:
   name: {{ include "stackstate.otelCollector.defaultFullname" . }}
 data:
-  api.url:
-  {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
-    "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/api/v1/validate"
-  {{ else }}
-    "http://{{ template "common.fullname.short" . }}-receiver:7077/stsAgent/api/v1/validate"
-  {{- end }}
-  intake.url:
-  {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
-    "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/intake"
-  {{ else }}
-    "http://{{ template "common.fullname.short" . }}-receiver:7077/stsAgent/intake"
-  {{- end -}}
+  api.url: "http://{{ include "stackstate.receiver.target.service.fullname" . }}:7077/stsAgent/api/v1/validate"
+  intake.url: "http://{{ include "stackstate.receiver.target.service.fullname" . }}:7077/stsAgent/intake"
 {{- end -}}
 
 {{- if lt (semver "3.13.1" | (semver .Capabilities.HelmVersion.Version).Compare) 0 -}}
