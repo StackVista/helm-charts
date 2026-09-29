@@ -129,6 +129,15 @@ External selection and optional Secret creation remain separate from naming.
 {{- end -}}
 
 {{/*
+The shared Secret holds common environment variables and inline trust material.
+Keep its legacy identity consistent with the producer and blob resolvers;
+external Secret names and keys are selected independently.
+*/}}
+{{- define "stackstate.common.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-common
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}

@@ -144,7 +144,7 @@ Common extra environment variables for all processes inherited through `stacksta
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-common
+      name: {{ include "stackstate.common.secret.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}

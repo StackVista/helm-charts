@@ -71,7 +71,7 @@ the 1MB limit imposed on the underlying etcd object.
 name: {{ $external.name }}
 key: {{ default "java-cacerts" $external.key }}
 {{- else if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: javaTrustStore
 {{- end }}
 {{- end -}}
@@ -82,7 +82,7 @@ key: javaTrustStore
 name: {{ $external.name }}
 key: {{ $external.passwordKey }}
 {{- else if .Values.stackstate.java.trustStorePassword }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: javaTrustStorePassword
 {{- end }}
 {{- end -}}
@@ -94,7 +94,7 @@ key: javaTrustStorePassword
 name: {{ $external.name }}
 key: {{ default "ldap-cacerts" $external.key }}
 {{- else if or $ssl.trustStore $ssl.trustStoreBase64Encoded }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: ldapTrustStore
 {{- end }}
 {{- end -}}
@@ -106,7 +106,7 @@ key: ldapTrustStore
 name: {{ $external.name }}
 key: {{ default "ldap-certificates.pem" $external.key }}
 {{- else if or $ssl.trustCertificates $ssl.trustCertificatesBase64Encoded }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: ldapTrustCertificates
 {{- end }}
 {{- end -}}
