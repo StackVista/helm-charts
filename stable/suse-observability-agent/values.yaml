@@ -967,9 +967,9 @@ otel:
     skipSslValidation: false
 
     monitorCrds:
-      # otel.prometheusScraping.monitorCrds.enabled -- Install and upgrade ServiceMonitor and PodMonitor CRDs when Prometheus scraping is enabled.
+      # otel.prometheusScraping.monitorCrds.enabled -- Install and upgrade ServiceMonitor, PodMonitor and Probe CRDs when Prometheus scraping is enabled.
       enabled: false
-      # otel.prometheusScraping.monitorCrds.keep -- Annotate the installed ServiceMonitor and PodMonitor CRDs with `helm.sh/resource-policy: keep` so they (and any custom resources users have created against them) survive a `helm uninstall` of this chart. Only takes effect when `monitorCrds.enabled` is true.
+      # otel.prometheusScraping.monitorCrds.keep -- Annotate the installed ServiceMonitor, PodMonitor and Probe CRDs with `helm.sh/resource-policy: keep` so they (and any custom resources users have created against them) survive a `helm uninstall` of this chart. Only takes effect when `monitorCrds.enabled` is true.
       keep: true
 
     collector:
@@ -1037,7 +1037,7 @@ otel:
         # otel.prometheusScraping.targetAllocator.image.repository -- SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release.
         repository: stackstate/opentelemetry-target-allocator
         # otel.prometheusScraping.targetAllocator.image.tag -- SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>).
-        tag: "0.153.0-so15"
+        tag: "0.160.0-so1"
         # otel.prometheusScraping.targetAllocator.image.pullPolicy -- Container image pull policy for the Target Allocator.
         pullPolicy: IfNotPresent
 
@@ -1093,6 +1093,11 @@ otel:
           observability.suse.com/agent: scrape
         # otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorNamespaceSelector -- Labels or full LabelSelector selecting PodMonitor namespaces.
         podMonitorNamespaceSelector: {}
+        # otel.prometheusScraping.targetAllocator.prometheusCR.probeSelector -- Labels or full LabelSelector selecting Probe resources to scrape. Probes need a separately deployed blackbox exporter.
+        probeSelector:
+          observability.suse.com/agent: scrape
+        # otel.prometheusScraping.targetAllocator.prometheusCR.probeNamespaceSelector -- Labels or full LabelSelector selecting Probe namespaces.
+        probeNamespaceSelector: {}
         # otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces -- Namespaces where monitor resources are allowed. Mutually exclusive with denyNamespaces.
         allowNamespaces: []
         # otel.prometheusScraping.targetAllocator.prometheusCR.denyNamespaces -- Namespaces where monitor resources are denied. Mutually exclusive with allowNamespaces.

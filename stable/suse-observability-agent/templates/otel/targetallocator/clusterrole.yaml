@@ -12,7 +12,7 @@ metadata:
 rules:
   # PrometheusCR monitor discovery
   - apiGroups: ["monitoring.coreos.com"]
-    resources: ["servicemonitors", "podmonitors"]
+    resources: ["servicemonitors", "podmonitors", "probes"]
     verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["namespaces"]

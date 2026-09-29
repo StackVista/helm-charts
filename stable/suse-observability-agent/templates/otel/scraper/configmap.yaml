@@ -47,7 +47,7 @@ data:
           - context: resource
             statements:
               - delete_key(attributes, "k8s.namespace.name")
-      k8sattributes:
+      k8s_attributes:
         auth_type: serviceAccount
         extract:
           labels:
@@ -137,10 +137,10 @@ data:
       pipelines:
         metrics/prometheus-scraping:
           receivers: [prometheus]
-          processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, batch]
+          processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform, batch]
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.prometheusScraping.collector.debug "signal" "metrics") }}]
         metrics/self:
           receivers: [prometheus/self]
-          processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, transform/self-metrics, batch]
+          processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform, transform/self-metrics, batch]
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.prometheusScraping.collector.debug "signal" "metrics") }}]
 {{- end }}

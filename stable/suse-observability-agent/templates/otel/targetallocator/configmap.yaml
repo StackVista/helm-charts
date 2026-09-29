@@ -58,6 +58,10 @@ data:
 {{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorSelector) | indent 8 }}
       pod_monitor_namespace_selector:
 {{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorNamespaceSelector) | indent 8 }}
+      probe_selector:
+{{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.probeSelector) | indent 8 }}
+      probe_namespace_selector:
+{{ include "stackstate-k8s-agent.otelPrometheusScraping.labelSelector" (dict "selector" .Values.otel.prometheusScraping.targetAllocator.prometheusCR.probeNamespaceSelector) | indent 8 }}
       allow_namespaces:
 {{ toYaml .Values.otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces | indent 8 }}
       deny_namespaces:

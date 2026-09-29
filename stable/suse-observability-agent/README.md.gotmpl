@@ -155,11 +155,11 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 
 ## OTel Prometheus scraping
 
-When `otel.enabled=true` (default=false) and `otel.prometheusScraping.enabled=true` (default=true), the chart deploys an OpenTelemetry Collector based metrics scraper plus a Target Allocator that discovers `ServiceMonitor` and `PodMonitor` resources and distributes their scrape targets across collector pods.
+When `otel.enabled=true` (default=false) and `otel.prometheusScraping.enabled=true` (default=true), the chart deploys an OpenTelemetry Collector based metrics scraper plus a Target Allocator that discovers `ServiceMonitor`, `PodMonitor` and `Probe` resources and distributes their scrape targets across collector pods. `Probe` resources need a separately deployed blackbox exporter; the chart does not ship one.
 
 ### Opting monitors in
 
-By default the Target Allocator only picks up monitors that carry the `observability.suse.com/agent: scrape` label. Customize via `otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector` and `podMonitorSelector`.
+By default the Target Allocator only picks up monitors that carry the `observability.suse.com/agent: scrape` label. Customize via `otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector`, `podMonitorSelector` and `probeSelector`.
 
 ### Endpoint auth (basicAuth, bearerTokenSecret, oauth2, tlsConfig)
 

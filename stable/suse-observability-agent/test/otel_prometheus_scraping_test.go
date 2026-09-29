@@ -35,6 +35,8 @@ func TestOtelPrometheusScrapingDisabledByDefault(t *testing.T) {
 	assert.False(t, exists, "ServiceMonitor CRD should not exist when disabled")
 	_, exists = resources.Unmapped["podmonitors.monitoring.coreos.com"]
 	assert.False(t, exists, "PodMonitor CRD should not exist when disabled")
+	_, exists = resources.Unmapped["probes.monitoring.coreos.com"]
+	assert.False(t, exists, "Probe CRD should not exist when disabled")
 }
 
 func TestOtelPrometheusScrapingDisabledWhenScrapingFlagFalse(t *testing.T) {
@@ -64,6 +66,10 @@ func TestOtelPrometheusScrapingEnabledRendersResources(t *testing.T) {
 	assert.True(t, exists, "PodMonitor CRD should exist when enabled")
 	assert.Contains(t, podMonitorCRD, "helm.sh/resource-policy: keep",
 		"PodMonitor CRD should carry the keep resource-policy annotation by default so it survives helm uninstall")
+	probeCRD, exists := resources.Unmapped["probes.monitoring.coreos.com"]
+	assert.True(t, exists, "Probe CRD should exist when enabled")
+	assert.Contains(t, probeCRD, "helm.sh/resource-policy: keep",
+		"Probe CRD should carry the keep resource-policy annotation by default so it survives helm uninstall")
 	_, exists = resources.Pdbs[otelMetricsScraperName]
 	assert.False(t, exists, "metrics scraper PDB should be skipped at default replicaCount=1")
 	_, exists = resources.Pdbs[otelTargetAllocatorName]
@@ -106,6 +112,8 @@ func TestOtelPrometheusScrapingCrdsCanBeDisabled(t *testing.T) {
 	assert.False(t, exists, "ServiceMonitor CRD should not exist when CRD installation is disabled")
 	_, exists = resources.Unmapped["podmonitors.monitoring.coreos.com"]
 	assert.False(t, exists, "PodMonitor CRD should not exist when CRD installation is disabled")
+	_, exists = resources.Unmapped["probes.monitoring.coreos.com"]
+	assert.False(t, exists, "Probe CRD should not exist when CRD installation is disabled")
 }
 
 func TestOtelPrometheusScrapingMonitorCrdsKeepCanBeDisabled(t *testing.T) {
@@ -128,6 +136,10 @@ func TestOtelPrometheusScrapingMonitorCrdsKeepCanBeDisabled(t *testing.T) {
 	require.True(t, exists, "PodMonitor CRD should still be installed when keep=false")
 	assert.NotContains(t, podMonitorCRD, "helm.sh/resource-policy: keep",
 		"PodMonitor CRD must not carry the keep annotation when keep=false")
+	probeCRD, exists := resources.Unmapped["probes.monitoring.coreos.com"]
+	require.True(t, exists, "Probe CRD should still be installed when keep=false")
+	assert.NotContains(t, probeCRD, "helm.sh/resource-policy: keep",
+		"Probe CRD must not carry the keep annotation when keep=false")
 }
 
 func TestOtelPrometheusScrapingCrdsDisabledWarnsOnMissingCRDs(t *testing.T) {
@@ -161,7 +173,7 @@ func TestOtelPrometheusScrapingCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "spike_limit_percentage: 25")
 	assert.Contains(t, configData, "transform/pre-k8sattributes:")
 	assert.Contains(t, configData, "delete_key(attributes, \"k8s.namespace.name\")")
-	assert.Contains(t, configData, "k8sattributes:")
+	assert.Contains(t, configData, "k8s_attributes:")
 	assert.Contains(t, configData, "key_regex: (.*)")
 	assert.Contains(t, configData, "tag_name: $$1")
 	assert.Contains(t, configData, "k8s.namespace.name")
@@ -189,10 +201,10 @@ func TestOtelPrometheusScrapingCollectorConfig(t *testing.T) {
 	assert.Contains(t, configData, "host: ${env:POD_IP}")
 	assert.Contains(t, configData, "port: 8888")
 	assert.Contains(t, configData, "receivers: [prometheus]")
-	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, batch]")
+	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform, batch]")
 	assert.Contains(t, configData, "metrics/self:")
 	assert.Contains(t, configData, "receivers: [prometheus/self]")
-	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8sattributes, transform, transform/self-metrics, batch]")
+	assert.Contains(t, configData, "processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform, transform/self-metrics, batch]")
 	assert.NotContains(t, configData, "sts_api_key")
 }
 
@@ -244,6 +256,8 @@ func TestOtelPrometheusScrapingTargetAllocatorConfig(t *testing.T) {
 	assert.Contains(t, configData, "enabled: true")
 	assert.Contains(t, configData, "service_monitor_selector:")
 	assert.Contains(t, configData, "pod_monitor_selector:")
+	assert.Contains(t, configData, "probe_selector:")
+	assert.Contains(t, configData, "probe_namespace_selector:")
 	assert.Contains(t, configData, "matchLabels:")
 	assert.Contains(t, configData, "observability.suse.com/agent: scrape")
 	assert.Contains(t, configData, "secret_namespaces:")
@@ -322,6 +336,7 @@ func TestOtelPrometheusScrapingTargetAllocatorRBAC(t *testing.T) {
 	require.True(t, exists, "target allocator ClusterRole should exist")
 	assertClusterRoleHasResource(t, clusterRole, "monitoring.coreos.com", "servicemonitors", "get", "list", "watch")
 	assertClusterRoleHasResource(t, clusterRole, "monitoring.coreos.com", "podmonitors", "get", "list", "watch")
+	assertClusterRoleHasResource(t, clusterRole, "monitoring.coreos.com", "probes", "get", "list", "watch")
 	assertClusterRoleHasResource(t, clusterRole, "", "nodes", "get", "list", "watch")
 	// configmaps is read on demand for scrape-config templating; upstream
 	// grants get only (no list/watch). Lock that scope in.

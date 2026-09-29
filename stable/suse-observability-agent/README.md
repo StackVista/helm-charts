@@ -161,11 +161,11 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 
 ## OTel Prometheus scraping
 
-When `otel.enabled=true` (default=false) and `otel.prometheusScraping.enabled=true` (default=true), the chart deploys an OpenTelemetry Collector based metrics scraper plus a Target Allocator that discovers `ServiceMonitor` and `PodMonitor` resources and distributes their scrape targets across collector pods.
+When `otel.enabled=true` (default=false) and `otel.prometheusScraping.enabled=true` (default=true), the chart deploys an OpenTelemetry Collector based metrics scraper plus a Target Allocator that discovers `ServiceMonitor`, `PodMonitor` and `Probe` resources and distributes their scrape targets across collector pods. `Probe` resources need a separately deployed blackbox exporter; the chart does not ship one.
 
 ### Opting monitors in
 
-By default the Target Allocator only picks up monitors that carry the `observability.suse.com/agent: scrape` label. Customize via `otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector` and `podMonitorSelector`.
+By default the Target Allocator only picks up monitors that carry the `observability.suse.com/agent: scrape` label. Customize via `otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector`, `podMonitorSelector` and `probeSelector`.
 
 ### Endpoint auth (basicAuth, bearerTokenSecret, oauth2, tlsConfig)
 
@@ -583,8 +583,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
 | otel.prometheusScraping.collector.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | otel.prometheusScraping.enabled | bool | `true` | Enable / disable OpenTelemetry Collector based Prometheus scraping via ServiceMonitor and PodMonitor resources. Requires otel.enabled=true. |
-| otel.prometheusScraping.monitorCrds.enabled | bool | `false` | Install and upgrade ServiceMonitor and PodMonitor CRDs when Prometheus scraping is enabled. |
-| otel.prometheusScraping.monitorCrds.keep | bool | `true` | Annotate the installed ServiceMonitor and PodMonitor CRDs with `helm.sh/resource-policy: keep` so they (and any custom resources users have created against them) survive a `helm uninstall` of this chart. Only takes effect when `monitorCrds.enabled` is true. |
+| otel.prometheusScraping.monitorCrds.enabled | bool | `false` | Install and upgrade ServiceMonitor, PodMonitor and Probe CRDs when Prometheus scraping is enabled. |
+| otel.prometheusScraping.monitorCrds.keep | bool | `true` | Annotate the installed ServiceMonitor, PodMonitor and Probe CRDs with `helm.sh/resource-policy: keep` so they (and any custom resources users have created against them) survive a `helm uninstall` of this chart. Only takes effect when `monitorCrds.enabled` is true. |
 | otel.prometheusScraping.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority when sending OTLP to the platform. |
 | otel.prometheusScraping.targetAllocator.affinity | object | `{}` | Affinity settings for pod assignment. |
 | otel.prometheusScraping.targetAllocator.allocationStrategy | string | `"consistent-hashing"` | Target Allocator strategy for distributing scrape targets across collectors. |
@@ -593,7 +593,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.targetAllocator.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Target Allocator. |
 | otel.prometheusScraping.targetAllocator.image.registry | string | `nil` | Override registry for the Target Allocator image. Defaults to global.imageRegistry. |
 | otel.prometheusScraping.targetAllocator.image.repository | string | `"stackstate/opentelemetry-target-allocator"` | SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release. |
-| otel.prometheusScraping.targetAllocator.image.tag | string | `"0.153.0-so15"` | SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>). |
+| otel.prometheusScraping.targetAllocator.image.tag | string | `"0.160.0-so1"` | SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>). |
 | otel.prometheusScraping.targetAllocator.mtlsEnabled | bool | `false` | Enable mTLS between scraper collectors and the Target Allocator. When true, credentials referenced by ServiceMonitors and PodMonitors are fetched over a mutually authenticated TLS connection. Requires cert-manager to be installed. See the README for details. |
 | otel.prometheusScraping.targetAllocator.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.targetAllocator.podAnnotations | object | `{}` | Additional annotations for Target Allocator pods. |
@@ -604,6 +604,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.targetAllocator.prometheusCR.denyNamespaces | list | `[]` | Namespaces where monitor resources are denied. Mutually exclusive with allowNamespaces. |
 | otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorNamespaceSelector | object | `{}` | Labels or full LabelSelector selecting PodMonitor namespaces. |
 | otel.prometheusScraping.targetAllocator.prometheusCR.podMonitorSelector | object | `{"observability.suse.com/agent":"scrape"}` | Labels or full LabelSelector selecting PodMonitor resources to scrape. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.probeNamespaceSelector | object | `{}` | Labels or full LabelSelector selecting Probe namespaces. |
+| otel.prometheusScraping.targetAllocator.prometheusCR.probeSelector | object | `{"observability.suse.com/agent":"scrape"}` | Labels or full LabelSelector selecting Probe resources to scrape. Probes need a separately deployed blackbox exporter. |
 | otel.prometheusScraping.targetAllocator.prometheusCR.secretNamespaces | list | `[]` | Namespaces where referenced monitor auth secrets can be read. |
 | otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorNamespaceSelector | object | `{}` | Labels or full LabelSelector selecting ServiceMonitor namespaces. |
 | otel.prometheusScraping.targetAllocator.prometheusCR.serviceMonitorSelector | object | `{"observability.suse.com/agent":"scrape"}` | Labels or full LabelSelector selecting ServiceMonitor resources to scrape. |
