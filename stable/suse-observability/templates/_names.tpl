@@ -5,6 +5,27 @@ names are documented below so extraction can precede an actual naming migration.
 */}}
 
 {{/*
+Router workload and static configuration names retain their legacy expressions.
+Keep these independent from the router Service, dynamic mode ConfigMaps and
+hook resources, whose naming and upgrade contracts are separate.
+*/}}
+{{- define "stackstate.router.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.router.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.router.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.router.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}

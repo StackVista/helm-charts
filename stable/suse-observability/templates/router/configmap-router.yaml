@@ -1,6 +1,6 @@
 {{- define "stackstate.router.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-router
+  name: {{ include "stackstate.router.configmap.fullname" . }}
 data:
   envoy.yaml: |-
     node:

@@ -42,7 +42,7 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "stackstate.router.deployment.container.main" .) -}}
 {{- $stsstackstateRouterMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-router
+  name: {{ include "stackstate.router.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: router
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -66,14 +66,14 @@ spec:
         app.kubernetes.io/component: router
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ template "common.fullname.short" . }}-router
+      serviceAccountName: {{ include "stackstate.router.serviceaccount.fullname" . }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $stsstackstateRouterMainContainer | nindent 8 }}
       volumes:
       - name: config
         configMap:
-          name: {{ template "common.fullname.short" . }}-router
+          name: {{ include "stackstate.router.configmap.fullname" . }}
           items:
           - key: envoy.yaml
             path: envoy.yaml

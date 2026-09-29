@@ -165,7 +165,7 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-router
+      name: {{ include "stackstate.router.secret.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}

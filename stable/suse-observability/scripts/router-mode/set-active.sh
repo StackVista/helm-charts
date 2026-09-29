@@ -19,14 +19,14 @@ EOF
 # - We would like to actively reset connections, to make all clients go in to maintenance
 # - After the restart we are sure the configmap is applied.
 # shellcheck disable=SC2140
-if kubectl get deployment "{{ template "common.fullname.short" . }}-router" -n "{{ .Release.Namespace }}"; then
+if kubectl get deployment "{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"; then
   echo "Restarting router"
-  kubectl rollout restart "deployment/{{ template "common.fullname.short" . }}-router" -n "{{ .Release.Namespace }}"
+  kubectl rollout restart "deployment/{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"
 
   echo "Waiting for rollout to complete..."
-  while ! kubectl rollout status "deployment/{{ template "common.fullname.short" . }}-router" -n "{{ .Release.Namespace }}"; do
+  while ! kubectl rollout status "deployment/{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"; do
     echo "."
-    if ! kubectl get deployment "{{ template "common.fullname.short" . }}-router" -n "{{ .Release.Namespace }}"; then
+    if ! kubectl get deployment "{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"; then
       echo "Deployment went away, exiting"
       exit 0
     fi
