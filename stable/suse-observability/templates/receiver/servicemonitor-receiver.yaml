@@ -1,7 +1,3 @@
-{{- define "stackstate.receiver.name.postfix" -}}
-  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
-{{- end -}}
-
 {{- define "stackstate.receiver.servicemonitor" -}}
 metadata:
   labels:

@@ -386,3 +386,21 @@ retain their existing release and override behavior. */}}
 {{- define "stackstate.e2es.deployment.fullname" -}}
 {{ template "common.fullname.short" . }}-e2es
 {{- end -}}
+
+{{/* Split worker suffixes are shared by Deployments, Services and ServiceMonitors.
+Keep their existing names and type-dependent suffixes unchanged. */}}
+{{- define "stackstate.receiver.name.postfix" -}}
+  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
+{{- end -}}
+
+{{- define "stackstate.receiver.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" . }}
+{{- end -}}
+
+{{- define "stackstate.correlate.name.postfix" -}}
+  {{- if .CorrelateType }}-{{ .CorrelateType }}{{ else }}{{ end }}
+{{- end -}}
+
+{{- define "stackstate.correlate.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
+{{- end -}}

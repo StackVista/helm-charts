@@ -6,9 +6,6 @@
   {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}authorization-sync{{ else }}server-headless{{ end }}
 {{- end -}}
 
-{{- define "stackstate.receiver.name.postfix" -}}
-  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
-{{- end -}}
 {{- define "stackstate.receiver.deployment.container.init" -}}
 name: receiver-init
 command:
@@ -135,7 +132,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.receiver.deployment.container.init" .) -}}
 {{- $stsstackstateReceiverInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" . }}
+  name: {{ include "stackstate.receiver.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
     app.kubernetes.io/component-group: receiver
