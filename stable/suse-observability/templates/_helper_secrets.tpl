@@ -1,47 +1,34 @@
 {{/*
-Pick an external or predefined internal secret.
-Legacy interface retained for templates outside this chart. Chart-owned
-selectors below use dedicated internal resource-name helpers.
+Pick an external Secret or an already resolved internal Secret name.
+Callers supply internalSecretFullname and handle quoting; no chart context is needed.
 */}}
 {{- define "stackstate.secret.externalOrInternal" -}}
-{{- if .externalSecret }}
-{{- .externalSecret }}
-{{- else }}
-{{- template "common.fullname.short" . }}-{{ .internalSecretName }}
-{{- end }}
-{{- end }}
+{{- if .externalSecret -}}
+{{- .externalSecret -}}
+{{- else -}}
+{{- .internalSecretFullname -}}
+{{- end -}}
+{{- end -}}
 
 {{/*
 Secret for license.
 */}}
 {{- define "stackstate.secret.name.license" -}}
-{{- if .Values.stackstate.license.fromExternalSecret -}}
-{{ .Values.stackstate.license.fromExternalSecret | quote }}
-{{- else -}}
-{{ include "stackstate.license.secret.fullname" . | quote }}
-{{- end -}}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.license.fromExternalSecret "internalSecretFullname" (include "stackstate.license.secret.fullname" .)) | quote }}
 {{- end }}
 
 {{/*
 Secret for api key.
 */}}
 {{- define "stackstate.secret.name.apiKey" -}}
-{{- if .Values.stackstate.apiKey.fromExternalSecret -}}
-{{ .Values.stackstate.apiKey.fromExternalSecret | quote }}
-{{- else -}}
-{{ include "stackstate.apiKey.secret.fullname" . | quote }}
-{{- end -}}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.apiKey.fromExternalSecret "internalSecretFullname" (include "stackstate.apiKey.secret.fullname" .)) | quote }}
 {{- end }}
 
 {{/*
 Secret for auth.
 */}}
 {{- define "stackstate.secret.name.auth" -}}
-{{- if .Values.stackstate.authentication.fromExternalSecret -}}
-{{ .Values.stackstate.authentication.fromExternalSecret | quote }}
-{{- else -}}
-{{ include "stackstate.auth.secret.fullname" . | quote }}
-{{- end -}}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.authentication.fromExternalSecret "internalSecretFullname" (include "stackstate.auth.secret.fullname" .)) | quote }}
 {{- end }}
 
 
@@ -49,11 +36,7 @@ Secret for auth.
 Secret for email.
 */}}
 {{- define "stackstate.secret.name.email" -}}
-{{- if .Values.stackstate.email.server.auth.fromExternalSecret -}}
-{{ .Values.stackstate.email.server.auth.fromExternalSecret | quote }}
-{{- else -}}
-{{ include "stackstate.email.secret.fullname" . | quote }}
-{{- end -}}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.email.server.auth.fromExternalSecret "internalSecretFullname" (include "stackstate.email.secret.fullname" .)) | quote }}
 {{- end }}
 
 {{/*
