@@ -1,6 +1,6 @@
 {{- define "stackstate.healthSync.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-health-sync
+  name: {{ include "stackstate.healthSync.service.fullname" . }}
   labels:
     app.kubernetes.io/component: health-sync
 spec:

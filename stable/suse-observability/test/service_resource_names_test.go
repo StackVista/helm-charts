@@ -277,3 +277,78 @@ func TestSplitServiceReferencesFollowDedicatedHelpers(t *testing.T) {
 		}
 	}
 }
+
+func TestMetricsServiceNamesUseDedicatedHelpers(t *testing.T) {
+	chart := filepath.Join(t.TempDir(), "chart")
+	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
+	namesPath := filepath.Join(chart, "templates", "_names.tpl")
+	data, err := os.ReadFile(namesPath)
+	require.NoError(t, err)
+	content := string(data)
+	components := map[string]string{
+		"checks": "checks", "notification": "notification", "healthSync": "health-sync",
+		"state": "state", "sync": "sync", "slicing": "slicing", "e2es": "e2es",
+	}
+	for component, suffix := range components {
+		helper := "stackstate." + component + ".service.fullname"
+		definition := regexp.MustCompile(`(?s)\{\{- define "` + regexp.QuoteMeta(helper) + `" -\}\}.*?\{\{- end -\}\}`)
+		require.Len(t, definition.FindAllString(content, -1), 1, helper)
+		content = definition.ReplaceAllString(content, `{{- define "`+helper+`" -}}explicit-`+suffix+`-service{{- end -}}`)
+	}
+	require.NoError(t, os.WriteFile(namesPath, []byte(content), 0600))
+	valuesFile, err := filepath.Abs("values/full.yaml")
+	require.NoError(t, err)
+
+	for _, serverSplit := range []bool{false, true} {
+		for _, monitoring := range []bool{false, true} {
+			t.Run(fmt.Sprintf("server=%t/monitoring=%t", serverSplit, monitoring), func(t *testing.T) {
+				options := apiResourceNameTestOptions(map[string]string{
+					"stackstate.features.server.split":                         fmt.Sprint(serverSplit),
+					"stackstate.components.all.metrics.servicemonitor.enabled": fmt.Sprint(monitoring),
+				})
+				before := helmtestutil.NewKubernetesResources(t, helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", options))
+				options.ValuesFiles = []string{valuesFile}
+				output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+				require.NoError(t, err)
+				after := helmtestutil.NewKubernetesResources(t, output)
+				for component, suffix := range components {
+					legacy := "nightly-suse-observability-" + suffix
+					explicit := "explicit-" + suffix + "-service"
+					if !serverSplit && component != "e2es" {
+						assert.NotContains(t, before.Services, legacy)
+						assert.NotContains(t, after.Services, explicit)
+						assert.NotContains(t, after.ServiceMonitors, legacy)
+						continue
+					}
+					require.Contains(t, before.Services, legacy)
+					require.Contains(t, after.Services, explicit)
+					assert.NotContains(t, after.Services, legacy)
+					expected := before.Services[legacy]
+					expected.Name = explicit
+					assert.Equal(t, expected, after.Services[explicit], "Service ports and selectors must stay unchanged")
+					if monitoring {
+						require.Contains(t, after.ServiceMonitors, legacy)
+						selector := after.ServiceMonitors[legacy].Spec.Selector.MatchLabels
+						require.NotEmpty(t, selector)
+						for key, value := range selector {
+							assert.Equal(t, value, after.Services[explicit].Labels[key], "ServiceMonitor label %s", key)
+						}
+					} else {
+						assert.NotContains(t, after.ServiceMonitors, legacy)
+					}
+					delete(before.Services, legacy)
+					delete(after.Services, explicit)
+				}
+				assert.Equal(t, before.Services, after.Services)
+				assert.Equal(t, before.ServiceMonitors, after.ServiceMonitors)
+				assert.Equal(t, before.Deployments, after.Deployments)
+				assert.Equal(t, before.ConfigMaps, after.ConfigMaps)
+				assert.Equal(t, before.Secrets, after.Secrets)
+				assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+				assert.Equal(t, before.Pdbs, after.Pdbs)
+				assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+				assert.Equal(t, before.Statefulsets, after.Statefulsets)
+			})
+		}
+	}
+}

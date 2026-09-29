@@ -1,6 +1,6 @@
 {{- define "stackstate.e2es.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-e2es
+  name: {{ include "stackstate.e2es.service.fullname" . }}
   labels:
     app.kubernetes.io/component: e2es
 spec:

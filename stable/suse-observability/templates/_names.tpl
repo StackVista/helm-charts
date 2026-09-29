@@ -406,6 +406,34 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{- end -}}
 
 {{/* Service identities retain their existing release and override behavior. */}}
+{{- define "stackstate.checks.service.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.service.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.service.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.state.service.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.service.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.slicing.service.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.e2es.service.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
 {{- define "stackstate.api.service.fullname" -}}
 {{ template "common.fullname.short" . }}-api-headless
 {{- end -}}

@@ -1,6 +1,6 @@
 {{- define "stackstate.checks.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-checks
+  name: {{ include "stackstate.checks.service.fullname" . }}
   labels:
     app.kubernetes.io/component: checks
 spec:
