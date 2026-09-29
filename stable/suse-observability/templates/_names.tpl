@@ -415,6 +415,38 @@ Preserve the existing release and override behavior. */}}
 {{ template "common.fullname.short" . }}-server
 {{- end -}}
 
+{{- define "stackstate.checks.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{- define "stackstate.initializer.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.slicing.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.state.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
 {{/* Service identities retain their existing release and override behavior. */}}
 {{- define "stackstate.checks.service.fullname" -}}
 {{ template "common.fullname.short" . }}-checks

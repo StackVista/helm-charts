@@ -15,18 +15,24 @@ import (
 	rbacv1 "k8s.io/api/rbac/v1"
 )
 
-func TestAPIServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
+func TestCoreServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")
 	data, err := os.ReadFile(namesPath)
 	require.NoError(t, err)
 	content := string(data)
-	for _, component := range []string{"api", "server"} {
+	components := map[string]string{
+		"api": "api", "server": "server", "checks": "checks",
+		"notification": "notification", "healthSync": "health-sync",
+		"authorizationSync": "authorization-sync", "initializer": "initializer",
+		"slicing": "slicing", "state": "state", "sync": "sync",
+	}
+	for component, suffix := range components {
 		helper := "stackstate." + component + ".serviceaccount.fullname"
 		definition := regexp.MustCompile(`(?s)\{\{- define "` + regexp.QuoteMeta(helper) + `" -\}\}.*?\{\{- end -\}\}`)
 		require.Len(t, definition.FindAllString(content, -1), 1, helper)
-		content = definition.ReplaceAllString(content, `{{- define "`+helper+`" -}}explicit-`+component+`-account{{- end -}}`)
+		content = definition.ReplaceAllString(content, `{{- define "`+helper+`" -}}explicit-`+suffix+`-account{{- end -}}`)
 	}
 	require.NoError(t, os.WriteFile(namesPath, []byte(content), 0600))
 	valuesFile, err := filepath.Abs("values/full.yaml")
@@ -47,45 +53,57 @@ func TestAPIServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
 					require.NoError(t, err)
 					after := helmtestutil.NewKubernetesResources(t, output)
 
-					component, inactive := "server", "api"
-					if serverSplit {
-						component, inactive = "api", "server"
-					}
 					prefix := "nightly-suse-observability-"
-					legacy := prefix + component
-					explicit := "explicit-" + component + "-account"
-					require.Contains(t, before.ServiceAccounts, legacy)
-					require.Contains(t, after.ServiceAccounts, explicit)
-					assert.NotContains(t, after.ServiceAccounts, legacy)
-					assert.NotContains(t, before.ServiceAccounts, prefix+inactive)
-					assert.NotContains(t, after.ServiceAccounts, "explicit-"+inactive+"-account")
-					expectedAccount := before.ServiceAccounts[legacy]
-					expectedAccount.Name = explicit
-					assert.Equal(t, expectedAccount, after.ServiceAccounts[explicit])
-					delete(before.ServiceAccounts, legacy)
-					delete(after.ServiceAccounts, explicit)
-					assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
-
-					require.Contains(t, before.Deployments, legacy)
-					require.Contains(t, after.Deployments, legacy)
-					expectedDeployment := before.Deployments[legacy]
-					assert.Equal(t, legacy, expectedDeployment.Spec.Template.Spec.ServiceAccountName)
-					expectedDeployment.Spec.Template.Spec.ServiceAccountName = explicit
-					assert.Equal(t, expectedDeployment, after.Deployments[legacy])
-					delete(before.Deployments, legacy)
-					delete(after.Deployments, legacy)
-					assert.Equal(t, before.Deployments, after.Deployments)
-
 					bindingName := prefix + "get-pods"
 					require.Contains(t, before.RoleBindings, bindingName)
 					require.Contains(t, after.RoleBindings, bindingName)
 					expectedBinding := before.RoleBindings[bindingName]
-					expectedBinding.Subjects = renamedServiceAccountSubject(t, expectedBinding.Subjects, legacy, explicit)
+					for component, suffix := range components {
+						legacy := prefix + suffix
+						explicit := "explicit-" + suffix + "-account"
+						inServerMode := serverSplit != (component == "server")
+						if inServerMode {
+							// The existing split-mode binding retains the authorization-sync
+							// subject even when that component is disabled.
+							expectedBinding.Subjects = renamedServiceAccountSubject(t, expectedBinding.Subjects, legacy, explicit)
+						}
+						enabled := inServerMode && (component != "authorizationSync" || authorization)
+						if !enabled {
+							assert.NotContains(t, before.ServiceAccounts, legacy)
+							assert.NotContains(t, after.ServiceAccounts, explicit)
+							assert.NotContains(t, before.Deployments, legacy)
+							assert.NotContains(t, after.Deployments, legacy)
+							continue
+						}
+						require.Contains(t, before.ServiceAccounts, legacy)
+						require.Contains(t, after.ServiceAccounts, explicit)
+						assert.NotContains(t, after.ServiceAccounts, legacy)
+						expectedAccount := before.ServiceAccounts[legacy]
+						expectedAccount.Name = explicit
+						assert.Equal(t, expectedAccount, after.ServiceAccounts[explicit])
+						delete(before.ServiceAccounts, legacy)
+						delete(after.ServiceAccounts, explicit)
+
+						require.Contains(t, before.Deployments, legacy)
+						require.Contains(t, after.Deployments, legacy)
+						expectedDeployment := before.Deployments[legacy]
+						assert.Equal(t, legacy, expectedDeployment.Spec.Template.Spec.ServiceAccountName)
+						expectedDeployment.Spec.Template.Spec.ServiceAccountName = explicit
+						assert.Equal(t, expectedDeployment, after.Deployments[legacy])
+						delete(before.Deployments, legacy)
+						delete(after.Deployments, legacy)
+					}
+					assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+					assert.Equal(t, before.Deployments, after.Deployments)
 					assert.Equal(t, expectedBinding, after.RoleBindings[bindingName])
 					delete(before.RoleBindings, bindingName)
 					delete(after.RoleBindings, bindingName)
 					assert.Equal(t, before.RoleBindings, after.RoleBindings)
 
+					apiComponent := "server"
+					if serverSplit {
+						apiComponent = "api"
+					}
 					for _, purpose := range []string{"authentication", "authorization"} {
 						name := "observability-" + prefix + purpose
 						if !clusterRBAC {
@@ -96,7 +114,7 @@ func TestAPIServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
 						require.Contains(t, before.ClusterRoleBindings, name)
 						require.Contains(t, after.ClusterRoleBindings, name)
 						expected := before.ClusterRoleBindings[name]
-						expected.Subjects = renamedServiceAccountSubject(t, expected.Subjects, legacy, explicit)
+						expected.Subjects = renamedServiceAccountSubject(t, expected.Subjects, prefix+apiComponent, "explicit-"+apiComponent+"-account")
 						assert.Equal(t, expected, after.ClusterRoleBindings[name], "Binding identity, namespace and roleRef must stay unchanged")
 						delete(before.ClusterRoleBindings, name)
 						delete(after.ClusterRoleBindings, name)

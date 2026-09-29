@@ -122,7 +122,7 @@ spec:
         stackstate.com/connects-to-stackgraph: "true"
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ template "common.fullname.short" . }}-slicing
+      serviceAccountName: {{ include "stackstate.slicing.serviceaccount.fullname" . }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
