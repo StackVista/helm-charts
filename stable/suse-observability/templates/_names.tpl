@@ -405,6 +405,28 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
 {{- end -}}
 
+{{/* RBAC resources have independent names, even when their legacy names match.
+Preserve the namespace handling and truncation of the existing common helpers. */}}
+{{- define "stackstate.getPods.role.fullname" -}}
+{{ template "common.fullname.short" . }}-get-pods
+{{- end -}}
+
+{{- define "stackstate.getPods.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-get-pods
+{{- end -}}
+
+{{- define "stackstate.authorization.clusterrole.fullname" -}}
+{{ template "common.fullname.cluster.unique" . }}-authorization
+{{- end -}}
+
+{{- define "stackstate.authorization.clusterrolebinding.fullname" -}}
+{{ template "common.fullname.cluster.unique" . }}-authorization
+{{- end -}}
+
+{{- define "stackstate.authentication.clusterrolebinding.fullname" -}}
+{{ template "common.fullname.cluster.unique" . }}-authentication
+{{- end -}}
+
 {{/* ServiceAccount identities remain independent of Deployment and Service names.
 Preserve the existing release and override behavior. */}}
 {{- define "stackstate.api.serviceaccount.fullname" -}}

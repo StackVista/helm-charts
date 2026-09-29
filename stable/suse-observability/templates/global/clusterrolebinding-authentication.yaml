@@ -1,6 +1,6 @@
 {{- define "stackstate.authentication.clusterrolebinding" -}}
 metadata:
-  name: {{ template "common.fullname.cluster.unique" . }}-authentication
+  name: {{ include "stackstate.authentication.clusterrolebinding.fullname" . }}
 roleRef:
   name: 'system:auth-delegator'
 subjects:

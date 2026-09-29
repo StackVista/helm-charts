@@ -1,9 +1,9 @@
 {{- define "stackstate.rolebinding.get-pods" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-get-pods
+  name: {{ include "stackstate.getPods.rolebinding.fullname" . }}
 roleRef:
   kind: Role
-  name: {{ template "common.fullname.short" . }}-get-pods
+  name: {{ include "stackstate.getPods.role.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 subjects:
 {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}

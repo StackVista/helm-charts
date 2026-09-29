@@ -1,8 +1,8 @@
 {{- define "stackstate.authorization.clusterrolebinding" -}}
 metadata:
-  name: {{ template "common.fullname.cluster.unique" . }}-authorization
+  name: {{ include "stackstate.authorization.clusterrolebinding.fullname" . }}
 roleRef:
-  name: {{ template "common.fullname.cluster.unique" . }}-authorization
+  name: {{ include "stackstate.authorization.clusterrole.fullname" . }}
 subjects:
 {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 - name: {{ include "stackstate.api.serviceaccount.fullname" . }}

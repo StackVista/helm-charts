@@ -1,6 +1,6 @@
 {{- define "stackstate.authorization.clusterrole" -}}
 metadata:
-  name: {{ template "common.fullname.cluster.unique" . }}-authorization
+  name: {{ include "stackstate.authorization.clusterrole.fullname" . }}
 rules:
 - apiGroups:
   - rbac.authorization.k8s.io
