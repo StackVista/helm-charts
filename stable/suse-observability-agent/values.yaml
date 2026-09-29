@@ -475,7 +475,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: "0812a1b8"
+    tag: "dd1cba03"
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -626,7 +626,7 @@ otelLogsAgent:
     # otelLogsAgent.image.repository -- Container image repository for the logs Collector.
     repository: stackstate/sts-opentelemetry-collector
     # otelLogsAgent.image.tag -- Collector image tag for Promtail-compatible pod-log export.
-    tag: "v0.0.59-agent"
+    tag: "v0.0.60-agent"
     # otelLogsAgent.image.pullPolicy -- Container image pull policy.
     pullPolicy: IfNotPresent
     # otelLogsAgent.image.pullSecretName -- Name of ImagePullSecret to use for the logs Collector image.
@@ -810,7 +810,7 @@ otel:
       # otel.k8sResourceCollector.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-      tag: "v0.0.58-agent"
+      tag: "v0.0.60-agent"
       # otel.k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
     pprof:
@@ -977,7 +977,7 @@ otel:
         # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
         repository: stackstate/sts-opentelemetry-collector
         # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
-        tag: "v0.0.58-agent"
+        tag: "v0.0.60-agent"
         # otel.prometheusScraping.collector.image.pullPolicy -- Container image pull policy for the Prometheus scraper collector.
         pullPolicy: IfNotPresent
 
@@ -1116,7 +1116,7 @@ otel:
       # otel.telemetryGateway.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.telemetryGateway.image.tag -- Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
-      tag: "v0.0.58-agent"
+      tag: "v0.0.60-agent"
       # otel.telemetryGateway.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
 
@@ -1259,7 +1259,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: "4dbfd257-1041-release"
+        tag: "4dbfd257-1045-release"
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
