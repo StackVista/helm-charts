@@ -1,6 +1,6 @@
 {{- define "stackstate.sync.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-sync
+  name: {{ include "stackstate.sync.service.fullname" . }}
   labels:
     app.kubernetes.io/component: sync
 spec:

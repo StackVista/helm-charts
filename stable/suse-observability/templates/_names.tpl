@@ -405,7 +405,149 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
 {{- end -}}
 
+{{/* RBAC resources have independent names, even when their legacy names match.
+Preserve the namespace handling and truncation of the existing common helpers. */}}
+{{- define "stackstate.getPods.role.fullname" -}}
+{{ template "common.fullname.short" . }}-get-pods
+{{- end -}}
+
+{{- define "stackstate.getPods.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-get-pods
+{{- end -}}
+
+{{- define "stackstate.authorization.clusterrole.fullname" -}}
+{{ template "common.fullname.cluster.unique" . }}-authorization
+{{- end -}}
+
+{{- define "stackstate.authorization.clusterrolebinding.fullname" -}}
+{{ template "common.fullname.cluster.unique" . }}-authorization
+{{- end -}}
+
+{{- define "stackstate.authentication.clusterrolebinding.fullname" -}}
+{{ template "common.fullname.cluster.unique" . }}-authentication
+{{- end -}}
+
+{{- define "stackstate.rbacAgent.role.fullname" -}}
+{{ template "common.fullname.short" . }}-rbac-agent
+{{- end -}}
+
+{{- define "stackstate.rbacAgent.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-rbac-agent
+{{- end -}}
+
+{{/* Instance Role identities may be referenced by customer-managed bindings.
+Preserve their legacy names. External group identities remain independent. */}}
+{{- define "stackstate.k8s.authorization.instance.admin.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-admin
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.admin.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-admin
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.observer.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-observer
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.observer.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-observer
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.troubleshooter.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-troubleshooter
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.troubleshooter.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-troubleshooter
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.basicAccess.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-basic-access
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.basicAccess.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-basic-access
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.recommendedAccess.role.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-recommended-access
+{{- end -}}
+
+{{- define "stackstate.k8s.authorization.instance.recommendedAccess.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-instance-recommended-access
+{{- end -}}
+
+{{/* ServiceAccount identities remain independent of Deployment and Service names.
+Preserve the existing release and override behavior. */}}
+{{- define "stackstate.api.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.server.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.checks.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{- define "stackstate.initializer.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.slicing.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.state.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
 {{/* Service identities retain their existing release and override behavior. */}}
+{{- define "stackstate.checks.service.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.notification.service.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.healthSync.service.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.state.service.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.service.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.slicing.service.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.e2es.service.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
 {{- define "stackstate.api.service.fullname" -}}
 {{ template "common.fullname.short" . }}-api-headless
 {{- end -}}
@@ -420,6 +562,36 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 
 {{- define "stackstate.authorizationSync.service.fullname" -}}
 {{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{- define "stackstate.receiver.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.receiver.base.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-base
+{{- end -}}
+
+{{- define "stackstate.receiver.logs.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-logs
+{{- end -}}
+
+{{- define "stackstate.receiver.processAgent.service.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-process-agent
+{{- end -}}
+
+{{- define "stackstate.correlate.service.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
+{{- end -}}
+
+{{/* Collector requests use the base receiver in split mode and the single
+receiver otherwise. */}}
+{{- define "stackstate.receiver.target.service.fullname" -}}
+{{- if eq (include "stackstate.receiver.split.enabled" .) "true" -}}
+{{- include "stackstate.receiver.base.service.fullname" . -}}
+{{- else -}}
+{{- include "stackstate.receiver.service.fullname" . -}}
+{{- end -}}
 {{- end -}}
 
 {{/* API clients use the API Service in split mode and the server Service otherwise.

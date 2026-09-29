@@ -1,33 +1,33 @@
 {{- define "stackstate.rolebinding.get-pods" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-get-pods
+  name: {{ include "stackstate.getPods.rolebinding.fullname" . }}
 roleRef:
   kind: Role
-  name: {{ template "common.fullname.short" . }}-get-pods
+  name: {{ include "stackstate.getPods.role.fullname" . }}
   apiGroup: rbac.authorization.k8s.io
 subjects:
 {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-api
+  name: {{ include "stackstate.api.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-authorization-sync
+  name: {{ include "stackstate.authorizationSync.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-checks
+  name: {{ include "stackstate.checks.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-initializer
+  name: {{ include "stackstate.initializer.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-slicing
+  name: {{ include "stackstate.slicing.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-state
+  name: {{ include "stackstate.state.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-sync
+  name: {{ include "stackstate.sync.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-notification
+  name: {{ include "stackstate.notification.serviceaccount.fullname" . }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-health-sync
+  name: {{ include "stackstate.healthSync.serviceaccount.fullname" . }}
 {{- else }}
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ include "stackstate.server.serviceaccount.fullname" . }}
 {{- end -}}
 {{- end -}}
 

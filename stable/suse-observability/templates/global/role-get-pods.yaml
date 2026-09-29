@@ -1,6 +1,6 @@
 {{- define "stackstate.role.get-pods" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-get-pods
+  name: {{ include "stackstate.getPods.role.fullname" . }}
   labels:
     app.kubernetes.io/component: server
 rules:

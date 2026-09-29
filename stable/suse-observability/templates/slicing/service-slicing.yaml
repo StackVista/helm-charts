@@ -1,6 +1,6 @@
 {{- define "stackstate.slicing.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-slicing
+  name: {{ include "stackstate.slicing.service.fullname" . }}
   labels:
     app.kubernetes.io/component: slicing
 spec:

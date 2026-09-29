@@ -164,3 +164,191 @@ func TestAPIServiceReferencesFollowDedicatedHelpers(t *testing.T) {
 		}
 	}
 }
+
+func TestSplitServiceReferencesFollowDedicatedHelpers(t *testing.T) {
+	chart := filepath.Join(t.TempDir(), "chart")
+	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
+	namesPath := filepath.Join(chart, "templates", "_names.tpl")
+	data, err := os.ReadFile(namesPath)
+	require.NoError(t, err)
+	content := string(data)
+	variants := map[string][]string{
+		"receiver":  {"", "-base", "-logs", "-process-agent"},
+		"correlate": {"", "-connection", "-http-tracing", "-aggregator"},
+	}
+	receiverNames := map[string]string{
+		"": "standalone-ingest", "-base": "primary-ingest",
+		"-logs": "log-ingest", "-process-agent": "process-ingest",
+	}
+	// Unrelated outputs ensure split Services never derive their names from
+	// the unsplit Service helper, or from one another.
+	for helper, body := range map[string]string{
+		"stackstate.receiver.service.fullname":              receiverNames[""],
+		"stackstate.receiver.base.service.fullname":         receiverNames["-base"],
+		"stackstate.receiver.logs.service.fullname":         receiverNames["-logs"],
+		"stackstate.receiver.processAgent.service.fullname": receiverNames["-process-agent"],
+		"stackstate.correlate.service.fullname":             `explicit-correlate-service{{ template "stackstate.correlate.name.postfix" . }}`,
+	} {
+		definition := regexp.MustCompile(`(?s)\{\{- define "` + regexp.QuoteMeta(helper) + `" -\}\}.*?\{\{- end -\}\}`)
+		require.Len(t, definition.FindAllString(content, -1), 1, helper)
+		content = definition.ReplaceAllString(content, `{{- define "`+helper+`" -}}`+body+`{{- end -}}`)
+	}
+	require.NoError(t, os.WriteFile(namesPath, []byte(content), 0600))
+	valuesFile, err := filepath.Abs("values/full.yaml")
+	require.NoError(t, err)
+
+	for _, serverSplit := range []bool{false, true} {
+		for _, receiverSplit := range []bool{false, true} {
+			for _, correlateSplit := range []bool{false, true} {
+				for _, routerMode := range []string{"active", "maintenance"} {
+					t.Run(fmt.Sprintf("server=%t/receiver=%t/correlate=%t/router=%s", serverSplit, receiverSplit, correlateSplit, routerMode), func(t *testing.T) {
+						values := componentResourceNameTestValues()
+						values["stackstate.features.server.split"] = fmt.Sprint(serverSplit)
+						values["stackstate.components.receiver.split.enabled"] = fmt.Sprint(receiverSplit)
+						values["stackstate.components.correlate.split.enabled"] = fmt.Sprint(correlateSplit)
+						values["stackstate.components.router.mode.status"] = routerMode
+						values["stackstate.components.all.metrics.servicemonitor.enabled"] = "true"
+						options := apiResourceNameTestOptions(values)
+						before := helmtestutil.NewKubernetesResources(t, helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", options))
+						options.ValuesFiles = []string{valuesFile}
+						output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+						require.NoError(t, err)
+						after := helmtestutil.NewKubernetesResources(t, output)
+						prefix := "nightly-suse-observability-"
+						routerName := prefix + "router-" + routerMode
+						require.Contains(t, before.ConfigMaps, routerName)
+						require.Contains(t, after.ConfigMaps, routerName)
+						expectedClusters := before.ConfigMaps[routerName].Data["clusters.yaml"]
+						for component, suffixes := range variants {
+							split := receiverSplit
+							if component == "correlate" {
+								split = correlateSplit
+							}
+							for _, suffix := range suffixes {
+								legacy := prefix + component + suffix
+								explicit := "explicit-" + component + "-service" + suffix
+								if component == "receiver" {
+									explicit = receiverNames[suffix]
+								}
+								if split != (suffix != "") {
+									assert.NotContains(t, before.Services, legacy)
+									assert.NotContains(t, after.Services, explicit)
+									continue
+								}
+								require.Contains(t, before.Services, legacy)
+								require.Contains(t, after.Services, explicit)
+								assert.NotContains(t, after.Services, legacy)
+								expected := before.Services[legacy]
+								expected.Name = explicit
+								assert.Equal(t, expected, after.Services[explicit], "Service ports, labels and selectors must stay unchanged")
+								delete(before.Services, legacy)
+								delete(after.Services, explicit)
+								assert.Equal(t, before.Deployments[legacy], after.Deployments[legacy])
+								if component == "receiver" {
+									oldAddress := `address: "` + legacy + `"`
+									newAddress := `address: "` + explicit + `"`
+									assert.Contains(t, expectedClusters, oldAddress)
+									expectedClusters = strings.ReplaceAll(expectedClusters, oldAddress, newAddress)
+								}
+							}
+						}
+						assert.Equal(t, before.Services, after.Services)
+						// Replace only DNS addresses in the expectation, preserving Envoy identifiers.
+						assert.Equal(t, expectedClusters, after.ConfigMaps[routerName].Data["clusters.yaml"])
+						assert.Equal(t, before.ConfigMaps[routerName].Data["listeners.yaml"], after.ConfigMaps[routerName].Data["listeners.yaml"])
+						target := receiverNames[""]
+						if receiverSplit {
+							target = receiverNames["-base"]
+						}
+						require.Contains(t, after.ConfigMaps, "suse-observability-otel-collector")
+						assert.Equal(t, map[string]string{
+							"api.url":    "http://" + target + ":7077/stsAgent/api/v1/validate",
+							"intake.url": "http://" + target + ":7077/stsAgent/intake",
+						}, after.ConfigMaps["suse-observability-otel-collector"].Data)
+						assert.Equal(t, before.ServiceMonitors, after.ServiceMonitors)
+						assert.Equal(t, before.Secrets, after.Secrets)
+						assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+						assert.Equal(t, before.Pdbs, after.Pdbs)
+						assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+						assert.Equal(t, before.Statefulsets, after.Statefulsets)
+					})
+				}
+			}
+		}
+	}
+}
+
+func TestMetricsServiceNamesUseDedicatedHelpers(t *testing.T) {
+	chart := filepath.Join(t.TempDir(), "chart")
+	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
+	namesPath := filepath.Join(chart, "templates", "_names.tpl")
+	data, err := os.ReadFile(namesPath)
+	require.NoError(t, err)
+	content := string(data)
+	components := map[string]string{
+		"checks": "checks", "notification": "notification", "healthSync": "health-sync",
+		"state": "state", "sync": "sync", "slicing": "slicing", "e2es": "e2es",
+	}
+	for component, suffix := range components {
+		helper := "stackstate." + component + ".service.fullname"
+		definition := regexp.MustCompile(`(?s)\{\{- define "` + regexp.QuoteMeta(helper) + `" -\}\}.*?\{\{- end -\}\}`)
+		require.Len(t, definition.FindAllString(content, -1), 1, helper)
+		content = definition.ReplaceAllString(content, `{{- define "`+helper+`" -}}explicit-`+suffix+`-service{{- end -}}`)
+	}
+	require.NoError(t, os.WriteFile(namesPath, []byte(content), 0600))
+	valuesFile, err := filepath.Abs("values/full.yaml")
+	require.NoError(t, err)
+
+	for _, serverSplit := range []bool{false, true} {
+		for _, monitoring := range []bool{false, true} {
+			t.Run(fmt.Sprintf("server=%t/monitoring=%t", serverSplit, monitoring), func(t *testing.T) {
+				options := apiResourceNameTestOptions(map[string]string{
+					"stackstate.features.server.split":                         fmt.Sprint(serverSplit),
+					"stackstate.components.all.metrics.servicemonitor.enabled": fmt.Sprint(monitoring),
+				})
+				before := helmtestutil.NewKubernetesResources(t, helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", options))
+				options.ValuesFiles = []string{valuesFile}
+				output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+				require.NoError(t, err)
+				after := helmtestutil.NewKubernetesResources(t, output)
+				for component, suffix := range components {
+					legacy := "nightly-suse-observability-" + suffix
+					explicit := "explicit-" + suffix + "-service"
+					if !serverSplit && component != "e2es" {
+						assert.NotContains(t, before.Services, legacy)
+						assert.NotContains(t, after.Services, explicit)
+						assert.NotContains(t, after.ServiceMonitors, legacy)
+						continue
+					}
+					require.Contains(t, before.Services, legacy)
+					require.Contains(t, after.Services, explicit)
+					assert.NotContains(t, after.Services, legacy)
+					expected := before.Services[legacy]
+					expected.Name = explicit
+					assert.Equal(t, expected, after.Services[explicit], "Service ports and selectors must stay unchanged")
+					if monitoring {
+						require.Contains(t, after.ServiceMonitors, legacy)
+						selector := after.ServiceMonitors[legacy].Spec.Selector.MatchLabels
+						require.NotEmpty(t, selector)
+						for key, value := range selector {
+							assert.Equal(t, value, after.Services[explicit].Labels[key], "ServiceMonitor label %s", key)
+						}
+					} else {
+						assert.NotContains(t, after.ServiceMonitors, legacy)
+					}
+					delete(before.Services, legacy)
+					delete(after.Services, explicit)
+				}
+				assert.Equal(t, before.Services, after.Services)
+				assert.Equal(t, before.ServiceMonitors, after.ServiceMonitors)
+				assert.Equal(t, before.Deployments, after.Deployments)
+				assert.Equal(t, before.ConfigMaps, after.ConfigMaps)
+				assert.Equal(t, before.Secrets, after.Secrets)
+				assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+				assert.Equal(t, before.Pdbs, after.Pdbs)
+				assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+				assert.Equal(t, before.Statefulsets, after.Statefulsets)
+			})
+		}
+	}
+}

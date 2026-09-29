@@ -1,6 +1,6 @@
 {{- define "stackstate.state.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-state
+  name: {{ include "stackstate.state.service.fullname" . }}
   labels:
     app.kubernetes.io/component: state
 spec:

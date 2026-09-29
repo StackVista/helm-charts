@@ -250,7 +250,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "common.fullname.short" . }}-receiver-logs"
+                  address: "{{ include "stackstate.receiver.logs.service.fullname" . }}"
                   port_value: 7077
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
       name: "{{ template "common.fullname.short" . }}-receiver-process-agent"
@@ -264,7 +264,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "common.fullname.short" . }}-receiver-process-agent"
+                  address: "{{ include "stackstate.receiver.processAgent.service.fullname" . }}"
                   port_value: 7077
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
       name: "{{ template "common.fullname.short" . }}-receiver-base"
@@ -278,7 +278,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "common.fullname.short" . }}-receiver-base"
+                  address: "{{ include "stackstate.receiver.base.service.fullname" . }}"
                   port_value: 7077
       {{- else }}
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
@@ -293,7 +293,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "common.fullname.short" . }}-receiver"
+                  address: "{{ include "stackstate.receiver.service.fullname" . }}"
                   port_value: 7077
       {{- end }}
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster

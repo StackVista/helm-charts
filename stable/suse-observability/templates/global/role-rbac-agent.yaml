@@ -1,6 +1,6 @@
 {{- define "stackstate.role.rbac-agent" -}}
 metadata:
-  name: {{ template "stackstate.rbacAgent.roleName" . }}
+  name: {{ include "stackstate.rbacAgent.role.fullname" . }}
   labels:
     app.kubernetes.io/component: rbac-agent
 rules:
