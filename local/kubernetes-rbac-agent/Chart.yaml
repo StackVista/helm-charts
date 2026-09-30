@@ -15,3 +15,7 @@ maintainers:
   - name: SUSE Observability Ops Team
     email: suse-observability-ops@suse.com
 name: kubernetes-rbac-agent
+dependencies:
+  - name: common
+    repository: file://../common
+    version: "*"

@@ -221,7 +221,7 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
   {{- $context := .context }}
 
   {{- if and $context.Values.global $context.Values.global.suseObservability $context.Values.global.suseObservability.pullSecret $context.Values.global.suseObservability.pullSecret.username $context.Values.global.suseObservability.pullSecret.password -}}
-    {{- $pullSecrets = append $pullSecrets (include "elasticsearch.platformPullSecret.fullname" $context) -}}
+    {{- $pullSecrets = append $pullSecrets (include "suse-observability.pullSecret.fullname" $context) -}}
   {{- else -}}
     {{- if $context.Values.global }}
       {{- range $context.Values.global.imagePullSecrets -}}

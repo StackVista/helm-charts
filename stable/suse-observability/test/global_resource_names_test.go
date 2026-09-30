@@ -34,7 +34,7 @@ func TestGlobalResourcesFollowDedicatedHelpers(t *testing.T) {
 		replacement := []byte(`{{- define "` + resource.helper + `" -}}` + resource.name + `{{- end -}}`)
 		if resource.helper == "suse-observability.pullSecret.fullname" {
 			// Override common in the parent. Bundled consumers must use this
-			// shared interface, including subcharts without a common dependency.
+			// shared interface through their common dependencies.
 			require.Empty(t, definition.FindAll(data, -1))
 			data = append(data, append(replacement, '\n')...)
 		} else {

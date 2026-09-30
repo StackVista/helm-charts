@@ -12,3 +12,7 @@ maintainers:
     email: ops@stackstate.com
 icon: https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png
 appVersion: 0.0.29
+dependencies:
+  - name: common
+    repository: file://../common
+    version: "*"

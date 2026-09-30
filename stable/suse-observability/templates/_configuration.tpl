@@ -1,26 +1,6 @@
 {{/* Overrides of the configuration interfaces defined by bundled subcharts. */}}
 
 {{/*
-These subcharts also render without common. Route their platform registry
-Secret references through the shared resource name when bundled here.
-*/}}
-{{- define "opentelemetry-collector.platformPullSecret.fullname" -}}
-{{- include "suse-observability.pullSecret.fullname" . -}}
-{{- end -}}
-
-{{- define "elasticsearch-exporter.platformPullSecret.fullname" -}}
-{{- include "suse-observability.pullSecret.fullname" . -}}
-{{- end -}}
-
-{{- define "elasticsearch.platformPullSecret.fullname" -}}
-{{- include "suse-observability.pullSecret.fullname" . -}}
-{{- end -}}
-
-{{- define "kubernetes-rbac-agent.platformPullSecret.fullname" -}}
-{{- include "suse-observability.pullSecret.fullname" . -}}
-{{- end -}}
-
-{{/*
 The platform owns the bundled RBAC agent's ConfigMap connection, evaluated in the
 subchart's context. Use this installation's router and release name, ignoring the
 subchart's url and clusterName settings. Explicit global url/clusterName.fromSecret
