@@ -479,18 +479,8 @@ topologySpreadConstraints: []
 # Allows for pod scheduler prioritisation
 priorityClassName: ""
 
-# extraEnvs -- API_URL/INTAKE_URL come from the parent ConfigMap (`suse-observability-otel-collector`).
-extraEnvs:
-  - name: API_URL
-    valueFrom:
-      configMapKeyRef:
-        name: suse-observability-otel-collector
-        key: api.url
-  - name: INTAKE_URL
-    valueFrom:
-      configMapKeyRef:
-        name: suse-observability-otel-collector
-        key: intake.url
+# extraEnvs -- Additional environment variables, appended unchanged after the built-in API_URL and INTAKE_URL entries. Duplicate names are not filtered. An empty list keeps the built-in endpoint variables.
+extraEnvs: []
 extraEnvsFrom: []
 # This also supports template content, which will eventually be converted to yaml.
 extraVolumes: []

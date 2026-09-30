@@ -329,7 +329,8 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{/*
-The parent ConfigMap keeps this name even when the collector's fullname is overridden.
+Legacy collector base name, retained for endpoint/Envoy naming compatibility.
+The parent endpoint ConfigMap has its own shared helper in common.
 */}}
 {{- define "stackstate.otelCollector.defaultFullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-otel-collector

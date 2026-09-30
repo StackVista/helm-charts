@@ -10,6 +10,15 @@ suse-observability
 {{ include "suse-observability.resourcePrefix" . }}-pull-secret
 {{- end -}}
 
+{{/*
+The platform produces this endpoint ConfigMap; the collector consumes it.
+Its identity is independent of the collector's fullnameOverride and workload
+configuration ConfigMaps. Standalone collectors retain the same external reference.
+*/}}
+{{- define "stackstate.otelCollector.endpoints.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
 {{- define "stackstate.clickhouse.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-clickhouse
 {{- end -}}

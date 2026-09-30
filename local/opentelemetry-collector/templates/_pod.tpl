@@ -59,6 +59,16 @@ containers:
       - name: GOMEMLIMIT
         value: {{ include "opentelemetry-collector.gomemlimit" .Values.resources.limits.memory | quote }}
       {{- end }}
+      - name: API_URL
+        valueFrom:
+          configMapKeyRef:
+            name: {{ include "stackstate.otelCollector.endpoints.configmap.fullname" . }}
+            key: api.url
+      - name: INTAKE_URL
+        valueFrom:
+          configMapKeyRef:
+            name: {{ include "stackstate.otelCollector.endpoints.configmap.fullname" . }}
+            key: intake.url
       {{- with .Values.extraEnvs }}
       {{- . | toYaml | nindent 6 }}
       {{- end }}
