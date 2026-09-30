@@ -32,6 +32,8 @@ func TestAiAssistantEnabledWithAiAssistant(t *testing.T) {
 
 	service, ok := resources.Services["suse-observability-ai-assistant"]
 	require.True(t, ok, "AI Assistant service should exist")
+	assert.Equal(t, service.Name, statefulSet.Spec.ServiceName)
+	require.Contains(t, resources.Services, "suse-observability-mcp")
 
 	serviceAccount, ok := resources.ServiceAccounts["suse-observability-ai-assistant"]
 	require.True(t, ok, "AI Assistant service account should exist")

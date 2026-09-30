@@ -392,10 +392,30 @@ MCP fullname helper
 {{ include "suse-observability.resourcePrefix" . }}-mcp
 {{- end -}}
 
+{{- define "stackstate.mcp.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
 {{/*
 AI Assistant fullname helper
 */}}
 {{- define "stackstate.ai-assistant.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.statefulset.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.serviceaccount.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-ai-assistant
 {{- end -}}
 
