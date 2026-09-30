@@ -36,7 +36,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.mcp.deployment.container.main" .) -}}
 {{- $mcpMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "stackstate.mcp.fullname" . }}
+  name: {{ include "stackstate.mcp.deployment.fullname" . }}
   labels:
     app.kubernetes.io/component: mcp
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -59,7 +59,7 @@ spec:
         app.kubernetes.io/component: mcp
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ template "stackstate.mcp.fullname" . }}
+      serviceAccountName: {{ include "stackstate.mcp.serviceaccount.fullname" . }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $mcpMainContainer | nindent 8 }}

@@ -327,7 +327,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "stackstate.ui.fullname" . }}"
+                  address: "{{ include "stackstate.ui.service.fullname" . }}"
                   port_value: 8080
     {{- if eq (include "stackstate.mcp.enabled" .) "true" }}
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
@@ -347,7 +347,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ template "stackstate.mcp.fullname" . }}"
+                  address: "{{ include "stackstate.mcp.service.fullname" . }}"
                   port_value: {{ include "stackstate.mcp.port" . }}
     {{- end }}
 {{- end -}}

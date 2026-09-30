@@ -190,7 +190,7 @@ MCP extra environment variables for mcp pods inherited through `stackstate.compo
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "stackstate.mcp.fullname" $ }}
+      name: {{ include "stackstate.mcp.secret.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -211,7 +211,7 @@ AI Assistant extra environment variables for ai-assistant pods inherited through
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "stackstate.ai-assistant.fullname" $ }}
+      name: {{ include "stackstate.aiAssistant.secret.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -251,7 +251,7 @@ UI extra environment variables for ui pods inherited through `stackstate.compone
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "stackstate.ui.fullname" $ }}
+      name: {{ include "stackstate.ui.secret.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}

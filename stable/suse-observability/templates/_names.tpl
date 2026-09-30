@@ -392,30 +392,10 @@ MCP fullname helper
 {{ include "suse-observability.resourcePrefix" . }}-mcp
 {{- end -}}
 
-{{- define "stackstate.mcp.service.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-mcp
-{{- end -}}
-
 {{/*
 AI Assistant fullname helper
 */}}
 {{- define "stackstate.ai-assistant.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.statefulset.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.service.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.secret.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.serviceaccount.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-ai-assistant
 {{- end -}}
 
@@ -1121,4 +1101,55 @@ receive resolved names while component types continue to control labels only.
 
 {{- define "stackstate.ui.servicemonitor.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{/*
+UI, MCP and AI Assistant resources retain their existing canonical names.
+Keep each resource identity independent of Services, accounts and Secrets, even
+when the outputs match. Legacy generic helpers remain available for Envoy
+identifiers and external templates. AI Assistant StatefulSet renaming requires a
+separate storage migration: its generated PVC identities depend on that name.
+*/}}
+{{- define "stackstate.ui.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{- define "stackstate.ui.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{- define "stackstate.ui.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{- define "stackstate.mcp.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.mcp.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.mcp.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.mcp.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.statefulset.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
 {{- end -}}
