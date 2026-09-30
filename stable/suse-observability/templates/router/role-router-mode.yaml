@@ -3,7 +3,7 @@
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ template "common.fullname.short" . }}-router-mode
+  name: {{ include "stackstate.router.mode.role.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/component: router-mode

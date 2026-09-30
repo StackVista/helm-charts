@@ -1,33 +1,34 @@
 {{/*
-Pick an external or predefined internal secret.
+Pick an external Secret or an already resolved internal Secret name.
+Callers supply internalSecretFullname and handle quoting; no chart context is needed.
 */}}
 {{- define "stackstate.secret.externalOrInternal" -}}
-{{- if .externalSecret }}
-{{- .externalSecret }}
-{{- else }}
-{{- template "common.fullname.short" . }}-{{ .internalSecretName }}
-{{- end }}
-{{- end }}
+{{- if .externalSecret -}}
+{{- .externalSecret -}}
+{{- else -}}
+{{- .internalSecretFullname -}}
+{{- end -}}
+{{- end -}}
 
 {{/*
 Secret for license.
 */}}
 {{- define "stackstate.secret.name.license" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.license.fromExternalSecret "internalSecretName" "license") .) | quote }}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.license.fromExternalSecret "internalSecretFullname" (include "stackstate.license.secret.fullname" .)) | quote }}
 {{- end }}
 
 {{/*
 Secret for api key.
 */}}
 {{- define "stackstate.secret.name.apiKey" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.apiKey.fromExternalSecret "internalSecretName" "api-key") .) | quote }}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.apiKey.fromExternalSecret "internalSecretFullname" (include "stackstate.apiKey.secret.fullname" .)) | quote }}
 {{- end }}
 
 {{/*
 Secret for auth.
 */}}
 {{- define "stackstate.secret.name.auth" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.authentication.fromExternalSecret "internalSecretName" "auth") .) | quote }}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.authentication.fromExternalSecret "internalSecretFullname" (include "stackstate.auth.secret.fullname" .)) | quote }}
 {{- end }}
 
 
@@ -35,7 +36,7 @@ Secret for auth.
 Secret for email.
 */}}
 {{- define "stackstate.secret.name.email" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.email.server.auth.fromExternalSecret "internalSecretName" "email") .) | quote }}
+{{- include "stackstate.secret.externalOrInternal" (dict "externalSecret" .Values.stackstate.email.server.auth.fromExternalSecret "internalSecretFullname" (include "stackstate.email.secret.fullname" .)) | quote }}
 {{- end }}
 
 {{/*
@@ -53,7 +54,7 @@ the 1MB limit imposed on the underlying etcd object.
 name: {{ $external.name }}
 key: {{ default "java-cacerts" $external.key }}
 {{- else if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: javaTrustStore
 {{- end }}
 {{- end -}}
@@ -64,7 +65,7 @@ key: javaTrustStore
 name: {{ $external.name }}
 key: {{ $external.passwordKey }}
 {{- else if .Values.stackstate.java.trustStorePassword }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: javaTrustStorePassword
 {{- end }}
 {{- end -}}
@@ -76,7 +77,7 @@ key: javaTrustStorePassword
 name: {{ $external.name }}
 key: {{ default "ldap-cacerts" $external.key }}
 {{- else if or $ssl.trustStore $ssl.trustStoreBase64Encoded }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: ldapTrustStore
 {{- end }}
 {{- end -}}
@@ -88,7 +89,7 @@ key: ldapTrustStore
 name: {{ $external.name }}
 key: {{ default "ldap-certificates.pem" $external.key }}
 {{- else if or $ssl.trustCertificates $ssl.trustCertificatesBase64Encoded }}
-name: {{ template "common.fullname.short" . }}-common
+name: {{ include "stackstate.common.secret.fullname" . }}
 key: ldapTrustCertificates
 {{- end }}
 {{- end -}}

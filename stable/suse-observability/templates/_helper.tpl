@@ -144,7 +144,7 @@ Common extra environment variables for all processes inherited through `stacksta
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-common
+      name: {{ include "stackstate.common.secret.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -165,7 +165,7 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-router
+      name: {{ include "stackstate.router.secret.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -708,7 +708,9 @@ Determines the hostname prefix for the different stackstate services. This name 
 {{- end -}}
 
 {{/*
-Determines the hostname fr the router. This name is stable across subcharts
+Legacy router hostname helper, also callable from customer values via tpl.
+Preserve its naming semantics independently of stackstate.router.service.fullname.
+Chart-owned Service references use that dedicated resource helper instead.
 */}}
 {{- define "stackstate.router.name" -}}
 {{- template "stackstate.hostname.prefix" . }}-router

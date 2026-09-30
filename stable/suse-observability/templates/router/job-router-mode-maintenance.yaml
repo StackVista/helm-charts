@@ -4,9 +4,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
-  generateName: set-maintenance-
+  generateName: {{ include "stackstate.router.mode.maintenance.job.generateName" . }}
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-set-maintenance-{{ now | date "02t150405" }}
+  name: {{ include "stackstate.router.mode.maintenance.job.fullname" . }}
   {{- end }}
   labels:
     app.kubernetes.io/component: router-mode
@@ -47,13 +47,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      serviceAccountName: "{{ template "common.fullname.short" . }}-router-mode-scripts"
+      serviceAccountName: "{{ include "stackstate.router.mode.serviceaccount.fullname" . }}"
       {{- /* Runs as a pre-install/PreSync hook before the normal pull secret exists, so use the hook-managed copy. */ -}}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $ "autoSecretName" (include "suse-observability.pullSecret.hookName" $)) | nindent 6 }}
+      {{- /* Pod-local volume identifiers stay independent of the referenced ConfigMap name. */}}
       volumes:
         - name: "{{ template "common.fullname.short" . }}-router-mode-scripts"
           configMap:
-            name: "{{ template "common.fullname.short" . }}-router-mode-scripts"
+            name: "{{ include "stackstate.router.mode.scripts.configmap.fullname" . }}"
             defaultMode: 0777
       containers:
         - name: router-mode-maintenance

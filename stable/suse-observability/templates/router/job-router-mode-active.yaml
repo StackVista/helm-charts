@@ -4,9 +4,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
-  generateName: set-active-
+  generateName: {{ include "stackstate.router.mode.active.job.generateName" . }}
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-set-active-{{ now | date "02t150405" }}
+  name: {{ include "stackstate.router.mode.active.job.fullname" . }}
   {{- end }}
   labels:
     app.kubernetes.io/component: router-mode
@@ -45,12 +45,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      serviceAccountName: "{{ template "common.fullname.short" . }}-router-mode-scripts"
+      serviceAccountName: "{{ include "stackstate.router.mode.serviceaccount.fullname" . }}"
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      {{- /* Pod-local volume identifiers stay independent of the referenced ConfigMap name. */}}
       volumes:
         - name: "{{ template "common.fullname.short" . }}-router-mode-scripts"
           configMap:
-            name: "{{ template "common.fullname.short" . }}-router-mode-scripts"
+            name: "{{ include "stackstate.router.mode.scripts.configmap.fullname" . }}"
             defaultMode: 0777
       containers:
         - name: router-mode-active

@@ -5,6 +5,139 @@ names are documented below so extraction can precede an actual naming migration.
 */}}
 
 {{/*
+Router workload and static configuration names retain their legacy expressions.
+Keep these independent from the router Service, dynamic mode ConfigMaps and
+hook resources, whose naming and upgrade contracts are separate.
+*/}}
+{{- define "stackstate.router.deployment.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.router.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.router.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.router.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{/*
+The router Service uses the global hostname prefix so bundled subcharts resolve
+the same address. Preserve its global overrides and truncation semantics; local
+workload overrides do not apply. Keep the legacy stackstate.router.name helper
+independent for customer templates that reference existing names.
+*/}}
+{{- define "stackstate.router.service.fullname" -}}
+{{ template "stackstate.hostname.prefix" . }}-router
+{{- end -}}
+
+{{/*
+Router mode configuration and hook identities retain their legacy names.
+Automatic-mode scripts write the automatic ConfigMap; active and maintenance
+ConfigMaps are chart-managed alternatives. Keep each identity independent.
+*/}}
+{{- define "stackstate.router.mode.active.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-active
+{{- end -}}
+
+{{- define "stackstate.router.mode.maintenance.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-maintenance
+{{- end -}}
+
+{{- define "stackstate.router.mode.automatic.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-automatic
+{{- end -}}
+
+{{/* Resolve the ConfigMap mounted by the router and reject unsupported modes. */}}
+{{- define "stackstate.router.mode.configmap.fullname" -}}
+{{- if eq .Values.stackstate.components.router.mode.status "active" -}}
+{{ include "stackstate.router.mode.active.configmap.fullname" . }}
+{{- else if eq .Values.stackstate.components.router.mode.status "maintenance" -}}
+{{ include "stackstate.router.mode.maintenance.configmap.fullname" . }}
+{{- else if eq .Values.stackstate.components.router.mode.status "automatic" -}}
+{{ include "stackstate.router.mode.automatic.configmap.fullname" . }}
+{{- else -}}
+{{- fail "stackstate.components.router.mode.status must be one of: active, maintenance, automatic" -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "stackstate.router.mode.scripts.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode-scripts
+{{- end -}}
+
+{{- define "stackstate.router.mode.serviceaccount.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode-scripts
+{{- end -}}
+
+{{- define "stackstate.router.mode.role.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode
+{{- end -}}
+
+{{- define "stackstate.router.mode.rolebinding.fullname" -}}
+{{ template "common.fullname.short" . }}-router-mode
+{{- end -}}
+
+{{/* Preserve Helm's per-render timestamps and Argo CD's generated-name prefixes. */}}
+{{- define "stackstate.router.mode.active.job.fullname" -}}
+{{ template "common.fullname.short" . }}-set-active-{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.router.mode.maintenance.job.fullname" -}}
+{{ template "common.fullname.short" . }}-set-maintenance-{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.router.mode.active.job.generateName" -}}
+set-active-
+{{- end -}}
+
+{{- define "stackstate.router.mode.maintenance.job.generateName" -}}
+set-maintenance-
+{{- end -}}
+
+{{/*
+Internally managed license and email Secrets retain their legacy resource names.
+External-secret selection stays in the existing stackstate.secret.name helpers;
+customer-provided names must not receive a chart prefix.
+*/}}
+{{- define "stackstate.license.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-license
+{{- end -}}
+
+{{- define "stackstate.email.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-email
+{{- end -}}
+
+{{/*
+The authentication Secret declaration and existing-password lookup share this
+legacy identity. Renaming it requires a credential migration strategy; external
+Secret selection remains in stackstate.secret.name.auth.
+*/}}
+{{- define "stackstate.auth.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-auth
+{{- end -}}
+
+{{/*
+The receiver API-key Secret declaration and legacy lookup retain this identity.
+External selection and optional Secret creation remain separate from naming.
+*/}}
+{{- define "stackstate.apiKey.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-api-key
+{{- end -}}
+
+{{/*
+The shared Secret holds common environment variables and inline trust material.
+Keep its legacy identity consistent with the producer and blob resolvers;
+external Secret names and keys are selected independently.
+*/}}
+{{- define "stackstate.common.secret.fullname" -}}
+{{ template "common.fullname.short" . }}-common
+{{- end -}}
+
+{{/*
 API configuration resource names. Preserve the existing naming expressions;
 moving declarations and references to these helpers must not rename resources.
 */}}
