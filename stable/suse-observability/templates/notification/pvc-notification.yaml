@@ -1,6 +1,6 @@
 {{- define "stackstate.notification.txlog.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-notification-txlog
+  name: {{ include "stackstate.notification.txlog.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce

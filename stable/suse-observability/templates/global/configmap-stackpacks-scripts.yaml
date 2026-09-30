@@ -1,6 +1,6 @@
 {{- define "stackstate.stackpacks.scripts.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-stackpacks-scripts
+  name: {{ include "stackstate.stackpacks.scripts.configmap.fullname" . }}
 data:
   copy-stackpacks.sh: |-
     {{- tpl (.Files.Get "scripts/copy-stackpacks.sh") . | trim | nindent 4 }}

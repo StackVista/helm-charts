@@ -339,14 +339,6 @@ Hooks need a separate Secret because they can run before installation or after d
 {{ include "suse-observability.resourcePrefix" . }}-workload-observer
 {{- end -}}
 
-{{- define "stackstate.backup.stackgraph.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-backup-sg
-{{- end -}}
-
-{{- define "stackstate.backup.config.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-backup-config
-{{- end -}}
-
 {{/*
 The parent ConfigMap keeps this name even when the collector's fullname is overridden.
 */}}
@@ -745,4 +737,195 @@ Service otherwise. */}}
 {{- else -}}
 {{- include "stackstate.server.service.fullname" . -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Persistent claim identities retain their legacy expressions, independently of
+Deployment names. Do not switch these helpers to a canonical prefix without a
+storage migration plan: changing a claim name does not move its existing data.
+Stackpack claims are also consumed by the backup configuration.
+*/}}
+{{- define "stackstate.api.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-api-txlog
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync-txlog
+{{- end -}}
+
+{{- define "stackstate.checks.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-checks-txlog
+{{- end -}}
+
+{{- define "stackstate.checks.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-checks-tmp
+{{- end -}}
+
+{{- define "stackstate.healthSync.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync-txlog
+{{- end -}}
+
+{{- define "stackstate.healthSync.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync-tmp
+{{- end -}}
+
+{{- define "stackstate.notification.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-notification-txlog
+{{- end -}}
+
+{{- define "stackstate.state.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-state-txlog
+{{- end -}}
+
+{{- define "stackstate.state.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-state-tmp
+{{- end -}}
+
+{{- define "stackstate.sync.txlog.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-sync-txlog
+{{- end -}}
+
+{{- define "stackstate.sync.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-sync-tmp
+{{- end -}}
+
+{{- define "stackstate.stackpacks.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-stackpacks
+{{- end -}}
+
+{{- define "stackstate.stackpacks.local.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-stackpacks-local
+{{- end -}}
+
+{{/* Keep the stackpack scripts ConfigMap independent of the stackpack PVCs. */}}
+{{- define "stackstate.stackpacks.scripts.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-stackpacks-scripts
+{{- end -}}
+
+{{/*
+Backup resource names retain their existing fixed or release-derived identities.
+Keep each resource independent, including ConfigMaps and Secrets that currently
+share a name. Backup PVC renames require a data migration plan. Hook timestamps
+and Argo CD generated-name prefixes are part of the existing upgrade contract.
+*/}}
+{{- define "stackstate.backup.log.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-log
+{{- end -}}
+
+{{- define "stackstate.backup.restore.scripts.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-restore-scripts
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.configmap.fullname" -}}
+{{ template "common.fullname.short" . }}-sts-backup-conf
+{{- end -}}
+
+{{- define "stackstate.backup.stackpacks.service.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-stackpacks
+{{- end -}}
+
+{{- define "stackstate.backup.stackgraph.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
+{{- end -}}
+
+{{- define "stackstate.backup.stackgraph.v2.tmp.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.persistentvolumeclaim.fullname" -}}
+{{ template "common.fullname.short" . }}-settings-backup-data
+{{- end -}}
+
+{{- define "stackstate.backup.stackgraph.v2.cronjob.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-sg-v2
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.cronjob.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-conf
+{{- end -}}
+
+{{- define "stackstate.backup.init.job.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-init-{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.init.job.fullname" -}}
+{{ template "common.fullname.short" . }}-init-pvc-{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.backup.clickhouse.cleanup.job.fullname" -}}
+{{ template "common.fullname.short" . }}-ch-clean{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.backup.init.cronjob.fullname" -}}
+{{ template "common.fullname.short" . }}-backup-init
+{{- end -}}
+
+{{- define "stackstate.backup.init.job.generateName" -}}
+backup-init-
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.init.job.generateName" -}}
+init-pvc-
+{{- end -}}
+
+{{- define "stackstate.backup.clickhouse.cleanup.job.generateName" -}}
+ch-clean
+{{- end -}}
+
+{{- define "stackstate.backup.config.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-backup-config
+{{- end -}}
+
+{{- define "stackstate.backup.config.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-backup-config
+{{- end -}}
+
+{{- define "stackstate.backup.stackgraph.cronjob.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-backup-sg
+{{- end -}}
+
+{{/* Manual backup/restore resources keep fixed names; their YAML data keys
+and application-level snapshot/bucket identifiers are independent. */}}
+{{- define "stackstate.backup.elasticsearch.list.job.fullname" -}}
+elasticsearch-list-snapshots
+{{- end -}}
+
+{{- define "stackstate.backup.elasticsearch.restore.job.fullname" -}}
+elasticsearch-restore-snapshot
+{{- end -}}
+
+{{- define "stackstate.backup.stackgraph.list.job.fullname" -}}
+stackgraph-list-backups
+{{- end -}}
+
+{{- define "stackstate.backup.stackgraph.restore.job.fullname" -}}
+stackgraph-restore-backup
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.list.job.fullname" -}}
+configuration-list-backups
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.restore.job.fullname" -}}
+configuration-restore-backup
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.download.job.fullname" -}}
+configuration-download-backup
+{{- end -}}
+
+{{- define "stackstate.backup.configuration.upload.job.fullname" -}}
+configuration-upload-backup
+{{- end -}}
+
+{{- define "stackstate.backup.victoriaMetrics.list.job.fullname" -}}
+victoria-metrics-list-backups
+{{- end -}}
+
+{{- define "stackstate.backup.victoriaMetrics.restore.job.fullname" -}}
+victoria-metrics-restore-backup
+{{- end -}}
+
+{{- define "stackstate.backup.stackgraph.restore.persistentvolumeclaim.fullname" -}}
+stackgraph-restore-backup
 {{- end -}}

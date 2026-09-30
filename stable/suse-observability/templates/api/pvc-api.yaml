@@ -1,6 +1,6 @@
 {{- define "stackstate.api.txlog.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-api-txlog
+  name: {{ include "stackstate.api.txlog.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce

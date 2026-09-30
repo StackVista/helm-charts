@@ -1,6 +1,6 @@
 {{- define "stackstate.stackpacks.local.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-stackpacks-local
+  name: {{ include "stackstate.stackpacks.local.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce

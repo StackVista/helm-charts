@@ -1,5 +1,5 @@
 {{/*
-Canonical names shared by SUSE Observability and its subcharts.
+Resource names shared by SUSE Observability and its subcharts.
 These do not change the generic common.name or common.fullname helpers.
 */}}
 {{- define "suse-observability.resourcePrefix" -}}
@@ -19,4 +19,19 @@ The backup configuration uses this fixed name independently of ClickHouse's full
 */}}
 {{- define "stackstate.backup.clickhouse.backup.service" -}}
 {{ include "stackstate.clickhouse.fullname" . }}-backup
+{{- end -}}
+
+{{/*
+HBase backup environment objects are produced by the platform and consumed by
+HBase in both Mono and Distributed mode, even when backups are disabled.
+Preserve Base=backup, global overrides/prefixes/suffixes and truncation exactly;
+using the canonical prefix here would break existing StatefulSet references.
+The helpers live in common so standalone HBase resolves the same legacy names.
+*/}}
+{{- define "stackstate.backup.hbase.configmap.fullname" -}}
+{{ template "common.fullname.global" (merge (dict "Base" "backup") .) }}-sts-hbase-backup
+{{- end -}}
+
+{{- define "stackstate.backup.hbase.secret.fullname" -}}
+{{ template "common.fullname.global" (merge (dict "Base" "backup") .) }}-sts-hbase-backup
 {{- end -}}

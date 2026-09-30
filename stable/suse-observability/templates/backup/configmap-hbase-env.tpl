@@ -1,8 +1,8 @@
 {{- define "stackstate.backup.hbase.configmap" -}}
 {{- $escapedBucketName := .Values.backup.stackGraph.bucketName | replace "_" "___" | replace "-" "__" | replace "." "_" -}}
 metadata:
-  {{- /* Using a globally unique name here, because the hbase subhcart should pickup this secret */}}
-  name: {{ template "common.fullname.global" (merge (dict "Base" "backup") .) }}-sts-hbase-backup
+  {{- /* Shared with the HBase subchart; retain the legacy global naming semantics. */}}
+  name: {{ include "stackstate.backup.hbase.configmap.fullname" . }}
 data:
   HBASE_CONF_fs_s3a_bucket_{{ $escapedBucketName }}_endpoint: {{ include "stackstate.s3proxy.endpoint" . | quote }}
   HBASE_CONF_fs_s3a_bucket_{{ $escapedBucketName }}_endpoint_region: "us-east-1"

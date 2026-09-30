@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: elasticsearch-list-snapshots
+  name: {{ include "stackstate.backup.elasticsearch.list.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -56,7 +56,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: elasticsearch-restore-snapshot
+  name: {{ include "stackstate.backup.elasticsearch.restore.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -115,7 +115,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: stackgraph-list-backups
+  name: {{ include "stackstate.backup.stackgraph.list.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -170,7 +170,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: stackgraph-restore-backup
+  name: {{ include "stackstate.backup.stackgraph.restore.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -227,14 +227,14 @@ spec:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
         - name: tmp-data
           persistentVolumeClaim:
-            claimName: stackgraph-restore-backup
+            claimName: {{ include "stackstate.backup.stackgraph.restore.persistentvolumeclaim.fullname" . }}
 {{- end -}}
 
 {{- define "pvc-stackgraph-restore-backup.yaml" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: stackgraph-restore-backup
+  name: {{ include "stackstate.backup.stackgraph.restore.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
   resources:
@@ -254,7 +254,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configuration-list-backups
+  name: {{ include "stackstate.backup.configuration.list.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -310,7 +310,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configuration-restore-backup
+  name: {{ include "stackstate.backup.configuration.restore.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -388,7 +388,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configuration-download-backup
+  name: {{ include "stackstate.backup.configuration.download.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -448,7 +448,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configuration-upload-backup
+  name: {{ include "stackstate.backup.configuration.upload.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -501,14 +501,14 @@ spec:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
         - name: settings-backup-data
           persistentVolumeClaim:
-            claimName: {{ template "common.fullname.short" . }}-settings-backup-data
+            claimName: {{ include "stackstate.backup.configuration.persistentvolumeclaim.fullname" . }}
 {{- end -}}
 
 {{- define "job-victoria-metrics-list-backups.yaml" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: victoria-metrics-list-backups
+  name: {{ include "stackstate.backup.victoriaMetrics.list.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -561,7 +561,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: victoria-metrics-restore-backup
+  name: {{ include "stackstate.backup.victoriaMetrics.restore.job.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -622,7 +622,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-restore-scripts
+  name: {{ include "stackstate.backup.restore.scripts.configmap.fullname" . }}
   labels:
     stackstate.com/backup-scripts: "true"
 data:

@@ -54,11 +54,11 @@ template:
         emptyDir: { }
       - name: tmp-data
         persistentVolumeClaim:
-          claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
+          claimName: {{ include "stackstate.backup.stackgraph.tmp.persistentvolumeclaim.fullname" . }}
       # This volume is included here, to make sure the pvc gets created upon helm install.
       - name: tmp-data-v2
         persistentVolumeClaim:
-          claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
+          claimName: {{ include "stackstate.backup.stackgraph.v2.tmp.persistentvolumeclaim.fullname" . }}
 {{- end -}}
 
 {{- if .Values.global.backup.enabled }}
@@ -66,9 +66,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
-  generateName: backup-init-
+  generateName: {{ include "stackstate.backup.init.job.generateName" . }}
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-backup-init-{{ now | date "02t150405" }}
+  name: {{ include "stackstate.backup.init.job.fullname" . }}
   {{- end }}
   labels:
     app.kubernetes.io/component: backup

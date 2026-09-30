@@ -1,6 +1,6 @@
 {{- define "stackstate.backup.configmap" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-sts-backup-conf
+  name: {{ include "stackstate.backup.configuration.configmap.fullname" . }}
 data:
   application_stackstate.conf: |
 {{- include "stackstate.configmap.stackpacks.storage" . | nindent 4 }}

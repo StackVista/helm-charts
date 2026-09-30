@@ -218,7 +218,7 @@ spec:
       volumes:
         {{- include "stackstate.service.pod.volumes" (dict "configMapName" (include "stackstate.api.configmap.fullname" .) "logConfigMapName" (include "stackstate.api.log.configmap.fullname" .) "root" .) | nindent 8 }}
         {{- if include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .) }}
-        {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "api" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.transactionLog.volume" (dict "claimName" (include "stackstate.api.txlog.persistentvolumeclaim.fullname" .)) | nindent 8 }}
         {{- end }}
         {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
         {{ include "stackstate.stackpacks.volume" . | nindent 8 }}

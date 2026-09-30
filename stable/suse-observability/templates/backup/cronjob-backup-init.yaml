@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-init
+  name: {{ include "stackstate.backup.init.cronjob.fullname" . }}
   labels:
     app.kubernetes.io/component: backup
     {{- include "suse-observability.labels.global" . | nindent 4 }}

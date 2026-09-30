@@ -7,9 +7,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
-  generateName: init-pvc-
+  generateName: {{ include "stackstate.backup.configuration.init.job.generateName" . }}
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-init-pvc-{{ now | date "02t150405" }}
+  name: {{ include "stackstate.backup.configuration.init.job.fullname" . }}
   {{- end }}
   labels:
     app.kubernetes.io/component: backup-settings-init
@@ -59,4 +59,4 @@ spec:
       volumes:
       - name: settings-backup-data
         persistentVolumeClaim:
-          claimName: {{ template "common.fullname.short" . }}-settings-backup-data
+          claimName: {{ include "stackstate.backup.configuration.persistentvolumeclaim.fullname" . }}

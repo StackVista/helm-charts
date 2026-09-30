@@ -326,12 +326,13 @@ does not expand variables within the JAVA_OPTS anymore
 {{- end -}}
 
 {{/*
-Volume for transaction logs
+Volume for transaction logs. The caller supplies the component's resolved PVC
+name so this helper does not derive storage identities from workload names.
 */}}
 {{- define "stackstate.service.transactionLog.volume" -}}
 - name: application-log
   persistentVolumeClaim:
-    claimName: {{ template "common.fullname.short" .root }}-{{ .pod_name }}-txlog
+    claimName: {{ required "stackstate.service.transactionLog.volume: claimName must not be empty" .claimName }}
 {{- end -}}
 
 {{/*
@@ -348,7 +349,7 @@ Volume for stackpacks logs
 {{- define "stackstate.stackpacks.volume" -}}
 - name: stackpacks
   persistentVolumeClaim:
-    claimName: {{ template "common.fullname.short" . }}-stackpacks
+    claimName: {{ include "stackstate.stackpacks.persistentvolumeclaim.fullname" . }}
 {{- end -}}
 
 {{/*
@@ -366,7 +367,7 @@ Volume for stackpacks local
 {{- define "stackstate.stackpacks.local.volume" -}}
 - name: stackpacks-local
   persistentVolumeClaim:
-    claimName: {{ template "common.fullname.short" . }}-stackpacks-local
+    claimName: {{ include "stackstate.stackpacks.local.persistentvolumeclaim.fullname" . }}
 {{- end -}}
 
 {{/*

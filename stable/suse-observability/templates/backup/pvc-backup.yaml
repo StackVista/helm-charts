@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
+  name: {{ include "stackstate.backup.stackgraph.tmp.persistentvolumeclaim.fullname" . }}
   annotations:
     monitor.kubernetes-v2.stackstate.io/pvc-orphan: |-
       {
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
+  name: {{ include "stackstate.backup.stackgraph.v2.tmp.persistentvolumeclaim.fullname" . }}
   annotations:
     monitor.kubernetes-v2.stackstate.io/pvc-orphan: |-
       {
@@ -45,7 +45,7 @@ PVC and Job are kept around to keep old settings backups available, they should 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "common.fullname.short" . }}-settings-backup-data
+  name: {{ include "stackstate.backup.configuration.persistentvolumeclaim.fullname" . }}
   annotations:
     monitor.kubernetes-v2.stackstate.io/pvc-orphan: |-
       {

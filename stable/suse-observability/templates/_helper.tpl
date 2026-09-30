@@ -821,7 +821,7 @@ Init container to load stackpacks from docker image
 {{- define "stackstate.stackpacks.scripts.volume" -}}
 - name: stackpack-scripts
   configMap:
-    name: {{ template "common.fullname.short" . }}-stackpacks-scripts
+    name: {{ include "stackstate.stackpacks.scripts.configmap.fullname" . }}
     defaultMode: 0555
 {{- end -}}
 

@@ -45,7 +45,7 @@ volumeMounts:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ template "stackstate.backup.stackgraph.fullname" . }}
+  name: {{ include "stackstate.backup.stackgraph.cronjob.fullname" . }}
   labels:
     app.kubernetes.io/name: suse-observability
     app.kubernetes.io/component: backup-sg
@@ -80,7 +80,7 @@ spec:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
             - name: tmp-data
               persistentVolumeClaim:
-                claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
+                claimName: {{ include "stackstate.backup.stackgraph.tmp.persistentvolumeclaim.fullname" . }}
           {{- include "stackstate.backup.nodeSelector" . | nindent 10 }}
           {{- include "stackstate.backup.affinity" . | nindent 10 }}
           {{- include "stackstate.backup.tolerations" . | nindent 10 }}
@@ -138,7 +138,7 @@ volumeMounts:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-sg-v2
+  name: {{ include "stackstate.backup.stackgraph.v2.cronjob.fullname" . }}
   labels:
     app.kubernetes.io/name: suse-observability
     app.kubernetes.io/component: backup-sg-v2
@@ -173,7 +173,7 @@ spec:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
             - name: tmp-data
               persistentVolumeClaim:
-                claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-v2-tmp-data
+                claimName: {{ include "stackstate.backup.stackgraph.v2.tmp.persistentvolumeclaim.fullname" . }}
           {{- include "stackstate.backup.nodeSelector" . | nindent 10 }}
           {{- include "stackstate.backup.affinity" . | nindent 10 }}
           {{- include "stackstate.backup.tolerations" . | nindent 10 }}
@@ -236,7 +236,7 @@ volumeMounts:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-conf
+  name: {{ include "stackstate.backup.configuration.cronjob.fullname" . }}
   labels:
     app.kubernetes.io/name: suse-observability
     app.kubernetes.io/component: backup-settings

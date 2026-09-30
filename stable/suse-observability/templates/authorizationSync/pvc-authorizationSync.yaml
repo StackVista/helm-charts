@@ -1,6 +1,6 @@
 {{- define "stackstate.authorizationSync.txlog.persistentvolumeclaim" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-authorization-sync-txlog
+  name: {{ include "stackstate.authorizationSync.txlog.persistentvolumeclaim.fullname" . }}
 spec:
   accessModes:
   - ReadWriteOnce

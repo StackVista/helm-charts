@@ -82,7 +82,7 @@ stackpacks/
 
 {{- define "stackstate.backup.envvars" -}}
 - name: BACKUP_STACKPACKS_SERVICE_URL
-  value: http://{{ template "common.fullname.short" . }}-backup-stackpacks:7090
+  value: http://{{ include "stackstate.backup.stackpacks.service.fullname" . }}:7090
 - name: BACKUP_ELASTICSEARCH_BUCKET_NAME
   value: {{ .Values.backup.elasticsearch.bucketName | quote }}
 - name: BACKUP_ELASTICSEARCH_S3_PREFIX
@@ -181,17 +181,17 @@ stackpacks/
 {{- define "stackstate.backup.volumes" -}}
 - name: backup-log
   configMap:
-    name: {{ template "common.fullname.short" . }}-backup-log
+    name: {{ include "stackstate.backup.log.configmap.fullname" . }}
 - name: backup-restore-scripts
   configMap:
-    name: {{ template "common.fullname.short" . }}-backup-restore-scripts
+    name: {{ include "stackstate.backup.restore.scripts.configmap.fullname" . }}
     defaultMode: 0755
 - name: s3proxy-keys
   secret:
     secretName: {{ include "stackstate.s3proxy.secretName" . }}
 - name: config-volume
   configMap:
-    name: {{ template "common.fullname.short" . }}-sts-backup-conf
+    name: {{ include "stackstate.backup.configuration.configmap.fullname" . }}
 {{- end -}}
 
 {{- define "stackstate.backup.elasticsearch.restore.scaleDownLabels" -}}
