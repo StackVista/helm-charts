@@ -4,7 +4,7 @@ With bucket-locator middleware, all buckets are served from the same endpoint.
 The middleware routes requests to the appropriate backend based on bucket name.
 */}}
 {{- define "stackstate.s3proxy.endpoint" -}}
-{{ include "stackstate.s3proxy.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
+{{ include "stackstate.s3proxy.service.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
 {{- end -}}
 
 {{/*
@@ -226,14 +226,6 @@ Returns "true" if deprecated values are detected.
 {{- if $hasDeprecated -}}
 true
 {{- end -}}
-{{- end -}}
-
-{{/*
-Get the settings PVC name.
-Uses a consistent naming scheme: backup-settings-data
-*/}}
-{{- define "stackstate.backup.settingsPvcName" -}}
-{{- include "common.fullname.short" . -}}-backup-settings-data
 {{- end -}}
 
 {{/*

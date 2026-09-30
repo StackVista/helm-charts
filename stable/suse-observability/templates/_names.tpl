@@ -355,11 +355,11 @@ The parent ConfigMap keeps this name even when the collector's fullname is overr
 {{- end -}}
 
 {{- define "stackstate.s3proxy.configmap.fullname" -}}
-{{ include "stackstate.s3proxy.fullname" . }}-config
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy-config
 {{- end -}}
 
 {{- define "stackstate.s3proxy.extraEnvSecret.fullname" -}}
-{{ include "stackstate.s3proxy.fullname" . }}-extra-env
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy-extra-env
 {{- end -}}
 
 {{- define "stackstate.vmagent.fullname" -}}
@@ -392,30 +392,10 @@ MCP fullname helper
 {{ include "suse-observability.resourcePrefix" . }}-mcp
 {{- end -}}
 
-{{- define "stackstate.mcp.service.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-mcp
-{{- end -}}
-
 {{/*
 AI Assistant fullname helper
 */}}
 {{- define "stackstate.ai-assistant.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.statefulset.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.service.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.secret.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
-{{- end -}}
-
-{{- define "stackstate.aiAssistant.serviceaccount.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-ai-assistant
 {{- end -}}
 
@@ -426,7 +406,7 @@ S3Proxy secret name.
 {{- if .Values.global.s3proxy.credentials.fromExternalSecret -}}
 {{- .Values.global.s3proxy.credentials.fromExternalSecret -}}
 {{- else -}}
-{{- include "stackstate.s3proxy.fullname" . -}}
+{{- include "stackstate.s3proxy.secret.fullname" . -}}
 {{- end -}}
 {{- end -}}
 
@@ -459,12 +439,17 @@ Get the main backup PVC name.
 For backward compatibility, we keep the old name "suse-observability-minio" since it was used in previous versions and may already exist in user clusters.
 */}}
 {{- define "stackstate.backup.mainPvcName" -}}
-{{ include "suse-observability.resourcePrefix" . }}-minio
+{{- include "stackstate.s3proxy.main.persistentvolumeclaim.fullname" . -}}
+{{- end -}}
+
+{{/* Legacy interface; keep the settings claim's release-dependent identity. */}}
+{{- define "stackstate.backup.settingsPvcName" -}}
+{{- include "stackstate.s3proxy.settings.persistentvolumeclaim.fullname" . -}}
 {{- end -}}
 
 {{/*
 Service account name for S3Proxy.
-Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > S3Proxy fullname.
+Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > default ServiceAccount fullname.
 Set an explicit name to reuse an existing service account name, e.g. for IAM role bindings.
 */}}
 {{- define "stackstate.s3proxy.serviceAccountName" -}}
@@ -473,7 +458,7 @@ Set an explicit name to reuse an existing service account name, e.g. for IAM rol
 {{- else if and .Values.minio.serviceAccount .Values.minio.serviceAccount.name -}}
 {{- .Values.minio.serviceAccount.name -}}
 {{- else -}}
-{{- include "stackstate.s3proxy.fullname" . -}}
+{{- include "stackstate.s3proxy.serviceaccount.fullname" . -}}
 {{- end -}}
 {{- end -}}
 
@@ -1121,4 +1106,138 @@ receive resolved names while component types continue to control labels only.
 
 {{- define "stackstate.ui.servicemonitor.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{/*
+UI, MCP and AI Assistant resources retain their existing canonical names.
+Keep each resource identity independent of Services, accounts and Secrets, even
+when the outputs match. Legacy generic helpers remain available for Envoy
+identifiers and external templates. AI Assistant StatefulSet renaming requires a
+separate storage migration: its generated PVC identities depend on that name.
+*/}}
+{{- define "stackstate.ui.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{- define "stackstate.ui.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{- define "stackstate.ui.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
+
+{{- define "stackstate.mcp.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.mcp.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.mcp.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.mcp.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.statefulset.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.aiAssistant.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
+{{- end -}}
+
+{{/*
+Operational controllers retain their existing canonical identities. Keep each
+resource independent and retain the generic helpers for external templates.
+The workload observer and vmagent StatefulSet names determine generated PVC
+identities; changing their outputs requires a separate storage migration.
+*/}}
+{{- define "stackstate.replicationChecker.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.replicationChecker.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.replicationChecker.role.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.replicationChecker.rolebinding.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.statefulset.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.role.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.rolebinding.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.vmagent.statefulset.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
+{{- end -}}
+
+{{- define "stackstate.vmagent.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
+{{- end -}}
+
+{{- define "stackstate.vmagent.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
+{{- end -}}
+
+{{/*
+S3Proxy resources retain their current names. Secret and ServiceAccount selectors
+above preserve external credentials and explicit/deprecated account overrides;
+these helpers supply only their internally managed/default identities.
+*/}}
+{{- define "stackstate.s3proxy.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{- define "stackstate.s3proxy.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{- define "stackstate.s3proxy.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{- define "stackstate.s3proxy.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{/*
+Existing S3Proxy storage identities. Preserve the legacy settings prefix and
+MinIO claim name: changing either output requires a data migration strategy.
+*/}}
+{{- define "stackstate.s3proxy.settings.persistentvolumeclaim.fullname" -}}
+{{- include "common.fullname.short" . -}}-backup-settings-data
+{{- end -}}
+
+{{- define "stackstate.s3proxy.main.persistentvolumeclaim.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-minio
 {{- end -}}

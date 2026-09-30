@@ -351,7 +351,7 @@ spec:
               value: "{{ include "stackstate.backup.yaml.maxSizeLimit" . }}"
             {{ end }}
             - name: PROMETHEUS_WRITE_ENDPOINT
-              value: http://{{ include "stackstate.vmagent.fullname" . }}:8429/api/v1/write
+              value: http://{{ include "stackstate.vmagent.service.fullname" . }}:8429/api/v1/write
             - name: HADOOP_USER_NAME
               value: nobody
             - name: ZOOKEEPER_QUORUM
