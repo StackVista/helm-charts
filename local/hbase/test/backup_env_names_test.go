@@ -58,7 +58,16 @@ func TestHBaseBackupEnvNamesPreserveLegacyIdentity(t *testing.T) {
 
 func TestHBaseBackupEnvReferencesFollowSeparateHelpers(t *testing.T) {
 	chart := filepath.Join(t.TempDir(), "chart")
-	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
+	// Copy only render inputs: the chart root also contains linter_values.yaml,
+	// a symlink that os.CopyFS rejects on the Go 1.24 toolchain.
+	for _, directory := range []string{"templates", "scripts", "charts"} {
+		require.NoError(t, os.CopyFS(filepath.Join(chart, directory), os.DirFS(filepath.Join("..", directory))))
+	}
+	for _, filename := range []string{"Chart.yaml", "Chart.lock", "values.yaml", ".helmignore"} {
+		data, err := os.ReadFile(filepath.Join("..", filename))
+		require.NoError(t, err)
+		require.NoError(t, os.WriteFile(filepath.Join(chart, filename), data, 0600))
+	}
 	require.NoError(t, os.WriteFile(filepath.Join(chart, "templates", "_backup-name-overrides.tpl"), []byte(`
 {{- define "stackstate.backup.hbase.configmap.fullname" -}}independent-backup-config{{- end -}}
 {{- define "stackstate.backup.hbase.secret.fullname" -}}independent-backup-credentials{{- end -}}
