@@ -49,7 +49,7 @@ spec:
     spec:
       serviceAccountName: "{{ include "stackstate.router.mode.serviceaccount.fullname" . }}"
       {{- /* Runs as a pre-install/PreSync hook before the normal pull secret exists, so use the hook-managed copy. */ -}}
-      {{- include "stackstate.image.pullSecret.name" (dict "context" $ "autoSecretName" (include "suse-observability.pullSecret.hookName" $)) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $ "autoSecretName" (include "suse-observability.pullSecret.hook.fullname" $)) | nindent 6 }}
       {{- /* Pod-local volume identifiers stay independent of the referenced ConfigMap name. */}}
       volumes:
         - name: "{{ template "common.fullname.short" . }}-router-mode-scripts"

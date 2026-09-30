@@ -6,7 +6,7 @@ These do not change the generic common.name or common.fullname helpers.
 suse-observability
 {{- end -}}
 
-{{- define "suse-observability.pullSecret.name" -}}
+{{- define "suse-observability.pullSecret.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-pull-secret
 {{- end -}}
 

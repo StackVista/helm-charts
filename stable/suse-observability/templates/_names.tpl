@@ -312,17 +312,6 @@ Split receiver and correlate Deployments share their component configuration res
 {{ include "suse-observability.resourcePrefix" . }}
 {{- end -}}
 
-{{/*
-Hooks need a separate Secret because they can run before installation or after deletion.
-*/}}
-{{- define "suse-observability.pullSecret.hookName" -}}
-{{ include "suse-observability.pullSecret.name" . }}-hook
-{{- end -}}
-
-{{- define "stackstate.victoriametrics.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-victoriametrics
-{{- end -}}
-
 {{- define "stackstate.victoriametrics.instance.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-victoria-metrics-{{ .instanceIndex }}
 {{- end -}}
@@ -1240,4 +1229,33 @@ MinIO claim name: changing either output requires a data migration strategy.
 
 {{- define "stackstate.s3proxy.main.persistentvolumeclaim.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-minio
+{{- end -}}
+
+{{/*
+Remaining global identities retain their legacy names and scope. Hook names
+must remain distinct from the regular pull Secret. Keep the existing timestamp
+and Argo CD generateName behavior for topic-creation Jobs.
+*/}}
+{{- define "suse-observability.pullSecret.hook.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-pull-secret-hook
+{{- end -}}
+
+{{- define "stackstate.ingress.fullname" -}}
+{{ include "common.fullname.short" . }}
+{{- end -}}
+
+{{- define "stackstate.securitycontextconstraints.fullname" -}}
+{{ template "common.fullname.short" . }}-{{ .Release.Namespace }}
+{{- end -}}
+
+{{- define "stackstate.kafkaTopicCreate.job.fullname" -}}
+{{ template "common.fullname.short" . }}-topic-create-{{ now | date "02t150405" }}
+{{- end -}}
+
+{{- define "stackstate.kafkaTopicCreate.job.generateName" -}}
+topic-create-
+{{- end -}}
+
+{{- define "stackstate.victoriametrics.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-victoriametrics
 {{- end -}}

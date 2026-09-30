@@ -602,12 +602,12 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
 {{ include "stackstate.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
 Pass "autoSecretName" to override the automatically-included secret name, e.g. for hook Jobs that must
 reference the hook-managed pull secret:
-{{ include "stackstate.image.pullSecret.name" ( dict "context" $ "autoSecretName" (include "suse-observability.pullSecret.hookName" $)) }}
+{{ include "stackstate.image.pullSecret.name" ( dict "context" $ "autoSecretName" (include "suse-observability.pullSecret.hook.fullname" $)) }}
 */}}
 {{- define "stackstate.image.pullSecret.name" -}}
   {{- $pullSecrets := list }}
   {{- $context := .context }}
-  {{- $autoSecretName := .autoSecretName | default (include "suse-observability.pullSecret.name" $context) }}
+  {{- $autoSecretName := .autoSecretName | default (include "suse-observability.pullSecret.fullname" $context) }}
 
   {{- if $context.Values.global }}
     {{- range $context.Values.global.imagePullSecrets -}}

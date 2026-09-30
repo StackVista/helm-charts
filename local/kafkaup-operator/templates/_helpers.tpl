@@ -23,7 +23,7 @@ Return the proper Docker Image Registry Secret Names
 {{- define "kafkaup.image.pullSecret.name" -}}
   {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.pullSecret .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password -}}
 imagePullSecrets:
-- name: {{ include "suse-observability.pullSecret.name" . }}
+- name: {{ include "suse-observability.pullSecret.fullname" . }}
   {{- else -}}
     {{- include "common.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) -}}
   {{- end -}}

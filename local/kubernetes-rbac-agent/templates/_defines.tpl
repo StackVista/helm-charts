@@ -68,7 +68,7 @@
   {{- $pullSecrets := list }}
 
   {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.pullSecret .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password -}}
-    {{- $pullSecrets = append $pullSecrets "suse-observability-pull-secret"  -}}
+    {{- $pullSecrets = append $pullSecrets (include "kubernetes-rbac-agent.platformPullSecret.fullname" .) -}}
   {{- else -}}
     {{- $pullSecrets = append $pullSecrets (include "kubernetes-rbac-agent.pull-secret.name" .) }}
     {{- range .Values.global.imagePullSecrets -}}
