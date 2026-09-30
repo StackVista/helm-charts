@@ -5,7 +5,7 @@ metadata:
   {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname.short" . }}-e2es
+  name: {{ include "stackstate.e2es.servicemonitor.fullname" . }}
 spec:
   selector:
     matchLabels:

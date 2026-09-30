@@ -6,7 +6,7 @@ metadata:
   {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" .  }}
+  name: {{ required "stackstate.receiver.servicemonitor: ServiceMonitorFullname must not be empty" .ServiceMonitorFullname }}
 spec:
   selector:
     matchLabels:
@@ -18,19 +18,19 @@ spec:
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 
 {{- if .Values.stackstate.components.receiver.split.enabled }}
-{{- $receiverMonitorBaseArgs := merge (dict "ReceiverType" "base") . -}}
+{{- $receiverMonitorBaseArgs := merge (dict "ReceiverType" "base" "ServiceMonitorFullname" (include "stackstate.receiver.base.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverBaseServiceMonitor := fromYaml (include "stackstate.receiver.servicemonitor" $receiverMonitorBaseArgs) -}}
 {{- toYaml (merge $stsstackstateReceiverBaseServiceMonitor $commonServiceMonitor) }}
 ---
-{{- $receiverMonitorLogsArgs := merge (dict "ReceiverType" "logs") . -}}
+{{- $receiverMonitorLogsArgs := merge (dict "ReceiverType" "logs" "ServiceMonitorFullname" (include "stackstate.receiver.logs.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverLogsServiceMonitor := fromYaml (include "stackstate.receiver.servicemonitor" $receiverMonitorLogsArgs) -}}
 {{ toYaml (merge $stsstackstateReceiverLogsServiceMonitor $commonServiceMonitor) }}
 ---
-{{- $receiverMonitorProcessAgentArgs := merge (dict "ReceiverType" "process-agent") . -}}
+{{- $receiverMonitorProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "ServiceMonitorFullname" (include "stackstate.receiver.processAgent.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverProcessAgentServiceMonitor := fromYaml (include "stackstate.receiver.servicemonitor" $receiverMonitorProcessAgentArgs) -}}
 {{ toYaml (merge $stsstackstateReceiverProcessAgentServiceMonitor $commonServiceMonitor) -}}
 {{ else }}
-{{- $receiverMonitorArgs := merge (dict "ReceiverType" "") . -}}
+{{- $receiverMonitorArgs := merge (dict "ReceiverType" "" "ServiceMonitorFullname" (include "stackstate.receiver.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverServiceMonitor := fromYaml (include "stackstate.receiver.servicemonitor" $receiverMonitorArgs) -}}
 {{- toYaml (merge $stsstackstateReceiverServiceMonitor $commonServiceMonitor) }}
 {{- end -}}

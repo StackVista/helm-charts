@@ -1008,3 +1008,97 @@ with their existing selectors in both split and unsplit modes.
 {{- define "stackstate.workloadObserver.poddisruptionbudget.fullname" -}}
 {{ template "common.fullname.short" . }}-workload-observer
 {{- end -}}
+
+{{/*
+ServiceMonitor resource identities are independent of the Services they select.
+Keep legacy release-derived names, and existing canonical UI/S3Proxy names.
+Receiver/correlate variants each have their own helper; the shared renderers
+receive resolved names while component types continue to control labels only.
+*/}}
+{{- define "stackstate.api.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{- define "stackstate.checks.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.correlate.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate
+{{- end -}}
+
+{{- define "stackstate.correlate.connection.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate-connection
+{{- end -}}
+
+{{- define "stackstate.correlate.httpTracing.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate-http-tracing
+{{- end -}}
+
+{{- define "stackstate.correlate.aggregator.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate-aggregator
+{{- end -}}
+
+{{- define "stackstate.e2es.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
+{{- define "stackstate.healthSync.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.initializer.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-initializer
+{{- end -}}
+
+{{- define "stackstate.notification.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.receiver.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.receiver.base.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-base
+{{- end -}}
+
+{{- define "stackstate.receiver.logs.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-logs
+{{- end -}}
+
+{{- define "stackstate.receiver.processAgent.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver-process-agent
+{{- end -}}
+
+{{- define "stackstate.router.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.s3proxy.servicemonitor.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{- define "stackstate.server.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.slicing.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- define "stackstate.state.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.servicemonitor.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.ui.servicemonitor.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-ui
+{{- end -}}
