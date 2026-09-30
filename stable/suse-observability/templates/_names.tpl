@@ -1153,3 +1153,53 @@ separate storage migration: its generated PVC identities depend on that name.
 {{- define "stackstate.aiAssistant.serviceaccount.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-ai-assistant
 {{- end -}}
+
+{{/*
+Operational controllers retain their existing canonical identities. Keep each
+resource independent and retain the generic helpers for external templates.
+The workload observer and vmagent StatefulSet names determine generated PVC
+identities; changing their outputs requires a separate storage migration.
+*/}}
+{{- define "stackstate.replicationChecker.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.replicationChecker.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.replicationChecker.role.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.replicationChecker.rolebinding.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-replication-checker
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.statefulset.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.role.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.rolebinding.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- define "stackstate.vmagent.statefulset.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
+{{- end -}}
+
+{{- define "stackstate.vmagent.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
+{{- end -}}
+
+{{- define "stackstate.vmagent.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
+{{- end -}}
