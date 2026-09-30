@@ -631,15 +631,19 @@ imagePullSecrets:
   {{- end }}
 {{- end -}}
 
+{{/*
+PDB callers supply a resolved resource name separately from the component label.
+Changing a name must not change the pods selected by the disruption budget.
+*/}}
 {{- define "stackstate.service.spec.poddisruptionbudget" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-{{ .PdbName }}
+  name: {{ required "stackstate.service.spec.poddisruptionbudget: PdbFullname must not be empty" .PdbFullname }}
   labels:
-    app.kubernetes.io/component: {{ .PdbName }}
+    app.kubernetes.io/component: {{ .PdbComponent }}
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: {{ .PdbName }}
+      app.kubernetes.io/component: {{ .PdbComponent }}
 {{- with .PdbBudget }}
   {{ toYaml . | nindent 2 }}
 {{- end }}

@@ -929,3 +929,82 @@ victoria-metrics-restore-backup
 {{- define "stackstate.backup.stackgraph.restore.persistentvolumeclaim.fullname" -}}
 stackgraph-restore-backup
 {{- end -}}
+
+{{/*
+PDB names retain their legacy prefix, independently of workload names. In
+particular, UI, vmagent and workload-observer PDBs remain release-derived even
+where their workloads use canonical names. Keep selectors and disruption budgets
+independent of these resource identities; receiver/correlate retain one PDB each
+with their existing selectors in both split and unsplit modes.
+*/}}
+{{- define "stackstate.aiAssistant.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-ai-assistant
+{{- end -}}
+
+{{- define "stackstate.api.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-api
+{{- end -}}
+
+{{- define "stackstate.authorizationSync.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-authorization-sync
+{{- end -}}
+
+{{- define "stackstate.checks.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- define "stackstate.correlate.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-correlate
+{{- end -}}
+
+{{- define "stackstate.e2es.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-e2es
+{{- end -}}
+
+{{- define "stackstate.victoriametrics.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-victoriametrics
+{{- end -}}
+
+{{- define "stackstate.healthSync.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-health-sync
+{{- end -}}
+
+{{- define "stackstate.mcp.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-mcp
+{{- end -}}
+
+{{- define "stackstate.notification.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-notification
+{{- end -}}
+
+{{- define "stackstate.receiver.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-receiver
+{{- end -}}
+
+{{- define "stackstate.router.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-router
+{{- end -}}
+
+{{- define "stackstate.server.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-server
+{{- end -}}
+
+{{- define "stackstate.state.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-state
+{{- end -}}
+
+{{- define "stackstate.sync.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-sync
+{{- end -}}
+
+{{- define "stackstate.ui.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-ui
+{{- end -}}
+
+{{- define "stackstate.vmagent.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-vmagent
+{{- end -}}
+
+{{- define "stackstate.workloadObserver.poddisruptionbudget.fullname" -}}
+{{ template "common.fullname.short" . }}-workload-observer
+{{- end -}}

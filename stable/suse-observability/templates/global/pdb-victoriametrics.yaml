@@ -1,6 +1,6 @@
 {{- define "stackstate.victoriametrics.poddisruptionbudget" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-victoriametrics
+  name: {{ include "stackstate.victoriametrics.poddisruptionbudget.fullname" . }}
   labels:
     app.kubernetes.io/component: victoriametrics
 spec:

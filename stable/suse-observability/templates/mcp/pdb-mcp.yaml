@@ -1,4 +1,4 @@
 {{- if eq (include "stackstate.mcp.enabled" .) "true" }}
-{{- $valuesPdb := dict "PdbName" "mcp" "PdbBudget" .Values.stackstate.components.mcp.poddisruptionbudget -}}
+{{- $valuesPdb := dict "PdbFullname" (include "stackstate.mcp.poddisruptionbudget.fullname" .) "PdbComponent" "mcp" "PdbBudget" .Values.stackstate.components.mcp.poddisruptionbudget -}}
 {{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .) ) -}}
 {{- end }}
