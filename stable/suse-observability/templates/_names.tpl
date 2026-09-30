@@ -355,11 +355,11 @@ The parent ConfigMap keeps this name even when the collector's fullname is overr
 {{- end -}}
 
 {{- define "stackstate.s3proxy.configmap.fullname" -}}
-{{ include "stackstate.s3proxy.fullname" . }}-config
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy-config
 {{- end -}}
 
 {{- define "stackstate.s3proxy.extraEnvSecret.fullname" -}}
-{{ include "stackstate.s3proxy.fullname" . }}-extra-env
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy-extra-env
 {{- end -}}
 
 {{- define "stackstate.vmagent.fullname" -}}
@@ -406,7 +406,7 @@ S3Proxy secret name.
 {{- if .Values.global.s3proxy.credentials.fromExternalSecret -}}
 {{- .Values.global.s3proxy.credentials.fromExternalSecret -}}
 {{- else -}}
-{{- include "stackstate.s3proxy.fullname" . -}}
+{{- include "stackstate.s3proxy.secret.fullname" . -}}
 {{- end -}}
 {{- end -}}
 
@@ -439,12 +439,17 @@ Get the main backup PVC name.
 For backward compatibility, we keep the old name "suse-observability-minio" since it was used in previous versions and may already exist in user clusters.
 */}}
 {{- define "stackstate.backup.mainPvcName" -}}
-{{ include "suse-observability.resourcePrefix" . }}-minio
+{{- include "stackstate.s3proxy.main.persistentvolumeclaim.fullname" . -}}
+{{- end -}}
+
+{{/* Legacy interface; keep the settings claim's release-dependent identity. */}}
+{{- define "stackstate.backup.settingsPvcName" -}}
+{{- include "stackstate.s3proxy.settings.persistentvolumeclaim.fullname" . -}}
 {{- end -}}
 
 {{/*
 Service account name for S3Proxy.
-Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > S3Proxy fullname.
+Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > default ServiceAccount fullname.
 Set an explicit name to reuse an existing service account name, e.g. for IAM role bindings.
 */}}
 {{- define "stackstate.s3proxy.serviceAccountName" -}}
@@ -453,7 +458,7 @@ Set an explicit name to reuse an existing service account name, e.g. for IAM rol
 {{- else if and .Values.minio.serviceAccount .Values.minio.serviceAccount.name -}}
 {{- .Values.minio.serviceAccount.name -}}
 {{- else -}}
-{{- include "stackstate.s3proxy.fullname" . -}}
+{{- include "stackstate.s3proxy.serviceaccount.fullname" . -}}
 {{- end -}}
 {{- end -}}
 
@@ -1202,4 +1207,37 @@ identities; changing their outputs requires a separate storage migration.
 
 {{- define "stackstate.vmagent.service.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-vmagent
+{{- end -}}
+
+{{/*
+S3Proxy resources retain their current names. Secret and ServiceAccount selectors
+above preserve external credentials and explicit/deprecated account overrides;
+these helpers supply only their internally managed/default identities.
+*/}}
+{{- define "stackstate.s3proxy.deployment.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{- define "stackstate.s3proxy.service.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{- define "stackstate.s3proxy.secret.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{- define "stackstate.s3proxy.serviceaccount.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-s3proxy
+{{- end -}}
+
+{{/*
+Existing S3Proxy storage identities. Preserve the legacy settings prefix and
+MinIO claim name: changing either output requires a data migration strategy.
+*/}}
+{{- define "stackstate.s3proxy.settings.persistentvolumeclaim.fullname" -}}
+{{- include "common.fullname.short" . -}}-backup-settings-data
+{{- end -}}
+
+{{- define "stackstate.s3proxy.main.persistentvolumeclaim.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-minio
 {{- end -}}
