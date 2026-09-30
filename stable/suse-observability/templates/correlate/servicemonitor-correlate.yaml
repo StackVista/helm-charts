@@ -6,7 +6,7 @@ metadata:
   {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
+  name: {{ required "stackstate.correlate.servicemonitor: ServiceMonitorFullname must not be empty" .ServiceMonitorFullname }}
 spec:
   selector:
     matchLabels:
@@ -18,19 +18,19 @@ spec:
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 
 {{- if .Values.stackstate.components.correlate.split.enabled }}
-{{- $correlateMonitorConnectionArgs := merge (dict "CorrelateType" "connection") . -}}
+{{- $correlateMonitorConnectionArgs := merge (dict "CorrelateType" "connection" "ServiceMonitorFullname" (include "stackstate.correlate.connection.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverConnectionServiceMonitor := fromYaml (include "stackstate.correlate.servicemonitor" $correlateMonitorConnectionArgs) -}}
 {{- toYaml (merge $stsstackstateReceiverConnectionServiceMonitor $commonServiceMonitor) }}
 ---
-{{- $correlateMonitorHTTPTracingArgs := merge (dict "CorrelateType" "http-tracing") . -}}
+{{- $correlateMonitorHTTPTracingArgs := merge (dict "CorrelateType" "http-tracing" "ServiceMonitorFullname" (include "stackstate.correlate.httpTracing.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverHTTPTracingServiceMonitor := fromYaml (include "stackstate.correlate.servicemonitor" $correlateMonitorHTTPTracingArgs) -}}
 {{ toYaml (merge $stsstackstateReceiverHTTPTracingServiceMonitor $commonServiceMonitor) }}
 ---
-{{- $correlateMonitorAggregatorArgs := merge (dict "CorrelateType" "aggregator") . -}}
+{{- $correlateMonitorAggregatorArgs := merge (dict "CorrelateType" "aggregator" "ServiceMonitorFullname" (include "stackstate.correlate.aggregator.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverAggregatorServiceMonitor := fromYaml (include "stackstate.correlate.servicemonitor" $correlateMonitorAggregatorArgs) -}}
 {{ toYaml (merge $stsstackstateReceiverAggregatorServiceMonitor $commonServiceMonitor) -}}
 {{ else }}
-{{- $correlateMonitorArgs := merge (dict "CorrelateType" "") . -}}
+{{- $correlateMonitorArgs := merge (dict "CorrelateType" "" "ServiceMonitorFullname" (include "stackstate.correlate.servicemonitor.fullname" .)) . -}}
 {{- $stsstackstateReceiverServiceMonitor := fromYaml (include "stackstate.correlate.servicemonitor" $correlateMonitorArgs) -}}
 {{- toYaml (merge $stsstackstateReceiverServiceMonitor $commonServiceMonitor) }}
 {{- end -}}

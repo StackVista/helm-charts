@@ -1,11 +1,11 @@
 {{- define "stackstate.ai-assistant.statefulset.container.main" -}}
 {{- $serviceConfig := dict "ServiceName" "ai-assistant" "ServiceConfig" .Values.stackstate.components.aiAssistant }}
-{{- $mcpUrl := printf "http://%s:%s" (include "stackstate.mcp.fullname" .) (include "stackstate.mcp.port" .) -}}
+{{- $mcpUrl := printf "http://%s:%s" (include "stackstate.mcp.service.fullname" .) (include "stackstate.mcp.port" .) -}}
 {{- $aiAssistantImageTag := .Values.stackstate.components.aiAssistant.image.tag -}}
 {{- $provider := default "bedrock" .Values.ai.assistant.provider | lower -}}
 {{- $anthropicExternalSecretName := .Values.ai.assistant.anthropic.fromExternalSecret.name -}}
 {{- $anthropicExternalSecretKey := default "ANTHROPIC_API_KEY" .Values.ai.assistant.anthropic.fromExternalSecret.key -}}
-{{- $aiAssistantSecretName := include "stackstate.ai-assistant.fullname" . -}}
+{{- $aiAssistantSecretName := include "stackstate.aiAssistant.secret.fullname" . -}}
 {{- if .Values.ai.assistant.enabled -}}
 {{- $aiAssistantImageTag = required "stackstate.components.aiAssistant.image.tag must be set" .Values.stackstate.components.aiAssistant.image.tag -}}
 {{- if not (has $provider (list "bedrock" "anthropic")) -}}
@@ -77,7 +77,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.ai-assistant.statefulset.container.main" .) -}}
 {{- $aiAssistantMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "stackstate.ai-assistant.fullname" . }}
+  name: {{ include "stackstate.aiAssistant.statefulset.fullname" . }}
   labels:
     app.kubernetes.io/component: ai-assistant
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -86,7 +86,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: ai-assistant
-  serviceName: {{ template "stackstate.ai-assistant.fullname" . }}
+  serviceName: {{ include "stackstate.aiAssistant.service.fullname" . }}
   template:
     metadata:
       annotations:
@@ -96,7 +96,7 @@ spec:
         app.kubernetes.io/component: ai-assistant
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ template "stackstate.ai-assistant.fullname" . }}
+      serviceAccountName: {{ include "stackstate.aiAssistant.serviceaccount.fullname" . }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $aiAssistantMainContainer | nindent 8 }}

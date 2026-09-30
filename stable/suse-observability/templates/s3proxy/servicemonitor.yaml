@@ -7,7 +7,7 @@ metadata:
   {{- with .Values.s3proxy.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "stackstate.s3proxy.fullname" . }}
+  name: {{ include "stackstate.s3proxy.servicemonitor.fullname" . }}
 spec:
   selector:
     matchLabels:

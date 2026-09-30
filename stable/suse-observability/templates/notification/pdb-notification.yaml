@@ -1,4 +1,4 @@
 {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
-{{- $valuesPdb := dict "PdbName" "notification" "PdbBudget" .Values.stackstate.components.notification.poddisruptionbudget -}}
+{{- $valuesPdb := dict "PdbFullname" (include "stackstate.notification.poddisruptionbudget.fullname" .) "PdbComponent" "notification" "PdbBudget" .Values.stackstate.components.notification.poddisruptionbudget -}}
 {{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}
 {{- end }}
