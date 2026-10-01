@@ -679,3 +679,36 @@ func TestAiAssistantUrlSplitDisabled(t *testing.T) {
 		assert.NotEqual(t, "AI_SERVICE_URL", env.Name, "API (split) deployment should not have AI_SERVICE_URL when ai.assistant.enabled is false")
 	}
 }
+
+func TestFeaturesLegacyKubernetesTopology(t *testing.T) {
+	setting := "CONFIG_FORCE_stackstate_receiver_featureSwitches_legacyKubernetesTopology"
+	for _, tc := range []struct {
+		name      string
+		setValues map[string]string
+		cleared   bool
+	}{
+		{"default keeps legacy topology required", map[string]string{}, false},
+		{"explicitly required", map[string]string{"global.features.legacyKubernetesTopology": "true"}, false},
+		{"no longer required", map[string]string{"global.features.legacyKubernetesTopology": "false"}, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+				ValuesFiles:    []string{"values/full.yaml"},
+				SetValues:      tc.setValues,
+				KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			receiver, ok := resources.Deployments["suse-observability-receiver"]
+			require.True(t, ok, "Receiver deployment should exist")
+
+			cleared := corev1.EnvVar{Name: setting, Value: "false"}
+			if tc.cleared {
+				assert.Contains(t, receiver.Spec.Template.Spec.Containers[0].Env, cleared)
+			} else {
+				for _, env := range receiver.Spec.Template.Spec.Containers[0].Env {
+					assert.NotEqual(t, setting, env.Name, "the receiver default must apply")
+				}
+			}
+		})
+	}
+}

@@ -23,6 +23,8 @@ global:
     # alongside legacy Elasticsearch-based log ingestion, preserving backwards compatibility between the two while OTel-based logs are
     # rolled out. This is a preproduction feature, usage may change in upcoming releases.
     experimentalOtelLogs: false
+    # global.features.legacyKubernetesTopology -- Tell agents that they must keep sending legacy Kubernetes topology. Set to false once no cluster relies on the Kubernetes-V2 StackPack: agents with the OTel Kubernetes topology exporter then stop sending it, while older agents are unaffected.
+    legacyKubernetesTopology: true
   # backup.enabled -- Enables backup/restore for all data
   backup:
     enabled: false
