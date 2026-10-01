@@ -4,6 +4,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
@@ -782,4 +783,22 @@ func TestK8sResourceCollectorDebugInvalidVerbosity(t *testing.T) {
 	)
 	require.Error(t, err, "should fail with invalid verbosity")
 	assert.Contains(t, err.Error(), "debug.verbosity", "error should mention debug.verbosity")
+}
+
+func TestK8sResourceCollectorRestrictedRBACGrantsIntegrationObjects(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: []string{"values/minimal.yaml", "values/k8s-resource-collector-integrations-restricted-rbac.yaml"},
+		SetValues:   map[string]string{"otel.integrations.suseVirtualization": "true"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	clusterRole, exists := resources.ClusterRoles["suse-observability-agent-k8s-resource-collector"]
+	require.True(t, exists, "k8s-resource-collector cluster role was not found")
+
+	granted := false
+	for _, rule := range clusterRole.Rules {
+		if slices.Contains(rule.APIGroups, "") && slices.Contains(rule.Resources, "pods") {
+			granted = true
+		}
+	}
+	assert.True(t, granted, "pods watched by the SUSE Virtualization overlay must be granted under restricted RBAC")
 }

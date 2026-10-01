@@ -36,6 +36,8 @@ global:
   features:
     # global.features.experimentalOtelLogsAgent -- Select the experimental OTel pod-log collector instead of Promtail; the selected collector must also be enabled.
     experimentalOtelLogsAgent: false
+    # global.features.experimentalOtelKubernetesTopology -- Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled, a stackstate.url ending in /stsAgent, and an otel.k8sResourceCollector.image.tag that includes the stsk8stopology exporter; the default image does not yet. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMap and Secret components are not produced yet. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals.
+    experimentalOtelKubernetesTopology: false
 
   # global.receiverApiKey -- This is deprecated and will be removed in a future version.
   # receiverApiKey:
@@ -847,6 +849,10 @@ otel:
     #   deployments:
     #     group: apps
     #     labelSelector: "app=foo"
+
+    kubernetesTopology:
+      # otel.k8sResourceCollector.kubernetesTopology.clusterType -- Cluster type used in topology identifiers when global.features.experimentalOtelKubernetesTopology is true: kubernetes or openshift.
+      clusterType: kubernetes
 
     # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec extending the built-in denylist (core Secrets, ConfigMaps). Spec needs only `group`. Resources listed here must not appear under otel.k8sResourceCollector.objects. Use to block third-party resources with sensitive contents.
     deniedObjects: {}

@@ -452,6 +452,83 @@ true
 {{- end -}}
 
 {{/*
+Send Kubernetes topology through the cluster collector's cluster-agent-compatible
+exporter instead of the cluster agent's topology check.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" -}}
+{{- if and .Values.global.features.experimentalOtelKubernetesTopology (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
+true
+{{- end }}
+{{- end -}}
+
+{{/*
+Cluster-wide object watches read by the cluster-agent topology collectors, gated by
+the same resource switches as the cluster agent.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.objects" -}}
+{{- $res := .Values.clusterAgent.collection.kubernetesResources }}
+{{- $objects := dict "nodes" (dict "group" "") "pods" (dict "group" "") "services" (dict "group" "") }}
+{{- if $res.namespaces }}{{ $_ := set $objects "namespaces" (dict "group" "") }}{{ end }}
+{{- if $res.persistentvolumes }}
+{{- $_ := set $objects "persistentvolumes" (dict "group" "") }}
+{{- if $res.volumeattachments }}{{ $_ := set $objects "volumeattachments" (dict "group" "storage.k8s.io") }}{{ end }}
+{{- end }}
+{{- if or $res.persistentvolumes $res.persistentvolumeclaims }}{{ $_ := set $objects "persistentvolumeclaims" (dict "group" "") }}{{ end }}
+{{- range $name := list "deployments" "replicasets" "daemonsets" "statefulsets" }}
+{{- if index $res $name }}{{ $_ := set $objects $name (dict "group" "apps") }}{{ end }}
+{{- end }}
+{{- range $name := list "jobs" "cronjobs" }}
+{{- if index $res $name }}{{ $_ := set $objects $name (dict "group" "batch") }}{{ end }}
+{{- end }}
+{{- if $res.ingresses }}{{ $_ := set $objects "ingresses" (dict "group" "networking.k8s.io") }}{{ end }}
+{{- $objects | toYaml }}
+{{- end -}}
+
+{{/*
+Seconds in a duration made of h, m and s units, such as 5m or 1h30m.
+*/}}
+{{- define "stackstate-k8s-agent.durationSeconds" -}}
+{{- $duration := toString . }}
+{{- if eq $duration "0" }}{{ $duration = "0s" }}{{ end }}
+{{- $parts := regexFindAll "[0-9]+[hms]" $duration -1 }}
+{{- if or (not $parts) (ne (join "" $parts) $duration) }}
+{{- fail (printf "unsupported duration %q: use h, m and s units, e.g. 5m" $duration) }}
+{{- end }}
+{{- $total := 0 }}
+{{- range $parts }}
+{{- $count := trimSuffix "h" . | trimSuffix "m" | trimSuffix "s" | atoi }}
+{{- if hasSuffix "h" . }}{{ $total = add $total (mul $count 3600) }}
+{{- else if hasSuffix "m" . }}{{ $total = add $total (mul $count 60) }}
+{{- else }}{{ $total = add $total $count }}{{ end }}
+{{- end }}
+{{- $total }}
+{{- end -}}
+
+{{/*
+How long the exporter keeps sending without a new complete observer snapshot:
+three snapshot intervals, and never less than one export interval. Zero is the
+receiver's five-minute default.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.snapshotMaxAgeSeconds" -}}
+{{- $snapshot := include "stackstate-k8s-agent.durationSeconds" .Values.otel.k8sResourceCollector.crDiscovery.snapshotInterval | atoi }}
+{{- if eq $snapshot 0 }}{{ $snapshot = 300 }}{{ end }}
+{{- max (mul 3 $snapshot) (.Values.clusterAgent.config.topology.collectionInterval | int) }}
+{{- end -}}
+
+{{/*
+Resource switches for the cluster-agent-compatible exporter. The collector does
+not watch ConfigMaps or Secrets, so those components are not produced.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.resources" -}}
+{{- $res := .Values.clusterAgent.collection.kubernetesResources }}
+{{- range $name := list "persistentvolumes" "persistentvolumeclaims" "namespaces" "daemonsets" "deployments" "replicasets" "statefulsets" "ingresses" "jobs" "cronjobs" }}
+{{ $name }}: {{ index $res $name | default false }}
+{{- end }}
+configmaps: false
+secrets: false
+{{- end -}}
+
+{{/*
 Headless Service DNS for peer-to-peer cache sync between cluster collector replicas.
 */}}
 {{- define "stackstate-k8s-agent.k8sResourceCollector.peerSync.dns" -}}
@@ -489,6 +566,13 @@ Returns a dict equivalent to .Values.otel.k8sResourceCollector with integration 
   {{- $overlay := $files.Get . | fromYaml }}
   {{- $overlayVals := dig "otel" "k8sResourceCollector" dict $overlay }}
   {{- $vals = mustMergeOverwrite $vals $overlayVals }}
+{{- end }}
+{{- if include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . }}
+  {{- $objects := $vals.objects | default dict }}
+  {{- range $name, $obj := include "stackstate-k8s-agent.kubernetesTopologyCompat.objects" . | fromYaml }}
+    {{- $_ := set $objects $name $obj }}
+  {{- end }}
+  {{- $_ := set $vals "objects" $objects }}
 {{- end }}
 {{- $vals | toYaml }}
 {{- end -}}

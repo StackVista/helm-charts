@@ -38,7 +38,7 @@ rules:
 {{- end }}
 {{- /* Collect resources per group from otel.k8sResourceCollector.objects */}}
 {{- $byGroup := dict }}
-{{- range $name, $obj := .Values.otel.k8sResourceCollector.objects }}
+{{- range $name, $obj := $rcfg.objects }}
 {{- if $obj }}
 {{- $g := $obj.group | default "" }}
 {{- $existing := index $byGroup $g | default (list) }}

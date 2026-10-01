@@ -225,6 +225,9 @@
           "properties": {
             "experimentalOtelLogsAgent": {
               "type": "boolean"
+            },
+            "experimentalOtelKubernetesTopology": {
+              "type": "boolean"
             }
           }
         }

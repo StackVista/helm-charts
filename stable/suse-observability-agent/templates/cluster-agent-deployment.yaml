@@ -78,7 +78,7 @@ spec:
           - name: STS_COLLECT_KUBERNETES_TIMEOUT
             value: {{ .Values.clusterAgent.collection.kubernetesTimeout | quote }}
           - name: STS_COLLECT_KUBERNETES_TOPOLOGY
-            value: {{ .Values.clusterAgent.collection.kubernetesTopology | quote }}
+            value: {{ and .Values.clusterAgent.collection.kubernetesTopology (not (include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" .)) | quote }}
           - name: STS_LEADER_ELECTION
             value: "true"
           - name: STS_LOG_LEVEL

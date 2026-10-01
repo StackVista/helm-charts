@@ -1,0 +1,2 @@
+stackstate:
+  url: https://my-suse-observability-instance.com/receiver

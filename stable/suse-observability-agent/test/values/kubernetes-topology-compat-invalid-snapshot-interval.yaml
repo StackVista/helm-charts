@@ -1,0 +1,4 @@
+otel:
+  k8sResourceCollector:
+    crDiscovery:
+      snapshotInterval: 5min

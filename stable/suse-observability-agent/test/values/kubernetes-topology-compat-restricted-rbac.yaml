@@ -1,0 +1,18 @@
+global:
+  features:
+    experimentalOtelKubernetesTopology: true
+
+stackstate:
+  apiKey: test-api-key
+  cluster:
+    name: test-cluster
+  url: https://my-suse-observability-instance.com/receiver/stsAgent
+
+otel:
+  enabled: true
+  integrations:
+    suseVirtualization: true
+  k8sResourceCollector:
+    enabled: true
+    rbac:
+      useWildcard: false
