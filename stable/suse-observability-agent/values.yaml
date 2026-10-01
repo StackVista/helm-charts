@@ -34,7 +34,7 @@ global:
   extraAnnotations: {}
 
   features:
-    # global.features.experimentalOtelLogsAgent -- Select the experimental OTel pod-log collector instead of Promtail; the selected collector must also be enabled.
+    # global.features.experimentalOtelLogsAgent -- Allow the experimental OTel pod-log collector; it runs when otelLogsAgent.enabled is true, independently of logsAgent.enabled.
     experimentalOtelLogsAgent: false
     # global.features.experimentalOtelKubernetesTopology -- Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled, a stackstate.url ending in /stsAgent, and an otel.k8sResourceCollector.image.tag that includes the stsk8stopology exporter; the default image does not yet. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMap and Secret components are not produced yet. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals.
     experimentalOtelKubernetesTopology: false
@@ -618,6 +618,9 @@ otelLogsAgent:
   # otelLogsAgent.enabled -- Enable OTel pod-log collection when global.features.experimentalOtelLogsAgent is true.
   enabled: true
 
+  # otelLogsAgent.exportMode -- `auto` selects the destination from the Receiver's /features endpoint; `promtail` or `native` fixes it without querying /features.
+  exportMode: auto
+
   # otelLogsAgent.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
   skipSslValidation: false
 
@@ -628,7 +631,7 @@ otelLogsAgent:
     # otelLogsAgent.image.repository -- Container image repository for the logs Collector.
     repository: stackstate/sts-opentelemetry-collector
     # otelLogsAgent.image.tag -- Collector agent image tag for capability discovery and native pod-log export.
-    tag: "v0.0.61-agent"
+    tag: "v0.0.63-agent"
     # otelLogsAgent.image.pullPolicy -- Container image pull policy.
     pullPolicy: IfNotPresent
     # otelLogsAgent.image.pullSecretName -- Name of ImagePullSecret to use for the logs Collector image.

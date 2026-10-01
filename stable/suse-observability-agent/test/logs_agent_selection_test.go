@@ -17,11 +17,11 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 )
 
-func assertUniqueLogsManifests(t *testing.T, output string) map[string]int {
+func assertUniqueLogsManifests(t *testing.T, output string) map[string]map[string]int {
 	t.Helper()
 	decoder := yaml.NewDecoder(strings.NewReader(output))
 	identities := map[string]bool{}
-	logsKinds := map[string]int{}
+	logsKinds := map[string]map[string]int{}
 	for {
 		var document struct {
 			APIVersion string `yaml:"apiVersion"`
@@ -57,32 +57,32 @@ func assertUniqueLogsManifests(t *testing.T, output string) map[string]int {
 		identity := strings.Join([]string{group, document.Kind, namespace, document.Metadata.Name}, "/")
 		require.False(t, identities[identity], "duplicate rendered resource %s", identity)
 		identities[identity] = true
-		if strings.Contains(document.Metadata.Name, "logs-agent") ||
-			strings.Contains(document.Metadata.Labels["app.kubernetes.io/component"], "logs-agent") {
-			assert.Equal(t, logsAgentName, document.Metadata.Name, "stable logs resource name")
-			logsKinds[document.Kind]++
+		component := document.Metadata.Labels["app.kubernetes.io/component"]
+		if strings.Contains(document.Metadata.Name, "logs-agent") || strings.Contains(component, "logs-agent") {
+			expected := map[string]string{"logs-agent": logsAgentName, "otel-logs-agent": otelLogsAgentName}[component]
+			assert.Equal(t, expected, document.Metadata.Name, "logs resource name for component %q", component)
+			if logsKinds[document.Metadata.Name] == nil {
+				logsKinds[document.Metadata.Name] = map[string]int{}
+			}
+			logsKinds[document.Metadata.Name][document.Kind]++
 		}
 	}
 	return logsKinds
 }
 
 func TestLogsAgentOtelSelection(t *testing.T) {
-	for _, selector := range []bool{false, true} {
+	for _, flag := range []bool{false, true} {
 		for _, promtailEnabled := range []bool{false, true} {
 			for _, otelLogsEnabled := range []bool{false, true} {
 				for _, globalOtel := range []bool{false, true} {
-					t.Run(fmt.Sprintf("selector=%t/promtail=%t/otelLogs=%t/otel=%t",
-						selector, promtailEnabled, otelLogsEnabled, globalOtel), func(t *testing.T) {
-						enabled := promtailEnabled
-						if selector {
-							enabled = otelLogsEnabled
-						}
+					t.Run(fmt.Sprintf("flag=%t/promtail=%t/otelLogs=%t/otel=%t",
+						flag, promtailEnabled, otelLogsEnabled, globalOtel), func(t *testing.T) {
 						assertLogsSelection(t, map[string]string{
-							"global.features.experimentalOtelLogsAgent": fmt.Sprint(selector),
+							"global.features.experimentalOtelLogsAgent": fmt.Sprint(flag),
 							"logsAgent.enabled":                         fmt.Sprint(promtailEnabled),
 							"otelLogsAgent.enabled":                     fmt.Sprint(otelLogsEnabled),
 							"otel.enabled":                              fmt.Sprint(globalOtel),
-						}, selector, enabled)
+						}, promtailEnabled, flag && otelLogsEnabled)
 					})
 				}
 			}
@@ -93,68 +93,57 @@ func TestLogsAgentOtelSelection(t *testing.T) {
 func TestLogsAgentSelectionDefaults(t *testing.T) {
 	for _, globalOtel := range []bool{false, true} {
 		for _, tc := range []struct {
-			name     string
-			values   map[string]string
-			selector bool
-			enabled  bool
+			name           string
+			values         map[string]string
+			promtail, otel bool
 		}{
-			{name: "all-defaults", enabled: true},
-			{name: "omitted-selector-no-promtail-fallback", values: map[string]string{
+			{name: "all-defaults", promtail: true},
+			{name: "omitted-flag-otel-not-deployed", values: map[string]string{
 				"logsAgent.enabled": "false", "otelLogsAgent.enabled": "true",
 			}},
-			{name: "omitted-selector-otel-disabled", values: map[string]string{
-				"otelLogsAgent.enabled": "false",
-			}, enabled: true},
-			{name: "explicit-promtail-default-enables", values: map[string]string{
-				"global.features.experimentalOtelLogsAgent": "false",
-			}, enabled: true},
-			{name: "explicit-otel-default-enables", values: map[string]string{
+			{name: "flag-defaults-run-both", values: map[string]string{
 				"global.features.experimentalOtelLogsAgent": "true",
-			}, selector: true, enabled: true},
-			{name: "default-otel-enable-promtail-disabled", values: map[string]string{
+			}, promtail: true, otel: true},
+			{name: "flag-otel-only", values: map[string]string{
 				"global.features.experimentalOtelLogsAgent": "true", "logsAgent.enabled": "false",
-			}, selector: true, enabled: true},
-			{name: "otel-disabled-default-promtail-no-fallback", values: map[string]string{
+			}, otel: true},
+			{name: "flag-promtail-only", values: map[string]string{
 				"global.features.experimentalOtelLogsAgent": "true", "otelLogsAgent.enabled": "false",
-			}, selector: true},
+			}, promtail: true},
 		} {
 			t.Run(fmt.Sprintf("%s/otel=%t", tc.name, globalOtel), func(t *testing.T) {
 				values := map[string]string{"otel.enabled": fmt.Sprint(globalOtel)}
 				for key, value := range tc.values {
 					values[key] = value
 				}
-				assertLogsSelection(t, values, tc.selector, tc.enabled)
+				assertLogsSelection(t, values, tc.promtail, tc.otel)
 			})
 		}
 	}
 }
 
-func assertLogsSelection(t *testing.T, values map[string]string, otel, enabled bool) {
+func assertLogsSelection(t *testing.T, values map[string]string, promtail, otel bool) {
 	t.Helper()
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
 		ValuesFiles: []string{"values/minimal.yaml", "values/logs-otel-base.yaml"},
 		SetValues:   values,
 	})
 	kinds := assertUniqueLogsManifests(t, output)
-	expected := map[string]int{}
-	if enabled {
-		expected = map[string]int{
-			"DaemonSet": 1, "ConfigMap": 1, "ClusterRole": 1, "ClusterRoleBinding": 1, "ServiceAccount": 1,
-		}
+	complete := map[string]int{
+		"DaemonSet": 1, "ConfigMap": 1, "ClusterRole": 1, "ClusterRoleBinding": 1, "ServiceAccount": 1,
 	}
-	require.Equal(t, expected, kinds, "complete, exclusive logs workload and RBAC set")
-	resources := helmtestutil.NewKubernetesResources(t, output)
-	if !enabled {
-		return
+	expected := map[string]map[string]int{}
+	if promtail {
+		expected[logsAgentName] = complete
 	}
-	assertLogsStableIdentity(t, resources, otel)
-	container := logsContainer(t, resources)
 	if otel {
-		logsOtelConfig(t, resources)
-		assert.Contains(t, container.Image, "/stackstate/sts-opentelemetry-collector:")
-		assert.Equal(t, []string{"--config=/etc/otel/otel-logs.yaml", "--feature-gates=stanza.synchronousLogEmitter"}, container.Args)
-		assert.Empty(t, container.Command)
-	} else {
+		expected[otelLogsAgentName] = complete
+	}
+	require.Equal(t, expected, kinds, "complete logs workload and RBAC set per enabled agent")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	if promtail {
+		assertLogsIdentity(t, resources, false)
+		container := logsContainer(t, resources, logsAgentName)
 		cm := resources.ConfigMaps[logsAgentName]
 		assert.Contains(t, cm.Data, "promtail.yaml")
 		assert.NotContains(t, cm.Data, "otel-logs.yaml")
@@ -163,14 +152,26 @@ func assertLogsSelection(t *testing.T, values map[string]string, otel, enabled b
 		assert.NotContains(t, cm.Data["promtail.yaml"], "stslogsroute")
 		assert.Contains(t, cm.Data["promtail.yaml"], "https://my-suse-observability-instance.com/receiver/stsAgent/logs/k8s")
 	}
+	if otel {
+		assertLogsIdentity(t, resources, true)
+		container := logsContainer(t, resources, otelLogsAgentName)
+		logsOtelConfig(t, resources)
+		assert.Contains(t, container.Image, "/stackstate/sts-opentelemetry-collector:")
+		assert.Equal(t, []string{"--config=/etc/otel/otel-logs.yaml", "--feature-gates=stanza.synchronousLogEmitter"}, container.Args)
+		assert.Empty(t, container.Command)
+	}
 }
 
-func assertLogsStableIdentity(t *testing.T, resources helmtestutil.KubernetesResources, otel bool) {
+func assertLogsIdentity(t *testing.T, resources helmtestutil.KubernetesResources, otel bool) {
 	t.Helper()
-	ds := resources.DaemonSets[logsAgentName]
+	name, component := logsAgentName, "logs-agent"
+	if otel {
+		name, component = otelLogsAgentName, "otel-logs-agent"
+	}
+	ds := resources.DaemonSets[name]
 	require.NotNil(t, ds.Spec.Selector)
 	assert.Equal(t, map[string]string{
-		"app.kubernetes.io/component": "logs-agent",
+		"app.kubernetes.io/component": component,
 		"app.kubernetes.io/instance":  "suse-observability-agent",
 		"app.kubernetes.io/name":      "suse-observability-agent",
 	}, ds.Spec.Selector.MatchLabels)
@@ -178,18 +179,18 @@ func assertLogsStableIdentity(t *testing.T, resources helmtestutil.KubernetesRes
 	for key, value := range ds.Spec.Selector.MatchLabels {
 		assert.Equal(t, value, ds.Spec.Template.Labels[key])
 	}
-	assert.Equal(t, logsAgentName, ds.Spec.Template.Spec.ServiceAccountName)
-	assert.Equal(t, logsAgentName, resources.ServiceAccounts[logsAgentName].Name)
-	assert.Equal(t, ds.Namespace, resources.ServiceAccounts[logsAgentName].Namespace)
+	assert.Equal(t, name, ds.Spec.Template.Spec.ServiceAccountName)
+	assert.Equal(t, name, resources.ServiceAccounts[name].Name)
+	assert.Equal(t, ds.Namespace, resources.ServiceAccounts[name].Namespace)
 	volume := requireVolume(t, ds.Spec.Template.Spec.Volumes, "logs-agent-config")
 	require.NotNil(t, volume.ConfigMap)
-	assert.Equal(t, logsAgentName, volume.ConfigMap.Name)
-	binding := resources.ClusterRoleBindings[logsAgentName]
+	assert.Equal(t, name, volume.ConfigMap.Name)
+	binding := resources.ClusterRoleBindings[name]
 	assert.Equal(t, rbacv1.RoleRef{
-		APIGroup: "rbac.authorization.k8s.io", Kind: "ClusterRole", Name: logsAgentName,
+		APIGroup: "rbac.authorization.k8s.io", Kind: "ClusterRole", Name: name,
 	}, binding.RoleRef)
 	assert.Equal(t, []rbacv1.Subject{{
-		Kind: "ServiceAccount", Name: logsAgentName, Namespace: ds.Namespace,
+		Kind: "ServiceAccount", Name: name, Namespace: ds.Namespace,
 	}}, binding.Subjects)
 	rules := []rbacv1.PolicyRule{{
 		APIGroups: []string{""}, Resources: []string{"nodes", "services", "pods"}, Verbs: []string{"get", "watch", "list"},
@@ -199,7 +200,7 @@ func assertLogsStableIdentity(t *testing.T, resources helmtestutil.KubernetesRes
 			{APIGroups: []string{""}, Resources: []string{"pods"}, Verbs: []string{"get", "list", "watch"}},
 		}
 	}
-	assert.ElementsMatch(t, rules, resources.ClusterRoles[logsAgentName].Rules)
+	assert.ElementsMatch(t, rules, resources.ClusterRoles[name].Rules)
 }
 
 func logsWorkloadOverrides(prefix, owner string) map[string]string {
@@ -228,16 +229,16 @@ func logsWorkloadOverrides(prefix, owner string) map[string]string {
 func TestLogsAgentSelectedWorkloadOverrides(t *testing.T) {
 	for _, otel := range []bool{false, true} {
 		t.Run(fmt.Sprint(otel), func(t *testing.T) {
-			selected, inactive := "logsAgent", "otelLogsAgent"
+			name, selected, inactive := logsAgentName, "logsAgent", "otelLogsAgent"
 			if otel {
-				selected, inactive = inactive, selected
+				name, selected, inactive = otelLogsAgentName, inactive, selected
 			}
 			values := logsWorkloadOverrides(selected, "selected")
-			values["global.features.experimentalOtelLogsAgent"] = fmt.Sprint(otel)
+			values["global.features.experimentalOtelLogsAgent"] = "true"
 			baseline := renderLogsAgent(t, values)
-			ds := baseline.DaemonSets[logsAgentName]
+			ds := baseline.DaemonSets[name]
 			pod := ds.Spec.Template.Spec
-			container := logsContainer(t, baseline)
+			container := logsContainer(t, baseline, name)
 			assert.Equal(t, corev1.ResourceRequirements{
 				Limits: corev1.ResourceList{
 					corev1.ResourceCPU: resource.MustParse("750m"), corev1.ResourceMemory: resource.MustParse("384Mi"),
@@ -263,9 +264,9 @@ func TestLogsAgentSelectedWorkloadOverrides(t *testing.T) {
 			assert.Equal(t, appsv1.DaemonSetUpdateStrategy{Type: appsv1.OnDeleteDaemonSetStrategyType}, ds.Spec.UpdateStrategy)
 			assert.Equal(t, "selected", ds.Spec.Template.Labels["owner"])
 			assert.Equal(t, "selected", ds.Spec.Template.Annotations["owner"])
-			assert.Equal(t, "selected", baseline.ServiceAccounts[logsAgentName].Annotations["owner"])
+			assert.Equal(t, "selected", baseline.ServiceAccounts[name].Annotations["owner"])
 			require.NotEmpty(t, ds.Spec.Template.Annotations["checksum/override-configmap"])
-			assertLogsStableIdentity(t, baseline, otel)
+			assertLogsIdentity(t, baseline, otel)
 			if otel {
 				config := logsOtelConfig(t, baseline)
 				for _, path := range [][]string{
@@ -277,7 +278,7 @@ func TestLogsAgentSelectedWorkloadOverrides(t *testing.T) {
 				}
 			} else {
 				var config map[string]interface{}
-				require.NoError(t, yaml.Unmarshal([]byte(baseline.ConfigMaps[logsAgentName].Data["promtail.yaml"]), &config))
+				require.NoError(t, yaml.Unmarshal([]byte(baseline.ConfigMaps[name].Data["promtail.yaml"]), &config))
 				clients, ok := config["clients"].([]interface{})
 				require.True(t, ok)
 				require.Len(t, clients, 1)
@@ -297,11 +298,11 @@ func TestLogsAgentSelectedWorkloadOverrides(t *testing.T) {
 				values["logsAgent.image.pullSecretName"] = "inactive-pull"
 			}
 			changed := renderLogsAgent(t, values)
-			assert.Equal(t, baseline.DaemonSets[logsAgentName], changed.DaemonSets[logsAgentName])
-			assert.Equal(t, baseline.ConfigMaps[logsAgentName], changed.ConfigMaps[logsAgentName])
-			assert.Equal(t, baseline.ServiceAccounts[logsAgentName], changed.ServiceAccounts[logsAgentName])
-			assert.Equal(t, baseline.ClusterRoles[logsAgentName], changed.ClusterRoles[logsAgentName])
-			assert.Equal(t, baseline.ClusterRoleBindings[logsAgentName], changed.ClusterRoleBindings[logsAgentName])
+			assert.Equal(t, baseline.DaemonSets[name], changed.DaemonSets[name])
+			assert.Equal(t, baseline.ConfigMaps[name], changed.ConfigMaps[name])
+			assert.Equal(t, baseline.ServiceAccounts[name], changed.ServiceAccounts[name])
+			assert.Equal(t, baseline.ClusterRoles[name], changed.ClusterRoles[name])
+			assert.Equal(t, baseline.ClusterRoleBindings[name], changed.ClusterRoleBindings[name])
 		})
 	}
 }

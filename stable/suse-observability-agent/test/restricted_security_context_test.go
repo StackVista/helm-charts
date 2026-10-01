@@ -32,7 +32,11 @@ func TestRestrictedSecurityContext(t *testing.T) {
 			})
 			assertUniqueLogsManifests(t, output)
 			resources := helmtestutil.NewKubernetesResources(t, output)
-			security := logsContainer(t, resources).SecurityContext
+			name := logsAgentName
+			if otel {
+				name = otelLogsAgentName
+			}
+			security := logsContainer(t, resources, name).SecurityContext
 			require.NotNil(t, security)
 			require.NotNil(t, security.SELinuxOptions)
 			require.NotNil(t, security.Privileged)

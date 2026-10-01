@@ -42,10 +42,11 @@ func assertPodAnnotationsAndLabels(t *testing.T, otel bool) {
 		require.True(t, exists, "deployment %s was not found", name)
 		podTemplates[name] = deployment.Spec.Template
 	}
-	for _, name := range []string{
-		"suse-observability-agent-node-agent",
-		"suse-observability-agent-logs-agent",
-	} {
+	daemonSets := []string{"suse-observability-agent-node-agent", logsAgentName}
+	if otel {
+		daemonSets = append(daemonSets, otelLogsAgentName)
+	}
+	for _, name := range daemonSets {
 		daemonSet, exists := resources.DaemonSets[name]
 		require.True(t, exists, "daemonset %s was not found", name)
 		podTemplates[name] = daemonSet.Spec.Template
@@ -61,7 +62,7 @@ func assertPodAnnotationsAndLabels(t *testing.T, otel bool) {
 		"suse-observability-agent-remote-kube-cache": "remote-kube-cache",
 	}
 	if otel {
-		expectedOwner[logsAgentName] = "otel-logs-agent"
+		expectedOwner[otelLogsAgentName] = "otel-logs-agent"
 	}
 
 	for name, expected := range expectedOwner {

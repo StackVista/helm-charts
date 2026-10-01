@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.6`
+Current chart version is `1.7.7`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -99,18 +99,22 @@ Upgrade note: the RBAC agent's updated capability client rejects Receiver
 redirects. Configure the final Receiver ingest URL in `stackstate.url` or its
 backing Secret before adopting the updated RBAC image.
 
-`global.features.experimentalOtelLogsAgent: true` selects OpenTelemetry for the
-existing logs DaemonSet. The flag is false by default. `logsAgent.enabled` controls
-Promtail; `otelLogsAgent.enabled` controls OpenTelemetry. Both enable settings
-default to true. Disabling the selected collector produces no logs workload and
-does not fall back to the other collector. Both are independent of `otel.enabled`.
+`global.features.experimentalOtelLogsAgent: true` allows the OpenTelemetry logs
+collector. The flag is false by default. `logsAgent.enabled` controls Promtail;
+`otelLogsAgent.enabled` controls OpenTelemetry once the flag is set. Both enable
+settings default to true, so setting only the flag runs both collectors side by
+side; set `logsAgent.enabled: false` to replace Promtail. The OTel collector uses
+its own `<release>-otel-logs-agent` DaemonSet, ConfigMap, ServiceAccount and RBAC.
+Both are independent of `otel.enabled`.
 
 Configure each collector through its own values section, including resources,
-scheduling, Pod labels/annotations and ServiceAccount annotations. The OTel
-collector queries the Receiver's authenticated `/features` endpoint at startup
-and selects Promtail-compatible Kubernetes logs or native OTLP export. A stable
-capability change requests a drained container restart; it does not switch routes
-within the running process.
+scheduling, Pod labels/annotations and ServiceAccount annotations. With the default
+`otelLogsAgent.exportMode: auto`, the OTel collector queries the Receiver's
+authenticated `/features` endpoint at startup and selects Promtail-compatible
+Kubernetes logs or native OTLP export. A stable capability change requests a
+drained container restart; it does not switch routes within the running process.
+`exportMode: promtail` or `native` fixes the destination and never queries
+`/features`.
 
 Use an ingest URL ending in `/stsAgent` for `stackstate.url`. The native endpoint
 uses `otel.platformHttpOtlpEndpoint`, then `otel.platformGrpcOtlpEndpoint`, or the
@@ -406,7 +410,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
 | global.features.experimentalOtelKubernetesTopology | bool | `false` | Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled, a stackstate.url ending in /stsAgent, and an otel.k8sResourceCollector.image.tag that includes the stsk8stopology exporter; the default image does not yet. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMap and Secret components are not produced yet. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals. |
-| global.features.experimentalOtelLogsAgent | bool | `false` | Select the experimental OTel pod-log collector instead of Promtail; the selected collector must also be enabled. |
+| global.features.experimentalOtelLogsAgent | bool | `false` | Allow the experimental OTel pod-log collector; it runs when otelLogsAgent.enabled is true, independently of logsAgent.enabled. |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | global.imageRegistry | string | `"quay.io"` | The image registry to use. |
@@ -664,10 +668,11 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond | int | `500` | Maximum traces spans per second exported by the gateway. |
 | otelLogsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | otelLogsAgent.enabled | bool | `true` | Enable OTel pod-log collection when global.features.experimentalOtelLogsAgent is true. |
+| otelLogsAgent.exportMode | string | `"auto"` | `auto` selects the destination from the Receiver's /features endpoint; `promtail` or `native` fixes it without querying /features. |
 | otelLogsAgent.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy. |
 | otelLogsAgent.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for the logs Collector image. |
 | otelLogsAgent.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Container image repository for the logs Collector. |
-| otelLogsAgent.image.tag | string | `"v0.0.61-agent"` | Collector agent image tag for capability discovery and native pod-log export. |
+| otelLogsAgent.image.tag | string | `"v0.0.63-agent"` | Collector agent image tag for capability discovery and native pod-log export. |
 | otelLogsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otelLogsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | otelLogsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |

@@ -167,8 +167,11 @@ checksum/override-configmap: {{ include (print $.Template.BasePath "/node-agent-
 {{- end }}
 
 {{- define "stackstate-k8s-agent.logsAgent.configmap.override.checksum" -}}
-{{- $template := ternary "otel/logsagent/configmap.yaml" "logs-agent-configmap.yaml" .Values.global.features.experimentalOtelLogsAgent -}}
-checksum/override-configmap: {{ include (print $.Template.BasePath "/" $template) . | sha256sum }}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/logs-agent-configmap.yaml") . | sha256sum }}
+{{- end }}
+
+{{- define "stackstate-k8s-agent.otelLogsAgent.configmap.override.checksum" -}}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/otel/logsagent/configmap.yaml") . | sha256sum }}
 {{- end }}
 
 {{- define "stackstate-k8s-agent.checksAgent.configmap.override.checksum" -}}
@@ -781,7 +784,7 @@ seccompProfile:
 {{- fail "OTel logs require an HTTP(S) stackstate.url ending in /stsAgent without credentials, query or fragment" -}}
 {{- end -}}
 {{- end -}}
-{{- if include "stackstate-k8s-agent.platform.otlp.useGrpc" . -}}
+{{- if and (ne .Values.otelLogsAgent.exportMode "promtail") (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) -}}
 {{- $endpoint := .Values.otel.platformGrpcOtlpEndpoint -}}
 {{- if not (regexMatch "^(\\[[0-9A-Fa-f:.]+(%[A-Za-z0-9_.-]+)?\\]|[A-Za-z0-9._-]+):[0-9]+$" $endpoint) -}}
 {{- fail "otel.platformGrpcOtlpEndpoint must have a nonempty host and numeric port (host:port)" -}}

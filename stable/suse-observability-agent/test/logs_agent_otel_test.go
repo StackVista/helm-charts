@@ -22,7 +22,10 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-const logsAgentName = "suse-observability-agent-logs-agent"
+const (
+	logsAgentName     = "suse-observability-agent-logs-agent"
+	otelLogsAgentName = "suse-observability-agent-otel-logs-agent"
+)
 
 func TestLogsAgentOtelBinaryValidation(t *testing.T) {
 	binary := os.Getenv("OTEL_AGENT_BINARY")
@@ -41,6 +44,7 @@ func TestLogsAgentOtelBinaryValidation(t *testing.T) {
 		proxy     bool
 		secrets   bool
 		literals  bool
+		mode      string
 	}{
 		{name: "default"},
 		{name: "secret-default", secrets: true},
@@ -57,10 +61,16 @@ func TestLogsAgentOtelBinaryValidation(t *testing.T) {
 		{name: "grpc-proxy", transport: "grpc", proxy: true},
 		{name: "http-custom-ca-proxy", transport: "http", ca: true, proxy: true},
 		{name: "grpc-custom-ca-proxy", transport: "grpc", ca: true, proxy: true},
+		{name: "fixed-promtail", mode: "promtail"},
+		{name: "fixed-native-http", transport: "http", mode: "native"},
+		{name: "fixed-native-grpc", transport: "grpc", mode: "native"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			values := map[string]string{
 				"stackstate.url": "https://127.0.0.1:18443/receiver/stsAgent",
+			}
+			if tc.mode != "" {
+				values["otelLogsAgent.exportMode"] = tc.mode
 			}
 			switch tc.transport {
 			case "http":
@@ -94,13 +104,13 @@ func TestLogsAgentOtelBinaryValidation(t *testing.T) {
 
 func validateLogsOtelConfig(t *testing.T, binary string, resources helmtestutil.KubernetesResources) {
 	t.Helper()
-	config := resources.ConfigMaps[logsAgentName].Data["otel-logs.yaml"]
+	config := resources.ConfigMaps[otelLogsAgentName].Data["otel-logs.yaml"]
 	require.NotContains(t, config, "ca_file:")
 	dir := t.TempDir()
 	configPath := filepath.Join(dir, "otel-logs.yaml")
 	require.NoError(t, os.WriteFile(configPath, []byte(config), 0600))
 
-	container := logsContainer(t, resources)
+	container := logsContainer(t, resources, otelLogsAgentName)
 	args := append([]string{"validate"}, container.Args...)
 	require.Contains(t, args, "--config=/etc/otel/otel-logs.yaml")
 	for i, arg := range args {
@@ -164,7 +174,7 @@ func renderLogsOtel(t *testing.T, values map[string]string) helmtestutil.Kuberne
 
 func logsOtelConfig(t *testing.T, resources helmtestutil.KubernetesResources) map[string]interface{} {
 	t.Helper()
-	cm, ok := resources.ConfigMaps[logsAgentName]
+	cm, ok := resources.ConfigMaps[otelLogsAgentName]
 	require.True(t, ok, "logs ConfigMap")
 	require.Contains(t, cm.Data, "otel-logs.yaml")
 	assert.NotContains(t, cm.Data, "promtail.yaml")
@@ -183,9 +193,9 @@ func logsConfigMap(t *testing.T, config map[string]interface{}, path ...string) 
 	return config
 }
 
-func logsContainer(t *testing.T, resources helmtestutil.KubernetesResources) corev1.Container {
+func logsContainer(t *testing.T, resources helmtestutil.KubernetesResources, name string) corev1.Container {
 	t.Helper()
-	ds, ok := resources.DaemonSets[logsAgentName]
+	ds, ok := resources.DaemonSets[name]
 	require.True(t, ok, "logs DaemonSet")
 	require.Len(t, ds.Spec.Template.Spec.Containers, 1)
 	container := ds.Spec.Template.Spec.Containers[0]
@@ -283,7 +293,7 @@ func assertLogsOtelBounds(t *testing.T, resources helmtestutil.KubernetesResourc
 		require.NoError(t, err)
 		assert.GreaterOrEqual(t, lifetime, retry+timeout+20*time.Second, name)
 	}
-	grace := resources.DaemonSets[logsAgentName].Spec.Template.Spec.TerminationGracePeriodSeconds
+	grace := resources.DaemonSets[otelLogsAgentName].Spec.Template.Spec.TerminationGracePeriodSeconds
 	require.NotNil(t, grace)
 	assert.Equal(t, int64((lifetime+time.Second-1)/time.Second)+30, *grace)
 }
@@ -331,9 +341,9 @@ func TestLogsAgentOtelFilelogAndEnrichment(t *testing.T) {
 
 func TestLogsAgentOtelPodAndRBAC(t *testing.T) {
 	resources := renderLogsOtel(t, nil)
-	container := logsContainer(t, resources)
-	pod := resources.DaemonSets[logsAgentName].Spec.Template.Spec
-	assert.Equal(t, logsAgentName, pod.ServiceAccountName)
+	container := logsContainer(t, resources, otelLogsAgentName)
+	pod := resources.DaemonSets[otelLogsAgentName].Spec.Template.Spec
+	assert.Equal(t, otelLogsAgentName, pod.ServiceAccountName)
 	require.NotNil(t, pod.TerminationGracePeriodSeconds)
 	assert.Equal(t, int64(120), *pod.TerminationGracePeriodSeconds)
 	require.NotNil(t, container.SecurityContext)
@@ -367,7 +377,7 @@ func TestLogsAgentOtelPodAndRBAC(t *testing.T) {
 	assert.Equal(t, corev1.StorageMediumDefault, state.EmptyDir.Medium)
 	configVolume := requireVolume(t, pod.Volumes, "logs-agent-config")
 	require.NotNil(t, configVolume.ConfigMap)
-	assert.Equal(t, logsAgentName, configVolume.ConfigMap.Name)
+	assert.Equal(t, otelLogsAgentName, configVolume.ConfigMap.Name)
 	for name, path := range map[string]string{"logs": "/var/log", "varlibdockercontainers": "/var/lib/docker/containers"} {
 		volume := requireVolume(t, pod.Volumes, name)
 		require.NotNil(t, volume.HostPath)
@@ -403,21 +413,21 @@ func TestLogsAgentOtelPodAndRBAC(t *testing.T) {
 			assert.Equal(t, tc.threshold, tc.probe.FailureThreshold)
 		})
 	}
-	role, ok := resources.ClusterRoles[logsAgentName]
+	role, ok := resources.ClusterRoles[otelLogsAgentName]
 	require.True(t, ok)
 	assert.Equal(t, []rbacv1.PolicyRule{
 		{APIGroups: []string{""}, Resources: []string{"pods"}, Verbs: []string{"get", "list", "watch"}},
 	}, role.Rules)
-	binding := resources.ClusterRoleBindings[logsAgentName]
-	assert.Equal(t, rbacv1.RoleRef{APIGroup: "rbac.authorization.k8s.io", Kind: "ClusterRole", Name: logsAgentName}, binding.RoleRef)
+	binding := resources.ClusterRoleBindings[otelLogsAgentName]
+	assert.Equal(t, rbacv1.RoleRef{APIGroup: "rbac.authorization.k8s.io", Kind: "ClusterRole", Name: otelLogsAgentName}, binding.RoleRef)
 	assert.Contains(t, binding.Subjects, rbacv1.Subject{
-		Kind: "ServiceAccount", Name: logsAgentName, Namespace: resources.DaemonSets[logsAgentName].Namespace,
+		Kind: "ServiceAccount", Name: otelLogsAgentName, Namespace: resources.DaemonSets[otelLogsAgentName].Namespace,
 	})
 	metrics := logsConfigMap(t, logsOtelConfig(t, resources), "service", "telemetry", "metrics")
 	assert.Equal(t, []interface{}{map[string]interface{}{
 		"pull": map[string]interface{}{"exporter": map[string]interface{}{"prometheus": map[string]interface{}{"host": "0.0.0.0", "port": 8888}}},
 	}}, metrics["readers"])
-	annotations := resources.DaemonSets[logsAgentName].Spec.Template.Annotations
+	annotations := resources.DaemonSets[otelLogsAgentName].Spec.Template.Annotations
 	assert.JSONEq(t, `["openmetrics"]`, annotations["ad.stackstate.com/logs-agent.check_names"])
 	var instances []map[string]interface{}
 	require.NoError(t, json.Unmarshal([]byte(annotations["ad.stackstate.com/logs-agent.instances"]), &instances))
@@ -447,7 +457,7 @@ func TestLogsAgentOtelEndpointsAndSecret(t *testing.T) {
 				"stackstate.customSecretName":      "logs-api-key",
 				"stackstate.customApiKeySecretKey": "receiver-key",
 			})
-			container := logsContainer(t, resources)
+			container := logsContainer(t, resources, otelLogsAgentName)
 			env := envVarsByName(container.Env)
 			assert.Equal(t, tc.endpoint, env["NATIVE_OTLP_URL"])
 			assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent", env["RECEIVER_URL"])
@@ -470,12 +480,12 @@ func TestLogsAgentOtelEndpointsAndSecret(t *testing.T) {
 			assert.Len(t, exporters, 2)
 			assert.Equal(t, []interface{}{tc.exporter}, logsConfigMap(t, config, "service", "pipelines", "logs/native")["exporters"])
 			assert.Equal(t, "${env:NATIVE_OTLP_URL}", logsConfigMap(t, exporters, tc.exporter)["endpoint"])
-			assert.NotContains(t, resources.ConfigMaps[logsAgentName].Data["otel-logs.yaml"], "foobar")
+			assert.NotContains(t, resources.ConfigMaps[otelLogsAgentName].Data["otel-logs.yaml"], "foobar")
 			assert.NotContains(t, resources.Secrets, "logs-api-key")
 		})
 	}
 	resources := renderLogsOtel(t, map[string]string{"global.apiKey.fromSecret": "existing-receiver-key"})
-	assert.Contains(t, logsContainer(t, resources).Env, corev1.EnvVar{
+	assert.Contains(t, logsContainer(t, resources, otelLogsAgentName).Env, corev1.EnvVar{
 		Name: "STS_API_KEY", ValueFrom: &corev1.EnvVarSource{
 			SecretKeyRef: &corev1.SecretKeySelector{
 				LocalObjectReference: corev1.LocalObjectReference{Name: "existing-receiver-key"}, Key: "STS_API_KEY",
@@ -513,7 +523,7 @@ func TestLogsAgentOtelExternalConfiguration(t *testing.T) {
 				}
 			}
 			resources := renderLogsOtel(t, values)
-			container := logsContainer(t, resources)
+			container := logsContainer(t, resources, otelLogsAgentName)
 			assertConfigEnv(t, container.Env, "CLUSTER_NAME", "STS_CLUSTER_NAME", "suse-observability-agent-cluster", "some-k8s-cluster", scenario.clusterSecret)
 			discovery := configEnv(t, container.Env, "RECEIVER_URL")
 			native := configEnv(t, container.Env, "NATIVE_OTLP_URL")
@@ -536,7 +546,7 @@ func TestLogsAgentOtelExternalConfiguration(t *testing.T) {
 			assert.Equal(t, []interface{}{map[string]interface{}{
 				"context": "resource", "statements": []interface{}{`set(resource.attributes["k8s.cluster.name"], "${env:CLUSTER_NAME}")`},
 			}}, logsConfigMap(t, config, "processors", "transform/cluster")["log_statements"])
-			assert.NotContains(t, resources.ConfigMaps[logsAgentName].Data["otel-logs.yaml"], "unused")
+			assert.NotContains(t, resources.ConfigMaps[otelLogsAgentName].Data["otel-logs.yaml"], "unused")
 			assert.NotContains(t, resources.Secrets, "suse-observability-agent-cluster")
 			assert.NotContains(t, resources.Secrets, "suse-observability-agent-url")
 		})
@@ -544,10 +554,14 @@ func TestLogsAgentOtelExternalConfiguration(t *testing.T) {
 }
 
 func TestLogsAgentOtelSelectedImageAndPullSecrets(t *testing.T) {
-	for _, enabled := range []bool{false, true} {
-		t.Run(fmt.Sprint(enabled), func(t *testing.T) {
+	for _, otel := range []bool{false, true} {
+		t.Run(fmt.Sprint(otel), func(t *testing.T) {
+			name := logsAgentName
+			if otel {
+				name = otelLogsAgentName
+			}
 			resources := renderLogsAgent(t, map[string]string{
-				"global.features.experimentalOtelLogsAgent": fmt.Sprint(enabled),
+				"global.features.experimentalOtelLogsAgent": "true",
 				"global.imageRegistry":                      "registry.example.test",
 				"logsAgent.image.repository":                "test/promtail",
 				"logsAgent.image.tag":                       "promtail-test",
@@ -562,15 +576,15 @@ func TestLogsAgentOtelSelectedImageAndPullSecrets(t *testing.T) {
 				"global.imagePullSecrets[2]":                "global-pull",
 				"all.image.pullSecretName":                  "common-pull",
 			})
-			container := logsContainer(t, resources)
-			secrets := resources.DaemonSets[logsAgentName].Spec.Template.Spec.ImagePullSecrets
+			container := logsContainer(t, resources, name)
+			secrets := resources.DaemonSets[name].Spec.Template.Spec.ImagePullSecrets
 			expected := []corev1.LocalObjectReference{
 				{Name: "global-pull"},
 				{Name: "custom-suse-observability-agent-pull"},
 				{Name: "common-pull"},
 				{Name: "suse-observability-agent-pull-secret"},
 			}
-			if enabled {
+			if otel {
 				assert.Equal(t, "registry.example.test/test/collector:collector-test", container.Image)
 				assert.Equal(t, corev1.PullNever, container.ImagePullPolicy)
 				expected = append(expected, corev1.LocalObjectReference{Name: "otel-pull"})
@@ -603,7 +617,7 @@ func TestLogsAgentOtelTLSAndProxy(t *testing.T) {
 					}
 				}
 				resources := renderLogsOtel(t, values)
-				container := logsContainer(t, resources)
+				container := logsContainer(t, resources, otelLogsAgentName)
 				env := envVarsByName(container.Env)
 				assert.Equal(t, "http://proxy.example.test:3128", env["PROXY_URL"])
 				config := logsOtelConfig(t, resources)
@@ -635,7 +649,7 @@ func TestLogsAgentOtelTLSAndProxy(t *testing.T) {
 					assert.Empty(t, env["HTTPS_PROXY"])
 				}
 				if ca != "none" {
-					volume := requireVolume(t, resources.DaemonSets[logsAgentName].Spec.Template.Spec.Volumes, "custom-certificates")
+					volume := requireVolume(t, resources.DaemonSets[otelLogsAgentName].Spec.Template.Spec.Volumes, "custom-certificates")
 					require.NotNil(t, volume.ConfigMap)
 					assert.Empty(t, volume.ConfigMap.Items, "mount every certificate filename from the ConfigMap")
 					assert.Contains(t, container.VolumeMounts, corev1.VolumeMount{
@@ -647,7 +661,7 @@ func TestLogsAgentOtelTLSAndProxy(t *testing.T) {
 					} else {
 						assert.Equal(t, "external-ca", volume.ConfigMap.Name)
 						assert.NotContains(t, resources.ConfigMaps, "suse-observability-agent-custom-certificates")
-						assert.NotContains(t, resources.DaemonSets[logsAgentName].Spec.Template.Annotations, "checksum/custom-certificates")
+						assert.NotContains(t, resources.DaemonSets[otelLogsAgentName].Spec.Template.Annotations, "checksum/custom-certificates")
 					}
 				}
 			})
@@ -711,7 +725,7 @@ func TestLogsAgentOtelHTTPSProxyTransportSelection(t *testing.T) {
 			require.NoError(t, err)
 			assertUniqueLogsManifests(t, output)
 			resources := helmtestutil.NewKubernetesResources(t, output)
-			env := envVarsByName(logsContainer(t, resources).Env)
+			env := envVarsByName(logsContainer(t, resources, otelLogsAgentName).Env)
 			assert.Equal(t, "https://proxy.example.test:8443", env["PROXY_URL"])
 			assert.Empty(t, env["HTTPS_PROXY"])
 			if tc.http != "" {
@@ -725,19 +739,23 @@ func TestLogsAgentOtelHTTPSProxyTransportSelection(t *testing.T) {
 	}
 }
 
-func TestLogsAgentOtelChecksumTracksSelectedConfigAndInlineCA(t *testing.T) {
+func TestLogsAgentOtelChecksumTracksOwnConfigAndInlineCA(t *testing.T) {
 	for _, otel := range []bool{false, true} {
 		t.Run(fmt.Sprint(otel), func(t *testing.T) {
+			name, own, other := logsAgentName, "logsAgent", "otelLogsAgent"
+			if otel {
+				name, own, other = otelLogsAgentName, other, own
+			}
 			render := func(overrides map[string]string) map[string]string {
 				values := map[string]string{
-					"global.features.experimentalOtelLogsAgent": fmt.Sprint(otel),
+					"global.features.experimentalOtelLogsAgent": "true",
 					"global.customCertificates.enabled":         "true",
 					"global.customCertificates.pemData":         "synthetic-ca-one",
 				}
 				for key, value := range overrides {
 					values[key] = value
 				}
-				return renderLogsAgent(t, values).DaemonSets[logsAgentName].Spec.Template.Annotations
+				return renderLogsAgent(t, values).DaemonSets[name].Spec.Template.Annotations
 			}
 			base := render(nil)
 			require.NotEmpty(t, base["checksum/override-configmap"])
@@ -746,26 +764,22 @@ func TestLogsAgentOtelChecksumTracksSelectedConfigAndInlineCA(t *testing.T) {
 			for _, key := range []string{"checksum/override-configmap", "checksum/custom-certificates"} {
 				assert.Equal(t, base[key], repeated[key], "identical inputs must produce stable %s", key)
 			}
-			selected := "logsAgent"
-			if otel {
-				selected = "otelLogsAgent"
-			}
-			tls := render(map[string]string{selected + ".skipSslValidation": "true"})
+			tls := render(map[string]string{own + ".skipSslValidation": "true"})
 			assert.NotEqual(t, base["checksum/override-configmap"], tls["checksum/override-configmap"])
-			for key, value := range map[string]string{
-				"otelLogsAgent.resources.limits.memory": "384Mi",
-			} {
-				changedOtel := render(map[string]string{key: value})
-				if otel {
-					assert.NotEqual(t, base["checksum/override-configmap"], changedOtel["checksum/override-configmap"], key)
-				} else {
-					assert.Equal(t, base["checksum/override-configmap"], changedOtel["checksum/override-configmap"], key)
-				}
+			otherTLS := render(map[string]string{other + ".skipSslValidation": "true"})
+			assert.Equal(t, base["checksum/override-configmap"], otherTLS["checksum/override-configmap"])
+			memory := render(map[string]string{"otelLogsAgent.resources.limits.memory": "384Mi"})
+			if otel {
+				assert.NotEqual(t, base["checksum/override-configmap"], memory["checksum/override-configmap"])
+			} else {
+				assert.Equal(t, base["checksum/override-configmap"], memory["checksum/override-configmap"])
 			}
 			ca := render(map[string]string{"global.customCertificates.pemData": "synthetic-ca-two"})
 			assert.NotEqual(t, base["checksum/custom-certificates"], ca["checksum/custom-certificates"])
-			switched := render(map[string]string{"global.features.experimentalOtelLogsAgent": fmt.Sprint(!otel)})
-			assert.NotEqual(t, base["checksum/override-configmap"], switched["checksum/override-configmap"])
+			if otel {
+				mode := render(map[string]string{"otelLogsAgent.exportMode": "native"})
+				assert.NotEqual(t, base["checksum/override-configmap"], mode["checksum/override-configmap"])
+			}
 		})
 	}
 }
@@ -788,7 +802,7 @@ func TestLogsAgentOtelMemoryLimiterFollowsResources(t *testing.T) {
 				"otelLogsAgent.resources.requests.memory": "120Mi",
 				"otelLogsAgent.resources.limits.cpu":      "500m",
 			})
-			container := logsContainer(t, resources)
+			container := logsContainer(t, resources, otelLogsAgentName)
 			expectedMemory := resource.MustParse(tc.memory)
 			assert.Equal(t, expectedMemory.Value(), container.Resources.Limits.Memory().Value())
 			assert.Equal(t, int64(120*1024*1024), container.Resources.Requests.Memory().Value())
@@ -838,6 +852,99 @@ func TestLogsAgentOtelDiscoveryUsesCollectorPolicy(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestLogsAgentOtelExportMode(t *testing.T) {
+	for _, mode := range []string{"auto", "promtail", "native"} {
+		for _, grpc := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%s/grpc=%t", mode, grpc), func(t *testing.T) {
+				values := map[string]string{"otelLogsAgent.exportMode": mode}
+				exporter := "otlp_http/native"
+				if grpc {
+					values["otel.platformGrpcOtlpEndpoint"] = "native.example.test:443"
+					exporter = "otlp/native"
+				}
+				resources := renderLogsOtel(t, values)
+				config := logsOtelConfig(t, resources)
+				assertLogsOtelBounds(t, resources, config)
+				controller := logsConfigMap(t, config, "extensions", "stslogsagent/logs")
+				if mode == "auto" {
+					assert.Equal(t, true, controller["discovery_enabled"])
+					assert.NotContains(t, controller, "fixed_mode")
+				} else {
+					assert.Equal(t, false, controller["discovery_enabled"])
+					assert.Equal(t, mode, controller["fixed_mode"])
+				}
+				route := logsConfigMap(t, config, "connectors", "stslogsroute/logs")
+				pipelines := logsConfigMap(t, config, "service", "pipelines")
+				exporters := logsConfigMap(t, config, "exporters")
+				extensions := logsConfigMap(t, config, "service")["extensions"]
+				env := envVarsByName(logsContainer(t, resources, otelLogsAgentName).Env)
+				if mode == "promtail" {
+					for _, name := range []string{"NATIVE_OTLP_URL", "HTTPS_PROXY", "NO_PROXY"} {
+						assert.NotContains(t, env, name)
+					}
+					assert.NotContains(t, route, "native_pipeline")
+					assert.Len(t, pipelines, 2)
+					assert.NotContains(t, pipelines, "logs/native")
+					assert.Equal(t, []string{"stsk8slogs/promtail"}, mapKeys(exporters))
+					assert.NotContains(t, logsConfigMap(t, config, "extensions"), "bearertokenauth/native")
+					assert.ElementsMatch(t, []string{"file_storage/logs", "stslogsagent/logs"}, extensions)
+				} else {
+					assert.Equal(t, "logs/native", route["native_pipeline"])
+					assert.Len(t, pipelines, 3)
+					assert.Equal(t, []interface{}{exporter}, logsConfigMap(t, pipelines, "logs/native")["exporters"])
+					assert.ElementsMatch(t, []string{"stsk8slogs/promtail", exporter}, mapKeys(exporters))
+					assert.ElementsMatch(t, []string{"file_storage/logs", "stslogsagent/logs", "bearertokenauth/native"}, extensions)
+				}
+			})
+		}
+	}
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: []string{"values/minimal.yaml", "values/logs-otel-base.yaml", "values/logs-otel-enabled.yaml"},
+		SetValues:   map[string]string{"otelLogsAgent.exportMode": "otel"},
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "exportMode")
+}
+
+func TestLogsAgentOtelFixedPromtailIgnoresNativeSettings(t *testing.T) {
+	for _, tc := range []struct{ name, grpc, proxy string }{
+		{"grpc-https-proxy", "native.example.test:443", "https://proxy.example.test:8443"},
+		{"invalid-grpc-endpoint", "native.example.test", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			values := map[string]string{
+				"otel.platformGrpcOtlpEndpoint": tc.grpc,
+				"global.proxy.url":              tc.proxy,
+			}
+			for _, mode := range []string{"auto", "native"} {
+				values["otelLogsAgent.exportMode"] = mode
+				_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability-agent", &helm.Options{
+					ValuesFiles: []string{"values/minimal.yaml", "values/logs-otel-base.yaml", "values/logs-otel-enabled.yaml"},
+					SetValues:   values,
+				})
+				require.Error(t, err, mode)
+			}
+			values["otelLogsAgent.exportMode"] = "promtail"
+			resources := renderLogsOtel(t, values)
+			env := envVarsByName(logsContainer(t, resources, otelLogsAgentName).Env)
+			for _, name := range []string{"NATIVE_OTLP_URL", "HTTPS_PROXY", "NO_PROXY"} {
+				assert.NotContains(t, env, name)
+			}
+			assert.Equal(t, tc.proxy, env["PROXY_URL"])
+			config := logsOtelConfig(t, resources)
+			assert.Equal(t, []string{"stsk8slogs/promtail"}, mapKeys(logsConfigMap(t, config, "exporters")))
+		})
+	}
+}
+
+func mapKeys(values map[string]interface{}) []string {
+	keys := make([]string, 0, len(values))
+	for key := range values {
+		keys = append(keys, key)
+	}
+	return keys
 }
 
 func TestLogsAgentOtelRejectsInvalidValues(t *testing.T) {

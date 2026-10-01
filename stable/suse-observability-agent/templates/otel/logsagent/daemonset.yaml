@@ -1,21 +1,22 @@
 {{- if and .Values.global.features.experimentalOtelLogsAgent .Values.otelLogsAgent.enabled }}
 {{- $image := .Values.otelLogsAgent.image }}
+{{- $native := ne .Values.otelLogsAgent.exportMode "promtail" }}
 {{- include "stackstate-k8s-agent.logsAgent.validate" . }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ .Release.Name }}-logs-agent
+  name: {{ .Release.Name }}-otel-logs-agent
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "stackstate-k8s-agent.labels" . | indent 4 }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
-    app.kubernetes.io/component: logs-agent
+    app.kubernetes.io/component: otel-logs-agent
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: logs-agent
+      app.kubernetes.io/component: otel-logs-agent
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
 {{- with .Values.otelLogsAgent.updateStrategy }}
@@ -29,14 +30,14 @@ spec:
         ad.stackstate.com/logs-agent.init_configs: '[{}]'
         ad.stackstate.com/logs-agent.instances: '[{"prometheus_url":"http://%%host%%:8888/metrics","namespace":"stackstate","metrics":["*"]}]'
         {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
-        {{- include "stackstate-k8s-agent.logsAgent.configmap.override.checksum" . | nindent 8 }}
+        {{- include "stackstate-k8s-agent.otelLogsAgent.configmap.override.checksum" . | nindent 8 }}
         {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
       {{- with .Values.otelLogsAgent.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app.kubernetes.io/component: logs-agent
+        app.kubernetes.io/component: otel-logs-agent
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
@@ -80,13 +81,15 @@ spec:
             {{- else }}
             value: {{ printf "%s/logs/k8s" (tpl .Values.stackstate.url . | trimAll "/") | quote }}
             {{- end }}
+          {{- if $native }}
           - name: NATIVE_OTLP_URL
             value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
+          {{- end }}
           - name: CLUSTER_NAME
             {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 12 }}
           - name: PROXY_URL
             value: {{ .Values.global.proxy.url | default "" | quote }}
-{{- if include "stackstate-k8s-agent.platform.otlp.useGrpc" . }}
+{{- if and $native (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) }}
           - name: HTTPS_PROXY
             value: {{ .Values.global.proxy.url | default "" | quote }}
           - name: NO_PROXY
@@ -146,7 +149,7 @@ spec:
       {{- if .Values.otelLogsAgent.priorityClassName }}
       priorityClassName: {{ .Values.otelLogsAgent.priorityClassName }}
       {{- end }}
-      serviceAccountName: {{ .Release.Name }}-logs-agent
+      serviceAccountName: {{ .Release.Name }}-otel-logs-agent
     {{- with .Values.otelLogsAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -168,7 +171,7 @@ spec:
             path: /var/lib/docker/containers
         - name: logs-agent-config
           configMap:
-            name: {{ .Release.Name }}-logs-agent
+            name: {{ .Release.Name }}-otel-logs-agent
         - name: logs-agent-state
           emptyDir: {}
       {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 8 }}

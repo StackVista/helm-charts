@@ -1,12 +1,13 @@
 {{- if and .Values.global.features.experimentalOtelLogsAgent .Values.otelLogsAgent.enabled }}
+{{- $mode := .Values.otelLogsAgent.exportMode }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-logs-agent
+  name: {{ .Release.Name }}-otel-logs-agent
   labels:
 {{ include "stackstate-k8s-agent.labels" . | indent 4 }}
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
-    app.kubernetes.io/component: logs-agent
+    app.kubernetes.io/component: otel-logs-agent
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 data:
@@ -18,8 +19,14 @@ data:
         create_directory: true
         recreate: false
       stslogsagent/logs:
+    {{- if eq $mode "auto" }}
         # Select one destination at startup; capability changes request a graceful restart.
         discovery_enabled: true
+    {{- else }}
+        # A fixed destination never queries /features.
+        discovery_enabled: false
+        fixed_mode: {{ $mode }}
+    {{- end }}
         receiver_url: ${env:RECEIVER_URL}
         api_key: ${env:STS_API_KEY}
         proxy_url: ${env:PROXY_URL}
@@ -28,9 +35,11 @@ data:
         state_directory: /var/lib/otelcol/controller
         health_endpoint: 0.0.0.0:13133
         termination_message_path: /dev/termination-log
+    {{- if ne $mode "promtail" }}
       bearertokenauth/native:
         scheme: SUSEObservability
         token: ${env:STS_API_KEY}
+    {{- end }}
     receivers:
       file_log/pods:
         # Each DaemonSet instance collects only node-local pod logs.
@@ -103,7 +112,9 @@ data:
       stslogsroute/logs:
         controller_extension: stslogsagent/logs
         promtail_pipeline: logs/promtail
+    {{- if ne $mode "promtail" }}
         native_pipeline: logs/native
+    {{- end }}
         max_concurrent_calls: 8
         # Drop oversized records individually and split valid records under the same deadline.
         max_record_bytes: 262144
@@ -128,6 +139,7 @@ data:
         sending_queue:
           # Keep exports synchronous so shutdown can account for every admitted call.
           enabled: false
+    {{- if ne $mode "promtail" }}
       {{ if include "stackstate-k8s-agent.platform.otlp.useGrpc" . }}otlp{{ else }}otlp_http{{ end }}/native:
         endpoint: ${env:NATIVE_OTLP_URL}
     {{- if not (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) }}
@@ -146,6 +158,7 @@ data:
         sending_queue:
           # Keep exports synchronous so shutdown can account for every admitted call.
           enabled: false
+    {{- end }}
     service:
       telemetry:
         metrics:
@@ -155,7 +168,7 @@ data:
                   prometheus:
                     host: 0.0.0.0
                     port: 8888
-      extensions: [file_storage/logs, stslogsagent/logs, bearertokenauth/native]
+      extensions: [file_storage/logs, stslogsagent/logs{{ if ne $mode "promtail" }}, bearertokenauth/native{{ end }}]
       pipelines:
         logs/input:
           receivers: [file_log/pods]
@@ -164,7 +177,9 @@ data:
         logs/promtail:
           receivers: [stslogsroute/logs]
           exporters: [stsk8slogs/promtail]
+    {{- if ne $mode "promtail" }}
         logs/native:
           receivers: [stslogsroute/logs]
           exporters: [{{ if include "stackstate-k8s-agent.platform.otlp.useGrpc" . }}otlp{{ else }}otlp_http{{ end }}/native]
+    {{- end }}
 {{- end -}}

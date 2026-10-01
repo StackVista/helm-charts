@@ -1,4 +1,4 @@
-{{- if and (not .Values.global.features.experimentalOtelLogsAgent) .Values.logsAgent.enabled }}
+{{- if .Values.logsAgent.enabled }}
 {{- $image := .Values.logsAgent.image }}
 apiVersion: apps/v1
 kind: DaemonSet

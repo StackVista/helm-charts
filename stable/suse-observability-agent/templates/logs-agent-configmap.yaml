@@ -1,4 +1,4 @@
-{{- if and (not .Values.global.features.experimentalOtelLogsAgent) .Values.logsAgent.enabled }}
+{{- if .Values.logsAgent.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

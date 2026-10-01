@@ -162,8 +162,8 @@ func TestLogsAgentOtelImageTrust(t *testing.T) {
 						require.NoError(t, os.WriteFile(filepath.Join(certDir, "destination.pem"), exportPEM, 0644))
 					}
 				}
-				require.NotContains(t, resources.ConfigMaps[logsAgentName].Data["otel-logs.yaml"], "ca_file:")
-				container := logsContainer(t, resources)
+				require.NotContains(t, resources.ConfigMaps[otelLogsAgentName].Data["otel-logs.yaml"], "ca_file:")
+				container := logsContainer(t, resources, otelLogsAgentName)
 				mounted := false
 				for _, mount := range container.VolumeMounts {
 					if mount.Name == "custom-certificates" {

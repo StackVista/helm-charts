@@ -152,6 +152,14 @@
         "enabled": {
           "type": "boolean"
         },
+        "exportMode": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "promtail",
+            "native"
+          ]
+        },
         "image": {
           "type": "object",
           "required": [
