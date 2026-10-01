@@ -17,8 +17,12 @@ func TestCollectorEndpointEnvironmentConfiguration(t *testing.T) {
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	// A deliberately distinct name catches consumers still using the literal.
-	require.NoError(t, os.WriteFile(filepath.Join(chart, "templates", "_names.tpl"), []byte(
-		`{{- define "stackstate.otelCollector.endpoints.configmap.fullname" -}}explicit-endpoints{{- end -}}`), 0600))
+	names, err := os.OpenFile(filepath.Join(chart, "templates", "_names.tpl"), os.O_APPEND|os.O_WRONLY, 0600)
+	require.NoError(t, err)
+	_, err = names.WriteString("\n" +
+		`{{- define "stackstate.otelCollector.endpoints.configmap.fullname" -}}explicit-endpoints{{- end -}}`)
+	require.NoError(t, err)
+	require.NoError(t, names.Close())
 	ref := func(name, config, key string) corev1.EnvVar {
 		return corev1.EnvVar{Name: name, ValueFrom: &corev1.EnvVarSource{
 			ConfigMapKeyRef: &corev1.ConfigMapKeySelector{

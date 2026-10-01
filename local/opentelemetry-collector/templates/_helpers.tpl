@@ -70,32 +70,6 @@ app.kubernetes.io/name: {{ include "opentelemetry-collector.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "opentelemetry-collector.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "opentelemetry-collector.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-
-{{/*
-Create the name of the clusterRole to use
-*/}}
-{{- define "opentelemetry-collector.clusterRoleName" -}}
-{{- default (include "opentelemetry-collector.fullname" .) .Values.clusterRole.name }}
-{{- end }}
-
-{{/*
-Create the name of the clusterRoleBinding to use
-*/}}
-{{- define "opentelemetry-collector.clusterRoleBindingName" -}}
-{{- default (include "opentelemetry-collector.fullname" .) .Values.clusterRole.clusterRoleBinding.name }}
-{{- end }}
-
 {{- define "opentelemetry-collector.podAnnotations" -}}
 {{- if .Values.podAnnotations }}
 {{- tpl (.Values.podAnnotations | toYaml) . }}
@@ -222,7 +196,16 @@ Get ConfigMap name if existingName is defined, otherwise use default name for ge
   {{- if .Values.configMap.existingName -}}
     {{- .Values.configMap.existingName }}
   {{- else }}
-    {{- printf "%s%s" (include "opentelemetry-collector.fullname" .) (.configmapSuffix) }}
+    {{- if eq .configmapSuffix "-agent" -}}
+      {{- include "opentelemetry-collector.daemonset.configmap.fullname" . -}}
+    {{- else if eq .configmapSuffix "-statefulset" -}}
+      {{- include "opentelemetry-collector.statefulset.configmap.fullname" . -}}
+    {{- else if eq .configmapSuffix "" -}}
+      {{- include "opentelemetry-collector.deployment.configmap.fullname" . -}}
+    {{- else -}}
+      {{/* Preserve the legacy interface for callers supplying another suffix. */}}
+      {{- printf "%s%s" (include "opentelemetry-collector.fullname" .) .configmapSuffix -}}
+    {{- end }}
   {{- end -}}
 {{- end }}
 
