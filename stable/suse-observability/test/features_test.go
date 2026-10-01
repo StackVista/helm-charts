@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	expectedClickhouseConfig = "stackstate.traces.clickHouse ="
+	expectedClickhouseConfig = "stackstate.clickHouse ="
 	monolithComponent        = "suse-observability-server"
 	serverServiceName        = "suse-observability-server-headless"
 )
@@ -294,6 +294,13 @@ func TestFeaturesOtelLogsDefault(t *testing.T) {
 
 	receiverNotExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelLogs", Value: "true"}
 	assert.NotContains(t, receiverDeployment.Spec.Template.Spec.Containers[0].Env, receiverNotExpected, "Receiver deployment should not have otelLogs feature flag by default")
+
+	assert.NotContains(t, envNames(deployment.Spec.Template.Spec.Containers[0].Env), "CONFIG_FORCE_stackstate_logs_retentionDays")
+
+	collectorConfig, ok := resources.ConfigMaps["suse-observability-otel-collector-statefulset"]
+	require.True(t, ok, "Collector configmap should exist")
+	assert.NotContains(t, collectorConfig.Data["relay"], "logs/clickhouse")
+	assert.NotContains(t, collectorConfig.Data["relay"], "create_logs_table")
 }
 
 func TestFeaturesOtelLogsEnabledSplit(t *testing.T) {
@@ -302,7 +309,8 @@ func TestFeaturesOtelLogsEnabledSplit(t *testing.T) {
 			"values/full.yaml",
 		},
 		SetValues: map[string]string{
-			"global.features.experimentalOtelLogs": "true",
+			"global.features.experimentalOtelLogs":     "true",
+			"stackstate.components.receiver.retention": "11",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
 			Namespace: "suse-observability",
@@ -316,6 +324,13 @@ func TestFeaturesOtelLogsEnabledSplit(t *testing.T) {
 
 	expected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_featureSwitches_otelLogs", Value: "true"}
 	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "API deployment should have otelLogs feature flag enabled")
+
+	retention := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_logs_retentionDays", Value: "11"}
+	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, retention, "API deployment should use the receiver log retention for OTel logs")
+
+	collectorConfig, ok := resources.ConfigMaps["suse-observability-otel-collector-statefulset"]
+	require.True(t, ok, "Collector configmap should exist")
+	assert.Contains(t, collectorConfig.Data["relay"], "logs/clickhouse")
 
 	receiverDeployment, ok := resources.Deployments["suse-observability-receiver"]
 	require.True(t, ok, "Receiver deployment should exist")
@@ -345,6 +360,7 @@ func TestFeaturesOtelLogsEnabledNonSplit(t *testing.T) {
 
 	expected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_featureSwitches_otelLogs", Value: "true"}
 	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "Server deployment should have otelLogs feature flag enabled")
+	assert.Contains(t, envNames(deployment.Spec.Template.Spec.Containers[0].Env), "CONFIG_FORCE_stackstate_logs_retentionDays")
 }
 
 func TestFeaturesExperimentalRejected(t *testing.T) {

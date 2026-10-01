@@ -1,0 +1,15 @@
+stackstate:
+  baseUrl: https://the-instance.stackstate.io
+  deployment:
+    mode: SelfHosted
+    edition: Community
+  license:
+    key: test-key
+  authentication:
+    adminPassword: test
+  features:
+    traces: false
+
+global:
+  features:
+    experimentalOtelLogs: true

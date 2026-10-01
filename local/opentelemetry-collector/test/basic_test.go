@@ -187,6 +187,76 @@ func TestCollectorConfigDefaultsAndOverrides(t *testing.T) {
 	}
 }
 
+func TestOtelLogsClickHousePipeline(t *testing.T) {
+	type pipeline struct {
+		Receivers  []string `yaml:"receivers"`
+		Processors []string `yaml:"processors"`
+		Exporters  []string `yaml:"exporters"`
+	}
+	type collectorConfig struct {
+		Exporters map[string]map[string]interface{} `yaml:"exporters"`
+		Service   struct {
+			Pipelines map[string]pipeline `yaml:"pipelines"`
+		} `yaml:"service"`
+	}
+	render := func(t *testing.T, values map[string]string) collectorConfig {
+		output := helmtestutil.RenderHelmTemplateOptsNoError(t, releaseName, &helm.Options{
+			ValuesFiles: []string{"values/default.yaml"},
+			SetValues:   values,
+		})
+		resources := helmtestutil.NewKubernetesResources(t, output)
+		var config collectorConfig
+		require.NoError(t, yaml.Unmarshal([]byte(resources.ConfigMaps[fullName].Data["relay"]), &config))
+		return config
+	}
+
+	t.Run("disabled by default", func(t *testing.T) {
+		config := render(t, nil)
+		assert.NotContains(t, config.Service.Pipelines, "logs/clickhouse")
+		assert.NotContains(t, config.Exporters, "clickhousests/logs")
+		assert.Contains(t, config.Service.Pipelines, "traces/clickhouse")
+		// Released collector images reject unknown exporter keys, so flag-off must not render them.
+		assert.NotContains(t, config.Exporters["clickhousests"], "create_logs_table")
+		assert.NotContains(t, config.Exporters["clickhousests"], "logs_resources_table_name")
+	})
+
+	t.Run("enabled by experimentalOtelLogs", func(t *testing.T) {
+		config := render(t, map[string]string{"global.features.experimentalOtelLogs": "true"})
+		assert.Equal(t, pipeline{
+			Receivers:  []string{"forward"},
+			Processors: []string{"resource/removeStsApiKey", "attributes/removeStsApiKey"},
+			Exporters:  []string{"clickhousests/logs"},
+		}, config.Service.Pipelines["logs/clickhouse"])
+		assert.Contains(t, config.Service.Pipelines["logs"].Exporters, "forward")
+		assert.Contains(t, config.Service.Pipelines, "logs/topology_input")
+		assert.Equal(t, []string{"clickhousests"}, config.Service.Pipelines["traces/clickhouse"].Exporters)
+
+		logsExporter := config.Exporters["clickhousests/logs"]
+		assert.Equal(t, false, logsExporter["create_logs_table"])
+		assert.Equal(t, "otel_logs", logsExporter["logs_table_name"])
+		assert.Equal(t, "otel_logs_resources", logsExporter["logs_resources_table_name"])
+		assert.Equal(t, config.Exporters["clickhousests"]["endpoint"], logsExporter["endpoint"], "reuses the traces connection")
+		assert.Equal(t, map[string]interface{}{
+			"batch": map[string]interface{}{"sizer": "items", "flush_timeout": "2s", "min_size": 10000, "max_size": 20000},
+		}, logsExporter["sending_queue"])
+
+		// The traces exporter is untouched: no logs keys, no queue batching.
+		assert.NotContains(t, config.Exporters["clickhousests"], "create_logs_table")
+		assert.NotContains(t, config.Exporters["clickhousests"], "sending_queue")
+	})
+
+	t.Run("alternateConfig is not merged with the logs pipeline", func(t *testing.T) {
+		config := render(t, map[string]string{
+			"global.features.experimentalOtelLogs":             "true",
+			"alternateConfig.exporters.debug.verbosity":        "basic",
+			"alternateConfig.service.pipelines.logs.exporters": "{debug}",
+		})
+		assert.Equal(t, map[string]pipeline{"logs": {Exporters: []string{"debug"}}}, config.Service.Pipelines)
+		assert.NotContains(t, config.Exporters, "clickhousests")
+		assert.NotContains(t, config.Exporters, "clickhousests/logs")
+	})
+}
+
 func TestSendingQueueNoEnabledField(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)

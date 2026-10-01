@@ -2,8 +2,46 @@
 {{- if .Values.alternateConfig }}
 {{- .Values.alternateConfig | toYaml }}
 {{- else }}
-{{- .Values.config | toYaml }}
+{{- $config := deepCopy .Values.config }}
+{{- if (.Values.global.features).experimentalOtelLogs }}
+{{- $logsExporter := mustMergeOverwrite (deepCopy (index $config.exporters "clickhousests")) (include "opentelemetry-collector.otelLogsExporter" . | fromYaml) }}
+{{- $_ := set $config.exporters "clickhousests/logs" $logsExporter }}
+{{- $config = mustMergeOverwrite $config (include "opentelemetry-collector.otelLogsConfig" . | fromYaml) }}
 {{- end }}
+{{- $config | toYaml }}
+{{- end }}
+{{- end }}
+
+{{/*
+Merged into the default config only: it references components defined there, and alternateConfig is not merged.
+The logs exporter reuses the clickhousests connection; its keys stay behind the flag because released collector
+images reject unknown keys, and a separate instance keeps its queue settings away from traces.
+*/}}
+{{- define "opentelemetry-collector.otelLogsExporter" -}}
+logs_resources_table_name: otel_logs_resources
+# StackState migrations own the replicated schema and retention for these tables.
+create_logs_table: false
+# Batching in the exporter queue; each flushed batch is one ClickHouse insert per table.
+sending_queue:
+  batch:
+    sizer: items
+    flush_timeout: 2s
+    min_size: 10000
+    max_size: 20000
+{{- end }}
+
+{{- define "opentelemetry-collector.otelLogsConfig" -}}
+service:
+  pipelines:
+    # clickhousests drops records with an EventName; those are OTel events, not logs.
+    logs/clickhouse:
+      receivers:
+        - forward
+      processors:
+        - resource/removeStsApiKey
+        - attributes/removeStsApiKey
+      exporters:
+        - clickhousests/logs
 {{- end }}
 
 {{/*

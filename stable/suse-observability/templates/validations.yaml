@@ -19,6 +19,13 @@
   {{- fail "stackstate.experimental is removed. Use stackstate.features instead." -}}
 {{- end }}
 
+{{- /* The OTel logs schema migration and its ClickHouse connection currently run inside the traces
+service; with traces disabled the collector still renders the logs pipeline but writes never reach a
+ClickHouse connection, exhausting retries. */ -}}
+{{- if and (.Values.global.features).experimentalOtelLogs (not .Values.stackstate.features.traces) -}}
+  {{- fail "global.features.experimentalOtelLogs=true requires stackstate.features.traces=true: the OTel logs schema migration and ClickHouse connection currently run inside the traces service. Enable stackstate.features.traces, or disable experimentalOtelLogs." -}}
+{{- end }}
+
 {{- /* Validate removed internal constants — these were promoted to named templates and any user override is silently ignored. */ -}}
 {{- if .Values.stackstate.components.mcp.listenAddress -}}
   {{- fail "stackstate.components.mcp.listenAddress is removed. Please delete it from your values file." -}}
