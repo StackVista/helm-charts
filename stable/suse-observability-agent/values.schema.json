@@ -198,10 +198,7 @@
               ],
               "properties": {
                 "memory": {
-                  "type": [
-                    "string",
-                    "number"
-                  ]
+                  "type": ["string", "number"]
                 }
               }
             }

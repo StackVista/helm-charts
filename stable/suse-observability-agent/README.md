@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.4`
+Current chart version is `1.7.5`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -90,6 +90,15 @@ stackstate/suse-observability-agent
 
 ## OpenTelemetry pod logs
 
+The logs Collector requires capability discovery, native export and the delivery
+and shutdown fixes. Before this chart can be merged or released, the selected
+Collector release must be published and qualified, a compatible released RBAC image
+adopted, and full bundle validation and product acceptance completed.
+
+Upgrade note: the RBAC agent's updated capability client rejects Receiver
+redirects. Configure the final Receiver ingest URL in `stackstate.url` or its
+backing Secret before adopting the updated RBAC image.
+
 `global.features.experimentalOtelLogsAgent: true` selects OpenTelemetry for the
 existing logs DaemonSet. The flag is false by default. `logsAgent.enabled` controls
 Promtail; `otelLogsAgent.enabled` controls OpenTelemetry. Both enable settings
@@ -98,16 +107,24 @@ does not fall back to the other collector. Both are independent of `otel.enabled
 
 Configure each collector through its own values section, including resources,
 scheduling, Pod labels/annotations and ServiceAccount annotations. The OTel
-collector sends Promtail-compatible Kubernetes logs to `stackstate.url` plus
-`/logs/k8s`. Use an ingest URL ending in `/stsAgent` for `stackstate.url`.
-The exporter uses `global.proxy.url`, custom certificates and the combined
-global/`otelLogsAgent` TLS verification setting. Enable `global.customCertificates` with
+collector queries the Receiver's authenticated `/features` endpoint at startup
+and selects Promtail-compatible Kubernetes logs or native OTLP export. A stable
+capability change requests a drained container restart; it does not switch routes
+within the running process.
+
+Use an ingest URL ending in `/stsAgent` for `stackstate.url`. The native endpoint
+uses `otel.platformHttpOtlpEndpoint`, then `otel.platformGrpcOtlpEndpoint`, or the
+ingest URL plus `/otel`. These overrides do not change discovery or Promtail-compatible export.
+The HTTP exporter appends `/v1/logs`. All clients use `global.proxy.url`, custom
+certificates and the combined global/`otelLogsAgent` TLS verification setting. gRPC
+uses `HTTPS_PROXY` with an `http://` CONNECT proxy; use HTTP OTLP export when the
+proxy itself requires TLS (`https://`). Enable `global.customCertificates` with
 inline `pemData` or an existing `configMapName`. All certificate files from the
 ConfigMap are mounted read-only at `/etc/pki/tls/certs`, alongside system trust;
 inline PEM is stored as `tls.pem`. Restart the pods after changing an external CA
 ConfigMap; external changes do not trigger a chart checksum or live trust reload.
 
-Filelog checkpoints use an `emptyDir`. Container restart preserves
+Checkpoints and restart metadata use an `emptyDir`. Container restart preserves
 it; Pod replacement, switching from Promtail, rollback and re-enablement can replay
 available logs. Promtail offsets are not converted. The collector reads existing
 files from the beginning when checkpoints are absent. Export retries can also
@@ -120,10 +137,12 @@ limit is required. Health probes distinguish readiness from liveness so export
 outages do not trigger liveness restarts. Metrics use the existing OpenMetrics
 scrape annotations, independently of other OTel workloads.
 
-Filelog and export bounds are fixed in `templates/otel-logs-agent-configmap.yaml`
-for this experimental iteration. Export is synchronous, with the exporter queue
-disabled and no asynchronous batch processor. The fixed pod termination grace
-allows in-flight exports to finish.
+The Collector fixes capability-query bounds, polling jitter, stable observations
+and restart cooldown internally. Filelog and export bounds are fixed in
+`templates/otel/logsagent/configmap.yaml` for this experimental iteration. Export
+is synchronous, with both exporter queues disabled and no asynchronous batch
+processor. The connector owns delivery admission and drain for both routes. The
+fixed pod termination grace allows in-flight exports to finish.
 
 Select its image through `otelLogsAgent.image` and configure pull secrets through
 `otelLogsAgent.image.pullSecretName` or `global.imagePullSecrets`;
@@ -646,7 +665,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otelLogsAgent.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy. |
 | otelLogsAgent.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for the logs Collector image. |
 | otelLogsAgent.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Container image repository for the logs Collector. |
-| otelLogsAgent.image.tag | string | `"v0.0.60-agent"` | Collector image tag for Promtail-compatible pod-log export. |
+| otelLogsAgent.image.tag | string | `"v0.0.61-agent"` | Collector agent image tag for capability discovery and native pod-log export. |
 | otelLogsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otelLogsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | otelLogsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |

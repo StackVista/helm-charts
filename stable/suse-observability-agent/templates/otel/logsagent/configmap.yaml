@@ -18,7 +18,19 @@ data:
         create_directory: true
         recreate: false
       stslogsagent/logs:
+        # Select one destination at startup; capability changes request a graceful restart.
+        discovery_enabled: true
+        receiver_url: ${env:RECEIVER_URL}
+        api_key: ${env:STS_API_KEY}
+        proxy_url: ${env:PROXY_URL}
+        tls:
+          insecure_skip_verify: {{ or .Values.global.skipSslValidation .Values.otelLogsAgent.skipSslValidation }}
+        state_directory: /var/lib/otelcol/controller
         health_endpoint: 0.0.0.0:13133
+        termination_message_path: /dev/termination-log
+      bearertokenauth/native:
+        scheme: SUSEObservability
+        token: ${env:STS_API_KEY}
     receivers:
       file_log/pods:
         # Each DaemonSet instance collects only node-local pod logs.
@@ -32,7 +44,7 @@ data:
         max_concurrent_files: 4
         max_log_size: 256KiB
         retry_on_failure:
-          # Synchronous completion makes the exporter the sole retry owner.
+          # Only the selected exporter retries; Filelog and the routing connector do not retry.
           enabled: false
         operators:
           - type: container
@@ -66,6 +78,12 @@ data:
             - container.id
             - container.image.name
             - container.image.tag
+            - k8s.deployment.name
+            - k8s.replicaset.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.job.name
+            - k8s.cronjob.name
         pod_association:
           - sources:
               - from: resource_attribute
@@ -81,23 +99,44 @@ data:
           - context: resource
             statements:
               - set(resource.attributes["k8s.cluster.name"], "${env:CLUSTER_NAME}")
+    connectors:
+      stslogsroute/logs:
+        controller_extension: stslogsagent/logs
+        promtail_pipeline: logs/promtail
+        native_pipeline: logs/native
+        max_concurrent_calls: 8
+        # Drop oversized records individually and split valid records under the same deadline.
+        max_record_bytes: 262144
+        max_request_bytes: 1048576
+        # Delivery and retries share one deadline within the Pod's termination grace period.
+        export_lifetime: 90s
     exporters:
       stsk8slogs/promtail:
-        delivery:
-          controller_extension: stslogsagent/logs
-          max_concurrent_calls: 8
-          # Drop oversized records individually and split valid records under the same deadline.
-          max_record_bytes: 262144
-          max_request_bytes: 1048576
-          # Delivery and retries share one deadline within the Pod's termination grace period.
-          export_lifetime: 90s
-        # Use the Promtail-compatible legacy logs endpoint directly.
+        # The router selects this Promtail endpoint or the native OTLP destination.
         endpoint: ${env:PROMTAIL_LOGS_URL}
         api_key: ${env:STS_API_KEY}
         proxy_url: ${env:PROXY_URL}
         tls:
           insecure_skip_verify: {{ or .Values.global.skipSslValidation .Values.otelLogsAgent.skipSslValidation }}
         cluster_name: ${env:CLUSTER_NAME}
+        timeout: 5s
+        retry_on_failure:
+          enabled: true
+          initial_interval: 1s
+          max_interval: 5s
+          max_elapsed_time: 30s
+        sending_queue:
+          # Keep exports synchronous so shutdown can account for every admitted call.
+          enabled: false
+      {{ if include "stackstate-k8s-agent.platform.otlp.useGrpc" . }}otlp{{ else }}otlp_http{{ end }}/native:
+        endpoint: ${env:NATIVE_OTLP_URL}
+    {{- if not (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) }}
+        proxy_url: ${env:PROXY_URL}
+    {{- end }}
+        tls:
+          insecure_skip_verify: {{ or .Values.global.skipSslValidation .Values.otelLogsAgent.skipSslValidation }}
+        auth:
+          authenticator: bearertokenauth/native
         timeout: 5s
         retry_on_failure:
           enabled: true
@@ -116,10 +155,16 @@ data:
                   prometheus:
                     host: 0.0.0.0
                     port: 8888
-      extensions: [file_storage/logs, stslogsagent/logs]
+      extensions: [file_storage/logs, stslogsagent/logs, bearertokenauth/native]
       pipelines:
         logs/input:
           receivers: [file_log/pods]
           processors: [memory_limiter, transform/static_pod, k8s_attributes, transform/cluster]
+          exporters: [stslogsroute/logs]
+        logs/promtail:
+          receivers: [stslogsroute/logs]
           exporters: [stsk8slogs/promtail]
+        logs/native:
+          receivers: [stslogsroute/logs]
+          exporters: [{{ if include "stackstate-k8s-agent.platform.otlp.useGrpc" . }}otlp{{ else }}otlp_http{{ end }}/native]
 {{- end -}}

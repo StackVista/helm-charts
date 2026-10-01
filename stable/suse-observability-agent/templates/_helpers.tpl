@@ -697,4 +697,15 @@ seccompProfile:
 {{- fail "OTel logs require an HTTP(S) stackstate.url ending in /stsAgent without credentials, query or fragment" -}}
 {{- end -}}
 {{- end -}}
+{{- if include "stackstate-k8s-agent.platform.otlp.useGrpc" . -}}
+{{- $endpoint := .Values.otel.platformGrpcOtlpEndpoint -}}
+{{- if not (regexMatch "^(\\[[0-9A-Fa-f:.]+(%[A-Za-z0-9_.-]+)?\\]|[A-Za-z0-9._-]+):[0-9]+$" $endpoint) -}}
+{{- fail "otel.platformGrpcOtlpEndpoint must have a nonempty host and numeric port (host:port)" -}}
+{{- end -}}
+{{- $port := regexFind "[0-9]+$" $endpoint | int -}}
+{{- if or (lt $port 1) (gt $port 65535) -}}{{- fail "otel.platformGrpcOtlpEndpoint port must be between 1 and 65535" -}}{{- end -}}
+{{- if hasPrefix "https://" (.Values.global.proxy.url | lower) -}}
+{{- fail "OTel logs gRPC requires an http:// CONNECT proxy; use the HTTP OTLP endpoint for an https:// proxy" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}

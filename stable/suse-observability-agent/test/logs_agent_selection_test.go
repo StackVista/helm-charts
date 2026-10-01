@@ -269,7 +269,9 @@ func TestLogsAgentSelectedWorkloadOverrides(t *testing.T) {
 			if otel {
 				config := logsOtelConfig(t, baseline)
 				for _, path := range [][]string{
+					{"extensions", "stslogsagent/logs", "tls"},
 					{"exporters", "stsk8slogs/promtail", "tls"},
+					{"exporters", "otlp_http/native", "tls"},
 				} {
 					assert.Equal(t, true, logsConfigMap(t, config, path...)["insecure_skip_verify"])
 				}

@@ -625,8 +625,8 @@ otelLogsAgent:
   image:
     # otelLogsAgent.image.repository -- Container image repository for the logs Collector.
     repository: stackstate/sts-opentelemetry-collector
-    # otelLogsAgent.image.tag -- Collector image tag for Promtail-compatible pod-log export.
-    tag: "v0.0.60-agent"
+    # otelLogsAgent.image.tag -- Collector agent image tag for capability discovery and native pod-log export.
+    tag: "v0.0.61-agent"
     # otelLogsAgent.image.pullPolicy -- Container image pull policy.
     pullPolicy: IfNotPresent
     # otelLogsAgent.image.pullSecretName -- Name of ImagePullSecret to use for the logs Collector image.

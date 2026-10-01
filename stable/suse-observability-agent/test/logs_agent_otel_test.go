@@ -34,28 +34,60 @@ func TestLogsAgentOtelBinaryValidation(t *testing.T) {
 	binary, err = filepath.Abs(binary)
 	require.NoError(t, err)
 
-	for _, scenario := range []struct {
-		name   string
-		values map[string]string
+	for _, tc := range []struct {
+		name      string
+		transport string
+		ca        bool
+		proxy     bool
+		secrets   bool
+		literals  bool
 	}{
-		{name: "literal values", values: map[string]string{
-			"stackstate.url": "https://127.0.0.1:18443/receiver/stsAgent",
-		}},
-		{name: "Secret-only configuration", values: map[string]string{
-			"global.url.fromSecret":         "receiver-url",
-			"global.clusterName.fromSecret": "cluster-name",
-			"stackstate.url":                "null",
-			"stackstate.cluster.name":       "null",
-		}},
-		{name: "Secrets override literals", values: map[string]string{
-			"global.url.fromSecret":         "receiver-url",
-			"global.clusterName.fromSecret": "cluster-name",
-			"stackstate.url":                "unused-url",
-			"stackstate.cluster.name":       "unused-cluster",
-		}},
+		{name: "default"},
+		{name: "secret-default", secrets: true},
+		{name: "secret-http", transport: "http", secrets: true},
+		{name: "secret-grpc", transport: "grpc", secrets: true},
+		{name: "secret-overrides-default", secrets: true, literals: true},
+		{name: "secret-overrides-http", transport: "http", secrets: true, literals: true},
+		{name: "secret-overrides-grpc", transport: "grpc", secrets: true, literals: true},
+		{name: "http", transport: "http"},
+		{name: "grpc", transport: "grpc"},
+		{name: "http-custom-ca", transport: "http", ca: true},
+		{name: "grpc-custom-ca", transport: "grpc", ca: true},
+		{name: "http-proxy", transport: "http", proxy: true},
+		{name: "grpc-proxy", transport: "grpc", proxy: true},
+		{name: "http-custom-ca-proxy", transport: "http", ca: true, proxy: true},
+		{name: "grpc-custom-ca-proxy", transport: "grpc", ca: true, proxy: true},
 	} {
-		t.Run(scenario.name, func(t *testing.T) {
-			validateLogsOtelConfig(t, binary, renderLogsOtel(t, scenario.values))
+		t.Run(tc.name, func(t *testing.T) {
+			values := map[string]string{
+				"stackstate.url": "https://127.0.0.1:18443/receiver/stsAgent",
+			}
+			switch tc.transport {
+			case "http":
+				values["otel.platformHttpOtlpEndpoint"] = "https://127.0.0.1:14318/native"
+			case "grpc":
+				values["otel.platformGrpcOtlpEndpoint"] = "127.0.0.1:14317"
+			}
+			if tc.ca {
+				values["global.customCertificates.enabled"] = "true"
+				values["global.customCertificates.configMapName"] = "validation-ca"
+			}
+			if tc.proxy {
+				values["global.proxy.url"] = "http://127.0.0.1:13128"
+			}
+			if tc.secrets {
+				values["global.url.fromSecret"] = "receiver-url"
+				values["global.clusterName.fromSecret"] = "cluster-name"
+				values["stackstate.url"] = "null"
+				values["stackstate.cluster.name"] = "null"
+				if tc.literals {
+					values["stackstate.url"] = "unused-url"
+					values["stackstate.cluster.name"] = "unused-cluster"
+				}
+			}
+			resources := renderLogsOtel(t, values)
+			assertLogsOtelBounds(t, resources, logsOtelConfig(t, resources))
+			validateLogsOtelConfig(t, binary, resources)
 		})
 	}
 }
@@ -63,6 +95,7 @@ func TestLogsAgentOtelBinaryValidation(t *testing.T) {
 func validateLogsOtelConfig(t *testing.T, binary string, resources helmtestutil.KubernetesResources) {
 	t.Helper()
 	config := resources.ConfigMaps[logsAgentName].Data["otel-logs.yaml"]
+	require.NotContains(t, config, "ca_file:")
 	dir := t.TempDir()
 	configPath := filepath.Join(dir, "otel-logs.yaml")
 	require.NoError(t, os.WriteFile(configPath, []byte(config), 0600))
@@ -165,36 +198,58 @@ func TestLogsAgentOtelGraphAndBounds(t *testing.T) {
 	config := logsOtelConfig(t, resources)
 	assert.Len(t, logsConfigMap(t, config, "receivers"), 1)
 	assert.Len(t, logsConfigMap(t, config, "processors"), 4)
-	assert.NotContains(t, config, "connectors")
-	assert.Len(t, logsConfigMap(t, config, "exporters"), 1)
-	assert.Len(t, logsConfigMap(t, config, "service", "pipelines"), 1)
+	assert.Len(t, logsConfigMap(t, config, "connectors"), 1)
+	assert.Len(t, logsConfigMap(t, config, "exporters"), 2)
+	assert.Len(t, logsConfigMap(t, config, "service", "pipelines"), 3)
 	for id, expected := range map[string]map[string]interface{}{
 		"logs/input": {
 			"receivers":  []interface{}{"file_log/pods"},
 			"processors": []interface{}{"memory_limiter", "transform/static_pod", "k8s_attributes", "transform/cluster"},
-			"exporters":  []interface{}{"stsk8slogs/promtail"},
+			"exporters":  []interface{}{"stslogsroute/logs"},
+		},
+		"logs/promtail": {
+			"receivers": []interface{}{"stslogsroute/logs"},
+			"exporters": []interface{}{"stsk8slogs/promtail"},
+		},
+		"logs/native": {
+			"receivers": []interface{}{"stslogsroute/logs"},
+			"exporters": []interface{}{"otlp_http/native"},
 		},
 	} {
 		assert.Equal(t, expected, logsConfigMap(t, config, "service", "pipelines", id), id)
 	}
-	assert.Equal(t, map[string]interface{}{
+	route := logsConfigMap(t, config, "connectors", "stslogsroute/logs")
+	for key, expected := range map[string]interface{}{
 		"controller_extension": "stslogsagent/logs",
+		"promtail_pipeline":    "logs/promtail",
+		"native_pipeline":      "logs/native",
 		"max_concurrent_calls": 8,
 		"max_record_bytes":     262144,
 		"max_request_bytes":    1048576,
 		"export_lifetime":      "90s",
-	}, logsConfigMap(t, config, "exporters", "stsk8slogs/promtail", "delivery"))
+	} {
+		assert.EqualValues(t, expected, route[key], key)
+	}
 	assert.Equal(t, map[string]interface{}{
 		"directory": "/var/lib/otelcol/checkpoints", "create_directory": true, "recreate": false,
 	}, logsConfigMap(t, config, "extensions", "file_storage/logs"))
+	capability := logsConfigMap(t, config, "extensions", "stslogsagent/logs")
+	for key, expected := range map[string]interface{}{
+		"discovery_enabled": true,
+		"receiver_url":      "${env:RECEIVER_URL}", "api_key": "${env:STS_API_KEY}",
+		"state_directory": "/var/lib/otelcol/controller", "health_endpoint": "0.0.0.0:13133",
+		"termination_message_path": "/dev/termination-log",
+	} {
+		assert.Equal(t, expected, capability[key], key)
+	}
 	assert.Equal(t, map[string]interface{}{
-		"health_endpoint": "0.0.0.0:13133",
-	}, logsConfigMap(t, config, "extensions", "stslogsagent/logs"))
-	assert.ElementsMatch(t, []string{"file_storage/logs", "stslogsagent/logs"},
+		"scheme": "SUSEObservability", "token": "${env:STS_API_KEY}",
+	}, logsConfigMap(t, config, "extensions", "bearertokenauth/native"))
+	assert.ElementsMatch(t, []string{"file_storage/logs", "stslogsagent/logs", "bearertokenauth/native"},
 		logsConfigMap(t, config, "service")["extensions"])
-	assert.Len(t, logsConfigMap(t, config, "extensions"), 2)
-	for _, exporter := range []string{"stsk8slogs/promtail"} {
+	for _, exporter := range []string{"stsk8slogs/promtail", "otlp_http/native"} {
 		export := logsConfigMap(t, config, "exporters", exporter)
+		assert.NotContains(t, export, "delivery", exporter)
 		assert.Equal(t, "5s", export["timeout"], exporter)
 		assert.Equal(t, map[string]interface{}{
 			"enabled": true, "initial_interval": "1s", "max_interval": "5s", "max_elapsed_time": "30s",
@@ -206,15 +261,17 @@ func TestLogsAgentOtelGraphAndBounds(t *testing.T) {
 	assert.Equal(t, "${env:PROMTAIL_LOGS_URL}", logsConfigMap(t, config, "exporters", "stsk8slogs/promtail")["endpoint"])
 	assert.Equal(t, "${env:STS_API_KEY}", logsConfigMap(t, config, "exporters", "stsk8slogs/promtail")["api_key"])
 	assert.Equal(t, "${env:CLUSTER_NAME}", logsConfigMap(t, config, "exporters", "stsk8slogs/promtail")["cluster_name"])
+	assert.Equal(t, "${env:NATIVE_OTLP_URL}", logsConfigMap(t, config, "exporters", "otlp_http/native")["endpoint"])
+	assert.Equal(t, "bearertokenauth/native", logsConfigMap(t, config, "exporters", "otlp_http/native", "auth")["authenticator"])
 	assertLogsOtelBounds(t, resources, config)
 }
 
 func assertLogsOtelBounds(t *testing.T, resources helmtestutil.KubernetesResources, config map[string]interface{}) {
 	t.Helper()
-	delivery := logsConfigMap(t, config, "exporters", "stsk8slogs/promtail", "delivery")
-	calls := delivery["max_concurrent_calls"].(int)
+	route := logsConfigMap(t, config, "connectors", "stslogsroute/logs")
+	calls := route["max_concurrent_calls"].(int)
 	files := logsConfigMap(t, config, "receivers", "file_log/pods")["max_concurrent_files"].(int)
-	lifetime, err := time.ParseDuration(delivery["export_lifetime"].(string))
+	lifetime, err := time.ParseDuration(route["export_lifetime"].(string))
 	require.NoError(t, err)
 	assert.GreaterOrEqual(t, calls, files+2)
 	for name, raw := range logsConfigMap(t, config, "exporters") {
@@ -251,6 +308,8 @@ func TestLogsAgentOtelFilelogAndEnrichment(t *testing.T) {
 	assert.ElementsMatch(t, []string{
 		"k8s.namespace.name", "k8s.pod.name", "k8s.pod.uid", "k8s.node.name", "k8s.container.name",
 		"container.id", "container.image.name", "container.image.tag",
+		"k8s.deployment.name", "k8s.replicaset.name", "k8s.statefulset.name", "k8s.daemonset.name",
+		"k8s.job.name", "k8s.cronjob.name",
 	}, logsConfigMap(t, k8s, "extract")["metadata"])
 	source := func(name string) interface{} {
 		return map[string]interface{}{"from": "resource_attribute", "name": name}
@@ -289,6 +348,7 @@ func TestLogsAgentOtelPodAndRBAC(t *testing.T) {
 	assert.False(t, *security.RunAsNonRoot)
 	assert.False(t, *security.Privileged)
 	assert.Equal(t, "spc_t", security.SELinuxOptions.Type)
+	assert.Equal(t, "/dev/termination-log", container.TerminationMessagePath)
 	if container.Lifecycle != nil {
 		assert.Nil(t, container.Lifecycle.PreStop)
 	}
@@ -345,22 +405,9 @@ func TestLogsAgentOtelPodAndRBAC(t *testing.T) {
 	}
 	role, ok := resources.ClusterRoles[logsAgentName]
 	require.True(t, ok)
-	require.Len(t, role.Rules, 1)
-	for _, expected := range []rbacv1.PolicyRule{
+	assert.Equal(t, []rbacv1.PolicyRule{
 		{APIGroups: []string{""}, Resources: []string{"pods"}, Verbs: []string{"get", "list", "watch"}},
-	} {
-		found := false
-		for _, rule := range role.Rules {
-			if assert.ObjectsAreEqual(expected.APIGroups, rule.APIGroups) {
-				found = true
-				assert.ElementsMatch(t, expected.Resources, rule.Resources)
-				assert.ElementsMatch(t, expected.Verbs, rule.Verbs)
-				assert.Empty(t, rule.NonResourceURLs)
-				assert.Empty(t, rule.ResourceNames)
-			}
-		}
-		assert.True(t, found, "API groups %v", expected.APIGroups)
-	}
+	}, role.Rules)
 	binding := resources.ClusterRoleBindings[logsAgentName]
 	assert.Equal(t, rbacv1.RoleRef{APIGroup: "rbac.authorization.k8s.io", Kind: "ClusterRole", Name: logsAgentName}, binding.RoleRef)
 	assert.Contains(t, binding.Subjects, rbacv1.Subject{
@@ -380,10 +427,16 @@ func TestLogsAgentOtelPodAndRBAC(t *testing.T) {
 }
 
 func TestLogsAgentOtelEndpointsAndSecret(t *testing.T) {
-	for _, tc := range []struct{ name, http, grpc string }{
-		{"default", "", ""},
-		{"shared-http", "https://metrics.example.test/ingest", ""},
-		{"shared-grpc", "", "metrics.example.test:443"},
+	for _, tc := range []struct {
+		name, http, grpc, endpoint, exporter string
+	}{
+		{"derived", "", "", "https://my-suse-observability-instance.com/receiver/stsAgent/otel", "otlp_http/native"},
+		{"http", "https://native.example.test/ingest", "", "https://native.example.test/ingest", "otlp_http/native"},
+		{"grpc", "", "native.example.test:443", "native.example.test:443", "otlp/native"},
+		{"grpc-ipv6", "", "[2001:db8::1]:443", "[2001:db8::1]:443", "otlp/native"},
+		{"grpc-ipv6-loopback", "", "[::1]:4317", "[::1]:4317", "otlp/native"},
+		{"http-wins", "https://native.example.test/ingest", "unused.example.test:443", "https://native.example.test/ingest", "otlp_http/native"},
+		{"http-wins-over-invalid-grpc", "https://native.example.test/ingest", ":", "https://native.example.test/ingest", "otlp_http/native"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			resources := renderLogsOtel(t, map[string]string{
@@ -396,8 +449,8 @@ func TestLogsAgentOtelEndpointsAndSecret(t *testing.T) {
 			})
 			container := logsContainer(t, resources)
 			env := envVarsByName(container.Env)
-			assert.NotContains(t, env, "NATIVE_OTLP_URL")
-			assert.NotContains(t, env, "RECEIVER_URL")
+			assert.Equal(t, tc.endpoint, env["NATIVE_OTLP_URL"])
+			assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent", env["RECEIVER_URL"])
 			assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent/logs/k8s", env["PROMTAIL_LOGS_URL"])
 			assert.Equal(t, "some-k8s-cluster", env["CLUSTER_NAME"])
 			assert.Contains(t, container.Env, corev1.EnvVar{
@@ -413,8 +466,10 @@ func TestLogsAgentOtelEndpointsAndSecret(t *testing.T) {
 			config := logsOtelConfig(t, resources)
 			assertLogsOtelBounds(t, resources, config)
 			exporters := logsConfigMap(t, config, "exporters")
-			assert.Len(t, exporters, 1)
-			assert.Contains(t, exporters, "stsk8slogs/promtail")
+			require.Contains(t, exporters, tc.exporter)
+			assert.Len(t, exporters, 2)
+			assert.Equal(t, []interface{}{tc.exporter}, logsConfigMap(t, config, "service", "pipelines", "logs/native")["exporters"])
+			assert.Equal(t, "${env:NATIVE_OTLP_URL}", logsConfigMap(t, exporters, tc.exporter)["endpoint"])
 			assert.NotContains(t, resources.ConfigMaps[logsAgentName].Data["otel-logs.yaml"], "foobar")
 			assert.NotContains(t, resources.Secrets, "logs-api-key")
 		})
@@ -460,13 +515,21 @@ func TestLogsAgentOtelExternalConfiguration(t *testing.T) {
 			resources := renderLogsOtel(t, values)
 			container := logsContainer(t, resources)
 			assertConfigEnv(t, container.Env, "CLUSTER_NAME", "STS_CLUSTER_NAME", "suse-observability-agent-cluster", "some-k8s-cluster", scenario.clusterSecret)
+			discovery := configEnv(t, container.Env, "RECEIVER_URL")
+			native := configEnv(t, container.Env, "NATIVE_OTLP_URL")
 			endpoint := configEnv(t, container.Env, "PROMTAIL_LOGS_URL")
 			if scenario.urlSecret {
 				assertConfigEnv(t, container.Env, "STS_URL", "STS_URL", "suse-observability-agent-url", "", true)
 				assert.Equal(t, "$(STS_URL)/logs/k8s", endpoint.Value)
+				assert.Equal(t, "$(STS_URL)", discovery.Value)
+				assert.Equal(t, "$(STS_URL)/otel", native.Value)
+				assert.Less(t, envPosition(container.Env, "STS_URL"), envPosition(container.Env, discovery.Name))
+				assert.Less(t, envPosition(container.Env, "STS_URL"), envPosition(container.Env, native.Name))
 				assert.Less(t, envPosition(container.Env, "STS_URL"), envPosition(container.Env, endpoint.Name))
 			} else {
 				assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent/logs/k8s", endpoint.Value)
+				assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent", discovery.Value)
+				assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent/otel", native.Value)
 			}
 			config := logsOtelConfig(t, resources)
 			assert.Equal(t, "${env:CLUSTER_NAME}", logsConfigMap(t, config, "exporters", "stsk8slogs/promtail")["cluster_name"])
@@ -522,10 +585,15 @@ func TestLogsAgentOtelSelectedImageAndPullSecrets(t *testing.T) {
 }
 
 func TestLogsAgentOtelTLSAndProxy(t *testing.T) {
-	for _, proxy := range []string{"http://proxy.example.test:3128", "https://proxy.example.test:8443"} {
+	for _, grpc := range []bool{false, true} {
 		for _, ca := range []string{"none", "inline", "external"} {
-			t.Run(fmt.Sprintf("proxy=%s/ca=%s", proxy, ca), func(t *testing.T) {
-				values := map[string]string{"global.proxy.url": proxy}
+			t.Run(fmt.Sprintf("grpc=%t/ca=%s", grpc, ca), func(t *testing.T) {
+				values := map[string]string{"global.proxy.url": "http://proxy.example.test:3128"}
+				exporter := "otlp_http/native"
+				if grpc {
+					values["otel.platformGrpcOtlpEndpoint"] = "native.example.test:443"
+					exporter = "otlp/native"
+				}
 				if ca != "none" {
 					values["global.customCertificates.enabled"] = "true"
 					if ca == "inline" {
@@ -537,10 +605,12 @@ func TestLogsAgentOtelTLSAndProxy(t *testing.T) {
 				resources := renderLogsOtel(t, values)
 				container := logsContainer(t, resources)
 				env := envVarsByName(container.Env)
-				assert.Equal(t, proxy, env["PROXY_URL"])
+				assert.Equal(t, "http://proxy.example.test:3128", env["PROXY_URL"])
 				config := logsOtelConfig(t, resources)
 				for _, client := range []map[string]interface{}{
+					logsConfigMap(t, config, "extensions", "stslogsagent/logs"),
 					logsConfigMap(t, config, "exporters", "stsk8slogs/promtail"),
+					logsConfigMap(t, config, "exporters", exporter),
 				} {
 					tls := logsConfigMap(t, client, "tls")
 					assert.Equal(t, false, tls["insecure_skip_verify"])
@@ -548,12 +618,22 @@ func TestLogsAgentOtelTLSAndProxy(t *testing.T) {
 					assert.NotContains(t, tls, "include_system_ca_certs_pool")
 				}
 				for _, client := range []map[string]interface{}{
+					logsConfigMap(t, config, "extensions", "stslogsagent/logs"),
 					logsConfigMap(t, config, "exporters", "stsk8slogs/promtail"),
 				} {
 					assert.Equal(t, "${env:PROXY_URL}", client["proxy_url"])
 				}
-				assert.NotContains(t, env, "HTTPS_PROXY")
-				assert.NotContains(t, env, "NO_PROXY")
+				native := logsConfigMap(t, config, "exporters", exporter)
+				if grpc {
+					assert.NotContains(t, native, "proxy_url")
+					assert.Equal(t, "http://proxy.example.test:3128", env["HTTPS_PROXY"])
+					for _, bypass := range []string{"$(KUBERNETES_SERVICE_HOST)", "localhost", "127.0.0.1", "::1", ".svc", ".svc.cluster.local"} {
+						assert.Contains(t, strings.Split(env["NO_PROXY"], ","), bypass)
+					}
+				} else {
+					assert.Equal(t, "${env:PROXY_URL}", native["proxy_url"])
+					assert.Empty(t, env["HTTPS_PROXY"])
+				}
 				if ca != "none" {
 					volume := requireVolume(t, resources.DaemonSets[logsAgentName].Spec.Template.Spec.Volumes, "custom-certificates")
 					require.NotNil(t, volume.ConfigMap)
@@ -576,16 +656,72 @@ func TestLogsAgentOtelTLSAndProxy(t *testing.T) {
 }
 
 func TestLogsAgentOtelSkipTLSValidation(t *testing.T) {
-	for _, global := range []bool{false, true} {
-		for _, local := range []bool{false, true} {
-			t.Run(fmt.Sprintf("global=%t/local=%t", global, local), func(t *testing.T) {
-				config := logsOtelConfig(t, renderLogsOtel(t, map[string]string{
-					"global.skipSslValidation":        fmt.Sprint(global),
-					"otelLogsAgent.skipSslValidation": fmt.Sprint(local),
-				}))
-				assert.Equal(t, global || local, logsConfigMap(t, config, "exporters", "stsk8slogs/promtail", "tls")["insecure_skip_verify"])
-			})
+	for _, grpc := range []bool{false, true} {
+		for _, global := range []bool{false, true} {
+			for _, local := range []bool{false, true} {
+				t.Run(fmt.Sprintf("grpc=%t/global=%t/local=%t", grpc, global, local), func(t *testing.T) {
+					values := map[string]string{
+						"global.skipSslValidation":        fmt.Sprint(global),
+						"otelLogsAgent.skipSslValidation": fmt.Sprint(local),
+					}
+					exporter := "otlp_http/native"
+					if grpc {
+						values["otel.platformGrpcOtlpEndpoint"] = "native.example.test:443"
+						exporter = "otlp/native"
+					}
+					config := logsOtelConfig(t, renderLogsOtel(t, values))
+					for _, path := range [][]string{
+						{"extensions", "stslogsagent/logs", "tls"},
+						{"exporters", "stsk8slogs/promtail", "tls"},
+						{"exporters", exporter, "tls"},
+					} {
+						assert.Equal(t, global || local, logsConfigMap(t, config, path...)["insecure_skip_verify"], path)
+					}
+				})
+			}
 		}
+	}
+}
+
+func TestLogsAgentOtelHTTPSProxyTransportSelection(t *testing.T) {
+	for _, tc := range []struct {
+		name, http, grpc string
+		wantError        bool
+	}{
+		{name: "derived-http"},
+		{name: "explicit-http", http: "http://native.example.test/ingest"},
+		{name: "explicit-https", http: "https://native.example.test/ingest"},
+		{name: "grpc-only", grpc: "native.example.test:443", wantError: true},
+		{name: "http-wins", http: "https://native.example.test/ingest", grpc: "native.example.test:443"},
+		{name: "http-wins-over-invalid-grpc", http: "https://native.example.test/ingest", grpc: ":"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			output, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability-agent", &helm.Options{
+				ValuesFiles: []string{"values/minimal.yaml", "values/logs-otel-base.yaml", "values/logs-otel-enabled.yaml"},
+				SetValues: map[string]string{
+					"global.proxy.url":              "https://proxy.example.test:8443",
+					"otel.platformHttpOtlpEndpoint": tc.http,
+					"otel.platformGrpcOtlpEndpoint": tc.grpc,
+				},
+			})
+			if tc.wantError {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+			assertUniqueLogsManifests(t, output)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			env := envVarsByName(logsContainer(t, resources).Env)
+			assert.Equal(t, "https://proxy.example.test:8443", env["PROXY_URL"])
+			assert.Empty(t, env["HTTPS_PROXY"])
+			if tc.http != "" {
+				assert.Equal(t, tc.http, env["NATIVE_OTLP_URL"])
+			}
+			config := logsOtelConfig(t, resources)
+			assert.NotContains(t, logsConfigMap(t, config, "exporters"), "otlp/native")
+			assert.Equal(t, "${env:PROXY_URL}", logsConfigMap(t, config, "exporters", "otlp_http/native")["proxy_url"])
+			assert.Equal(t, []interface{}{"otlp_http/native"}, logsConfigMap(t, config, "service", "pipelines", "logs/native")["exporters"])
+		})
 	}
 }
 
@@ -616,11 +752,15 @@ func TestLogsAgentOtelChecksumTracksSelectedConfigAndInlineCA(t *testing.T) {
 			}
 			tls := render(map[string]string{selected + ".skipSslValidation": "true"})
 			assert.NotEqual(t, base["checksum/override-configmap"], tls["checksum/override-configmap"])
-			changedOtel := render(map[string]string{"otelLogsAgent.resources.limits.memory": "384Mi"})
-			if otel {
-				assert.NotEqual(t, base["checksum/override-configmap"], changedOtel["checksum/override-configmap"])
-			} else {
-				assert.Equal(t, base["checksum/override-configmap"], changedOtel["checksum/override-configmap"])
+			for key, value := range map[string]string{
+				"otelLogsAgent.resources.limits.memory": "384Mi",
+			} {
+				changedOtel := render(map[string]string{key: value})
+				if otel {
+					assert.NotEqual(t, base["checksum/override-configmap"], changedOtel["checksum/override-configmap"], key)
+				} else {
+					assert.Equal(t, base["checksum/override-configmap"], changedOtel["checksum/override-configmap"], key)
+				}
 			}
 			ca := render(map[string]string{"global.customCertificates.pemData": "synthetic-ca-two"})
 			assert.NotEqual(t, base["checksum/custom-certificates"], ca["checksum/custom-certificates"])
@@ -663,22 +803,67 @@ func TestLogsAgentOtelMemoryLimiterFollowsResources(t *testing.T) {
 	}
 }
 
-func TestLogsAgentOtelRejectsInvalidMemoryLimit(t *testing.T) {
-	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability-agent", &helm.Options{
-		ValuesFiles: []string{"values/minimal.yaml", "values/logs-otel-base.yaml", "values/logs-otel-enabled.yaml"},
-		SetValues:   map[string]string{"otelLogsAgent.resources.limits.memory": "0Mi"},
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "otelLogsAgent.resources.limits.memory")
+func TestLogsAgentOtelSynchronousLifetime(t *testing.T) {
+	for _, grpc := range []bool{false, true} {
+		t.Run(fmt.Sprintf("grpc=%t", grpc), func(t *testing.T) {
+			values := map[string]string{}
+			if grpc {
+				values["otel.platformGrpcOtlpEndpoint"] = "native.example.test:443"
+			}
+			resources := renderLogsOtel(t, values)
+			config := logsOtelConfig(t, resources)
+			assertLogsOtelBounds(t, resources, config)
+			for name, raw := range logsConfigMap(t, config, "exporters") {
+				assert.NotContains(t, raw.(map[string]interface{}), "delivery", name)
+			}
+		})
+	}
 }
 
-func TestLogsAgentOtelIgnoresSharedOtlpSettings(t *testing.T) {
-	baseline := renderLogsOtel(t, map[string]string{"otel.enabled": "false"})
-	changed := renderLogsOtel(t, map[string]string{
-		"otel.enabled":                  "false",
-		"otel.platformHttpOtlpEndpoint": "https://metrics.example.test/ingest",
-		"otel.platformGrpcOtlpEndpoint": "metrics.example.test:443",
-	})
-	assert.Equal(t, baseline.ConfigMaps[logsAgentName], changed.ConfigMaps[logsAgentName])
-	assert.Equal(t, baseline.DaemonSets[logsAgentName], changed.DaemonSets[logsAgentName])
+func TestLogsAgentOtelDiscoveryUsesCollectorPolicy(t *testing.T) {
+	for _, grpc := range []bool{false, true} {
+		t.Run(fmt.Sprintf("grpc=%t", grpc), func(t *testing.T) {
+			values := map[string]string{}
+			if grpc {
+				values["otel.platformGrpcOtlpEndpoint"] = "native.example.test:443"
+			}
+			config := logsOtelConfig(t, renderLogsOtel(t, values))
+			discovery := logsConfigMap(t, config, "extensions", "stslogsagent/logs")
+			assert.Equal(t, true, discovery["discovery_enabled"])
+			for _, key := range []string{
+				"query_timeout", "attempt_timeout", "max_attempts", "initial_backoff", "max_backoff",
+				"poll_interval", "jitter", "stable_observations", "restart_cooldown",
+			} {
+				assert.NotContains(t, discovery, key)
+			}
+		})
+	}
+}
+
+func TestLogsAgentOtelRejectsInvalidValues(t *testing.T) {
+	for _, tc := range []struct{ key, value, errorField string }{
+		{"otelLogsAgent.resources.limits.memory", "0Mi", "otelLogsAgent.resources.limits.memory"},
+		{"otel.platformHttpOtlpEndpoint", "native.example.test", "platformHttpOtlpEndpoint"},
+		{"otel.platformGrpcOtlpEndpoint", "https://native.example.test:443", "platformGrpcOtlpEndpoint"},
+		{"otel.platformGrpcOtlpEndpoint", "native.example.test", "platformGrpcOtlpEndpoint"},
+		{"otel.platformGrpcOtlpEndpoint", ":", ""},
+		{"otel.platformGrpcOtlpEndpoint", ":4317", ""},
+		{"otel.platformGrpcOtlpEndpoint", "native.example.test:", ""},
+		{"otel.platformGrpcOtlpEndpoint", "native.example.test:abc", ""},
+		{"otel.platformGrpcOtlpEndpoint", "native.example.test:0", ""},
+		{"otel.platformGrpcOtlpEndpoint", "native.example.test:-1", ""},
+		{"otel.platformGrpcOtlpEndpoint", "native.example.test:65536", ""},
+		{"otel.platformGrpcOtlpEndpoint", "::1:4317", ""},
+	} {
+		t.Run(tc.key+"="+tc.value, func(t *testing.T) {
+			_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability-agent", &helm.Options{
+				ValuesFiles: []string{"values/minimal.yaml", "values/logs-otel-base.yaml", "values/logs-otel-enabled.yaml"},
+				SetValues:   map[string]string{tc.key: tc.value},
+			})
+			require.Error(t, err)
+			if tc.errorField != "" {
+				assert.Contains(t, strings.ReplaceAll(err.Error(), "/", "."), tc.errorField)
+			}
+		})
+	}
 }

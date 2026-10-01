@@ -68,16 +68,30 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: RECEIVER_URL
+            {{- if .Values.global.url.fromSecret }}
+            value: "$(STS_URL)"
+            {{- else }}
+            value: {{ tpl .Values.stackstate.url . | trimAll "/" | quote }}
+            {{- end }}
           - name: PROMTAIL_LOGS_URL
             {{- if .Values.global.url.fromSecret }}
             value: "$(STS_URL)/logs/k8s"
             {{- else }}
             value: {{ printf "%s/logs/k8s" (tpl .Values.stackstate.url . | trimAll "/") | quote }}
             {{- end }}
+          - name: NATIVE_OTLP_URL
+            value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
           - name: CLUSTER_NAME
             {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 12 }}
           - name: PROXY_URL
             value: {{ .Values.global.proxy.url | default "" | quote }}
+{{- if include "stackstate-k8s-agent.platform.otlp.useGrpc" . }}
+          - name: HTTPS_PROXY
+            value: {{ .Values.global.proxy.url | default "" | quote }}
+          - name: NO_PROXY
+            value: "$(KUBERNETES_SERVICE_HOST),localhost,127.0.0.1,::1,.svc,.svc.cluster.local"
+{{- end }}
           securityContext:
             seLinuxOptions:
               type: spc_t
@@ -85,6 +99,7 @@ spec:
             runAsUser: 0
             runAsGroup: 0
             runAsNonRoot: false
+          terminationMessagePath: /dev/termination-log
           ports:
             - name: health
               containerPort: 13133
