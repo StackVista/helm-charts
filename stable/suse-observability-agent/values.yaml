@@ -36,7 +36,7 @@ global:
   features:
     # global.features.experimentalOtelLogsAgent -- Allow the experimental OTel pod-log collector; it runs when otelLogsAgent.enabled is true, independently of logsAgent.enabled.
     experimentalOtelLogsAgent: false
-    # global.features.experimentalOtelKubernetesTopology -- Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled, a stackstate.url ending in /stsAgent, and an otel.k8sResourceCollector.image.tag that includes the stsk8stopology exporter; the default image does not yet. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMap and Secret components are not produced yet. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals.
+    # global.features.experimentalOtelKubernetesTopology -- Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled and a stackstate.url ending in /stsAgent. The collector follows the platform's legacy-kubernetes-topology capability and stops legacy export while the platform reports it is no longer needed. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMap and Secret components are not produced yet. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals.
     experimentalOtelKubernetesTopology: false
 
   # global.receiverApiKey -- This is deprecated and will be removed in a future version.
@@ -815,7 +815,7 @@ otel:
       # otel.k8sResourceCollector.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-      tag: "v0.0.60-agent"
+      tag: "v0.0.64-agent"
       # otel.k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
     pprof:
