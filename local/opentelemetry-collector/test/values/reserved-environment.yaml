@@ -1,0 +1,35 @@
+extraEnvs:
+  - name: MY_POD_IP
+    value: "192.0.2.1"
+  - name: K8S_NODE_NAME
+    valueFrom:
+      configMapKeyRef:
+        name: customer-settings
+        key: node.name
+  - name: API_URL
+    valueFrom:
+      configMapKeyRef:
+        name: customer-settings
+        key: api.url
+  - name: INTAKE_URL
+    valueFrom:
+      secretKeyRef:
+        name: customer-secrets
+        key: intake.url
+  - name: GOMEMLIMIT
+    value: "123MiB"
+  - name: TOKEN
+    value: customer-token
+  - name: OTHER
+    valueFrom:
+      configMapKeyRef:
+        name: customer-settings
+        key: other
+        optional: true
+  - name: DEPENDENT
+    value: "$(TOKEN)/other"
+extraEnvsFrom:
+  - configMapRef:
+      name: customer-settings
+  - secretRef:
+      name: customer-secrets

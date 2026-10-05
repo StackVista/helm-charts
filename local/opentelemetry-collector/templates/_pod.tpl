@@ -43,6 +43,7 @@ containers:
     ports:
       {{- $ports | nindent 6}}
     {{- end }}
+    {{- $reservedEnvNames := list "MY_POD_IP" "K8S_NODE_NAME" "API_URL" "INTAKE_URL" }}
     env:
       - name: MY_POD_IP
         valueFrom:
@@ -55,7 +56,8 @@ containers:
           fieldRef:
             fieldPath: spec.nodeName
       {{- end }}
-      {{- if and (.Values.useGOMEMLIMIT) ((((.Values.resources).limits).memory))  }}
+      {{- if and (.Values.useGOMEMLIMIT) ((((.Values.resources).limits).memory)) }}
+      {{- $reservedEnvNames = append $reservedEnvNames "GOMEMLIMIT" }}
       - name: GOMEMLIMIT
         value: {{ include "opentelemetry-collector.gomemlimit" .Values.resources.limits.memory | quote }}
       {{- end }}
@@ -69,8 +71,11 @@ containers:
           configMapKeyRef:
             name: {{ include "stackstate.otelCollector.endpoints.configmap.fullname" . }}
             key: intake.url
-      {{- with .Values.extraEnvs }}
-      {{- . | toYaml | nindent 6 }}
+      {{/* Chart-owned names are ignored regardless of their value source. */}}
+      {{- range .Values.extraEnvs }}
+      {{- if not (has .name $reservedEnvNames) }}
+      {{- list . | toYaml | nindent 6 }}
+      {{- end }}
       {{- end }}
     {{- with .Values.extraEnvsFrom }}
     envFrom:

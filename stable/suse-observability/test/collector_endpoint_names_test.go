@@ -77,7 +77,7 @@ func rewriteCollectorEndpointReferences(value interface{}) {
 	}
 }
 
-func TestCollectorSavedEnvironmentEntriesAreAppended(t *testing.T) {
+func TestCollectorSavedEnvironmentEntriesAreIgnored(t *testing.T) {
 	savedValues := filepath.Join(t.TempDir(), "saved-values.yaml")
 	require.NoError(t, os.WriteFile(savedValues, []byte(`opentelemetry-collector:
   extraEnvs:
@@ -121,7 +121,7 @@ func TestCollectorSavedEnvironmentEntriesAreAppended(t *testing.T) {
 						counts[env.Name]++
 					}
 				}
-				assert.Equal(t, map[string]int{"API_URL": 2, "INTAKE_URL": 2}, counts)
+				assert.Equal(t, map[string]int{"API_URL": 1, "INTAKE_URL": 1}, counts)
 			})
 		}
 	}

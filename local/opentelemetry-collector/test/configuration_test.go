@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -32,6 +33,19 @@ func TestCollectorEndpointEnvironmentConfiguration(t *testing.T) {
 		}{
 			{"defaults", "", nil},
 			{"empty", "extraEnvs: []\n", nil},
+			{"ordered-additions", `extraEnvs:
+- name: TOKEN
+  value: customer-token
+- name: API_URL
+  value: $(TOKEN)/api
+- name: INTAKE_URL
+  value: $(API_URL)/intake
+- name: OTHER
+  value: $(TOKEN)/other
+`, []corev1.EnvVar{
+				{Name: "TOKEN", Value: "customer-token"},
+				{Name: "OTHER", Value: "$(TOKEN)/other"},
+			}},
 			{"custom", `extraEnvs:
 - name: API_URL
   value: https://customer.example/api
@@ -51,8 +65,6 @@ func TestCollectorEndpointEnvironmentConfiguration(t *testing.T) {
       name: suse-observability-otel-collector
       key: api.url
 `, []corev1.EnvVar{
-				{Name: "API_URL", Value: "https://customer.example/api"},
-				ref("INTAKE_URL", "customer-endpoints", "intake.url"),
 				{Name: "TOKEN", ValueFrom: &corev1.EnvVarSource{SecretKeyRef: &corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{Name: "customer-token"}, Key: "token",
 				}}},
@@ -69,10 +81,7 @@ func TestCollectorEndpointEnvironmentConfiguration(t *testing.T) {
     configMapKeyRef:
       name: suse-observability-otel-collector
       key: intake.url
-`, []corev1.EnvVar{
-				ref("API_URL", "suse-observability-otel-collector", "api.url"),
-				ref("INTAKE_URL", "suse-observability-otel-collector", "intake.url"),
-			}},
+`, nil},
 			{"duplicate-names", `extraEnvs:
 - name: API_URL
   value: https://customer.example
@@ -94,14 +103,6 @@ func TestCollectorEndpointEnvironmentConfiguration(t *testing.T) {
       key: optional-url
       optional: true
 `, []corev1.EnvVar{
-				{Name: "API_URL", Value: "https://customer.example"},
-				func() corev1.EnvVar {
-					env := ref("API_URL", "suse-observability-otel-collector", "api.url")
-					optional := true
-					env.ValueFrom.ConfigMapKeyRef.Optional = &optional
-					return env
-				}(),
-				ref("INTAKE_URL", "suse-observability-otel-collector", "customer-key"),
 				func() corev1.EnvVar {
 					env := ref("ADDITIONAL_URL", "customer-config", "optional-url")
 					optional := true
@@ -134,13 +135,81 @@ func TestCollectorEndpointEnvironmentConfiguration(t *testing.T) {
 						extra = append(extra, env)
 					}
 				}
-				want := append([]corev1.EnvVar{
+				expected := append([]corev1.EnvVar{
 					ref("API_URL", "explicit-endpoints", "api.url"),
 					ref("INTAKE_URL", "explicit-endpoints", "intake.url"),
 				}, tc.additional...)
-				assert.Equal(t, want, extra)
+				assert.Equal(t, expected, extra)
 				assert.NotContains(t, resources.ConfigMaps, "explicit-endpoints",
 					"standalone collectors reference an external endpoint ConfigMap")
+			})
+		}
+	}
+}
+
+func TestCollectorReservedEnvironmentVariables(t *testing.T) {
+	for _, mode := range []string{"deployment", "daemonset", "statefulset"} {
+		for _, tc := range []struct {
+			name                 string
+			nodeName, gomemlimit bool
+		}{
+			{"automatic-memory", false, true},
+			{"node-name", true, true},
+			{"manual-memory", false, false},
+		} {
+			t.Run(mode+"/"+tc.name, func(t *testing.T) {
+				render := func(custom bool) corev1.PodSpec {
+					options := &helm.Options{SetValues: map[string]string{
+						"mode":                           mode,
+						"presets.kubeletMetrics.enabled": fmt.Sprint(tc.nodeName),
+						"useGOMEMLIMIT":                  fmt.Sprint(tc.gomemlimit),
+						"resources.limits.memory":        "512Mi",
+					}}
+					if custom {
+						options.ValuesFiles = []string{"values/reserved-environment.yaml"}
+					}
+					output := helmtestutil.RenderHelmTemplateOptsNoError(t, releaseName, options)
+					resources := helmtestutil.NewKubernetesResources(t, output)
+					switch mode {
+					case "deployment":
+						require.Contains(t, resources.Deployments, fullName)
+						return resources.Deployments[fullName].Spec.Template.Spec
+					case "daemonset":
+						require.Contains(t, resources.DaemonSets, fullName+"-agent")
+						return resources.DaemonSets[fullName+"-agent"].Spec.Template.Spec
+					default:
+						require.Contains(t, resources.Statefulsets, fullName)
+						return resources.Statefulsets[fullName].Spec.Template.Spec
+					}
+				}
+				baseline := render(false)
+				actual := render(true)
+				require.NotEmpty(t, baseline.Containers)
+				require.NotEmpty(t, actual.Containers)
+				expected := append([]corev1.EnvVar{}, baseline.Containers[0].Env...)
+				if !tc.gomemlimit {
+					expected = append(expected, corev1.EnvVar{Name: "GOMEMLIMIT", Value: "123MiB"})
+				}
+				optional := true
+				expected = append(expected,
+					corev1.EnvVar{Name: "TOKEN", Value: "customer-token"},
+					corev1.EnvVar{Name: "OTHER", ValueFrom: &corev1.EnvVarSource{
+						ConfigMapKeyRef: &corev1.ConfigMapKeySelector{
+							LocalObjectReference: corev1.LocalObjectReference{Name: "customer-settings"},
+							Key:                  "other", Optional: &optional,
+						},
+					}},
+					corev1.EnvVar{Name: "DEPENDENT", Value: "$(TOKEN)/other"},
+				)
+				assert.Equal(t, expected, actual.Containers[0].Env)
+				assert.Equal(t, []corev1.EnvFromSource{
+					{ConfigMapRef: &corev1.ConfigMapEnvSource{
+						LocalObjectReference: corev1.LocalObjectReference{Name: "customer-settings"},
+					}},
+					{SecretRef: &corev1.SecretEnvSource{
+						LocalObjectReference: corev1.LocalObjectReference{Name: "customer-secrets"},
+					}},
+				}, actual.Containers[0].EnvFrom)
 			})
 		}
 	}
