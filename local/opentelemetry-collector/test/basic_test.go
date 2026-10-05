@@ -116,7 +116,7 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 
 	assert.Contains(t, defaultCollectorConfig, "sts_settings_provider")
 	assert.Contains(t, defaultCollectorConfig, "topology")
-	assert.NotContains(t, defaultCollectorConfig, "ststopology")
+	assert.Contains(t, defaultCollectorConfig, "ststopology")
 	assert.Contains(t, defaultCollectorConfig, "sts_kafka_exporter")
 	assert.Contains(t, defaultCollectorConfig, "trace_statements")
 }
@@ -176,10 +176,15 @@ func TestCollectorConfigDefaultsAndOverrides(t *testing.T) {
 					require.NotEmpty(t, processors, pipeline)
 					assert.Equal(t, "batch", processors[len(processors)-1], pipeline)
 				}
-				for _, pipeline := range []string{"traces/topology", "metrics/topology", "logs/topology_input"} {
+				for _, pipeline := range []string{"logs/topology_input"} {
 					assert.Equal(t, []string{"topology"}, config.Service.Pipelines[pipeline].Exporters, pipeline)
 					assert.Contains(t, config.Service.Pipelines[pipeline].Processors, "resource/removeStsApiKey", pipeline)
 					assert.Contains(t, config.Service.Pipelines[pipeline].Processors, "attributes/removeStsApiKey", pipeline)
+				}
+				for _, pipeline := range []string{"traces/topology", "metrics/topology"} {
+					assert.Equal(t, []string{"topology", "ststopology"}, config.Service.Pipelines[pipeline].Exporters, pipeline)
+					assert.NotContains(t, config.Service.Pipelines[pipeline].Processors, "resource/removeStsApiKey", pipeline)
+					assert.NotContains(t, config.Service.Pipelines[pipeline].Processors, "attributes/removeStsApiKey", pipeline)
 				}
 				assert.Equal(t, []string{"sts_kafka_exporter"}, config.Service.Pipelines["logs/topology"].Exporters)
 			})
