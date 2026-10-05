@@ -10,7 +10,7 @@ metadata:
     {{- include "kubernetes-rbac-agent.global.commonLabels" . | nindent 4 }}
   annotations:
     {{- include "kubernetes-rbac-agent.global.commonAnnotations" . | nindent 4 }}
-  name: "{{ include "kubernetes-rbac-agent.app.name" . }}"
+  name: "{{ include "kubernetes-rbac-agent.deployment.fullname" . }}"
 spec:
   replicas: 1
   # Avoid duplicate instances, getting data from multiple agents will confuse the rbac sync.
@@ -42,9 +42,9 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- include "kubernetes-rbac-agent.customCertificates.checksum" . | nindent 8 }}
-      name: "{{ include "kubernetes-rbac-agent.app.name" . }}"
+      name: "{{ include "kubernetes-rbac-agent.deployment.fullname" . }}"
     spec:
-      serviceAccountName: "{{ include "kubernetes-rbac-agent.serviceaccount.name" . }}"
+      serviceAccountName: "{{ include "kubernetes-rbac-agent.serviceaccount.fullname" . }}"
 
       {{- include "kubernetes-rbac-agent.image.pullSecrets" . | nindent 6 }}
 

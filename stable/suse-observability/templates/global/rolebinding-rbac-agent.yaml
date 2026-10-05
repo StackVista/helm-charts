@@ -7,7 +7,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: {{ template "kubernetes-rbac-agent.serviceaccount.name" . }}
+  name: {{ template "kubernetes-rbac-agent.serviceaccount.fullname" . }}
 {{- end -}}
 
 {{- if .Values.stackstate.k8sAuthorization.enabled }}

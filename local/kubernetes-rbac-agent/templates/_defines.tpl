@@ -6,46 +6,26 @@
 {{ printf "%s-%s" .Release.Namespace .Release.Name | trunc 52 | trimSuffix "-" }}-rbac-agent
 {{- end -}}
 
-{{- define "kubernetes-rbac-agent.serviceaccount.name" -}}
-{{ include "kubernetes-rbac-agent.app.name" . }}
-{{- end -}}
-
-{{- define "kubernetes-rbac-agent.pull-secret.name" -}}
-{{ include "kubernetes-rbac-agent.app.name" . }}-pull-secret
-{{- end -}}
-
 {{- define "kubernetes-rbac-agent.externalOrInternal" -}}
 {{- if .external }}
 {{- tpl .external . }}
 {{- else }}
-{{- template "kubernetes-rbac-agent.app.name" . }}-{{ .internalName }}
+{{- include .internalHelper . }}
 {{- end }}
 {{- end }}
-
-{{- define "kubernetes-rbac-agent.api-key.secret.internal.name" -}}
-{{ include "kubernetes-rbac-agent.app.name" . }}-api-key
-{{- end -}}
-
-{{- define "kubernetes-rbac-agent.url.configmap.internal.name" -}}
-{{ include "kubernetes-rbac-agent.app.name" . }}-url
-{{- end -}}
-
-{{- define "kubernetes-rbac-agent.clusterName.configmap.internal.name" -}}
-{{ include "kubernetes-rbac-agent.app.name" . }}-cluster-name
-{{- end -}}
 
 {{- define "kubernetes-rbac-agent.api-key.secret.name" -}}
-{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" .Values.global.apiKey.fromSecret "internalName" "api-key") .) | quote }}
+{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" .Values.global.apiKey.fromSecret "internalName" "api-key" "internalHelper" "kubernetes-rbac-agent.api-key.secret.fullname") .) | quote }}
 {{- end }}
 
 {{- define "kubernetes-rbac-agent.url.configmap.name" -}}
 {{- $connection := include "kubernetes-rbac-agent.connection" . | fromYaml -}}
-{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" $connection.url.fromConfigMap "internalName" "url") .) | quote }}
+{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" $connection.url.fromConfigMap "internalName" "url" "internalHelper" "kubernetes-rbac-agent.url.configmap.fullname") .) | quote }}
 {{- end }}
 
 {{- define "kubernetes-rbac-agent.clusterName.configmap.name" -}}
 {{- $connection := include "kubernetes-rbac-agent.connection" . | fromYaml -}}
-{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" $connection.clusterName.fromConfigMap "internalName" "cluster-name") .) | quote }}
+{{ include "kubernetes-rbac-agent.externalOrInternal" (merge (dict "external" $connection.clusterName.fromConfigMap "internalName" "cluster-name" "internalHelper" "kubernetes-rbac-agent.clusterName.configmap.fullname") .) | quote }}
 {{- end }}
 
 {{- define "kubernetes-rbac-agent.image.registry.global" -}}
@@ -70,7 +50,7 @@
   {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.pullSecret .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password -}}
     {{- $pullSecrets = append $pullSecrets (include "suse-observability.pullSecret.fullname" .) -}}
   {{- else -}}
-    {{- $pullSecrets = append $pullSecrets (include "kubernetes-rbac-agent.pull-secret.name" .) }}
+    {{- $pullSecrets = append $pullSecrets (include "kubernetes-rbac-agent.pull.secret.fullname" .) }}
     {{- range .Values.global.imagePullSecrets -}}
       {{- $pullSecrets = append $pullSecrets .  -}}
     {{- end -}}
@@ -109,20 +89,13 @@ Returns a YAML with common labels merged with extra labels (extra has precedence
 {{- end -}}
 
 {{/*
-Custom certificates ConfigMap name
-*/}}
-{{- define "kubernetes-rbac-agent.customCertificates.configmap.name" -}}
-{{- .Chart.Name | trunc 63 | trimSuffix "-" -}}-custom-certificates
-{{- end -}}
-
-{{/*
 Custom certificates volume definition
 */}}
 {{- define "kubernetes-rbac-agent.customCertificates.volume" -}}
 {{- if .Values.global.customCertificates.enabled }}
 - name: custom-certificates
   configMap:
-    name: {{ if .Values.global.customCertificates.configMapName }}{{ .Values.global.customCertificates.configMapName }}{{ else }}{{ include "kubernetes-rbac-agent.customCertificates.configmap.name" . }}{{ end }}
+    name: {{ if .Values.global.customCertificates.configMapName }}{{ .Values.global.customCertificates.configMapName }}{{ else }}{{ include "kubernetes-rbac-agent.customCertificates.configmap.fullname" . }}{{ end }}
 {{- end }}
 {{- end -}}
 
