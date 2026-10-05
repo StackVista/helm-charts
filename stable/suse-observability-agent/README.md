@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.8`
+Current chart version is `1.7.9`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -418,7 +418,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | global.url.fromSecret | string | `""` | Name of an existing Secret containing STS_URL. Supports Helm templating. When set, takes precedence over stackstate.url. |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so27"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so28"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxy.image.tag | string | `"1.38.3-so5"` |  |
@@ -445,7 +445,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | logsAgent.enabled | bool | `true` | Enable Promtail pod-log collection when the experimental OTel logs selector is false. |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.11-so19"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.11-so20"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | logsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |

@@ -1188,7 +1188,7 @@ stackstate:
           # stackstate.components.router.mode.image.repository -- Base container image repository for router mode containers.
           repository: stackstate/container-tools
           # stackstate.components.router.mode.image.tag -- Container image tag for router mode containers.
-          tag: "1.8.6-so27"
+          tag: "1.8.6-so28"
           # stackstate.components.router.mode.image.pullPolicy -- Image pull policy for router mode containers.
           pullPolicy:
         # stackstate.components.router.mode.resources -- Resource allocation for `router.mode` pods.
@@ -1468,7 +1468,7 @@ stackstate:
         # stackstate.components.clickhouseCleanup.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
         # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
-        tag: "26.8.2.7-so3"
+        tag: "26.8.2.7-so4"
         # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
@@ -1514,7 +1514,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: "3.9.2-so23"
+        tag: "3.9.2-so24"
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1561,7 +1561,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: "1.8.6-so27"
+        tag: "1.8.6-so28"
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
       # stackstate.components.containerTools.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1860,7 +1860,7 @@ stackstate:
 ##############################
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
-  imageTag: "8.19.16-so17"
+  imageTag: "8.19.16-so18"
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: null
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
@@ -1889,7 +1889,7 @@ hbase:
       replicaCount: null
   hdfs:
     # hbase.hdfs.version -- Full HDFS image tag. Updated by updatecli.
-    version: "3.5.0-so18"
+    version: "3.5.0-so19"
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
@@ -1928,7 +1928,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: "3.9.2-so23"
+    tag: "3.9.2-so24"
   metrics:
     jmx:
       image:
@@ -1937,7 +1937,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: "0.20.0-so16"
+        tag: "0.20.0-so17"
       resources:
         limits:
           cpu: "1"
@@ -2003,7 +2003,7 @@ s3proxy:
     # s3proxy.image.repository -- Image repository for S3Proxy
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "3.2.0-so15"
+    tag: "3.2.0-so16"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
@@ -2073,7 +2073,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: "3.9.5-so25"
+    tag: "3.9.5-so26"
   resources: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
   replicaCount: null
@@ -2121,11 +2121,11 @@ victoria-metrics-0:
     # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: "1.8.6-so27"
+        tag: "1.8.6-so28"
     # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so22"
+        tag: "1.144.0-so23"
     # victoria-metrics-0.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2160,11 +2160,11 @@ victoria-metrics-1:
     # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: "1.8.6-so27"
+        tag: "1.8.6-so28"
     # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so22"
+        tag: "1.144.0-so23"
     # victoria-metrics-1.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2207,7 +2207,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: "26.8.2.7-so3"
+    tag: "26.8.2.7-so4"
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha).
   replicaCount: null
   persistence:
@@ -2223,7 +2223,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
-      tag: "2.7.2-so17"
+      tag: "2.7.2-so18"
 opentelemetry-collector:
   image:
     # opentelemetry-collector.image.registry -- Base container image registry.
