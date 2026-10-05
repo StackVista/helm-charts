@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "anomaly-detection.worker.name" . }}
+  name: {{ include "anomaly-detection.worker.deployment.fullname" . }}
   labels:
     name: {{ template "common.fullname.short" . }}
     {{- with .Values.global.commonLabels }}
@@ -108,33 +108,33 @@ spec:
           - '--thread-workers'
           - '{{ .Values.threadWorkers }}'
           - '--manager-host'
-          - {{ template "anomaly-detection.manager.name" . }}
+          - {{ include "anomaly-detection.manager.service.fullname" . }}
         {{- if or (or (eq .Values.stackstate.authType "cookie") (eq .Values.stackstate.authType "api-token")) (.Values.global.receiverApiKey) }}
         env:
         {{- if eq .Values.stackstate.authType "cookie" }}
         - name: STS_INSTANCE_USERNAME
           valueFrom:
             secretKeyRef:
-              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              name: {{ include "anomaly-detection.authentication.secret.fullname" . }}
               key: stackstate-username
         - name: STS_INSTANCE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              name: {{ include "anomaly-detection.authentication.secret.fullname" . }}
               key: stackstate-password
         {{- end }}
         {{- if eq .Values.stackstate.authType "api-token" }}
         - name: STS_INSTANCE_API_TOKEN
           valueFrom:
             secretKeyRef:
-              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              name: {{ include "anomaly-detection.authentication.secret.fullname" . }}
               key: stackstate-api-token
         {{- end }}
         {{- if .Values.global.receiverApiKey }}
         - name: STS_INSTANCE_RECEIVER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              name: {{ include "anomaly-detection.authentication.secret.fullname" . }}
               key: receiver-api-key
         {{- end }}
         {{- end }}
@@ -151,13 +151,13 @@ spec:
         - name: spotlight-etc-streams
           mountPath: /opt/spotlight/etc
           readOnly: true
-      serviceAccountName: {{ template "common.fullname.short" . }}-sa
+      serviceAccountName: {{ include "anomaly-detection.serviceaccount.fullname" . }}
       volumes:
       - name: spotlight-etc-streams
         projected:
           sources:
             - configMap:
-                name: {{ template "common.fullname.short" . }}-spotlight-config-base
+                name: {{ include "anomaly-detection.config.configmap.fullname" . }}
                 items:
                 - key: spotlight.yaml
                   path: spotlight.yaml
