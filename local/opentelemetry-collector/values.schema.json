@@ -16,6 +16,10 @@
   "title": "Values",
   "additionalProperties": false,
   "properties": {
+    "common": {
+      "description": "Values for the shared common chart dependency.",
+      "type": "object"
+    },
     "enabled": {
       "description": "Usually used when using Opentelemetry-collector as a subchart.",
       "type": "boolean"

@@ -1,6 +1,6 @@
 {{- define "stackstate.open-telemetry-collector.configmap" -}}
 metadata:
-  name: {{ include "stackstate.otelCollector.defaultFullname" . }}
+  name: {{ include "stackstate.otelCollector.endpoints.configmap.fullname" . }}
 data:
   api.url: "http://{{ include "stackstate.receiver.target.service.fullname" . }}:7077/stsAgent/api/v1/validate"
   intake.url: "http://{{ include "stackstate.receiver.target.service.fullname" . }}:7077/stsAgent/intake"

@@ -6,8 +6,17 @@ These do not change the generic common.name or common.fullname helpers.
 suse-observability
 {{- end -}}
 
-{{- define "suse-observability.pullSecret.name" -}}
+{{- define "suse-observability.pullSecret.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-pull-secret
+{{- end -}}
+
+{{/*
+The platform produces this endpoint ConfigMap; the collector consumes it.
+Its identity is independent of the collector's fullnameOverride and workload
+configuration ConfigMaps. Standalone collectors retain the same external reference.
+*/}}
+{{- define "stackstate.otelCollector.endpoints.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
 {{- end -}}
 
 {{- define "stackstate.clickhouse.fullname" -}}

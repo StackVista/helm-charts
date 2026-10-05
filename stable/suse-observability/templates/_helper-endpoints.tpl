@@ -9,7 +9,7 @@ http://{{- include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEnd
 Logic to determine promql query endpoint. It
 */}}
 {{- define "stackstate.metrics.query.url" -}}
-http://{{ include "stackstate.victoriametrics.fullname" . }}:8428
+http://{{ include "stackstate.victoriametrics.service.fullname" . }}:8428
 {{- end -}}
 
 {{/*

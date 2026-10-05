@@ -1,6 +1,6 @@
 {{- define "stackstate.victoriametrics.service" -}}
 metadata:
-  name: {{ include "stackstate.victoriametrics.fullname" . }}
+  name: {{ include "stackstate.victoriametrics.service.fullname" . }}
   labels:
     app.kubernetes.io/component: victoriametrics
 spec:

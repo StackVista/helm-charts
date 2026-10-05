@@ -64,9 +64,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
-  generateName: topic-create-
+  generateName: {{ include "stackstate.kafkaTopicCreate.job.generateName" . }}
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-topic-create-{{ now | date "02t150405" }}
+  name: {{ include "stackstate.kafkaTopicCreate.job.fullname" . }}
   {{- end }}
   labels:
     app.kubernetes.io/component: topic-create

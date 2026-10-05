@@ -78,7 +78,7 @@ Return the proper Docker Image Registry Secret Names
 {{- define "kafka.imagePullSecrets" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.pullSecret .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password -}}
 imagePullSecrets:
-- name: {{ include "suse-observability.pullSecret.name" . }}
+- name: {{ include "suse-observability.pullSecret.fullname" . }}
 {{- else -}}
 {{ include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.externalAccess.autoDiscovery.image .Values.volumePermissions.image .Values.metrics.kafka.image .Values.metrics.jmx.image) "global" .Values.global) }}
 {{- end -}}

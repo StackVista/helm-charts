@@ -3,7 +3,7 @@
 apiVersion: security.openshift.io/v1
 kind: SecurityContextConstraints
 metadata:
-  name: {{ template "common.fullname.short" . }}-{{ .Release.Namespace }}
+  name: {{ include "stackstate.securitycontextconstraints.fullname" . }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
   annotations:

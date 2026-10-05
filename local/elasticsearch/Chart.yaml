@@ -11,6 +11,9 @@ maintainers:
   - name: SUSE Observability Ops Team
     email: suse-observability-ops@suse.com
 dependencies:
+  - name: common
+    repository: file://../common
+    version: "*"
   - name: prometheus-elasticsearch-exporter
     repository: file://../prometheus-elasticsearch-exporter
     version: "*"
