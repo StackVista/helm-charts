@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ template "elasticsearch-exporter.fullname" . }}
+  name: {{ include "elasticsearch-exporter.prometheusrule.fullname" . }}
 {{- if .Values.prometheusRule.namespace }}
   namespace: {{ .Values.prometheusRule.namespace }}
 {{- end }}

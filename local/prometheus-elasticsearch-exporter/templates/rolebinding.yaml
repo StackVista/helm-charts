@@ -2,7 +2,7 @@
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: RoleBinding
 metadata:
-  name: {{ template "elasticsearch-exporter.fullname" . }}
+  name: {{ include "elasticsearch-exporter.rolebinding.fullname" . }}
   labels:
     chart: {{ template "elasticsearch-exporter.chart" . }}
     app: {{ template "elasticsearch-exporter.name" . }}
@@ -11,11 +11,11 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "elasticsearch-exporter.fullname" . }}
+  name: {{ include "elasticsearch-exporter.role.fullname" . }}
 subjects:
 - kind: ServiceAccount
   {{- if .Values.serviceAccount.create  }}
-  name: {{ template "elasticsearch-exporter.fullname" . }}
+  name: {{ include "elasticsearch-exporter.serviceaccount.fullname" . }}
   {{- else }}
   name: {{ .Values.serviceAccount.name }}
   {{- end }}

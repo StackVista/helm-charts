@@ -1,9 +1,8 @@
 {{- if .Values.rbac.create -}}
-{{- $fullName := include "elasticsearch.uname" . -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ $fullName | quote }}
+  name: {{ include "elasticsearch.role.fullname" . | quote }}
   labels:
     {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
     {{- include "elasticsearch.labels.common" . | nindent 4 }}
@@ -13,11 +12,7 @@ rules:
     resources:
       - podsecuritypolicies
     resourceNames:
-      {{- if eq .Values.podSecurityPolicy.name "" }}
-      - {{ $fullName | quote }}
-      {{- else }}
-      - {{ .Values.podSecurityPolicy.name | quote }}
-      {{- end }}
+      - {{ include "elasticsearch.podsecuritypolicy.fullname" . | quote }}
     verbs:
       - use
 {{- end -}}

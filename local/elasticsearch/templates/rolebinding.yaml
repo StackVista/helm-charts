@@ -1,22 +1,21 @@
 {{- if .Values.rbac.create -}}
-{{- $fullName := include "elasticsearch.uname" . -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ $fullName | quote }}
+  name: {{ include "elasticsearch.rolebinding.fullname" . | quote }}
   labels:
     {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
     {{- include "elasticsearch.labels.common" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
     {{- if eq .Values.rbac.serviceAccountName "" }}
-    name: {{ $fullName | quote }}
+    name: {{ include "elasticsearch.serviceaccount.fullname" . | quote }}
     {{- else }}
     name: {{ .Values.rbac.serviceAccountName | quote }}
     {{- end }}
     namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: Role
-  name: {{ $fullName | quote }}
+  name: {{ include "elasticsearch.role.fullname" . | quote }}
   apiGroup: rbac.authorization.k8s.io
 {{- end -}}

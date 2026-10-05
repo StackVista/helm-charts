@@ -2,7 +2,7 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ template "elasticsearch-exporter.fullname" . }}
+  name: {{ include "elasticsearch-exporter.podsecuritypolicy.fullname" . }}
   labels:
     chart: {{ template "elasticsearch-exporter.chart" . }}
     app: {{ template "elasticsearch-exporter.name" . }}
