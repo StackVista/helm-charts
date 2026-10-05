@@ -137,6 +137,8 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
   {{- $_ := set $openEnvVars "OTEL_EXPORTER_OTLP_PROTOCOL" (index $otelInstrumentationServiceConfig "otlpExporterProtocol" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterProtocol) }}
   {{- $_ := set $openEnvVars "OTEL_SERVICE_NAME" "stackstate-$(STS_SERVICE_NAME)" }}
   {{- $_ := set $openEnvVars "OTEL_RESOURCE_ATTRIBUTES" (printf "service.namespace=%s,service.instance.id=$(POD_NAME)" (include "stackstate.otelInstrumentation.serviceNamespace" .)) }}
+  {{- $_ := set $openEnvVars "OTEL_INSTRUMENTATION_KAFKA_CLIENTS_ENABLED" "false" }}
+  {{- $_ := set $openEnvVars "OTEL_INSTRUMENTATION_KAFKA_CLIENTS_METRICS_ENABLED" "true" }}
 {{- end }}
 
 {{/* Merge deployment-specific env vars (passed via .DeploymentEnv, lower priority than user extraEnv) */}}

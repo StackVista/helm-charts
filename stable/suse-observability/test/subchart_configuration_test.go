@@ -175,6 +175,34 @@ func TestOtelInstrumentationNamespaceConfiguration(t *testing.T) {
 	}
 }
 
+func TestOtelInstrumentationDisablesKafkaClientSpans(t *testing.T) {
+	enabled := "stackstate:\n  components:\n    all:\n      otelInstrumentation:\n        enabled: true\n"
+	for _, tc := range []struct{ name, values, expected string }{
+		{"default", enabled, "false"},
+		{"extra-env-override", enabled + "    api:\n      extraEnv:\n        open:\n          OTEL_INSTRUMENTATION_KAFKA_CLIENTS_ENABLED: \"true\"\n", "true"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			resources := renderConnectionConfiguration(t, "nightly", tc.values, false)
+			require.Contains(t, resources.Deployments, "nightly-suse-observability-api")
+			assertConnectionEnv(t, resources.Deployments["nightly-suse-observability-api"].Spec.Template.Spec.Containers, "OTEL_INSTRUMENTATION_KAFKA_CLIENTS_ENABLED", tc.expected)
+		})
+	}
+}
+
+func TestOtelInstrumentationEnablesKafkaClientMetrics(t *testing.T) {
+	enabled := "stackstate:\n  components:\n    all:\n      otelInstrumentation:\n        enabled: true\n"
+	for _, tc := range []struct{ name, values, expected string }{
+		{"default", enabled, "true"},
+		{"extra-env-override", enabled + "    api:\n      extraEnv:\n        open:\n          OTEL_INSTRUMENTATION_KAFKA_CLIENTS_METRICS_ENABLED: \"false\"\n", "false"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			resources := renderConnectionConfiguration(t, "nightly", tc.values, false)
+			require.Contains(t, resources.Deployments, "nightly-suse-observability-api")
+			assertConnectionEnv(t, resources.Deployments["nightly-suse-observability-api"].Spec.Template.Spec.Containers, "OTEL_INSTRUMENTATION_KAFKA_CLIENTS_METRICS_ENABLED", tc.expected)
+		})
+	}
+}
+
 func TestPlatformDefaultValuesContainNoTemplateExpressions(t *testing.T) {
 	values, err := os.ReadFile("../values.yaml")
 	require.NoError(t, err)
