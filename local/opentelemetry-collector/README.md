@@ -114,6 +114,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.exporters.sts_kafka_exporter.sending_queue.queue_size | int | `1000` |  |
 | config.exporters.sts_kafka_exporter.timeout | string | `"30s"` |  |
 | config.exporters.sts_kafka_exporter.topic | string | `"sts_topology_stream"` |  |
+| config.exporters.ststopology.endpoint | string | `"${env:INTAKE_URL}"` |  |
 | config.extensions.health_check.endpoint | string | `"${env:MY_POD_IP}:13133"` |  |
 | config.extensions.service_token_auth.cache.invalid_size | int | `100` |  |
 | config.extensions.service_token_auth.cache.valid_size | int | `100` |  |
@@ -179,9 +180,8 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.service.pipelines.metrics/internal.processors[2] | string | `"batch"` |  |
 | config.service.pipelines.metrics/internal.receivers[0] | string | `"prometheus/internal"` |  |
 | config.service.pipelines.metrics/topology.exporters[0] | string | `"topology"` |  |
-| config.service.pipelines.metrics/topology.processors[0] | string | `"resource/removeStsApiKey"` |  |
-| config.service.pipelines.metrics/topology.processors[1] | string | `"attributes/removeStsApiKey"` |  |
-| config.service.pipelines.metrics/topology.processors[2] | string | `"batch"` |  |
+| config.service.pipelines.metrics/topology.exporters[1] | string | `"ststopology"` |  |
+| config.service.pipelines.metrics/topology.processors[0] | string | `"batch"` |  |
 | config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
 | config.service.pipelines.metrics/topology.receivers[1] | string | `"stsservicegraph"` |  |
 | config.service.pipelines.metrics/victoria-metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
@@ -204,8 +204,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.service.pipelines.traces/clickhouse.processors[2] | string | `"batch"` |  |
 | config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
 | config.service.pipelines.traces/topology.exporters[0] | string | `"topology"` |  |
-| config.service.pipelines.traces/topology.processors[0] | string | `"resource/removeStsApiKey"` |  |
-| config.service.pipelines.traces/topology.processors[1] | string | `"attributes/removeStsApiKey"` |  |
+| config.service.pipelines.traces/topology.exporters[1] | string | `"ststopology"` |  |
 | config.service.pipelines.traces/topology.receivers[0] | string | `"forward"` |  |
 | config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.host | string | `"0.0.0.0"` |  |
 | config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.port | int | `8888` |  |
@@ -348,3 +347,4 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | useGOMEMLIMIT | bool | `true` |  |
+
