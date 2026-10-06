@@ -1,0 +1,13 @@
+{{- if .Values.carts.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: carts-db-initdb
+  labels:
+    {{- include "component.common.labels" ("carts-db") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+data:
+  carts-index.js: |
+    db.getSiblingDB("data").cart.createIndex({customerId: 1});
+{{- end }}

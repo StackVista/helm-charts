@@ -46,10 +46,16 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
+        - mountPath: /docker-entrypoint-initdb.d
+          name: initdb
+          readOnly: true
       volumes:
       - name: tmp-volume
         emptyDir:
           medium: Memory
+      - name: initdb
+        configMap:
+          name: carts-db-initdb
       {{- if .Values.cartsDB.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.cartsDB.nodeSelector | indent 8 }}
