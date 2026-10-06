@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -97,8 +98,15 @@ func TestElasticsearchCertificateLookupUsesDedicatedHelper(t *testing.T) {
 	for _, renamed := range []bool{false, true} {
 		for _, upgrade := range []bool{false, true} {
 			t.Run(fmt.Sprintf("renamed=%t/upgrade=%t", renamed, upgrade), func(t *testing.T) {
-				chart := filepath.Join(t.TempDir(), "chart")
-				require.NoError(t, os.CopyFS(chart, os.DirFS("../../../local/elasticsearch")))
+				// CI downloads the platform dependency artifacts only. Use its
+				// packaged Elasticsearch chart, including nested dependencies.
+				packages, err := filepath.Glob("../charts/elasticsearch-*.tgz")
+				require.NoError(t, err)
+				require.Len(t, packages, 1, "Build platform dependencies before running lookup tests")
+				fixture := t.TempDir()
+				unpackOutput, err := exec.Command("tar", "-xzf", packages[0], "-C", fixture).CombinedOutput()
+				require.NoError(t, err, string(unpackOutput))
+				chart := filepath.Join(fixture, "elasticsearch")
 				// Keep the real certificate template/helpers and dependencies.
 				// The minimal mock API only supports Secret reads; full workload
 				// manifests are exercised by the reference tests above.
