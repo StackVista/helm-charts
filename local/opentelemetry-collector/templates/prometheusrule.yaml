@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ include "opentelemetry-collector.fullname" . }}
+  name: {{ include "opentelemetry-collector.prometheusrule.fullname" . }}
   namespace: {{ template "opentelemetry-collector.namespace" . }}
   labels:
     {{- include "opentelemetry-collector.labels" . | nindent 4 }}

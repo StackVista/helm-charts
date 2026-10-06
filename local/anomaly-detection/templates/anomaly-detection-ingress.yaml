@@ -8,7 +8,7 @@ apiVersion: networking.k8s.io/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ include "common.fullname.short" . }}
+  name: {{ include "anomaly-detection.ingress.fullname" . }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
   annotations:
@@ -28,6 +28,7 @@ spec:
   {{- end }}
 {{- end }}
   rules:
+  {{- /* Preserve the legacy backend name; it differs from the manager Service. */}}
   {{- $global := . -}}
   {{- range $host := .Values.ingress.hosts }}
   - host: {{ $host.host }}

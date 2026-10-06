@@ -1,6 +1,6 @@
 {{- define "anomaly-detection.poddisruptionbudget" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-anomaly-detection
+  name: {{ include "anomaly-detection.pdb.fullname" . }}
   labels:
     app.kubernetes.io/component: anomaly-detection
 spec:

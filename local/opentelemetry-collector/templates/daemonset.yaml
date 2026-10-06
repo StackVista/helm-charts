@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "opentelemetry-collector.fullname" . }}-agent
+  name: {{ include "opentelemetry-collector.daemonset.fullname" . }}
   namespace: {{ template "opentelemetry-collector.namespace" . }}
   labels:
     {{- include "opentelemetry-collector.workloadLabels" . | nindent 4 }}
