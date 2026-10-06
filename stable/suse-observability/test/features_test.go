@@ -294,6 +294,7 @@ func TestFeaturesOtelLogsDefault(t *testing.T) {
 
 	receiverNotExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelLogs", Value: "true"}
 	assert.NotContains(t, receiverDeployment.Spec.Template.Spec.Containers[0].Env, receiverNotExpected, "Receiver deployment should not have otelLogs feature flag by default")
+	assert.NotContains(t, envNames(receiverDeployment.Spec.Template.Spec.Containers[0].Env), "CONFIG_FORCE_stackstate_receiver_otelCollector_endpoint")
 
 	assert.NotContains(t, envNames(deployment.Spec.Template.Spec.Containers[0].Env), "CONFIG_FORCE_stackstate_logs_retentionDays")
 
@@ -337,6 +338,17 @@ func TestFeaturesOtelLogsEnabledSplit(t *testing.T) {
 
 	receiverExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelLogs", Value: "true"}
 	assert.Contains(t, receiverDeployment.Spec.Template.Spec.Containers[0].Env, receiverExpected, "Receiver deployment should have otelLogs feature flag enabled")
+
+	collectorEndpoint := corev1.EnvVar{
+		Name:  "CONFIG_FORCE_stackstate_receiver_otelCollector_endpoint",
+		Value: "http://suse-observability-otel-collector:4318",
+	}
+	assert.Contains(
+		t,
+		receiverDeployment.Spec.Template.Spec.Containers[0].Env,
+		collectorEndpoint,
+		"Receiver deployment should point at the platform collector's OTLP/HTTP endpoint",
+	)
 }
 
 func TestFeaturesOtelLogsEnabledNonSplit(t *testing.T) {
@@ -361,6 +373,17 @@ func TestFeaturesOtelLogsEnabledNonSplit(t *testing.T) {
 	expected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_featureSwitches_otelLogs", Value: "true"}
 	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "Server deployment should have otelLogs feature flag enabled")
 	assert.Contains(t, envNames(deployment.Spec.Template.Spec.Containers[0].Env), "CONFIG_FORCE_stackstate_logs_retentionDays")
+
+	collectorEndpoint := corev1.EnvVar{
+		Name:  "CONFIG_FORCE_stackstate_receiver_otelCollector_endpoint",
+		Value: "http://suse-observability-otel-collector:4318",
+	}
+	assert.Contains(
+		t,
+		deployment.Spec.Template.Spec.Containers[0].Env,
+		collectorEndpoint,
+		"Server deployment should point at the platform collector's OTLP/HTTP endpoint",
+	)
 }
 
 func TestFeaturesExperimentalRejected(t *testing.T) {
