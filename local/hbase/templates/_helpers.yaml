@@ -75,6 +75,21 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
 {{- end }}
 
 {{/*
+Fails rendering unless there is a spare datanode beyond dfs.replication: without one, a slow or failed datanode leaves no replacement and WAL writes abort region servers.
+*/}}
+{{- define "hbase.hdfs.validateReplication" }}
+{{- $datanodeCount := include "common.sizing.hdfs.datanode.effectiveReplicaCount" . | int }}
+{{- $replication := include "common.sizing.hdfs.datanode.effectiveReplication" . | int }}
+{{- $minReplication := min $datanodeCount (int .Values.hdfs.minReplication) }}
+{{- if and (gt $datanodeCount 1) (gt $replication 1) (le $datanodeCount $replication) }}
+{{- fail (printf "hbase.hdfs.datanode.replicaCount (%d) must be greater than hbase.hdfs.replication (%d) so a failed or excluded datanode can be replaced. Increase hbase.hdfs.datanode.replicaCount, or lower hbase.hdfs.replication but not below hbase.hdfs.minReplication (%d); check for values overriding the sizing profile." $datanodeCount $replication $minReplication) }}
+{{- end }}
+{{- if gt $minReplication (min $datanodeCount $replication) }}
+{{- fail (printf "hbase.hdfs.minReplication (%d) must not exceed hbase.hdfs.replication (%d), otherwise HDFS cannot create blocks. Set hbase.hdfs.replication to at least %d with at least %d datanodes, or lower hbase.hdfs.minReplication." $minReplication (min $datanodeCount $replication) $minReplication (add1 $minReplication)) }}
+{{- end }}
+{{- end }}
+
+{{/*
 Common environment variables for HBase configuration.
 */}}
 {{- define "hbase.hbase.commonEnv" }}
@@ -84,6 +99,14 @@ Common environment variables for HBase configuration.
   value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
+{{- $datanodeCount := include "common.sizing.hdfs.datanode.effectiveReplicaCount" . | int }}
+{{- $minReplication := min $datanodeCount (int .Values.hdfs.minReplication) }}
+{{- /*
+Caps how many slow datanodes a region server may avoid for new WAL blocks. Excluding more than datanodes - minReplication leaves too few targets, so the WAL roll fails and the region server aborts.
+Durability is unaffected: the NameNode still enforces minReplication, and only WAL block placement changes. The cost is slower WAL syncs while a slow datanode stays in the pipeline. 0 (single datanode) disables exclusion.
+*/}}
+- name: HBASE_CONF_hbase_regionserver_async_wal_max_exclude_datanode_count
+  value: {{ sub $datanodeCount $minReplication | quote }}
 {{ $diskSpaceMB := (include "hbase.storage.to.megabytes" (include "hbase.hdfs.datanode.persistence.size" .)) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb

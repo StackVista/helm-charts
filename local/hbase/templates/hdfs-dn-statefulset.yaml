@@ -181,6 +181,7 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
+{{- include "hbase.hdfs.validateReplication" . }}
 apiVersion: apps/v1
 kind: StatefulSet
 {{ include "hbase.hdfs.datanode.statefulset" . }}
