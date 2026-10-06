@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "common.fullname.short" . }}-kafkaup
+  name: {{ include "kafkaup-operator.deployment.fullname" . }}
   namespace: {{.Release.Namespace}}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: kafka
@@ -27,7 +27,7 @@ spec:
       annotations:
         {{ include "kafkaup-operator.checksum-configs" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "common.fullname.short" . }}-kafkaup
+      serviceAccountName: {{ include "kafkaup-operator.serviceaccount.fullname" . }}
       {{- include "kafkaup.image.pullSecret.name" . | nindent 6 }}
       containers:
       - name: kafkaup-operator
@@ -72,4 +72,4 @@ spec:
       volumes:
       - name: kafkaup-config-volume
         configMap:
-          name: {{ template "common.fullname.short" . }}-kafkaup-config
+          name: {{ include "kafkaup-operator.configmap.fullname" . }}

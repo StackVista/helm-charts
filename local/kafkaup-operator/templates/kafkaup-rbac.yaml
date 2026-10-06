@@ -2,26 +2,26 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "common.fullname.short" . }}-kafkaup
+  name: {{ include "kafkaup-operator.serviceaccount.fullname" . }}
   namespace: {{.Release.Namespace}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "common.fullname.short" . }}-kafkaup-binding
+  name: {{ include "kafkaup-operator.rolebinding.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ include "common.fullname.short" . }}-kafkaup
+  name: {{ include "kafkaup-operator.role.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "common.fullname.short" . }}-kafkaup
+  name: {{ include "kafkaup-operator.serviceaccount.fullname" . }}
   namespace: {{.Release.Namespace}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "common.fullname.short" . }}-kafkaup
+  name: {{ include "kafkaup-operator.role.fullname" . }}
 rules:
 - apiGroups: ["apps"]
   resources:
