@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "kubernetes-rbac-agent.global.name" . }}
+  name: {{ include "kubernetes-rbac-agent.clusterrole.fullname" . }}
   labels:
     app.kubernetes.io/component: kubernetes-rbac-agent
     app.kubernetes.io/instance: {{ .Release.Name }}

@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "opentelemetry-collector.fullname" . }}
+  name: {{ include "opentelemetry-collector.deployment.fullname" . }}
   namespace: {{ template "opentelemetry-collector.namespace" . }}
   labels:
     {{- include "opentelemetry-collector.workloadLabels" . | nindent 4 }}

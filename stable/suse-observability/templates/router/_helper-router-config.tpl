@@ -308,7 +308,7 @@ data:
           - endpoint:
               address:
                 socket_address:
-                  address: "{{ include "stackstate.otelCollector.fullname" . }}"
+                  address: "{{ include "stackstate.otelCollector.service.fullname" . }}"
                   port_value: 4318
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
       name: "{{ template "stackstate.ui.fullname" . }}"

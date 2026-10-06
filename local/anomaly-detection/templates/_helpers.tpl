@@ -10,7 +10,7 @@ checksum/anomaly-detection-config-base: {{ include (print $.Template.BasePath "/
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "common.fullname.short" . }}-spotlight-config-base
+  name: {{ include "anomaly-detection.config.configmap.fullname" . }}
 data:
 {{- $currentScope := . }}
 {{- range $configFile := tuple "spotlight.yaml" "task_logging.conf" "anomaly_detect.yaml" "anomaly_train.yaml" "anomaly_models.yaml" }}
@@ -76,7 +76,7 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
       {{- if .pullSecretName -}}
         {{- $pullSecrets = append $pullSecrets (include "anomaly-detection.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
       {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
-        {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+        {{- $pullSecrets = append $pullSecrets (include "anomaly-detection.pull.secret.fullname" $context) -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}

@@ -340,6 +340,23 @@ The parent endpoint ConfigMap has its own shared helper in common.
 {{- index .Values "opentelemetry-collector" "fullnameOverride" | default (include "stackstate.otelCollector.defaultFullname" .) -}}
 {{- end -}}
 
+{{/*
+Resolve the collector Service in its subchart context. Keep the legacy address
+when the collector is disabled or its generic fullname differs from the old
+parent expression (e.g. cleared/overlong overrides). Correcting those existing
+endpoint mismatches is separate from extracting names without changing renders.
+Envoy cluster identifiers continue to use stackstate.otelCollector.fullname.
+*/}}
+{{- define "stackstate.otelCollector.service.fullname" -}}
+{{- $legacy := include "stackstate.otelCollector.fullname" . -}}
+{{- $collector := index .Subcharts "opentelemetry-collector" -}}
+{{- if and $collector (eq $legacy (include "opentelemetry-collector.fullname" $collector)) -}}
+{{- include "opentelemetry-collector.service.fullname" $collector -}}
+{{- else -}}
+{{- $legacy -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "stackstate.s3proxy.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-s3proxy
 {{- end -}}

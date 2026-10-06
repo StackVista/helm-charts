@@ -10,10 +10,10 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 {{- end }}
 metadata:
-  {{- if .name }}
-  name: {{ printf "%s-%s" (include "opentelemetry-collector.fullname" $) .name }}
+  {{- if eq $kind "GRPCRoute" }}
+  name: {{ include "opentelemetry-collector.grpcroute.fullname" (dict "context" $ "name" .name) }}
   {{- else }}
-  name: {{ include "opentelemetry-collector.fullname" $ }}
+  name: {{ include "opentelemetry-collector.httproute.fullname" (dict "context" $ "name" .name) }}
   {{- end }}
   namespace: {{ template "opentelemetry-collector.namespace" $ }}
   labels:
@@ -46,7 +46,7 @@ spec:
   rules:
     {{- if eq $kind "GRPCRoute" }}
     - backendRefs:
-        - name: {{ include "opentelemetry-collector.fullname" $ }}-grpc
+        - name: {{ include "opentelemetry-collector.grpc.service.fullname" $ }}
           port: {{ .port | default 4317 }}
           {{- if .backendWeight }}
           weight: {{ .backendWeight }}
@@ -61,7 +61,7 @@ spec:
             type: {{ .pathType | default "PathPrefix" }}
             value: {{ .path | default "/" | quote }}
       backendRefs:
-        - name: {{ include "opentelemetry-collector.fullname" $ }}
+        - name: {{ include "opentelemetry-collector.service.fullname" $ }}
           port: {{ .port | default 4318 }}
           {{- if .backendWeight }}
           weight: {{ .backendWeight }}

@@ -2,7 +2,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "opentelemetry-collector.fullname" . }}
+  name: {{ include "opentelemetry-collector.horizontalpodautoscaler.fullname" . }}
   namespace: {{ template "opentelemetry-collector.namespace" . }}
   labels:
     {{- include "opentelemetry-collector.labels" . | nindent 4 }}
@@ -10,7 +10,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: {{ include "opentelemetry-collector.hpaKind" . }}
-    name: {{ include "opentelemetry-collector.fullname" . }}
+    name: {{ include "opentelemetry-collector.autoscaling.target.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   {{- if .Values.autoscaling.behavior }}

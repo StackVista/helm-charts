@@ -10,7 +10,7 @@ metadata:
     {{- include "kubernetes-rbac-agent.global.commonLabels" . | indent 4 }}
   annotations:
     {{- include "kubernetes-rbac-agent.global.commonAnnotations" . | indent 4 }}
-  name: {{ template "kubernetes-rbac-agent.url.configmap.internal.name" . }}
+  name: {{ template "kubernetes-rbac-agent.url.configmap.fullname" . }}
 data:
   STS_URL: {{ tpl $connection.url.value . | quote }}
 {{- end -}}

@@ -1,6 +1,6 @@
 {{- define "opentelemetry-collector.pod" -}}
 {{ include "opentelemetry-collector.image.pullSecret.name" ( dict "images" (list .Values) "context" $) }}
-serviceAccountName: {{ include "opentelemetry-collector.serviceAccountName" . }}
+serviceAccountName: {{ include "opentelemetry-collector.serviceaccount.fullname" . }}
 securityContext:
   {{- toYaml .Values.podSecurityContext | nindent 2 }}
 {{- with .Values.hostAliases }}
