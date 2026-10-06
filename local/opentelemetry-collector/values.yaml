@@ -260,6 +260,8 @@ config:
         initial_interval: 5s
         max_interval: 30s
         max_elapsed_time: 300s
+    ststopology:
+      endpoint: ${env:INTAKE_URL}
     debug: {}
   extensions:
     service_token_auth:
@@ -309,11 +311,9 @@ config:
       traces/topology:
         receivers:
           - forward
-        processors:
-          - resource/removeStsApiKey
-          - attributes/removeStsApiKey
         exporters:
           - topology
+          - ststopology
       traces/clickhouse:
         receivers:
           - forward
@@ -357,11 +357,10 @@ config:
           - forward
           - stsservicegraph
         processors:
-          - resource/removeStsApiKey
-          - attributes/removeStsApiKey
           - batch
         exporters:
           - topology
+          - ststopology
       logs:
         receivers:
           - otlp
