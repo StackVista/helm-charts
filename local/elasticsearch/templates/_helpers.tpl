@@ -42,15 +42,16 @@ Return the image registry
 Generate certificates when the secret doesn't exist
 */}}
 {{- define "elasticsearch.gen-certs" -}}
-{{- $certs := lookup "v1" "Secret" .Release.Namespace ( printf "%s-certs" (include "elasticsearch.uname" . ) ) -}}
+{{- $certs := lookup "v1" "Secret" .Release.Namespace (include "elasticsearch.certificates.secret.fullname" .) -}}
 {{- if $certs -}}
 tls.crt: {{ index $certs.data "tls.crt" }}
 tls.key: {{ index $certs.data "tls.key" }}
 ca.crt: {{ index $certs.data "ca.crt" }}
 {{- else -}}
-{{- $altNames := list ( include "elasticsearch.masterService" . ) ( printf "%s.%s" (include "elasticsearch.masterService" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "elasticsearch.masterService" .) .Release.Namespace ) -}}
+{{- $service := include "elasticsearch.master.service.name" . -}}
+{{- $altNames := list $service (printf "%s.%s" $service .Release.Namespace) (printf "%s.%s.svc" $service .Release.Namespace) -}}
 {{- $ca := genCA "elasticsearch-ca" 365 -}}
-{{- $cert := genSignedCert ( include "elasticsearch.masterService" . ) nil $altNames 365 $ca -}}
+{{- $cert := genSignedCert $service nil $altNames 365 $ca -}}
 tls.crt: {{ $cert.Cert | toString | b64enc }}
 tls.key: {{ $cert.Key | toString | b64enc }}
 ca.crt: {{ $ca.Cert | toString | b64enc }}
@@ -73,6 +74,37 @@ ca.crt: {{ $ca.Cert | toString | b64enc }}
 {{- end -}}
 {{- end -}}
 
+{{/*
+Master discovery may target another release's Service for non-master groups.
+*/}}
+{{- define "elasticsearch.master.service.name" -}}
+{{- if eq .Values.nodeGroup "master" -}}
+{{ include "elasticsearch.service.fullname" . }}
+{{- else -}}
+{{ include "elasticsearch.masterService" . }}
+{{- end -}}
+{{- end -}}
+
+{{- define "elasticsearch.master.headless.service.name" -}}
+{{- if eq .Values.nodeGroup "master" -}}
+{{ include "elasticsearch.headless.service.fullname" . }}
+{{- else -}}
+{{ include "elasticsearch.masterService" . }}-headless
+{{- end -}}
+{{- end -}}
+
+{{/*
+Preserve the StatefulSet's existing serviceName when masterService differs from
+uname because changing this field would require recreating the StatefulSet.
+*/}}
+{{- define "elasticsearch.node.headless.service.name" -}}
+{{- if or (ne .Values.nodeGroup "master") (eq (include "elasticsearch.uname" .) (include "elasticsearch.masterService" .)) -}}
+{{ include "elasticsearch.headless.service.fullname" . }}
+{{- else -}}
+{{ include "elasticsearch.uname" . }}-headless
+{{- end -}}
+{{- end -}}
+
 {{- define "elasticsearch.endpoints" -}}
 {{- $sizingReplicas := include "common.sizing.elasticsearch.replicas" . | trim -}}
 {{- $replicas := 0 -}}
@@ -82,6 +114,9 @@ ca.crt: {{ $ca.Cert | toString | b64enc }}
   {{- $replicas = int $sizingReplicas -}}
 {{- end -}}
 {{- $uname := printf "%s-%s" .Values.clusterName .Values.nodeGroup }}
+{{- if eq $uname (include "elasticsearch.uname" .) -}}
+  {{- $uname = include "elasticsearch.statefulset.fullname" . -}}
+{{- end -}}
   {{- range $i, $e := untilStep 0 $replicas 1 -}}
 {{ $uname }}-{{ $i }},
   {{- end -}}
@@ -236,7 +271,7 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
       {{- if .pullSecretName -}}
         {{- $pullSecrets = append $pullSecrets (include "elasticsearch.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
       {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
-        {{- $pullSecrets = append $pullSecrets ((list (include "elasticsearch.uname" $context ) "pull-secret") | join "-")  -}}
+        {{- $pullSecrets = append $pullSecrets (include "elasticsearch.pull.secret.fullname" $context) -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}

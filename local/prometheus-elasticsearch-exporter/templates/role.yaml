@@ -2,7 +2,7 @@
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: Role
 metadata:
-  name: {{ template "elasticsearch-exporter.fullname" . }}
+  name: {{ include "elasticsearch-exporter.role.fullname" . }}
   labels:
     chart: {{ template "elasticsearch-exporter.chart" . }}
     app: {{ template "elasticsearch-exporter.name" . }}
@@ -13,5 +13,5 @@ rules:
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
-  - {{ template "elasticsearch-exporter.fullname" . }}
+  - {{ include "elasticsearch-exporter.podsecuritypolicy.fullname" . }}
 {{- end }}

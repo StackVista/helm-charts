@@ -4,7 +4,7 @@
 apiVersion: {{ .Values.podMonitor.apiVersion }}
 kind: PodMonitor
 metadata:
-  name: {{ template "elasticsearch-exporter.fullname" . }}
+  name: {{ include "elasticsearch-exporter.podmonitor.fullname" . }}
   {{- if .Values.podMonitor.namespace }}
   namespace: {{ .Values.podMonitor.namespace }}
   {{- end }}

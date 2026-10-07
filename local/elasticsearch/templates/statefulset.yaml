@@ -65,7 +65,7 @@ exec:
 apiVersion: {{ template "elasticsearch.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
-  name: {{ template "elasticsearch.uname" . }}
+  name: {{ include "elasticsearch.statefulset.fullname" . }}
   labels:
     {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
     {{- include "elasticsearch.commonLabels" . | nindent 4 }}
@@ -76,7 +76,7 @@ metadata:
   annotations:
     esMajorVersion: "{{ include "elasticsearch.esMajorVersion" . }}"
 spec:
-  serviceName: {{ template "elasticsearch.uname" . }}-headless
+  serviceName: {{ include "elasticsearch.node.headless.service.name" . }}
   selector:
     matchLabels:
         {{/* Only kept for backwards compatible in upgrades, selector cannot be updated */}}
@@ -118,7 +118,7 @@ spec:
   {{- end }}
   template:
     metadata:
-      name: "{{ template "elasticsearch.uname" . }}"
+      name: "{{ include "elasticsearch.statefulset.fullname" . }}"
       labels:
         {{/* Only kept for backwards compatible in upgrades */}}
         app: "{{ template "elasticsearch.uname" . }}"
@@ -148,7 +148,7 @@ spec:
         {{- end }}
       {{- end }}
       {{- if .Values.rbac.create }}
-      serviceAccountName: "{{ template "elasticsearch.uname" . }}"
+      serviceAccountName: "{{ include "elasticsearch.serviceaccount.fullname" . }}"
       {{- else if not (eq .Values.rbac.serviceAccountName "") }}
       serviceAccountName: {{ .Values.rbac.serviceAccountName | quote }}
       {{- end }}
@@ -214,12 +214,12 @@ spec:
         {{- if .Values.esConfig }}
         - name: esconfig
           configMap:
-            name: {{ template "elasticsearch.uname" . }}-config
+            name: {{ include "elasticsearch.config.configmap.fullname" . }}
         {{- end }}
         {{- if .Values.createCert }}
         - name: elasticsearch-certs
           secret:
-           secretName: {{ template "elasticsearch.uname" . }}-certs
+           secretName: {{ include "elasticsearch.certificates.secret.fullname" . }}
         {{- end }}
 {{- if .Values.keystore }}
         - name: keystore
@@ -327,10 +327,10 @@ spec:
           {{- end }}
           {{- if lt (int (include "elasticsearch.esMajorVersion" .)) 7 }}
           - name: discovery.zen.ping.unicast.hosts
-            value: "{{ template "elasticsearch.masterService" . }}-headless"
+            value: "{{ include "elasticsearch.master.headless.service.name" . }}"
           {{- else }}
           - name: discovery.seed_hosts
-            value: "{{ template "elasticsearch.masterService" . }}-headless"
+            value: "{{ include "elasticsearch.master.headless.service.name" . }}"
           {{- end }}
           - name: cluster.name
             value: "{{ .Values.clusterName }}"
@@ -340,7 +340,7 @@ spec:
           - name: ELASTIC_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ template "elasticsearch.uname" . }}-credentials
+                name: {{ include "elasticsearch.credentials.secret.fullname" . }}
                 key: password
           {{- end }}
             {{/* Remain compatible with existing configurations, the esJavaOpts is often overriden by users via the small profiles of SUSE Observability.
@@ -426,7 +426,7 @@ spec:
               else
                 BASIC_AUTH=''
               fi
-              curl -XGET -s -k --fail ${BASIC_AUTH} {{ .Values.protocol }}://{{ template "elasticsearch.masterService" . }}:{{ .Values.httpPort }}${path}
+              curl -XGET -s -k --fail ${BASIC_AUTH} {{ .Values.protocol }}://{{ include "elasticsearch.master.service.name" . }}:{{ .Values.httpPort }}${path}
           }
 
           cleanup () {

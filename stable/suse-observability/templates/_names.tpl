@@ -470,10 +470,18 @@ Set an explicit name to reuse an existing service account name, e.g. for IAM rol
 {{- end -}}
 
 {{/*
-Logic to determine ElasticSearch host.
+Resolve the Elasticsearch headless Service in its subchart context when it
+matches the previous platform endpoint. Preserve existing endpoint mismatches
+for customer naming overrides and non-master groups.
 */}}
 {{- define "stackstate.es.host" -}}
-{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless
+{{- $legacy := printf "%s-master-headless" (include "stackstate.elasticsearch.fullname" .) -}}
+{{- $elasticsearch := index .Subcharts "elasticsearch" -}}
+{{- if and $elasticsearch (eq $elasticsearch.Values.nodeGroup "master") (eq $legacy (printf "%s-headless" (include "elasticsearch.masterService" $elasticsearch))) -}}
+{{- include "elasticsearch.headless.service.fullname" $elasticsearch -}}
+{{- else -}}
+{{- $legacy -}}
+{{- end -}}
 {{- end -}}
 
 {{/* Deployment identities are extracted independently of configuration resources.

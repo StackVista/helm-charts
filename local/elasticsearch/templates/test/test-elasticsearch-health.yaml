@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ .Release.Name }}-{{ randAlpha 5 | lower }}-test"
+  name: "{{ include "elasticsearch.test.pod.fullname" . }}"
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -15,5 +15,5 @@ spec:
       - "-c"
       - |
         #!/usr/bin/env bash -e
-        curl -XGET --fail '{{ template "elasticsearch.uname" . }}:{{ .Values.httpPort }}/_cluster/health?{{ .Values.clusterHealthCheckParams }}'
+        curl -XGET --fail '{{ include "elasticsearch.service.fullname" . }}:{{ .Values.httpPort }}/_cluster/health?{{ .Values.clusterHealthCheckParams }}'
   restartPolicy: Never
