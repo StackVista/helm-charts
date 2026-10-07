@@ -1,10 +1,16 @@
 # ServiceMonitor naming compatibility
 
-These fixtures were rendered from commit
-`0524ff4ca132ac6c4e215d0700c9cd76e8f05bb5`, before ServiceMonitor renaming,
-using Helm 3.19.0 and the existing platform dependency packages.
-The baseline chart was exported into a temporary directory; fixtures were
-generated before changing its naming helpers.
+These frozen fixtures have been independently reproduced from published
+pre-rename revision
+[`1e092cd119359c8184bc5997211f85bca4ecc9ec`](https://github.com/StackVista/helm-charts-internal/commit/1e092cd119359c8184bc5997211f85bca4ecc9ec)
+on `master`, using Helm 3.19.0. This revision precedes both the PDB and
+ServiceMonitor renames and remains reachable independently of PR rebases.
+
+Verification exported that revision into a temporary directory and rebuilt the
+platform chart's file dependencies from the same revision, including nested
+dependencies. All three complete ServiceMonitor inventories matched the existing
+JSON fixtures in install and upgrade rendering, excluding only the two version
+labels described below. The frozen files and their SHA-256 hashes are unchanged.
 
 | Fixture | Server and worker mode | Main-chart monitors |
 | --- | --- | --- |
@@ -49,6 +55,37 @@ Existing helper tests cover feature enablement and disablement.
 
 Keep the frozen fixtures unchanged. Do not generate new expectations from the
 renamed chart to make a test pass.
+
+To reproduce the baseline, run these commands from the current repository root
+with Helm 3.19.0 available as `helm`. This exports sources, builds local packages
+and renders templates; it does not install anything in Kubernetes:
+
+```sh
+git fetch origin 1e092cd119359c8184bc5997211f85bca4ecc9ec
+baseline_dir="$(mktemp -d)"
+git archive 1e092cd119359c8184bc5997211f85bca4ecc9ec \
+  | tar -x -C "$baseline_dir"
+
+# Build the nested exporter before its Elasticsearch parent.
+helm dependency build --skip-refresh \
+  "$baseline_dir/local/prometheus-elasticsearch-exporter"
+for dependency in anomaly-detection elasticsearch hbase kafka kafkaup-operator \
+  zookeeper victoria-metrics-single clickhouse opentelemetry-collector \
+  kubernetes-rbac-agent
+do
+  helm dependency build --skip-refresh "$baseline_dir/local/$dependency"
+done
+helm dependency build --skip-refresh "$baseline_dir/stable/suse-observability"
+
+SERVICE_MONITOR_BASELINE_CHART="$baseline_dir/stable/suse-observability" \
+  go test ./stable/suse-observability/test/... \
+    -run '^TestServiceMonitorNamingBaselineReproduction$' -count=1
+```
+
+The explicit reproduction test uses `serviceMonitorCompatibilityValues` with
+the three server/worker combinations in the table above and checks install and
+upgrade rendering against the unchanged fixtures. It skips unless the baseline
+path is supplied; normal tests need no old checkout or Git history.
 
 Local lifecycle checks use a localhost-only Kubernetes API with a minimal
 ServiceMonitor CRD and temporary ServiceMonitor/Service fixture charts.

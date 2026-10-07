@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,8 +17,9 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 )
 
-// Frozen monitors come from 0524ff4ca, before ServiceMonitor renaming. Only names
-// become canonical; discovery labels, namespace selection and scrape specs stay
+// Frozen monitors were independently reproduced from the published pre-rename
+// revision 1e092cd119359c8184bc5997211f85bca4ecc9ec on master. Only names become
+// canonical; discovery labels, namespace selection and scrape specs stay
 // compatible, including with legacy fullname settings.
 func TestServiceMonitorNamingCompatibility(t *testing.T) {
 	for _, tc := range []struct {
@@ -85,19 +87,7 @@ func TestServiceMonitorNamingCompatibility(t *testing.T) {
 					args = append(args, "--is-upgrade")
 				}
 				output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, options, args...)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				actual := map[string]monitoringv1.ServiceMonitor{}
-				for _, monitor := range resources.ServiceMonitors {
-					component := monitor.Labels["app.kubernetes.io/component"]
-					// Subchart monitors have different app names or components.
-					if monitor.Labels["app.kubernetes.io/name"] != "suse-observability" {
-						continue
-					}
-					require.NotContains(t, actual, component, "Each component must have one monitor")
-					delete(monitor.Labels, "helm.sh/chart")
-					delete(monitor.Labels, "app.kubernetes.io/version")
-					actual[component] = monitor
-				}
+				actual := mainServiceMonitorsForNamingTest(t, output)
 				assert.Equal(t, expected, actual, "Only reviewed monitor metadata names may change")
 
 				// Prometheus selects these objects by labels, independently of names.
@@ -114,6 +104,67 @@ func TestServiceMonitorNamingCompatibility(t *testing.T) {
 			})
 		}
 	}
+}
+
+// Explicit verification of the frozen fixtures against an exported old chart.
+// Normal tests stay independent of Git history and never rewrite fixtures.
+func TestServiceMonitorNamingBaselineReproduction(t *testing.T) {
+	chart := os.Getenv("SERVICE_MONITOR_BASELINE_CHART")
+	if chart == "" {
+		t.Skip("Set SERVICE_MONITOR_BASELINE_CHART to verify the documented pre-rename revision")
+	}
+	chart, err := filepath.Abs(chart)
+	require.NoError(t, err)
+	for _, scenario := range []struct {
+		fixture string
+		split   bool
+		workers bool
+	}{
+		{"split", true, false},
+		{"mono", false, false},
+		{"workers", true, true},
+	} {
+		for _, upgrade := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%s/upgrade=%t", scenario.fixture, upgrade), func(t *testing.T) {
+				values := serviceMonitorCompatibilityValues()
+				values["stackstate.features.server.split"] = fmt.Sprint(scenario.split)
+				values["stackstate.components.receiver.split.enabled"] = fmt.Sprint(scenario.workers)
+				values["stackstate.components.correlate.split.enabled"] = fmt.Sprint(scenario.workers)
+				options := apiResourceNameTestOptions(values)
+				options.ValuesFiles = []string{filepath.Join(chart, "test/values/full.yaml")}
+				var args []string
+				if upgrade {
+					args = append(args, "--is-upgrade")
+				}
+				output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
+				require.NoError(t, err)
+				data, err := os.ReadFile(filepath.Join("testdata/servicemonitor-renaming", scenario.fixture+".json"))
+				require.NoError(t, err)
+				var expected map[string]monitoringv1.ServiceMonitor
+				require.NoError(t, json.Unmarshal(data, &expected))
+				assert.Equal(t, expected, mainServiceMonitorsForNamingTest(t, output),
+					"The pre-rename chart must reproduce the frozen monitors without changing names or specs")
+			})
+		}
+	}
+}
+
+func mainServiceMonitorsForNamingTest(t *testing.T, output string) map[string]monitoringv1.ServiceMonitor {
+	t.Helper()
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	monitors := map[string]monitoringv1.ServiceMonitor{}
+	for _, monitor := range resources.ServiceMonitors {
+		// Subchart monitors have different app names or components.
+		if monitor.Labels["app.kubernetes.io/name"] != "suse-observability" {
+			continue
+		}
+		component := monitor.Labels["app.kubernetes.io/component"]
+		require.NotContains(t, monitors, component, "Each component must have one monitor")
+		delete(monitor.Labels, "helm.sh/chart")
+		delete(monitor.Labels, "app.kubernetes.io/version")
+		monitors[component] = monitor
+	}
+	return monitors
 }
 
 func serviceMonitorCompatibilityValues() map[string]string {
