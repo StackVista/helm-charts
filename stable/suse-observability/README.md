@@ -99,8 +99,8 @@ Selectors, disruption limits, labels and creation conditions are unchanged;
 subchart-owned PDBs retain their names.
 When a PDB name changes, Helm creates its replacement before deleting the old
 object. While both budgets select the same Pod, Kubernetes rejects eviction
-requests with HTTP 500, so node drains may fail temporarily during upgrade or
-rollback. Evictions resume after replacement finishes; no migration step is needed.
+requests with HTTP 500, so node drains fail until the obsolete budget is removed.
+After cleanup, eviction requests follow the remaining budget's disruption limits.
 Update external automation that selects the previous PDB names.
 
 Main-chart ServiceMonitors also always use `suse-observability-<component>`,
@@ -108,11 +108,47 @@ including the existing receiver and correlate worker suffixes. Root/global
 fullname overrides, prefixes and suffixes no longer affect their names.
 UI and S3Proxy monitor names are already canonical. Service names, selectors,
 monitor labels, namespace selection and scrape endpoints stay unchanged.
-During replacement, Prometheus may briefly discover both monitor identities or
-interrupt scraping while its operator reconciles the configuration. Completed
-upgrade and rollback restore the original monitor count and target configuration.
+During replacement, Prometheus may discover both monitor identities or interrupt
+scraping while its operator reconciles the configuration. The original monitor
+count and target configuration are restored once obsolete monitors are removed
+and the operator reconciles. Stale monitors selected by Prometheus can continue
+causing duplicate scraping until cleanup.
 Update external automation that references the previous ServiceMonitor names.
 Subchart-owned ServiceMonitors retain their names.
+
+These overlaps are temporary only when obsolete resources are deleted. No data
+or storage migration is required, but failed deployments or disabled pruning can
+leave stale PDBs and ServiceMonitors requiring operational cleanup.
+
+For Argo CD, enable automatic pruning (`spec.syncPolicy.automated.prune: true`)
+or perform a manual sync with pruning (`argocd app sync <application> --prune`).
+Syncing without pruning leaves the old objects behind. `PruneLast=true` only
+controls when pruning happens; it does not enable pruning.
+
+Helm creates or updates target resources before deleting obsolete resources.
+A non-atomic upgrade can create replacements and fail before reaching deletion.
+For Helm 3, consider `--atomic` for rollback on upgrade failure or
+`--cleanup-on-fail` to request removal of newly created resources on failure.
+Recovery and deletion can also fail, so verify the resulting inventory even when
+using these options.
+
+To recover stale resources after an interrupted upgrade, rollback or Argo CD sync:
+
+1. Choose the intended chart revision and values, whether finishing the upgrade
+   or restoring the previous revision. Render it with the installation's release
+   name, namespace and values. Compare its PDB and ServiceMonitor inventory with
+   live resources in their actual namespaces; ServiceMonitors may use a separate
+   monitoring namespace.
+2. Confirm the intended PDBs have the expected selectors and disruption limits,
+   and the intended ServiceMonitors have the expected selectors and endpoints.
+   Identify obsolete objects using Helm release ownership or Argo CD tracking
+   metadata, rather than names alone.
+3. Delete only obsolete PDBs and ServiceMonitors belonging to this installation
+   and absent from the intended manifests. Old and new objects share labels and
+   selectors, so do not delete them in bulk by a shared label selector.
+4. Complete or retry the chosen upgrade, rollback or pruning sync if needed.
+   Verify that overlapping PDBs no longer block evictions and Prometheus selects
+   only the intended monitors.
 
 When upgrading a release with a different name, Helm replaces the renamed resources.
 This also applies to affected resources when using root `fullnameOverride`,
