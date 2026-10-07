@@ -41,6 +41,9 @@ data:
         max_object_total_data_size_bytes: 0
         # Legacy topology is only sent from complete, bracketed snapshots.
         emit_snapshot_boundaries: true
+{{- with .Values.clusterAgent.config.configMap.maxDataSize }}
+        configmap_max_datasize: {{ . | int }}
+{{- end }}
 {{- else }}
         max_object_total_data_size_bytes: {{ .Values.otel.k8sResourceCollector.dataLimits.maxObjectTotalDataSizeBytes | int }}
 {{- end }}
@@ -199,9 +202,6 @@ data:
         cluster_type: {{ .Values.otel.k8sResourceCollector.kubernetesTopology.clusterType | quote }}
         interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}s
         snapshot_max_age: {{ include "stackstate-k8s-agent.kubernetesTopologyCompat.snapshotMaxAgeSeconds" . }}s
-{{- with .Values.clusterAgent.config.configMap.maxDataSize }}
-        configmap_max_datasize: {{ . | int }}
-{{- end }}
         resources:
 {{- include "stackstate-k8s-agent.kubernetesTopologyCompat.resources" . | nindent 10 }}
 {{- end }}

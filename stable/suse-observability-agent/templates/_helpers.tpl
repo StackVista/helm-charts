@@ -484,6 +484,9 @@ the same resource switches as the cluster agent.
 {{- if index $res $name }}{{ $_ := set $objects $name (dict "group" "batch") }}{{ end }}
 {{- end }}
 {{- if $res.ingresses }}{{ $_ := set $objects "ingresses" (dict "group" "networking.k8s.io") }}{{ end }}
+{{- range $name := list "configmaps" "secrets" }}
+{{- if index $res $name }}{{ $_ := set $objects $name (dict "group" "") }}{{ end }}
+{{- end }}
 {{- $objects | toYaml }}
 {{- end -}}
 
@@ -519,16 +522,14 @@ receiver's five-minute default.
 {{- end -}}
 
 {{/*
-Resource switches for the cluster-agent-compatible exporter. The collector does
-not watch ConfigMaps or Secrets, so those components are not produced.
+Resource switches for the cluster-agent-compatible exporter. The receiver
+replaces Secret data by its hash and truncates ConfigMap data on ingestion.
 */}}
 {{- define "stackstate-k8s-agent.kubernetesTopologyCompat.resources" -}}
 {{- $res := .Values.clusterAgent.collection.kubernetesResources }}
-{{- range $name := list "persistentvolumes" "persistentvolumeclaims" "namespaces" "daemonsets" "deployments" "replicasets" "statefulsets" "ingresses" "jobs" "cronjobs" }}
+{{- range $name := list "persistentvolumes" "persistentvolumeclaims" "namespaces" "daemonsets" "deployments" "replicasets" "statefulsets" "ingresses" "jobs" "cronjobs" "configmaps" "secrets" }}
 {{ $name }}: {{ index $res $name | default false }}
 {{- end }}
-configmaps: false
-secrets: false
 {{- end -}}
 
 {{/*

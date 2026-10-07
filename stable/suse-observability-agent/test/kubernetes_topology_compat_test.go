@@ -28,6 +28,7 @@ type compatCollectorConfig struct {
 		K8sResource struct {
 			EmitSnapshotBoundaries      bool                   `json:"emit_snapshot_boundaries"`
 			MaxObjectTotalDataSizeBytes int                    `json:"max_object_total_data_size_bytes"`
+			ConfigMapMaxDataSize        int                    `json:"configmap_max_datasize"`
 			Objects                     []collectorObjectWatch `json:"objects"`
 		} `json:"k8sresource"`
 	} `json:"receivers"`
@@ -102,15 +103,13 @@ func TestKubernetesTopologyCompatEnabled(t *testing.T) {
 		"nodes": "", "namespaces": "", "pods": "", "services": "", "persistentvolumes": "",
 		"persistentvolumeclaims": "", "volumeattachments": "storage.k8s.io", "deployments": "apps",
 		"replicasets": "apps", "daemonsets": "apps", "statefulsets": "apps", "jobs": "batch",
-		"cronjobs": "batch", "ingresses": "networking.k8s.io",
+		"cronjobs": "batch", "ingresses": "networking.k8s.io", "configmaps": "", "secrets": "",
 	} {
 		watch, ok := watches[name]
 		if assert.True(t, ok, "%s must be watched", name) {
 			assert.Equal(t, group, watch.Group, name)
 		}
 	}
-	assert.NotContains(t, watches, "secrets")
-	assert.NotContains(t, watches, "configmaps")
 
 	exporter := config.Exporters["stsk8stopology"]
 	require.NotNil(t, exporter)
@@ -121,8 +120,8 @@ func TestKubernetesTopologyCompatEnabled(t *testing.T) {
 	assert.Equal(t, "90s", exporter["interval"])
 	switches, ok := exporter["resources"].(map[string]any)
 	require.True(t, ok)
-	assert.Equal(t, false, switches["configmaps"], "ConfigMaps are not watched, so their collector must stay off")
-	assert.Equal(t, false, switches["secrets"], "Secrets are not watched, so their collector must stay off")
+	assert.Equal(t, true, switches["configmaps"])
+	assert.Equal(t, true, switches["secrets"])
 
 	pipeline, ok := config.Service.Pipelines["logs/kubernetes-topology"]
 	require.True(t, ok)
@@ -158,25 +157,28 @@ func TestKubernetesTopologyCompatFollowsClusterAgentResourceSwitches(t *testing.
 			"clusterAgent.collection.kubernetesResources.persistentvolumes":      "false",
 			"clusterAgent.collection.kubernetesResources.persistentvolumeclaims": "false",
 			"clusterAgent.collection.kubernetesResources.cronjobs":               "false",
+			"clusterAgent.collection.kubernetesResources.secrets":                "false",
 			"clusterAgent.config.topology.collectionInterval":                    "120",
 			"clusterAgent.config.configMap.maxDataSize":                          "2048",
 		},
 	})
 	config := collectorConfig(t, resources)
 	watches := watchesByName(config)
-	for _, name := range []string{"persistentvolumes", "persistentvolumeclaims", "volumeattachments", "cronjobs"} {
+	for _, name := range []string{"persistentvolumes", "persistentvolumeclaims", "volumeattachments", "cronjobs", "secrets"} {
 		assert.NotContains(t, watches, name)
 	}
 	assert.Contains(t, watches, "jobs")
 
 	exporter := config.Exporters["stsk8stopology"]
 	assert.Equal(t, "120s", exporter["interval"])
-	assert.EqualValues(t, 2048, exporter["configmap_max_datasize"])
+	assert.Equal(t, 2048, config.Receivers.K8sResource.ConfigMapMaxDataSize)
+	assert.NotContains(t, exporter, "configmap_max_datasize")
 	switches, ok := exporter["resources"].(map[string]any)
 	require.True(t, ok)
 	assert.Equal(t, false, switches["persistentvolumes"])
 	assert.Equal(t, false, switches["cronjobs"])
 	assert.Equal(t, true, switches["jobs"])
+	assert.Equal(t, false, switches["secrets"])
 }
 
 func TestKubernetesTopologyCompatRestrictedRBAC(t *testing.T) {
