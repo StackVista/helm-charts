@@ -16,6 +16,9 @@ identities are recorded separately.
 
 The test applies an explicit allowlist to the historical fixtures for the UI,
 replication checker, and vmagent ConfigMap renames and their pod/RBAC references.
+It also allows main-chart PDB metadata names to adopt the canonical prefix in
+every scenario, including those with legacy fullname overrides, prefixes and
+suffixes. PDB specifications remain unchanged.
 It then compares those expectations with a fresh rendering of the current chart.
 Unexpected additions or removals also fail.
 

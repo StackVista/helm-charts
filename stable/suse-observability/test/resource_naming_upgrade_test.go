@@ -227,6 +227,21 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 	if legacyPrefix == canonical {
 		return
 	}
+	// PDBs always adopt canonical identities, including with legacy fullname
+	// settings. Only metadata.name changes for these budgets.
+	for _, component := range []string{
+		"ai-assistant", "api", "authorization-sync", "checks", "correlate",
+		"e2es", "victoriametrics", "health-sync", "mcp", "notification",
+		"receiver", "router", "server", "state", "sync", "ui", "vmagent", "workload-observer",
+	} {
+		oldKey := "PodDisruptionBudget/" + legacyPrefix + "-" + component
+		if fields, found := contract[oldKey]; found {
+			newKey := "PodDisruptionBudget/" + canonical + "-" + component
+			require.NotContains(t, contract, newKey)
+			contract[newKey] = fields
+			delete(contract, oldKey)
+		}
+	}
 	// Exact resource allowlist: do not globally rewrite the old prefix, since
 	// that would conceal accidental renames of storage or credential resources.
 	for component, kinds := range map[string][]string{

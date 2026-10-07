@@ -17,46 +17,47 @@ import (
 
 // These fixtures come from c851a02ae, before the next renaming phase. They
 // freeze the complete main-chart PDBs, excluding chart/app version labels.
-// Future renames must explicitly allow only metadata.name changes here.
+// Canonical PDB names from the default-release fixture apply in every scenario,
+// including when legacy fullname overrides, prefixes or suffixes are supplied.
 func TestPDBNamingBaselineCompatibility(t *testing.T) {
 	for _, tc := range []struct {
-		name, release, prefix, namespace, fixture, valuesFile string
-		set                                                   map[string]string
-		disabled                                              []string
+		name, release, namespace, fixture, valuesFile string
+		set                                           map[string]string
+		disabled                                      []string
 	}{
-		{name: "default", release: "suse-observability", prefix: "suse-observability"},
-		{name: "mono", release: "suse-observability", prefix: "suse-observability", fixture: "mono",
+		{name: "default", release: "suse-observability"},
+		{name: "mono", release: "suse-observability", fixture: "mono",
 			set: map[string]string{"stackstate.features.server.split": "false"}},
-		{name: "nightly", release: "nightly", prefix: "nightly-suse-observability"},
-		{name: "nightly-mono", release: "nightly", prefix: "nightly-suse-observability", fixture: "mono",
+		{name: "nightly", release: "nightly"},
+		{name: "nightly-mono", release: "nightly", fixture: "mono",
 			set: map[string]string{"stackstate.features.server.split": "false"}},
-		{name: "second-namespace", release: "nightly", prefix: "nightly-suse-observability", namespace: "tenant-a"},
-		{name: "fullname-override", release: "nightly", prefix: "customer",
+		{name: "second-namespace", release: "nightly", namespace: "tenant-a"},
+		{name: "fullname-override", release: "nightly",
 			set: map[string]string{"fullnameOverride": "Customer"}},
-		{name: "prefix-suffix", release: "nightly", prefix: "g-pre-customer-post-end",
+		{name: "prefix-suffix", release: "nightly",
 			set: map[string]string{
 				"fullnameOverride": "customer", "fullnamePrefix": "pre-", "fullnameSuffix": "-post",
 				"global.fullnamePrefix": "g-", "global.fullnameSuffix": "-end",
 			}},
-		{name: "local-prefix", release: "nightly", prefix: "pre-nightly-suse-observability",
+		{name: "local-prefix", release: "nightly",
 			set: map[string]string{"fullnamePrefix": "pre-"}},
-		{name: "local-suffix", release: "nightly", prefix: "nightly-suse-observability-post",
+		{name: "local-suffix", release: "nightly",
 			set: map[string]string{"fullnameSuffix": "-post"}},
-		{name: "global-prefix", release: "nightly", prefix: "g-nightly-suse-observability",
+		{name: "global-prefix", release: "nightly",
 			set: map[string]string{"global.fullnamePrefix": "g-"}},
-		{name: "global-suffix", release: "nightly", prefix: "nightly-suse-observability-end",
+		{name: "global-suffix", release: "nightly",
 			set: map[string]string{"global.fullnameSuffix": "-end"}},
-		{name: "global-override", release: "nightly", prefix: "nightly-suse-observability",
+		{name: "global-override", release: "nightly",
 			set: map[string]string{"global.fullnameOverride": "global-only"}},
-		{name: "long-release", release: strings.Repeat("x", 50), prefix: strings.Repeat("x", 50) + "-sus"},
-		{name: "long-override", release: "nightly", prefix: strings.Repeat("a", 54),
+		{name: "long-release", release: strings.Repeat("x", 50)},
+		{name: "long-override", release: "nightly",
 			set: map[string]string{"fullnameOverride": strings.Repeat("a", 70)}},
-		{name: "split-workers", release: "nightly", prefix: "nightly-suse-observability",
+		{name: "split-workers", release: "nightly",
 			set: map[string]string{
 				"stackstate.components.receiver.split.enabled":  "true",
 				"stackstate.components.correlate.split.enabled": "true",
 			}},
-		{name: "optional-disabled", release: "nightly", prefix: "nightly-suse-observability",
+		{name: "optional-disabled", release: "nightly",
 			set: map[string]string{
 				"ai.assistant.enabled": "false", "ai.mcp.enabled": "false",
 				"stackstate.components.workloadObserver.enabled": "false",
@@ -64,9 +65,9 @@ func TestPDBNamingBaselineCompatibility(t *testing.T) {
 				"victoria-metrics-1.enabled":                     "false",
 			},
 			disabled: []string{"ai-assistant", "mcp", "workload-observer", "authorization-sync", "victoriametrics"}},
-		{name: "ha", release: "nightly", prefix: "nightly-suse-observability", fixture: "split",
+		{name: "ha", release: "nightly", fixture: "split",
 			valuesFile: "values/global_sizing_150_ha.yaml"},
-		{name: "nonha", release: "nightly", prefix: "nightly-suse-observability", fixture: "nonha",
+		{name: "nonha", release: "nightly", fixture: "nonha",
 			valuesFile: "values/global_sizing_50_nonha.yaml"},
 	} {
 		for _, upgrade := range []bool{false, true} {
@@ -85,7 +86,6 @@ func TestPDBNamingBaselineCompatibility(t *testing.T) {
 				}
 				for component, pdb := range expected {
 					require.True(t, strings.HasPrefix(pdb.Name, "suse-observability-"))
-					pdb.Name = tc.prefix + strings.TrimPrefix(pdb.Name, "suse-observability")
 					pdb.Labels["app.kubernetes.io/instance"] = tc.release
 					if _, found := pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"]; found {
 						pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"] = tc.release

@@ -1,7 +1,9 @@
 # PDB renaming baseline and inventory
 
 R0 freezes the compatibility contract for the first proposed rename family.
-No production names change in this step.
+R1 canonicalizes all main-chart PDB names, ignoring root/global fullname
+overrides, prefixes and suffixes. Temporary eviction unavailability during
+upgrade and rollback is accepted and documented.
 
 The fixtures were generated from main-chart commit
 `c851a02ae1f2f7eb64c5538a148194ea36eee4b4`, with Helm 3.19.0 and the
@@ -43,53 +45,55 @@ remain checked. Subchart-owned PDBs are outside this rename family.
 `TestPDBNamingBaselineCompatibility` also exercises non-default and long release
 names, a second namespace, fullname overrides and local/global prefixes/suffixes,
 long overrides, split workers and disabled optional components, on install and
-upgrade. Expected legacy name prefixes are explicit test inputs; they are not
-obtained from the resource-name helpers being tested.
+upgrade. Every scenario expects the canonical names from the unchanged
+default-release fixtures; names are not obtained from the helpers being tested.
 
-Keep these fixtures unchanged when implementing R1. Review an exact
-`metadata.name` allowlist in the test rather than regenerating the baseline
-from the renamed chart. The existing historical resource naming fixtures are
-also unchanged and continue checking storage and other resource references.
+Keep these fixtures unchanged. The tests expect canonical PDB names even when
+legacy fullname settings are supplied. No specification or selector changes are
+allowed. The historical resource naming fixtures also remain unchanged; their test applies
+an exact main-chart PDB metadata-name allowlist for all naming scenarios.
 
 ## Exact first-family inventory
 
 All rows below have kind `PodDisruptionBudget`. Helpers are in
 `stable/suse-observability/templates/_names.tpl`; paths in the table are relative
-to the main chart's `templates/` directory. The proposed default identity is
-`suse-observability-<suffix>`.
+to the main chart's `templates/` directory. The default target identity is
+`suse-observability-<suffix>`. Each row changes only its metadata name;
+root/global fullname settings no longer affect these identities.
 
 | Helper component | Suffix | Declaration | Classification |
 | --- | --- | --- | --- |
-| `aiAssistant` | `ai-assistant` | `ai-assistant/pdb-ai-assistant.yaml` | Eligible for R1 review |
-| `api` | `api` | `api/pdb-api.yaml` | Eligible for R1 review |
-| `authorizationSync` | `authorization-sync` | `authorizationSync/pdb-authorizationSync.yaml` | Eligible for R1 review |
-| `checks` | `checks` | `checks/pdb-checks.yaml` | Eligible for R1 review |
-| `correlate` | `correlate` | `correlate/pdb-correlate.yaml` | Eligible for R1 review |
-| `e2es` | `e2es` | `e2es/pdb-e2es.yaml` | Eligible for R1 review |
-| `victoriametrics` | `victoriametrics` | `global/pdb-victoriametrics.yaml` | Eligible for R1 review |
-| `healthSync` | `health-sync` | `healthSync/pdb-healthSync.yaml` | Eligible for R1 review |
-| `mcp` | `mcp` | `mcp/pdb-mcp.yaml` | Eligible for R1 review |
-| `notification` | `notification` | `notification/pdb-notification.yaml` | Eligible for R1 review |
-| `receiver` | `receiver` | `receiver/pdb-receiver.yaml` | Eligible for R1 review |
-| `router` | `router` | `router/pdb-router.yaml` | Eligible for R1 review |
-| `server` | `server` | `server/pdb-server.yaml` | Eligible for R1 review |
-| `state` | `state` | `state/pdb-state.yaml` | Eligible for R1 review |
-| `sync` | `sync` | `sync/pdb-sync.yaml` | Eligible for R1 review |
-| `ui` | `ui` | `ui/pdb-ui.yaml` | Eligible for R1 review |
-| `vmagent` | `vmagent` | `vmagent/pdb-vmagent.yaml` | Eligible for R1 review |
-| `workloadObserver` | `workload-observer` | `workload-observer/pdb-workload-observer.yaml` | Eligible for R1 review |
+| `aiAssistant` | `ai-assistant` | `ai-assistant/pdb-ai-assistant.yaml` | Canonical |
+| `api` | `api` | `api/pdb-api.yaml` | Canonical |
+| `authorizationSync` | `authorization-sync` | `authorizationSync/pdb-authorizationSync.yaml` | Canonical |
+| `checks` | `checks` | `checks/pdb-checks.yaml` | Canonical |
+| `correlate` | `correlate` | `correlate/pdb-correlate.yaml` | Canonical |
+| `e2es` | `e2es` | `e2es/pdb-e2es.yaml` | Canonical |
+| `victoriametrics` | `victoriametrics` | `global/pdb-victoriametrics.yaml` | Canonical |
+| `healthSync` | `health-sync` | `healthSync/pdb-healthSync.yaml` | Canonical |
+| `mcp` | `mcp` | `mcp/pdb-mcp.yaml` | Canonical |
+| `notification` | `notification` | `notification/pdb-notification.yaml` | Canonical |
+| `receiver` | `receiver` | `receiver/pdb-receiver.yaml` | Canonical |
+| `router` | `router` | `router/pdb-router.yaml` | Canonical |
+| `server` | `server` | `server/pdb-server.yaml` | Canonical |
+| `state` | `state` | `state/pdb-state.yaml` | Canonical |
+| `sync` | `sync` | `sync/pdb-sync.yaml` | Canonical |
+| `ui` | `ui` | `ui/pdb-ui.yaml` | Canonical |
+| `vmagent` | `vmagent` | `vmagent/pdb-vmagent.yaml` | Canonical |
+| `workloadObserver` | `workload-observer` | `workload-observer/pdb-workload-observer.yaml` | Canonical |
 
 For the default release these names are already canonical. With release `nightly`
-and default naming values, they currently use
-`nightly-suse-observability-<suffix>`. Existing fullname overrides and
-prefixes/suffixes must retain their current names in R1.
+and default naming values, they change from
+`nightly-suse-observability-<suffix>` to `suse-observability-<suffix>`.
+Names previously customized through fullname overrides, prefixes or suffixes
+also become canonical.
 
 The Kubernetes eviction API consumes the PDB selectors and budgets. Workloads
 do not reference these PDBs by name. No in-chart endpoint, volume, credential,
-RBAC subject or hook references a main-chart PDB identity. Runtime compatibility
-still needs testing, because old and new budgets can coexist during replacement.
-Customer-managed automation may select a PDB by name; such a reference requires
-retaining the name, rather than assuming it can be changed safely.
+RBAC subject or hook references a main-chart PDB identity. The runtime check
+shows that old and new budgets coexist during replacement and temporarily block
+evictions. Customer-managed automation selecting default PDB names must use
+the new canonical names, including previously customized identities.
 
 ## Retained resources for this change
 
@@ -101,9 +105,37 @@ Their later eligibility is assessed in the corresponding tracker steps.
 No migration flag, PVC reassignment, data copying, credential migration or
 custom operational script is introduced.
 
-## R1 acceptance gates
+## R1 compatibility result
 
-- Preserve explicit naming overrides and existing externally selected PDB names.
+The candidate was checked with Helm 3.19.0 against an isolated localhost
+Kubernetes 1.35.0 API server and disruption controller. The fixture charts
+contained only PDBs rendered from the baseline and candidate parent charts.
+Two synthetic Pod API objects and a ReplicaSet supplied a UI workload selector;
+Pod readiness was set by the test. No application containers or platform were
+deployed.
+
+The baseline budget reported two healthy Pods and allowed one disruption.
+Dry-run eviction returned HTTP 201. During upgrade, Helm created every new
+PDB before deleting its predecessor. A test proxy paused deletion of the old
+UI budget to inspect the overlap. A real dry-run eviction then returned HTTP
+500 with `more than one PodDisruptionBudget` in the response. The proxy
+extended the interval for observation; it did not establish its normal duration.
+
+Upgrade subsequently completed, leaving the expected candidate inventory and
+allowing eviction again. Repeated upgrade preserved PDB UIDs. Rollback restored
+legacy names without replacing fixture Pods. That initial prototype retained
+custom names with fullname settings; the final implementation ignores those
+settings, and the render cases verify the additional metadata-name changes.
+A destination owned by another release correctly rejected the candidate
+upgrade before changing either the original or foreign budgets.
+
+Temporary unavailability during the transition is accepted. The final chart
+adopts canonical names in every naming scenario. Frozen fixtures stay unchanged
+and tests allow only the reviewed PDB metadata-name changes.
+
+The acceptance checks are:
+
+- Ignore root/global fullname settings and document the canonical names.
 - Preserve selectors, specifications, labels and creation conditions.
 - Check destination ownership and name collisions. The platform already creates
   fixed UI/MCP and other names within a namespace; canonicalizing PDBs cannot
@@ -112,14 +144,15 @@ custom operational script is introduced.
   original release.
 - In a disposable cluster, install the baseline, upgrade normally, upgrade
   again, and roll back. Verify one intended final PDB per enabled component.
-- Exercise eviction during replacement. Kubernetes can reject eviction when
-  more than one PDB selects a Pod; verify that the transition does not create
-  an unacceptable protection gap or require customer repair.
-- Check failed-upgrade cleanup and rollback when both names are temporarily
-  present. Keep a legacy identity if this cannot satisfy the compatibility rule.
+- Exercise eviction during replacement and document its temporary rejection.
+  Verify that completed upgrade and rollback restore normal eviction behavior
+  without customer repair.
+- Verify a conflicting destination's Helm ownership rejects the upgrade
+  before changing original or foreign budgets.
 
-These live gates are intentionally pending. The baseline tests prove the
-current render contract, not the safety of a future object replacement.
+These focused API/controller checks do not prove full platform lifecycle
+behavior or Argo CD sync safety. The baseline tests separately preserve the
+render contract.
 
 Run the focused tests from the repository root:
 

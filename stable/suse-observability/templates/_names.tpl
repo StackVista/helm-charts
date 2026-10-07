@@ -951,82 +951,81 @@ stackgraph-restore-backup
 {{- end -}}
 
 {{/*
-PDB names retain their legacy prefix, independently of workload names. In
-particular, UI, vmagent and workload-observer PDBs remain release-derived even
-where their workloads use canonical names. Keep selectors and disruption budgets
-independent of these resource identities; receiver/correlate retain one PDB each
-with their existing selectors in both split and unsplit modes.
+PDBs always use the canonical prefix, independently of release and fullname
+settings. Keep selectors and disruption budgets independent of names;
+receiver/correlate retain one PDB each in split and unsplit modes.
+Helm replacement temporarily blocks evictions while both budget names coexist.
 */}}
 {{- define "stackstate.aiAssistant.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-ai-assistant
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
 {{- end -}}
 
 {{- define "stackstate.api.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-api
+{{ include "suse-observability.resourcePrefix" . }}-api
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-authorization-sync
+{{ include "suse-observability.resourcePrefix" . }}-authorization-sync
 {{- end -}}
 
 {{- define "stackstate.checks.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-checks
+{{ include "suse-observability.resourcePrefix" . }}-checks
 {{- end -}}
 
 {{- define "stackstate.correlate.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate
+{{ include "suse-observability.resourcePrefix" . }}-correlate
 {{- end -}}
 
 {{- define "stackstate.e2es.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-e2es
+{{ include "suse-observability.resourcePrefix" . }}-e2es
 {{- end -}}
 
 {{- define "stackstate.victoriametrics.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-victoriametrics
+{{ include "suse-observability.resourcePrefix" . }}-victoriametrics
 {{- end -}}
 
 {{- define "stackstate.healthSync.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-health-sync
+{{ include "suse-observability.resourcePrefix" . }}-health-sync
 {{- end -}}
 
 {{- define "stackstate.mcp.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-mcp
+{{ include "suse-observability.resourcePrefix" . }}-mcp
 {{- end -}}
 
 {{- define "stackstate.notification.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-notification
+{{ include "suse-observability.resourcePrefix" . }}-notification
 {{- end -}}
 
 {{- define "stackstate.receiver.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver
+{{ include "suse-observability.resourcePrefix" . }}-receiver
 {{- end -}}
 
 {{- define "stackstate.router.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-router
+{{ include "suse-observability.resourcePrefix" . }}-router
 {{- end -}}
 
 {{- define "stackstate.server.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-server
+{{ include "suse-observability.resourcePrefix" . }}-server
 {{- end -}}
 
 {{- define "stackstate.state.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-state
+{{ include "suse-observability.resourcePrefix" . }}-state
 {{- end -}}
 
 {{- define "stackstate.sync.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-sync
+{{ include "suse-observability.resourcePrefix" . }}-sync
 {{- end -}}
 
 {{- define "stackstate.ui.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-ui
+{{ include "suse-observability.resourcePrefix" . }}-ui
 {{- end -}}
 
 {{- define "stackstate.vmagent.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-vmagent
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
 {{- end -}}
 
 {{- define "stackstate.workloadObserver.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-workload-observer
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
 {{- end -}}
 
 {{/*
