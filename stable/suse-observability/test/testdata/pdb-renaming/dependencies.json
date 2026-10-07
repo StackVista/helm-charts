@@ -1,0 +1,67 @@
+[
+  {
+    "chart": "anomaly-detection",
+    "version": "5.2.0",
+    "sha256": "b8e0da5a0c95fd8095ad8a2c95f9e5591366e746e5385dad42ed1f3988c77377"
+  },
+  {
+    "chart": "clickhouse",
+    "version": "3.6.9",
+    "sha256": "8a384458cfa237ebca3ca8a60a75db101ef208f4e281dcb4e37b655d9ab82361"
+  },
+  {
+    "chart": "common",
+    "version": "0.4.28",
+    "sha256": "80cd11571afa3bad2c69d16bfb3a29b1d680e8d1423211a9fd2a0ef61ca415e6"
+  },
+  {
+    "chart": "elasticsearch",
+    "version": "8.19.4",
+    "sha256": "7f0a1d53a91ae9ccaf4748723e62ec49deda80701b0fea066e6c305194e3f498"
+  },
+  {
+    "chart": "hbase",
+    "version": "0.2.160",
+    "sha256": "57bdc6c88dda066f018fbf6b674cb59d5f64ab9049473a732fef791c200347ec"
+  },
+  {
+    "chart": "kafka",
+    "version": "19.1.3",
+    "sha256": "19843840f11a01b634d1021df8193d93acfe06d2d1c8caaa73e29fc138d16a75"
+  },
+  {
+    "chart": "kafkaup-operator",
+    "version": "0.1.29",
+    "sha256": "a04275aa8aa05947dc862975f8ebfd08aee42e3c9e4a7901f2be54566155b774"
+  },
+  {
+    "chart": "kubernetes-rbac-agent",
+    "version": "0.0.27",
+    "sha256": "57937a101973e083ca10e3651198b9e6fa09aecea194ac7bcc4d77c7c569f722"
+  },
+  {
+    "chart": "opentelemetry-collector",
+    "version": "0.108.0",
+    "sha256": "5654bfcac722645372f2efa454238f1310069286981760ce3c4413bf44a31692"
+  },
+  {
+    "chart": "pull-secret",
+    "version": "1.0.3",
+    "sha256": "2d6a4281017147d0e7bf473351e852e6c1f0aa43fa8a896979abe89ccefd8d83"
+  },
+  {
+    "chart": "suse-observability-sizing",
+    "version": "0.1.16",
+    "sha256": "d32fb30a67a047fd898b511cf1d519346f5720a53285aaa398ad9c24248eadb0"
+  },
+  {
+    "chart": "victoria-metrics-single",
+    "version": "0.8.53",
+    "sha256": "b57e6281a41834b86760147af2da4b3d9e98ac186816c83e9ae23dc3e5de7741"
+  },
+  {
+    "chart": "zookeeper",
+    "version": "8.1.3",
+    "sha256": "231bc0221116b9f5d6489436ea9cf40e88c0ff176ff65844d2b5f909fc28241e"
+  }
+]
