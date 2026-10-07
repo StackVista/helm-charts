@@ -857,7 +857,7 @@ otel:
       # otel.k8sResourceCollector.kubernetesTopology.clusterType -- Cluster type used in topology identifiers when global.features.experimentalOtelKubernetesTopology is true: kubernetes or openshift.
       clusterType: kubernetes
 
-    # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec extending the built-in denylist (core Secrets, ConfigMaps). Spec needs only `group`. Resources listed here must not appear under otel.k8sResourceCollector.objects. Use to block third-party resources with sensitive contents.
+    # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec of resources that must not appear under otel.k8sResourceCollector.objects. Spec needs only `group`. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are allowed because the collector sanitizes them; with global.features.experimentalOtelKubernetesTopology, turn their clusterAgent.collection.kubernetesResources switches off instead of denying them.
     deniedObjects: {}
     # Example:
     # deniedObjects:
