@@ -91,10 +91,7 @@ func TestServiceMonitorNamesUseDedicatedHelpers(t *testing.T) {
 			require.NoError(t, err)
 			after := helmtestutil.NewKubernetesResources(t, output)
 			for component, suffix := range monitors {
-				legacy := "nightly-suse-observability-" + suffix
-				if component == "ui" || component == "s3proxy" {
-					legacy = "suse-observability-" + suffix
-				}
+				legacy := "suse-observability-" + suffix
 				explicit := "explicit-" + suffix + "-monitor"
 				enabled := values["stackstate.components.all.metrics.enabled"] == "true" && values["stackstate.components.all.metrics.servicemonitor.enabled"] == "true"
 				split := values["stackstate.features.server.split"] == "true"

@@ -244,6 +244,22 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 	}
 	// Exact resource allowlist: do not globally rewrite the old prefix, since
 	// that would conceal accidental renames of storage or credential resources.
+	// UI/S3Proxy monitors are already canonical in the current baseline; the
+	// historical UI migration remains in its existing allowlist below.
+	for _, component := range []string{
+		"api", "authorization-sync", "checks", "correlate", "correlate-connection",
+		"correlate-http-tracing", "correlate-aggregator", "e2es", "health-sync",
+		"initializer", "notification", "receiver", "receiver-base", "receiver-logs",
+		"receiver-process-agent", "router", "server", "slicing", "state", "sync",
+	} {
+		oldKey := "ServiceMonitor/" + legacyPrefix + "-" + component
+		if fields, found := contract[oldKey]; found {
+			newKey := "ServiceMonitor/" + canonical + "-" + component
+			require.NotContains(t, contract, newKey)
+			contract[newKey] = fields
+			delete(contract, oldKey)
+		}
+	}
 	for component, kinds := range map[string][]string{
 		"ui":                  {"Deployment", "Service", "Secret", "ServiceMonitor"},
 		"replication-checker": {"Deployment", "ServiceAccount", "Role", "RoleBinding"},

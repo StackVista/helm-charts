@@ -85,6 +85,17 @@ requests with HTTP 500, so node drains may fail temporarily during upgrade or
 rollback. Evictions resume after replacement finishes; no migration step is needed.
 Update external automation that selects the previous PDB names.
 
+Main-chart ServiceMonitors also always use `suse-observability-<component>`,
+including the existing receiver and correlate worker suffixes. Root/global
+fullname overrides, prefixes and suffixes no longer affect their names.
+UI and S3Proxy monitor names are already canonical. Service names, selectors,
+monitor labels, namespace selection and scrape endpoints stay unchanged.
+During replacement, Prometheus may briefly discover both monitor identities or
+interrupt scraping while its operator reconciles the configuration. Completed
+upgrade and rollback restore the original monitor count and target configuration.
+Update external automation that references the previous ServiceMonitor names.
+Subchart-owned ServiceMonitors retain their names.
+
 When upgrading a release with a different name, Helm replaces the renamed resources.
 This also applies to affected resources when using root `fullnameOverride`,
 `fullnamePrefix`, or `fullnameSuffix`, or `global.fullnamePrefix` / `global.fullnameSuffix`,
