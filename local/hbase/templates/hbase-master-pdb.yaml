@@ -1,6 +1,6 @@
 {{- define "hbase.hbase.master.poddisruptionbudget" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-hbase-master
+  name: {{ include "hbase.hbase.master.poddisruptionbudget.fullname" . }}
   labels:
     app.kubernetes.io/component: hbase-master
 spec:

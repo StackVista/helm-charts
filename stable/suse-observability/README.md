@@ -96,7 +96,7 @@ Main-chart PodDisruptionBudgets always use `suse-observability-<component>`,
 independently of the release name or root/global fullname overrides, prefixes
 and suffixes. These naming settings no longer affect main-chart PDB names.
 Selectors, disruption limits, labels and creation conditions are unchanged;
-other subchart-owned PDBs retain their names, except for anomaly detection
+other subchart-owned PDBs retain their names, except for anomaly detection and HBase
 as described below.
 When a PDB name changes, Helm creates its replacement before deleting the old
 object. While both budgets select the same Pod, Kubernetes rejects eviction
@@ -129,6 +129,17 @@ Both renamed objects remain in the release namespace, so releases with the
 same name in different namespaces have separate PDBs and ServiceMonitors.
 The same eviction, duplicate-scraping and pruning considerations apply to these
 anomaly-detection objects. Update automation referencing their previous names.
+
+HBase's PDBs also use canonical names:
+`suse-observability-hbase-master`, `suse-observability-hbase-rs`,
+`suse-observability-hdfs-nn`, `suse-observability-hdfs-snn`,
+`suse-observability-hdfs-dn`, and `suse-observability-tephra`.
+Root, HBase and global fullname settings no longer affect these budget names.
+Their labels, selectors, annotations, `maxUnavailable: 1`, namespace scope and
+Mono/Distributed creation conditions are unchanged. HBase StatefulSets, claim
+templates, PVCs, governing Services, configuration, credentials, RBAC and
+ServiceMonitors retain their names and settings. The same eviction and
+stale-budget recovery guidance applies; update automation using old PDB names.
 
 These overlaps are temporary only when obsolete resources are deleted. No data
 or storage migration is required, but failed deployments or disabled pruning can

@@ -1,6 +1,6 @@
 {{- define "hbase.hbase.regionserver.poddisruptionbudget" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-hbase-rs
+  name: {{ include "hbase.hbase.regionserver.poddisruptionbudget.fullname" . }}
   labels:
     app.kubernetes.io/component: hbase-rs
 spec:

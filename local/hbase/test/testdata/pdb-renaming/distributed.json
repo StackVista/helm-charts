@@ -1,0 +1,122 @@
+{
+  "PodDisruptionBudget/nightly-hbase-hbase-master": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "hbase-master",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "hbase",
+        "app.kubernetes.io/part-of": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "hbase-0.0.0"
+      },
+      "name": "nightly-hbase-hbase-master"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hbase-master"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/nightly-hbase-hbase-rs": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "hbase-rs",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "hbase",
+        "app.kubernetes.io/part-of": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "hbase-0.0.0"
+      },
+      "name": "nightly-hbase-hbase-rs"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hbase-rs"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/nightly-hbase-hdfs-dn": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "hdfs-dn",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "hbase",
+        "app.kubernetes.io/part-of": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "hbase-0.0.0"
+      },
+      "name": "nightly-hbase-hdfs-dn"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hdfs-dn"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/nightly-hbase-hdfs-nn": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "hdfs-nn",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "hbase",
+        "app.kubernetes.io/part-of": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "hbase-0.0.0"
+      },
+      "name": "nightly-hbase-hdfs-nn"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "hdfs-nn"
+        }
+      }
+    }
+  },
+  "PodDisruptionBudget/nightly-hbase-tephra": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "tephra",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "hbase",
+        "app.kubernetes.io/part-of": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "hbase-0.0.0"
+      },
+      "name": "nightly-hbase-tephra"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "tephra"
+        }
+      }
+    }
+  }
+}
