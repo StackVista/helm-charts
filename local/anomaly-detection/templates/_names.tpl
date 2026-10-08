@@ -1,5 +1,6 @@
 {{/*
-Resource names retain the existing expressions, including fixed RBAC/PVC names.
+The PDB and manager ServiceMonitor use canonical product names. Workload,
+Service, configuration, credential, RBAC and PVC identities remain unchanged.
 Keep manager.name and worker.name separate for labels and selectors.
 */}}
 {{- define "anomaly-detection.manager.deployment.fullname" -}}
@@ -15,7 +16,7 @@ Keep manager.name and worker.name separate for labels and selectors.
 {{- end -}}
 
 {{- define "anomaly-detection.manager.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-spotlight-manager
+{{ include "suse-observability.resourcePrefix" . }}-spotlight-manager
 {{- end -}}
 
 {{- define "anomaly-detection.serviceaccount.fullname" -}}
@@ -55,5 +56,5 @@ spotlight-artifacts-volume-claim
 {{- end -}}
 
 {{- define "anomaly-detection.pdb.fullname" -}}
-{{ template "common.fullname.short" . }}-anomaly-detection
+{{ include "suse-observability.resourcePrefix" . }}-anomaly-detection
 {{- end -}}

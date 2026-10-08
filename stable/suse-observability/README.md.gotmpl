@@ -78,7 +78,8 @@ Main-chart PodDisruptionBudgets always use `suse-observability-<component>`,
 independently of the release name or root/global fullname overrides, prefixes
 and suffixes. These naming settings no longer affect main-chart PDB names.
 Selectors, disruption limits, labels and creation conditions are unchanged;
-subchart-owned PDBs retain their names.
+other subchart-owned PDBs retain their names, except for anomaly detection
+as described below.
 When a PDB name changes, Helm creates its replacement before deleting the old
 object. While both budgets select the same Pod, Kubernetes rejects eviction
 requests with HTTP 500, so node drains fail until the obsolete budget is removed.
@@ -96,7 +97,20 @@ count and target configuration are restored once obsolete monitors are removed
 and the operator reconciles. Stale monitors selected by Prometheus can continue
 causing duplicate scraping until cleanup.
 Update external automation that references the previous ServiceMonitor names.
-Subchart-owned ServiceMonitors retain their names.
+Other subchart-owned ServiceMonitors retain their names, except for anomaly
+detection as described below.
+
+Anomaly detection's PDB and manager ServiceMonitor now use the fixed names
+`suse-observability-anomaly-detection` and `suse-observability-spotlight-manager`.
+Release names and root, subchart or global fullname overrides, prefixes and
+suffixes do not change these two names. Their existing labels, selectors,
+disruption limits, namespace selection, scrape settings and creation conditions
+are preserved. The manager and worker Deployments, Service DNS, artifact PVC,
+configuration, credentials and RBAC keep their existing identities.
+Both renamed objects remain in the release namespace, so releases with the
+same name in different namespaces have separate PDBs and ServiceMonitors.
+The same eviction, duplicate-scraping and pruning considerations apply to these
+anomaly-detection objects. Update automation referencing their previous names.
 
 These overlaps are temporary only when obsolete resources are deleted. No data
 or storage migration is required, but failed deployments or disabled pruning can
