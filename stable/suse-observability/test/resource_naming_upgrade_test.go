@@ -89,7 +89,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 			require.NoError(t, err)
 			var expected namingUpgradeContract
 			require.NoError(t, json.Unmarshal(data, &expected))
-			allowResourceNamingMigration(t, expected, scenario.legacyPrefix)
+			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release)
 
 			for resource, fields := range expected {
 				actualFields, found := actual[resource]
@@ -221,9 +221,20 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 	return contract
 }
 
-func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix string) {
+func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release string) {
 	t.Helper()
 	const canonical = "suse-observability"
+	// The exporter used its subchart fullname, independent of the parent's
+	// fullname settings. Only its Deployment identity changes.
+	oldExporter := "Deployment/" + release + "-prometheus-elasticsearch-exporter"
+	newExporter := "Deployment/" + canonical + "-prometheus-elasticsearch-exporter"
+	if oldExporter != newExporter {
+		if fields, found := contract[oldExporter]; found {
+			require.NotContains(t, contract, newExporter)
+			contract[newExporter] = fields
+			delete(contract, oldExporter)
+		}
+	}
 	if legacyPrefix == canonical {
 		return
 	}

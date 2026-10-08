@@ -1,9 +1,11 @@
 {{/*
-Resource names keep the existing fullname and truncation. Generic name/fullname
-remain separate for labels, selectors, rule-group names and customer tpl values.
+The stateless Deployment uses the canonical product name. Supporting resources
+keep their existing identities, including Service DNS and certificate Secrets.
+Generic name/fullname remain separate for labels, selectors, rule-group names
+and customer tpl values.
 */}}
 {{- define "elasticsearch-exporter.deployment.fullname" -}}
-{{ include "elasticsearch-exporter.fullname" . }}
+{{ include "suse-observability.resourcePrefix" . }}-prometheus-elasticsearch-exporter
 {{- end -}}
 
 {{- define "elasticsearch-exporter.service.fullname" -}}

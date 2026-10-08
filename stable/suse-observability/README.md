@@ -150,6 +150,15 @@ To recover stale resources after an interrupted upgrade, rollback or Argo CD syn
    Verify that overlapping PDBs no longer block evictions and Prometheus selects
    only the intended monitors.
 
+The Elasticsearch exporter Deployment uses the fixed name
+`suse-observability-prometheus-elasticsearch-exporter`, including when exporter
+fullname or name overrides are configured. Its existing Service DNS name,
+selectors, Pod configuration, accounts and certificate Secret identities are
+preserved. Replacement may briefly interrupt exporter metrics or run both
+exporters; update automation that references the old Deployment name.
+The main Ingress retains its existing naming settings to preserve ownership of
+controller-managed Certificates and TLS Secrets. The main HTTPRoute is already canonical.
+
 When upgrading a release with a different name, Helm replaces the renamed resources.
 This also applies to affected resources when using root `fullnameOverride`,
 `fullnamePrefix`, or `fullnameSuffix`, or `global.fullnamePrefix` / `global.fullnameSuffix`,

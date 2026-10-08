@@ -90,7 +90,11 @@ func TestExporterResourcesFollowDedicatedHelpers(t *testing.T) {
 				require.NoError(t, err)
 				renames := map[string]string{}
 				for _, fixture := range fixtures {
-					renames[fixture.kind+"/"+scenario.fullname+fixture.suffix] = "explicit-" + strings.ReplaceAll(fixture.helper, ".", "-")
+					name := scenario.fullname + fixture.suffix
+					if fixture.kind == "Deployment" {
+						name = "suse-observability-prometheus-elasticsearch-exporter"
+					}
+					renames[fixture.kind+"/"+name] = "explicit-" + strings.ReplaceAll(fixture.helper, ".", "-")
 				}
 				expected := exporterNamingDocuments(t, before, renames, seen)
 				actual := exporterNamingDocuments(t, output, nil, nil)
@@ -99,7 +103,11 @@ func TestExporterResourcesFollowDedicatedHelpers(t *testing.T) {
 		}
 	}
 	for _, fixture := range fixtures {
-		assert.True(t, seen[fixture.kind+"/orders-prometheus-elasticsearch-exporter"+fixture.suffix], "helper not exercised: %s", fixture.helper)
+		name := "orders-prometheus-elasticsearch-exporter" + fixture.suffix
+		if fixture.kind == "Deployment" {
+			name = "suse-observability-prometheus-elasticsearch-exporter"
+		}
+		assert.True(t, seen[fixture.kind+"/"+name], "helper not exercised: %s", fixture.helper)
 	}
 }
 
