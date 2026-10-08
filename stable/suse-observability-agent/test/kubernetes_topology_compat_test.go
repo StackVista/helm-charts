@@ -118,6 +118,7 @@ func TestKubernetesTopologyCompatEnabled(t *testing.T) {
 	assert.Equal(t, "${env:K8S_CLUSTER_NAME}", exporter["cluster_name"])
 	assert.Equal(t, "kubernetes", exporter["cluster_type"])
 	assert.Equal(t, "90s", exporter["interval"])
+	assert.Equal(t, false, exporter["discovery_enabled"], "legacy topology must not depend on /features")
 	switches, ok := exporter["resources"].(map[string]any)
 	require.True(t, ok)
 	assert.Equal(t, true, switches["configmaps"])

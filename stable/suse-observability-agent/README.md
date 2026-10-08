@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.17`
+Current chart version is `1.7.18`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -409,7 +409,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
-| global.features.experimentalOtelKubernetesTopology | bool | `false` | Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled and a stackstate.url ending in /stsAgent. The collector follows the platform's legacy-kubernetes-topology capability and stops legacy export while the platform reports it is no longer needed. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMaps and Secrets are sanitized on ingestion: Secret data is replaced by its hash and ConfigMap data is truncated as by the cluster agent, per clusterAgent.config.configMap.maxDataSize. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals. |
+| global.features.experimentalOtelKubernetesTopology | bool | `false` | Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled and a stackstate.url ending in /stsAgent. The collector always sends legacy topology; it does not consult the platform's /features capabilities. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMaps and Secrets are sanitized on ingestion: Secret data is replaced by its hash and ConfigMap data is truncated as by the cluster agent, per clusterAgent.config.configMap.maxDataSize. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals. |
 | global.features.experimentalOtelLogsAgent | bool | `false` | Allow the experimental OTel pod-log collector; it runs when otelLogsAgent.enabled is true, independently of logsAgent.enabled. |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
