@@ -313,11 +313,12 @@ func TestMetricsServiceNamesUseDedicatedHelpers(t *testing.T) {
 				after := helmtestutil.NewKubernetesResources(t, output)
 				for component, suffix := range components {
 					legacy := "nightly-suse-observability-" + suffix
+					monitor := "suse-observability-" + suffix
 					explicit := "explicit-" + suffix + "-service"
 					if !serverSplit && component != "e2es" {
 						assert.NotContains(t, before.Services, legacy)
 						assert.NotContains(t, after.Services, explicit)
-						assert.NotContains(t, after.ServiceMonitors, legacy)
+						assert.NotContains(t, after.ServiceMonitors, monitor)
 						continue
 					}
 					require.Contains(t, before.Services, legacy)
@@ -327,14 +328,14 @@ func TestMetricsServiceNamesUseDedicatedHelpers(t *testing.T) {
 					expected.Name = explicit
 					assert.Equal(t, expected, after.Services[explicit], "Service ports and selectors must stay unchanged")
 					if monitoring {
-						require.Contains(t, after.ServiceMonitors, legacy)
-						selector := after.ServiceMonitors[legacy].Spec.Selector.MatchLabels
+						require.Contains(t, after.ServiceMonitors, monitor)
+						selector := after.ServiceMonitors[monitor].Spec.Selector.MatchLabels
 						require.NotEmpty(t, selector)
 						for key, value := range selector {
 							assert.Equal(t, value, after.Services[explicit].Labels[key], "ServiceMonitor label %s", key)
 						}
 					} else {
-						assert.NotContains(t, after.ServiceMonitors, legacy)
+						assert.NotContains(t, after.ServiceMonitors, monitor)
 					}
 					delete(before.Services, legacy)
 					delete(after.Services, explicit)

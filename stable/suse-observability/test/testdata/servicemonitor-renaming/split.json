@@ -1,0 +1,949 @@
+{
+  "api": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "api",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-api",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "api",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "authorization-sync": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "authorization-sync",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-authorization-sync",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "authorization-sync",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "checks": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "checks",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-checks",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "checks",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "correlate": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "correlate",
+        "app.kubernetes.io/component-group": "correlate",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-correlate",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "correlate",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "e2es": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "e2es",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-e2es",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "e2es",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "health-sync": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "health-sync",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-health-sync",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "health-sync",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "initializer": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "initializer",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-initializer",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "initializer",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "notification": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "notification",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-notification",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "notification",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "receiver": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "receiver",
+        "app.kubernetes.io/component-group": "receiver",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-receiver",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "receiver",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "router": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-router",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "router",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "s3proxy": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "s3proxy",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "backup-monitoring"
+      },
+      "name": "suse-observability-s3proxy",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "http",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "s3proxy",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "s3proxy"
+        }
+      }
+    }
+  },
+  "slicing": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "slicing",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-slicing",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "slicing",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "state": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "state",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-state",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "state",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "sync": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "sync",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "nightly-suse-observability-sync",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "sync",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  },
+  "ui": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "annotations": {
+        "fixture-owner": "observability"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "ui",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "fixture-scope": "preserved",
+        "prometheus": "platform-monitoring"
+      },
+      "name": "suse-observability-ui",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "relabelings": [
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+              ],
+              "targetLabel": "app_name"
+            },
+            {
+              "action": "replace",
+              "regex": "(.+)",
+              "sourceLabels": [
+                "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+              ],
+              "targetLabel": "app_component"
+            }
+          ],
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "podTargetLabels": [
+        "__meta_kubernetes_pod_label_app_kubernetes_io_name",
+        "__meta_kubernetes_pod_label_app_kubernetes_io_component"
+      ],
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "ui",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      }
+    }
+  }
+}

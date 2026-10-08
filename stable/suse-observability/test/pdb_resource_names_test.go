@@ -79,7 +79,7 @@ func TestPDBNamesUseDedicatedHelpers(t *testing.T) {
 				require.NoError(t, err)
 				after := helmtestutil.NewKubernetesResources(t, output)
 				for component, suffix := range components {
-					legacy, explicit := "nightly-suse-observability-"+suffix, "explicit-"+suffix+"-budget"
+					legacy, explicit := "suse-observability-"+suffix, "explicit-"+suffix+"-budget"
 					enabled := true
 					switch component {
 					case "api", "checks", "healthSync", "notification", "state", "sync":

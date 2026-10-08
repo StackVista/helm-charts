@@ -951,152 +951,151 @@ stackgraph-restore-backup
 {{- end -}}
 
 {{/*
-PDB names retain their legacy prefix, independently of workload names. In
-particular, UI, vmagent and workload-observer PDBs remain release-derived even
-where their workloads use canonical names. Keep selectors and disruption budgets
-independent of these resource identities; receiver/correlate retain one PDB each
-with their existing selectors in both split and unsplit modes.
+PDBs always use the canonical prefix, independently of release and fullname
+settings. Keep selectors and disruption budgets independent of names;
+receiver/correlate retain one PDB each in split and unsplit modes.
+Helm replacement temporarily blocks evictions while both budget names coexist.
 */}}
 {{- define "stackstate.aiAssistant.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-ai-assistant
+{{ include "suse-observability.resourcePrefix" . }}-ai-assistant
 {{- end -}}
 
 {{- define "stackstate.api.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-api
+{{ include "suse-observability.resourcePrefix" . }}-api
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-authorization-sync
+{{ include "suse-observability.resourcePrefix" . }}-authorization-sync
 {{- end -}}
 
 {{- define "stackstate.checks.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-checks
+{{ include "suse-observability.resourcePrefix" . }}-checks
 {{- end -}}
 
 {{- define "stackstate.correlate.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate
+{{ include "suse-observability.resourcePrefix" . }}-correlate
 {{- end -}}
 
 {{- define "stackstate.e2es.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-e2es
+{{ include "suse-observability.resourcePrefix" . }}-e2es
 {{- end -}}
 
 {{- define "stackstate.victoriametrics.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-victoriametrics
+{{ include "suse-observability.resourcePrefix" . }}-victoriametrics
 {{- end -}}
 
 {{- define "stackstate.healthSync.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-health-sync
+{{ include "suse-observability.resourcePrefix" . }}-health-sync
 {{- end -}}
 
 {{- define "stackstate.mcp.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-mcp
+{{ include "suse-observability.resourcePrefix" . }}-mcp
 {{- end -}}
 
 {{- define "stackstate.notification.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-notification
+{{ include "suse-observability.resourcePrefix" . }}-notification
 {{- end -}}
 
 {{- define "stackstate.receiver.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver
+{{ include "suse-observability.resourcePrefix" . }}-receiver
 {{- end -}}
 
 {{- define "stackstate.router.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-router
+{{ include "suse-observability.resourcePrefix" . }}-router
 {{- end -}}
 
 {{- define "stackstate.server.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-server
+{{ include "suse-observability.resourcePrefix" . }}-server
 {{- end -}}
 
 {{- define "stackstate.state.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-state
+{{ include "suse-observability.resourcePrefix" . }}-state
 {{- end -}}
 
 {{- define "stackstate.sync.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-sync
+{{ include "suse-observability.resourcePrefix" . }}-sync
 {{- end -}}
 
 {{- define "stackstate.ui.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-ui
+{{ include "suse-observability.resourcePrefix" . }}-ui
 {{- end -}}
 
 {{- define "stackstate.vmagent.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-vmagent
+{{ include "suse-observability.resourcePrefix" . }}-vmagent
 {{- end -}}
 
 {{- define "stackstate.workloadObserver.poddisruptionbudget.fullname" -}}
-{{ template "common.fullname.short" . }}-workload-observer
+{{ include "suse-observability.resourcePrefix" . }}-workload-observer
 {{- end -}}
 
 {{/*
 ServiceMonitor resource identities are independent of the Services they select.
-Keep legacy release-derived names, and existing canonical UI/S3Proxy names.
+Use the canonical prefix regardless of release and fullname settings.
 Receiver/correlate variants each have their own helper; the shared renderers
 receive resolved names while component types continue to control labels only.
 */}}
 {{- define "stackstate.api.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-api
+{{ include "suse-observability.resourcePrefix" . }}-api
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-authorization-sync
+{{ include "suse-observability.resourcePrefix" . }}-authorization-sync
 {{- end -}}
 
 {{- define "stackstate.checks.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-checks
+{{ include "suse-observability.resourcePrefix" . }}-checks
 {{- end -}}
 
 {{- define "stackstate.correlate.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate
+{{ include "suse-observability.resourcePrefix" . }}-correlate
 {{- end -}}
 
 {{- define "stackstate.correlate.connection.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate-connection
+{{ include "suse-observability.resourcePrefix" . }}-correlate-connection
 {{- end -}}
 
 {{- define "stackstate.correlate.httpTracing.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate-http-tracing
+{{ include "suse-observability.resourcePrefix" . }}-correlate-http-tracing
 {{- end -}}
 
 {{- define "stackstate.correlate.aggregator.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate-aggregator
+{{ include "suse-observability.resourcePrefix" . }}-correlate-aggregator
 {{- end -}}
 
 {{- define "stackstate.e2es.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-e2es
+{{ include "suse-observability.resourcePrefix" . }}-e2es
 {{- end -}}
 
 {{- define "stackstate.healthSync.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-health-sync
+{{ include "suse-observability.resourcePrefix" . }}-health-sync
 {{- end -}}
 
 {{- define "stackstate.initializer.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-initializer
+{{ include "suse-observability.resourcePrefix" . }}-initializer
 {{- end -}}
 
 {{- define "stackstate.notification.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-notification
+{{ include "suse-observability.resourcePrefix" . }}-notification
 {{- end -}}
 
 {{- define "stackstate.receiver.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver
+{{ include "suse-observability.resourcePrefix" . }}-receiver
 {{- end -}}
 
 {{- define "stackstate.receiver.base.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver-base
+{{ include "suse-observability.resourcePrefix" . }}-receiver-base
 {{- end -}}
 
 {{- define "stackstate.receiver.logs.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver-logs
+{{ include "suse-observability.resourcePrefix" . }}-receiver-logs
 {{- end -}}
 
 {{- define "stackstate.receiver.processAgent.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver-process-agent
+{{ include "suse-observability.resourcePrefix" . }}-receiver-process-agent
 {{- end -}}
 
 {{- define "stackstate.router.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-router
+{{ include "suse-observability.resourcePrefix" . }}-router
 {{- end -}}
 
 {{- define "stackstate.s3proxy.servicemonitor.fullname" -}}
@@ -1104,19 +1103,19 @@ receive resolved names while component types continue to control labels only.
 {{- end -}}
 
 {{- define "stackstate.server.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-server
+{{ include "suse-observability.resourcePrefix" . }}-server
 {{- end -}}
 
 {{- define "stackstate.slicing.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-slicing
+{{ include "suse-observability.resourcePrefix" . }}-slicing
 {{- end -}}
 
 {{- define "stackstate.state.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-state
+{{ include "suse-observability.resourcePrefix" . }}-state
 {{- end -}}
 
 {{- define "stackstate.sync.servicemonitor.fullname" -}}
-{{ template "common.fullname.short" . }}-sync
+{{ include "suse-observability.resourcePrefix" . }}-sync
 {{- end -}}
 
 {{- define "stackstate.ui.servicemonitor.fullname" -}}

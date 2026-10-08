@@ -38,8 +38,7 @@ func TestResourceNamingStatelessComponents(t *testing.T) {
 				require.Contains(t, resources.Secrets, uiName)
 				uiPdbName := uiName
 				if release != "suse-observability" {
-					uiPdbName = release + "-" + uiName
-					assert.NotContains(t, resources.Pdbs, uiName)
+					assert.NotContains(t, resources.Pdbs, release+"-"+uiName)
 				}
 				require.Contains(t, resources.Pdbs, uiPdbName)
 				require.Contains(t, resources.ServiceMonitors, uiName)

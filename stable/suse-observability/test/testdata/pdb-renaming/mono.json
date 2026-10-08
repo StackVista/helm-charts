@@ -1,0 +1,234 @@
+{
+  "ai-assistant": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "ai-assistant",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-ai-assistant"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "ai-assistant"
+        }
+      }
+    }
+  },
+  "correlate": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "correlate",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-correlate"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "correlate"
+        }
+      }
+    }
+  },
+  "e2es": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "e2es",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-e2es"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "e2es"
+        }
+      }
+    }
+  },
+  "mcp": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "mcp",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-mcp"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "mcp"
+        }
+      }
+    }
+  },
+  "receiver": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "receiver",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-receiver"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "receiver"
+        }
+      }
+    }
+  },
+  "router": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-router"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "router"
+        }
+      }
+    }
+  },
+  "server": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "server",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-server"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "server"
+        }
+      }
+    }
+  },
+  "ui": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "ui",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-ui"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "ui"
+        }
+      }
+    }
+  },
+  "victoriametrics": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "victoriametrics",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-victoriametrics"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/instance": "suse-observability",
+          "stackstate-service": "victoriametrics"
+        }
+      }
+    }
+  },
+  "vmagent": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "vmagent",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-vmagent"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "vmagent"
+        }
+      }
+    }
+  },
+  "workload-observer": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "workload-observer",
+        "app.kubernetes.io/instance": "suse-observability",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "suse-observability-workload-observer"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "workload-observer"
+        }
+      }
+    }
+  }
+}
