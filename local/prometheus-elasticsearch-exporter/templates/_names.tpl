@@ -1,6 +1,6 @@
 {{/*
-The stateless Deployment uses the canonical product name. Supporting resources
-keep their existing identities, including Service DNS and certificate Secrets.
+The stateless Deployment and monitoring resources use the canonical product
+name. Service DNS, RBAC, accounts and certificate Secrets retain their identities.
 Generic name/fullname remain separate for labels, selectors, rule-group names
 and customer tpl values.
 */}}
@@ -33,13 +33,13 @@ and customer tpl values.
 {{- end -}}
 
 {{- define "elasticsearch-exporter.servicemonitor.fullname" -}}
-{{ include "elasticsearch-exporter.fullname" . }}
+{{ include "suse-observability.resourcePrefix" . }}-prometheus-elasticsearch-exporter
 {{- end -}}
 
 {{- define "elasticsearch-exporter.podmonitor.fullname" -}}
-{{ include "elasticsearch-exporter.fullname" . }}
+{{ include "suse-observability.resourcePrefix" . }}-prometheus-elasticsearch-exporter
 {{- end -}}
 
 {{- define "elasticsearch-exporter.prometheusrule.fullname" -}}
-{{ include "elasticsearch-exporter.fullname" . }}
+{{ include "suse-observability.resourcePrefix" . }}-prometheus-elasticsearch-exporter
 {{- end -}}

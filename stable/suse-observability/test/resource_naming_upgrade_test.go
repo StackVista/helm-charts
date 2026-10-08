@@ -230,6 +230,48 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix, legacyClusterPrefix string) {
 	t.Helper()
 	const canonical = "suse-observability"
+	// Generated component ConfigMaps move independently of their environment
+	// Secrets, controllers and endpoints. Only exact volume references change.
+	configRenames := map[string]string{}
+	for _, component := range []string{
+		"api", "checks", "notification", "health-sync", "authorization-sync",
+		"state", "sync", "slicing", "server", "receiver", "correlate", "initializer", "e2es",
+	} {
+		for _, suffix := range []string{"", "-log"} {
+			old, target := legacyPrefix+"-"+component+suffix, canonical+"-"+component+suffix
+			if old == target {
+				continue
+			}
+			if fields, found := contract["ConfigMap/"+old]; found {
+				require.NotContains(t, contract, "ConfigMap/"+target)
+				contract["ConfigMap/"+target] = fields
+				delete(contract, "ConfigMap/"+old)
+				configRenames[old] = target
+			}
+		}
+	}
+	for _, fields := range contract {
+		volumes, _ := fields["volumes"].([]interface{})
+		for _, raw := range volumes {
+			volume := raw.(map[string]interface{})
+			if ref, ok := volume["configMap"].(map[string]interface{}); ok {
+				if target, found := configRenames[ref["name"].(string)]; found {
+					ref["name"] = target
+				}
+			}
+		}
+	}
+	for _, kind := range []string{"ServiceMonitor", "PodMonitor", "PrometheusRule"} {
+		old := kind + "/" + release + "-prometheus-elasticsearch-exporter"
+		target := kind + "/" + canonical + "-prometheus-elasticsearch-exporter"
+		if old != target {
+			if fields, found := contract[old]; found {
+				require.NotContains(t, contract, target)
+				contract[target] = fields
+				delete(contract, old)
+			}
+		}
+	}
 	// These fixtures render in namespace observability. Only the two main
 	// ClusterRoleBinding names change; Role references and subjects stay frozen.
 	for _, purpose := range []string{"authentication", "authorization"} {

@@ -29,7 +29,7 @@ var explicitConfigurationComponents = []struct{ key, suffix string }{
 	{"e2es", "e2es"},
 }
 
-func TestComponentResourceNamesPreserveLegacyConfiguration(t *testing.T) {
+func TestComponentResourceNamesUseCanonicalConfigMapsAndRetainSecrets(t *testing.T) {
 	for _, tc := range []struct {
 		name, release, prefix string
 		values                map[string]string
@@ -60,17 +60,18 @@ func TestComponentResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 				resources := helmtestutil.NewKubernetesResources(t, output)
 				for _, component := range explicitConfigurationComponents {
 					name := tc.prefix + "-" + component.suffix
+					config := "suse-observability-" + component.suffix
 					deployments := configurationComponentDeployments(component.key, values)
 					if len(deployments) > 0 {
 						for _, deployment := range deployments {
-							assertConfigurationReferences(t, resources, tc.prefix+"-"+deployment, name, name+"-log", name, map[string]string{
+							assertConfigurationReferences(t, resources, tc.prefix+"-"+deployment, config, config+"-log", name, map[string]string{
 								"SHARED_SETTING": component.key + "-override", "COMPONENT_ONLY": component.key + "-specific", "GLOBAL_ONLY": "global-value",
 							})
 						}
 					} else {
 						assert.NotContains(t, resources.Deployments, name)
-						assert.NotContains(t, resources.ConfigMaps, name)
-						assert.NotContains(t, resources.ConfigMaps, name+"-log")
+						assert.NotContains(t, resources.ConfigMaps, config)
+						assert.NotContains(t, resources.ConfigMaps, config+"-log")
 						assert.NotContains(t, resources.Secrets, name)
 					}
 				}

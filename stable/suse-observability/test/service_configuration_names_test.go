@@ -77,7 +77,7 @@ func TestServiceConfigurationRequiresExplicitNames(t *testing.T) {
 			api := "nightly-suse-observability-api"
 			require.Contains(t, resources.Deployments, api)
 			pod := resources.Deployments[api].Spec.Template.Spec
-			assertConfigurationVolumes(t, pod.Volumes, api, api+"-log")
+			assertConfigurationVolumes(t, pod.Volumes, "suse-observability-api", "suse-observability-api-log")
 			require.NotEmpty(t, pod.Containers)
 			assert.Contains(t, pod.Containers[0].Env, corev1.EnvVar{Name: "NON_SECRET_TEST", Value: "plain-value"})
 		})

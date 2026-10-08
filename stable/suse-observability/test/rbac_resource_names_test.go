@@ -184,7 +184,7 @@ func TestRBACAgentNamesPreserveApplicationSubjects(t *testing.T) {
 					if serverSplit {
 						component = "api"
 					}
-					configName := "nightly-suse-observability-" + component
+					configName := "suse-observability-" + component
 					require.Contains(t, after.ConfigMaps, configName)
 					config := after.ConfigMaps[configName].Data["application_stackstate.conf"]
 					subject := "stackstate.authorization.staticSubjects."

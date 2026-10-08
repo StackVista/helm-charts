@@ -92,6 +92,37 @@ The UI and replication checker now use the fixed names `suse-observability-ui` a
 resources.
 The vmagent ConfigMap and S3Proxy ServiceMonitor also use the fixed `suse-observability` prefix.
 
+Main application and logging ConfigMaps use `suse-observability-<component>` and
+`suse-observability-<component>-log`. This applies to `api`, `checks`,
+`notification`, `health-sync`, `authorization-sync`, `state`, `sync`, `slicing`,
+`server`, `receiver`, `correlate`, `initializer` and `e2es`, including the shared
+configuration used by split receiver and correlate workers. Release names and
+root/global fullname settings no longer affect these ConfigMap names. Creation
+conditions, configuration contents, labels and annotations are unchanged.
+Router configuration and automatic-mode state retain their existing names;
+subcharts with fixed default names, including the collector, are unchanged.
+
+For non-default naming, existing Deployments update their ConfigMap volume
+references and configuration checksums through an ordinary Helm upgrade.
+This rolls the affected Pods and can interrupt application processing and
+availability while replacements start. A completed rollout references the
+replacement ConfigMaps; repeated upgrades retain those names. Rollback restores
+the previous revision's ConfigMaps and volume references and rolls Pods again.
+Default product naming retains the existing ConfigMap names and checksums.
+Environment and credential Secrets, workload identities and strategies,
+StatefulSets, PVCs, mount paths, Service DNS and external resource choices are
+preserved. No storage or credential migration is required.
+
+Argo CD must prune obsolete ConfigMaps. `PruneLast=true`, together with enabled
+pruning, can defer deletion until the updated workloads are healthy. After an
+interrupted upgrade or rollback, finish or restore the intended revision first.
+Compare its ConfigMap inventory with live objects and verify release ownership.
+Remove only obsolete chart-owned ConfigMaps once Pods and controller templates
+no longer reference them; old Pods can still need the previous configuration
+during rollout. Do not delete by shared labels, or remove router state,
+externally supplied configuration or credential objects. Verify application
+readiness after the rollout; its duration depends on the installation.
+
 Main-chart PodDisruptionBudgets always use `suse-observability-<component>`,
 independently of the release name or root/global fullname overrides, prefixes
 and suffixes. These naming settings no longer affect main-chart PDB names.
@@ -116,7 +147,7 @@ and the operator reconciles. Stale monitors selected by Prometheus can continue
 causing duplicate scraping until cleanup.
 Update external automation that references the previous ServiceMonitor names.
 Other subchart-owned ServiceMonitors retain their names, except for anomaly
-detection as described below.
+detection and the Elasticsearch exporter as described below.
 
 Anomaly detection's PDB and manager ServiceMonitor now use the fixed names
 `suse-observability-anomaly-detection` and `suse-observability-spotlight-manager`.
@@ -251,6 +282,25 @@ fullname or name overrides are configured. Its existing Service DNS name,
 selectors, Pod configuration, accounts and certificate Secret identities are
 preserved. Replacement may briefly interrupt exporter metrics or run both
 exporters; update automation that references the old Deployment name.
+
+The exporter's optional ServiceMonitor, PodMonitor and PrometheusRule also use
+`suse-observability-prometheus-elasticsearch-exporter`, independently of release
+names and exporter name/fullname overrides. Their labels, namespace settings,
+creation conditions, selectors, scrape configuration, alert expressions and
+rule-group names are unchanged. Service DNS, Pod specifications, RBAC, accounts
+and certificate Secrets remain unchanged. These names belong to different
+resource kinds; the existing choice between ServiceMonitor and PodMonitor is
+preserved.
+Installations in different namespaces can use the same canonical names.
+An explicitly configured monitoring namespace remains supported; only one
+installation's exporter monitoring objects can use these names in that namespace.
+
+Prune obsolete exporter monitors and rules in Argo CD and verify their inventory
+after failed Helm upgrades or rollbacks. Stale monitors can duplicate scraping;
+stale rules can continue evaluating previous alerts. Compare the intended
+revision's objects in their configured namespaces, verify ownership, and remove
+only obsolete objects belonging to this installation. Never delete them using
+shared labels. Verify targets and rules after Prometheus reconciles.
 
 The router Deployment uses the fixed name `suse-observability-router`, ignoring
 fullname overrides, prefixes and suffixes. Its Service DNS, selectors, Pod

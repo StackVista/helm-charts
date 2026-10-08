@@ -147,15 +147,16 @@ external Secret names and keys are selected independently.
 {{- end -}}
 
 {{/*
-API configuration resource names. Preserve the existing naming expressions;
-moving declarations and references to these helpers must not rename resources.
+Application and logging ConfigMaps use canonical names. Environment Secrets
+retain their legacy identities. Keep generic helpers separate for workload,
+Service and credential names.
 */}}
 {{- define "stackstate.api.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-api
+{{ include "suse-observability.resourcePrefix" . }}-api
 {{- end -}}
 
 {{- define "stackstate.api.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-api-log
+{{ include "suse-observability.resourcePrefix" . }}-api-log
 {{- end -}}
 
 {{- define "stackstate.api.secret.fullname" -}}
@@ -163,15 +164,15 @@ moving declarations and references to these helpers must not rename resources.
 {{- end -}}
 
 {{/*
-Checks, notification and synchronization configuration resources retain their
-legacy names while declarations and consumers move to dedicated helpers.
+Checks, notification and synchronization ConfigMaps use canonical names;
+environment Secrets retain their existing names.
 */}}
 {{- define "stackstate.checks.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-checks
+{{ include "suse-observability.resourcePrefix" . }}-checks
 {{- end -}}
 
 {{- define "stackstate.checks.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-checks-log
+{{ include "suse-observability.resourcePrefix" . }}-checks-log
 {{- end -}}
 
 {{- define "stackstate.checks.secret.fullname" -}}
@@ -179,11 +180,11 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{- define "stackstate.notification.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-notification
+{{ include "suse-observability.resourcePrefix" . }}-notification
 {{- end -}}
 
 {{- define "stackstate.notification.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-notification-log
+{{ include "suse-observability.resourcePrefix" . }}-notification-log
 {{- end -}}
 
 {{- define "stackstate.notification.secret.fullname" -}}
@@ -191,11 +192,11 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{- define "stackstate.healthSync.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-health-sync
+{{ include "suse-observability.resourcePrefix" . }}-health-sync
 {{- end -}}
 
 {{- define "stackstate.healthSync.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-health-sync-log
+{{ include "suse-observability.resourcePrefix" . }}-health-sync-log
 {{- end -}}
 
 {{- define "stackstate.healthSync.secret.fullname" -}}
@@ -203,11 +204,11 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-authorization-sync
+{{ include "suse-observability.resourcePrefix" . }}-authorization-sync
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-authorization-sync-log
+{{ include "suse-observability.resourcePrefix" . }}-authorization-sync-log
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.secret.fullname" -}}
@@ -215,14 +216,14 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{/*
-State, sync and slicing configuration resources retain their existing names.
+State, sync and slicing ConfigMaps use canonical names; Secrets retain their names.
 */}}
 {{- define "stackstate.state.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-state
+{{ include "suse-observability.resourcePrefix" . }}-state
 {{- end -}}
 
 {{- define "stackstate.state.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-state-log
+{{ include "suse-observability.resourcePrefix" . }}-state-log
 {{- end -}}
 
 {{- define "stackstate.state.secret.fullname" -}}
@@ -230,11 +231,11 @@ State, sync and slicing configuration resources retain their existing names.
 {{- end -}}
 
 {{- define "stackstate.sync.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-sync
+{{ include "suse-observability.resourcePrefix" . }}-sync
 {{- end -}}
 
 {{- define "stackstate.sync.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-sync-log
+{{ include "suse-observability.resourcePrefix" . }}-sync-log
 {{- end -}}
 
 {{- define "stackstate.sync.secret.fullname" -}}
@@ -242,11 +243,11 @@ State, sync and slicing configuration resources retain their existing names.
 {{- end -}}
 
 {{- define "stackstate.slicing.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-slicing
+{{ include "suse-observability.resourcePrefix" . }}-slicing
 {{- end -}}
 
 {{- define "stackstate.slicing.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-slicing-log
+{{ include "suse-observability.resourcePrefix" . }}-slicing-log
 {{- end -}}
 
 {{- define "stackstate.slicing.secret.fullname" -}}
@@ -254,15 +255,16 @@ State, sync and slicing configuration resources retain their existing names.
 {{- end -}}
 
 {{/*
-Server, receiver, correlate, initializer and e2es retain their existing configuration names.
+Server, receiver, correlate, initializer and e2es ConfigMaps use canonical names.
+Environment Secrets retain their existing identities.
 Split receiver and correlate Deployments share their component configuration resources.
 */}}
 {{- define "stackstate.server.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-server
+{{ include "suse-observability.resourcePrefix" . }}-server
 {{- end -}}
 
 {{- define "stackstate.server.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-server-log
+{{ include "suse-observability.resourcePrefix" . }}-server-log
 {{- end -}}
 
 {{- define "stackstate.server.secret.fullname" -}}
@@ -270,11 +272,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.receiver.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver
+{{ include "suse-observability.resourcePrefix" . }}-receiver
 {{- end -}}
 
 {{- define "stackstate.receiver.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver-log
+{{ include "suse-observability.resourcePrefix" . }}-receiver-log
 {{- end -}}
 
 {{- define "stackstate.receiver.secret.fullname" -}}
@@ -282,11 +284,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.correlate.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate
+{{ include "suse-observability.resourcePrefix" . }}-correlate
 {{- end -}}
 
 {{- define "stackstate.correlate.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate-log
+{{ include "suse-observability.resourcePrefix" . }}-correlate-log
 {{- end -}}
 
 {{- define "stackstate.correlate.secret.fullname" -}}
@@ -294,11 +296,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.initializer.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-initializer
+{{ include "suse-observability.resourcePrefix" . }}-initializer
 {{- end -}}
 
 {{- define "stackstate.initializer.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-initializer-log
+{{ include "suse-observability.resourcePrefix" . }}-initializer-log
 {{- end -}}
 
 {{- define "stackstate.initializer.secret.fullname" -}}
@@ -306,11 +308,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.e2es.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-e2es
+{{ include "suse-observability.resourcePrefix" . }}-e2es
 {{- end -}}
 
 {{- define "stackstate.e2es.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-e2es-log
+{{ include "suse-observability.resourcePrefix" . }}-e2es-log
 {{- end -}}
 
 {{- define "stackstate.e2es.secret.fullname" -}}
