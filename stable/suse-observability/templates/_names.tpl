@@ -14,6 +14,14 @@ pre-upgrade hooks reach the old router and post-upgrade hooks reach the new one.
 {{ include "suse-observability.resourcePrefix" . }}-router
 {{- end -}}
 
+{{/*
+Only the main NetworkPolicy identity is canonicalized. Rules and selectors stay
+independent of the name; subchart NetworkPolicies keep their existing identities.
+*/}}
+{{- define "stackstate.networkpolicy.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-networkpolicy
+{{- end -}}
+
 {{- define "stackstate.router.serviceaccount.fullname" -}}
 {{ template "common.fullname.short" . }}-router
 {{- end -}}

@@ -1,0 +1,30 @@
+{
+  "apiVersion": "networking.k8s.io/v1",
+  "kind": "NetworkPolicy",
+  "metadata": {
+    "annotations": null,
+    "labels": {
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/managed-by": "Helm",
+      "app.kubernetes.io/name": "suse-observability"
+    },
+    "name": "nightly-suse-observability"
+  },
+  "spec": {
+    "ingress": [
+      {
+        "from": [
+          {
+            "podSelector": {}
+          }
+        ]
+      }
+    ],
+    "podSelector": {
+      "matchLabels": {}
+    },
+    "policyTypes": [
+      "Ingress"
+    ]
+  }
+}

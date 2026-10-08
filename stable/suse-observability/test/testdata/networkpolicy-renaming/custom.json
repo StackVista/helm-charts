@@ -1,0 +1,103 @@
+{
+  "apiVersion": "networking.k8s.io/v1",
+  "kind": "NetworkPolicy",
+  "metadata": {
+    "annotations": {
+      "fixture-note": "preserved"
+    },
+    "labels": {
+      "app.kubernetes.io/instance": "nightly",
+      "app.kubernetes.io/managed-by": "Helm",
+      "app.kubernetes.io/name": "suse-observability",
+      "fixture-scope": "preserved"
+    },
+    "name": "nightly-suse-observability"
+  },
+  "spec": {
+    "egress": [
+      {
+        "ports": [
+          {
+            "port": 53,
+            "protocol": "UDP"
+          }
+        ],
+        "to": [
+          {
+            "namespaceSelector": {
+              "matchLabels": {
+                "fixture-dns": "allowed"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "ports": [
+          {
+            "port": 443,
+            "protocol": "TCP"
+          }
+        ],
+        "to": [
+          {
+            "ipBlock": {
+              "cidr": "192.0.2.0/24"
+            }
+          }
+        ]
+      }
+    ],
+    "ingress": [
+      {
+        "from": [
+          {
+            "namespaceSelector": {
+              "matchLabels": {
+                "fixture-access": "allowed"
+              }
+            },
+            "podSelector": {
+              "matchLabels": {
+                "fixture-client": "trusted"
+              }
+            }
+          },
+          {
+            "ipBlock": {
+              "cidr": "10.0.0.0/8",
+              "except": [
+                "10.1.0.0/16"
+              ]
+            }
+          }
+        ],
+        "ports": [
+          {
+            "port": "api",
+            "protocol": "TCP"
+          }
+        ]
+      }
+    ],
+    "podSelector": {
+      "matchExpressions": [
+        {
+          "key": "fixture-role",
+          "operator": "In",
+          "values": [
+            "api",
+            "receiver"
+          ]
+        }
+      ],
+      "matchLabels": {
+        "fixture-tier": "backend"
+      }
+    },
+    "policyTypes": [
+      "Ingress",
+      "Egress"
+    ]
+  }
+}

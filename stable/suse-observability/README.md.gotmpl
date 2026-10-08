@@ -157,6 +157,25 @@ To recover stale resources after an interrupted upgrade, rollback or Argo CD syn
    Verify that overlapping PDBs no longer block evictions and Prometheus selects
    only the intended monitors.
 
+The optional main-chart NetworkPolicy now uses the fixed name
+`suse-observability-networkpolicy`, defined in `_names.tpl`. Release names and
+root/global/common fullname settings no longer affect this name. Its API version,
+labels, annotations, Pod selector, ingress/egress rules, policy types and enabled
+setting are unchanged. It belongs to the release namespace, so releases in
+different namespaces have separate policies. Subchart policies keep their names.
+This rename does not change Pod specifications, trigger Pod rollouts or migrate
+storage or credentials; update automation referencing the old policy name.
+
+Standard Kubernetes NetworkPolicy permissions are additive. Old and new copies
+with identical rules allow the same traffic, but an obsolete policy left behind
+can preserve permissions when later updates tighten the intended rules. Enable
+Argo CD pruning and verify cleanup after failed Helm upgrades or rollbacks.
+Compare the intended revision's policy inventory and rules with actual objects
+and release ownership; remove only obsolete policies from this installation.
+Do not delete policies in bulk using shared labels or selectors. Network-plugin
+reconciliation may temporarily affect connectivity during replacement; verify
+traffic enforcement after a completed upgrade or rollback.
+
 The Elasticsearch exporter Deployment uses the fixed name
 `suse-observability-prometheus-elasticsearch-exporter`, including when exporter
 fullname or name overrides are configured. Its existing Service DNS name,

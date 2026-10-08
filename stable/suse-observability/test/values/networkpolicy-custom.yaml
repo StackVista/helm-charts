@@ -1,0 +1,44 @@
+networkPolicy:
+  enabled: true
+  spec:
+    podSelector:
+      matchLabels:
+        fixture-tier: backend
+      matchExpressions:
+        - key: fixture-role
+          operator: In
+          values: ["api", "receiver"]
+    policyTypes: ["Ingress", "Egress"]
+    ingress:
+      - from:
+          - namespaceSelector:
+              matchLabels:
+                fixture-access: allowed
+            podSelector:
+              matchLabels:
+                fixture-client: trusted
+          - ipBlock:
+              cidr: 10.0.0.0/8
+              except: ["10.1.0.0/16"]
+        ports:
+          - protocol: TCP
+            port: api
+    egress:
+      - to:
+          - namespaceSelector:
+              matchLabels:
+                fixture-dns: allowed
+        ports:
+          - protocol: UDP
+            port: 53
+      - to:
+          - ipBlock:
+              cidr: 192.0.2.0/24
+        ports:
+          - protocol: TCP
+            port: 443
+networkpolicy:
+  annotations:
+    fixture-note: preserved
+commonLabels:
+  fixture-scope: preserved
