@@ -61,12 +61,13 @@ func TestInternalRBACNamesUseDedicatedHelpers(t *testing.T) {
 					before.Roles[expectedRole.Name] = expectedRole
 					assert.Equal(t, before.Roles, after.Roles)
 
-					require.Contains(t, before.RoleBindings, podReader)
-					expectedBinding := before.RoleBindings[podReader]
+					podReaderBinding := "suse-observability-get-pods"
+					require.Contains(t, before.RoleBindings, podReaderBinding)
+					expectedBinding := before.RoleBindings[podReaderBinding]
 					assert.Equal(t, podReader, expectedBinding.RoleRef.Name)
 					expectedBinding.Name = "explicit-pod-reader-binding"
 					expectedBinding.RoleRef.Name = "explicit-pod-reader"
-					delete(before.RoleBindings, podReader)
+					delete(before.RoleBindings, podReaderBinding)
 					before.RoleBindings[expectedBinding.Name] = expectedBinding
 					assert.Equal(t, before.RoleBindings, after.RoleBindings)
 

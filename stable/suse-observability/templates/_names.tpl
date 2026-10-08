@@ -559,14 +559,18 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
 {{- end -}}
 
-{{/* RBAC resources have independent names, even when their legacy names match.
-Preserve the namespace handling and truncation of the existing common helpers. */}}
+{{/*
+The internal Pod-reader binding uses a canonical namespace-scoped name.
+The Role retains its identity for existing customer-managed bindings; permissions,
+ServiceAccount subjects and roleRef stay unchanged. Other RBAC identities retain
+their legacy naming and namespace handling.
+*/}}
 {{- define "stackstate.getPods.role.fullname" -}}
 {{ template "common.fullname.short" . }}-get-pods
 {{- end -}}
 
 {{- define "stackstate.getPods.rolebinding.fullname" -}}
-{{ template "common.fullname.short" . }}-get-pods
+{{ include "suse-observability.resourcePrefix" . }}-get-pods
 {{- end -}}
 
 {{- define "stackstate.authorization.clusterrole.fullname" -}}

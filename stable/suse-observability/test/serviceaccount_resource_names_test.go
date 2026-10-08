@@ -54,7 +54,7 @@ func TestCoreServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
 					after := helmtestutil.NewKubernetesResources(t, output)
 
 					prefix := "nightly-suse-observability-"
-					bindingName := prefix + "get-pods"
+					bindingName := "suse-observability-get-pods"
 					require.Contains(t, before.RoleBindings, bindingName)
 					require.Contains(t, after.RoleBindings, bindingName)
 					expectedBinding := before.RoleBindings[bindingName]

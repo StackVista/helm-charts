@@ -253,6 +253,14 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 	if legacyPrefix == canonical {
 		return
 	}
+	// Only the internal Pod-reader binding changes identity. Preserve its
+	// roleRef, every subject, and the Role used by customer-managed bindings.
+	oldPodReaderBinding := "RoleBinding/" + legacyPrefix + "-get-pods"
+	newPodReaderBinding := "RoleBinding/" + canonical + "-get-pods"
+	require.Contains(t, contract, oldPodReaderBinding)
+	require.NotContains(t, contract, newPodReaderBinding)
+	contract[newPodReaderBinding] = contract[oldPodReaderBinding]
+	delete(contract, oldPodReaderBinding)
 	// Router Service DNS, credentials, accounts and configuration names stay
 	// unchanged. Its Deployment is the only resource identity moving here.
 	oldRouter := "Deployment/" + legacyPrefix + "-router"

@@ -176,6 +176,28 @@ Do not delete policies in bulk using shared labels or selectors. Network-plugin
 reconciliation may temporarily affect connectivity during replacement; verify
 traffic enforcement after a completed upgrade or rollback.
 
+The internal Pod-reader RoleBinding uses the fixed name
+`suse-observability-get-pods`, defined in `_names.tpl`, regardless of release names
+or fullname overrides, prefixes and suffixes. The referenced Role retains its
+existing name so customer-managed bindings referring to it continue to resolve.
+The chart-owned binding's `roleRef`, ServiceAccount subjects, namespace scope,
+labels and annotations remain unchanged, as do the Role's `get`/`list` permissions
+on Pods. No ServiceAccount, workload, configuration or credential identity changes,
+and no Pod rollout or data migration is required. The default product release
+already has this binding name and keeps its identity.
+
+With non-default naming, Helm creates the new binding and removes the old one.
+Bindings granting the same Role to the same subjects do not add permissions
+during overlap, but stale bindings can retain access after later subject changes.
+Prune obsolete chart-owned RoleBindings in Argo CD and check their inventory
+after interrupted Helm upgrades or rollbacks. Confirm release ownership and
+the intended revision's subjects and Role reference before removing stale
+bindings; do not delete by shared labels or remove the retained Role,
+ServiceAccounts or customer-managed bindings. Verify Pod-reader access after
+the operation; authorization caches may take time to reconcile.
+Update automation that selects the previous binding name. RBAC agent,
+instance-access and cluster-scoped RBAC resources retain their existing names.
+
 The Elasticsearch exporter Deployment uses the fixed name
 `suse-observability-prometheus-elasticsearch-exporter`, including when exporter
 fullname or name overrides are configured. Its existing Service DNS name,
