@@ -200,6 +200,8 @@ data:
           insecure_skip_verify: ${SKIP_SSL_VALIDATION}
         cluster_name: ${env:K8S_CLUSTER_NAME}
         cluster_type: {{ .Values.otel.k8sResourceCollector.kubernetesTopology.clusterType | quote }}
+        # /features answers for one platform; behind trafficmirror it cannot decide, so always send.
+        discovery_enabled: false
         interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}s
         snapshot_max_age: {{ include "stackstate-k8s-agent.kubernetesTopologyCompat.snapshotMaxAgeSeconds" . }}s
         resources:
