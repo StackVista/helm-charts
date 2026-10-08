@@ -16,9 +16,6 @@ global:
   commonLabels: {}
   # global.features -- Feature switches for SUSE Observability.
   features:
-    # global.features.experimentalSilencingRules -- Enable Silencing Rules to signal to all components that they should support the Silencing Rules feature.
-    # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
-    experimentalSilencing: false
     # global.features.experimentalOtelLogs -- Enable OpenTelemetry-based log ingestion to signal to all components that they should support it
     # alongside legacy Elasticsearch-based log ingestion, preserving backwards compatibility between the two while OTel-based logs are
     # rolled out. This is a preproduction feature, usage may change in upcoming releases.
@@ -857,7 +854,7 @@ stackstate:
         # stackstate.components.mcp.image.repository -- Repository of the mcp component Docker image.
         repository: stackstate/suse-observability-mcp
         # stackstate.components.mcp.image.tag -- Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20260929100218-03be30fa"
+        tag: "20261008084524-aa87a7fa"
       # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       replicaCount: 1
       # stackstate.components.mcp.podAnnotations -- Extra annotations

@@ -560,7 +560,7 @@ If you encounter issues not covered here:
 | gateway.timeouts | object | `{}` | Optional timeouts for the HTTPRoute rule. |
 | global.backup.enabled | bool | `false` |  |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
-| global.features | object | `{"experimentalOtelLogs":false,"experimentalSilencing":false,"legacyKubernetesTopology":true}` | Feature switches for SUSE Observability. |
+| global.features | object | `{"experimentalOtelLogs":false,"legacyKubernetesTopology":true}` | Feature switches for SUSE Observability. |
 | global.features.experimentalOtelLogs | bool | `false` | Enable OpenTelemetry-based log ingestion to signal to all components that they should support it alongside legacy Elasticsearch-based log ingestion, preserving backwards compatibility between the two while OTel-based logs are rolled out. This is a preproduction feature, usage may change in upcoming releases. |
 | global.features.legacyKubernetesTopology | bool | `true` | Tell agents that they must keep sending legacy Kubernetes topology. Set to false once no cluster relies on the Kubernetes-V2 StackPack: agents with the OTel Kubernetes topology exporter then stop sending it, while older agents are unaffected. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
@@ -998,7 +998,7 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
-| stackstate.components.mcp.image.tag | string | `"20260929100218-03be30fa"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.mcp.image.tag | string | `"20261008084524-aa87a7fa"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mcp` pods. |
