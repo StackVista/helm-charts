@@ -71,10 +71,11 @@ func TestRouterModeReferencesFollowDedicatedHelpers(t *testing.T) {
 					before := helmtestutil.NewKubernetesResources(t, beforeOutput)
 					after := helmtestutil.NewKubernetesResources(t, afterOutput)
 					legacy := "nightly-suse-observability-router"
+					workload := "suse-observability-router"
 					config := "explicit-" + mode + "-config"
-					require.Contains(t, before.Deployments, legacy)
-					require.Contains(t, after.Deployments, legacy)
-					deployment := before.Deployments[legacy]
+					require.Contains(t, before.Deployments, workload)
+					require.Contains(t, after.Deployments, workload)
+					deployment := before.Deployments[workload]
 					expectedDeployment := deployment.DeepCopy()
 					mounts := 0
 					for i := range expectedDeployment.Spec.Template.Spec.Volumes {
@@ -87,9 +88,9 @@ func TestRouterModeReferencesFollowDedicatedHelpers(t *testing.T) {
 						}
 					}
 					require.Equal(t, 1, mounts)
-					assert.Equal(t, *expectedDeployment, after.Deployments[legacy])
-					delete(before.Deployments, legacy)
-					delete(after.Deployments, legacy)
+					assert.Equal(t, *expectedDeployment, after.Deployments[workload])
+					delete(before.Deployments, workload)
+					delete(after.Deployments, workload)
 					for _, state := range []string{"active", "maintenance", "automatic"} {
 						oldName, newName := legacy+"-"+state, "explicit-"+state+"-config"
 						if mode == state && mode != "automatic" {

@@ -131,7 +131,9 @@ func TestRouterServiceReferencesFollowDedicatedHelper(t *testing.T) {
 							assert.EqualValues(t, 8080, *backend.Port)
 						}
 					}
-					assert.Equal(t, before.Deployments[legacy], after.Deployments[legacy], "Service extraction must not rename or restart the router")
+					require.Contains(t, before.Deployments, "suse-observability-router")
+					require.Contains(t, after.Deployments, "suse-observability-router")
+					assert.Equal(t, before.Deployments["suse-observability-router"], after.Deployments["suse-observability-router"], "Changing the Service helper must not rename or restart the router")
 					assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
 					assert.Equal(t, before.Secrets, after.Secrets)
 					assert.Equal(t, before.Roles, after.Roles)

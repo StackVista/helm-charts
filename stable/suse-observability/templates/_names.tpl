@@ -5,12 +5,13 @@ names are documented below so extraction can precede an actual naming migration.
 */}}
 
 {{/*
-Router workload and static configuration names retain their legacy expressions.
-Keep these independent from the router Service, dynamic mode ConfigMaps and
-hook resources, whose naming and upgrade contracts are separate.
+The stateless router Deployment uses the canonical product name. Its Service,
+static and dynamic configuration, accounts, Secrets and hook resources retain
+their identities. Mode scripts select Deployments by stable release labels so
+pre-upgrade hooks reach the old router and post-upgrade hooks reach the new one.
 */}}
 {{- define "stackstate.router.deployment.fullname" -}}
-{{ template "common.fullname.short" . }}-router
+{{ include "suse-observability.resourcePrefix" . }}-router
 {{- end -}}
 
 {{- define "stackstate.router.serviceaccount.fullname" -}}

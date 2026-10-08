@@ -122,6 +122,9 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 			continue
 		}
 		name := object.GetName()
+		if name == "" && object.GetGenerateName() != "" {
+			name = object.GetGenerateName() + "<generated>"
+		}
 		if object.GetKind() == "Job" {
 			name = jobTimestamp.ReplaceAllString(name, "<timestamp>")
 		}
@@ -238,6 +241,14 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 	if legacyPrefix == canonical {
 		return
 	}
+	// Router Service DNS, credentials, accounts and configuration names stay
+	// unchanged. Its Deployment is the only resource identity moving here.
+	oldRouter := "Deployment/" + legacyPrefix + "-router"
+	newRouter := "Deployment/" + canonical + "-router"
+	require.Contains(t, contract, oldRouter)
+	require.NotContains(t, contract, newRouter)
+	contract[newRouter] = contract[oldRouter]
+	delete(contract, oldRouter)
 	// PDBs always adopt canonical identities, including with legacy fullname
 	// settings. Only metadata.name changes for these budgets.
 	for _, component := range []string{

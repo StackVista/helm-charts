@@ -156,6 +156,25 @@ fullname or name overrides are configured. Its existing Service DNS name,
 selectors, Pod configuration, accounts and certificate Secret identities are
 preserved. Replacement may briefly interrupt exporter metrics or run both
 exporters; update automation that references the old Deployment name.
+
+The router Deployment uses the fixed name `suse-observability-router`, ignoring
+fullname overrides, prefixes and suffixes. Its Service DNS, selectors, Pod
+configuration, accounts, credentials, static and dynamic ConfigMaps, and hook
+identities stay unchanged. Automatic-mode scripts select router Deployments by
+their component and Helm release labels within the release namespace. The
+pre-upgrade hook can therefore restart the old router into maintenance mode,
+and the post-upgrade hook restores active mode on the replacement. If both
+Deployments are present, the scripts restart and wait for both.
+Replacement can interrupt connections or briefly run both proxies. Update
+automation that references the old Deployment name.
+
+For renamed exporter and router Deployments, Argo CD must prune obsolete
+Deployments to finish replacement. After an interrupted upgrade or rollback,
+compare the intended Deployment inventory and release ownership before deleting
+obsolete controllers individually; old and new controllers share Pod labels.
+Their retained Services, configuration, accounts, Secrets and storage resources
+must not be removed as part of this cleanup.
+
 The main Ingress retains its existing naming settings to preserve ownership of
 controller-managed Certificates and TLS Secrets. The main HTTPRoute is already canonical.
 

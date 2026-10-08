@@ -1,0 +1,156 @@
+{
+  "deployment": {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "suse-observability-0.0.0"
+      },
+      "name": "nightly-suse-observability-router"
+    },
+    "spec": {
+      "progressDeadlineSeconds": 600,
+      "replicas": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "router",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      },
+      "strategy": {
+        "type": "RollingUpdate"
+      },
+      "template": {
+        "metadata": {
+          "annotations": {
+            "checksum/router-configmap": "5fa093563d94cfe0597a827882acc7f99970007f8526c7ad4717a1bc04944fa7"
+          },
+          "labels": {
+            "app.kubernetes.io/component": "router",
+            "app.kubernetes.io/instance": "nightly",
+            "app.kubernetes.io/name": "suse-observability"
+          }
+        },
+        "spec": {
+          "containers": [
+            {
+              "env": [
+                {
+                  "name": "ROUTER_PUBLIC",
+                  "value": "fixture-public"
+                },
+                {
+                  "name": "ROUTER_PRIVATE",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "ROUTER_PRIVATE",
+                      "name": "nightly-suse-observability-router"
+                    }
+                  }
+                }
+              ],
+              "image": "my.registry.com/stackstate/envoy:naming-fixture",
+              "imagePullPolicy": "IfNotPresent",
+              "livenessProbe": {
+                "httpGet": {
+                  "path": "/ready",
+                  "port": "admin"
+                },
+                "initialDelaySeconds": 5
+              },
+              "name": "router",
+              "ports": [
+                {
+                  "containerPort": 8080,
+                  "name": "router"
+                },
+                {
+                  "containerPort": 8001,
+                  "name": "admin"
+                }
+              ],
+              "readinessProbe": {
+                "httpGet": {
+                  "path": "/ready",
+                  "port": "admin"
+                },
+                "initialDelaySeconds": 5
+              },
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "ephemeral-storage": "1Gi",
+                  "memory": "128Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "ephemeral-storage": "1Mi",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "mountPath": "/etc/envoy",
+                  "name": "config"
+                },
+                {
+                  "mountPath": "/etc/envoy/dynamic",
+                  "name": "router-mode",
+                  "readOnly": true
+                }
+              ]
+            }
+          ],
+          "dnsPolicy": "ClusterFirst",
+          "restartPolicy": "Always",
+          "securityContext": {
+            "fsGroup": 65534,
+            "runAsGroup": 65534,
+            "runAsNonRoot": true,
+            "runAsUser": 65534
+          },
+          "serviceAccountName": "nightly-suse-observability-router",
+          "terminationGracePeriodSeconds": 30,
+          "volumes": [
+            {
+              "configMap": {
+                "items": [
+                  {
+                    "key": "envoy.yaml",
+                    "path": "envoy.yaml"
+                  }
+                ],
+                "name": "nightly-suse-observability-router"
+              },
+              "name": "config"
+            },
+            {
+              "configMap": {
+                "name": "nightly-suse-observability-router-maintenance"
+              },
+              "name": "router-mode"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

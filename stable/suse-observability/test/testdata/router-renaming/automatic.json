@@ -1,0 +1,175 @@
+{
+  "deployment": {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "router",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "suse-observability-0.0.0"
+      },
+      "name": "nightly-suse-observability-router"
+    },
+    "spec": {
+      "progressDeadlineSeconds": 600,
+      "replicas": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "router",
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/name": "suse-observability"
+        }
+      },
+      "strategy": {
+        "type": "RollingUpdate"
+      },
+      "template": {
+        "metadata": {
+          "annotations": {
+            "checksum/router-configmap": "5fa093563d94cfe0597a827882acc7f99970007f8526c7ad4717a1bc04944fa7"
+          },
+          "labels": {
+            "app.kubernetes.io/component": "router",
+            "app.kubernetes.io/instance": "nightly",
+            "app.kubernetes.io/name": "suse-observability"
+          }
+        },
+        "spec": {
+          "containers": [
+            {
+              "env": [
+                {
+                  "name": "ROUTER_PUBLIC",
+                  "value": "fixture-public"
+                },
+                {
+                  "name": "ROUTER_PRIVATE",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "key": "ROUTER_PRIVATE",
+                      "name": "nightly-suse-observability-router"
+                    }
+                  }
+                }
+              ],
+              "image": "my.registry.com/stackstate/envoy:naming-fixture",
+              "imagePullPolicy": "IfNotPresent",
+              "livenessProbe": {
+                "httpGet": {
+                  "path": "/ready",
+                  "port": "admin"
+                },
+                "initialDelaySeconds": 5
+              },
+              "name": "router",
+              "ports": [
+                {
+                  "containerPort": 8080,
+                  "name": "router"
+                },
+                {
+                  "containerPort": 8001,
+                  "name": "admin"
+                }
+              ],
+              "readinessProbe": {
+                "httpGet": {
+                  "path": "/ready",
+                  "port": "admin"
+                },
+                "initialDelaySeconds": 5
+              },
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "ephemeral-storage": "1Gi",
+                  "memory": "128Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "ephemeral-storage": "1Mi",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "mountPath": "/etc/envoy",
+                  "name": "config"
+                },
+                {
+                  "mountPath": "/etc/envoy/dynamic",
+                  "name": "router-mode",
+                  "readOnly": true
+                }
+              ]
+            }
+          ],
+          "dnsPolicy": "ClusterFirst",
+          "restartPolicy": "Always",
+          "securityContext": {
+            "fsGroup": 65534,
+            "runAsGroup": 65534,
+            "runAsNonRoot": true,
+            "runAsUser": 65534
+          },
+          "serviceAccountName": "nightly-suse-observability-router",
+          "terminationGracePeriodSeconds": 30,
+          "volumes": [
+            {
+              "configMap": {
+                "items": [
+                  {
+                    "key": "envoy.yaml",
+                    "path": "envoy.yaml"
+                  }
+                ],
+                "name": "nightly-suse-observability-router"
+              },
+              "name": "config"
+            },
+            {
+              "configMap": {
+                "name": "nightly-suse-observability-router-automatic"
+              },
+              "name": "router-mode"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "apiVersion": "v1",
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "nightly-suse-observability-router-mode-scripts",
+      "labels": {
+        "app.kubernetes.io/component": "router-mode"
+      },
+      "annotations": {
+        "helm.sh/hook": "pre-install,pre-upgrade,post-install,post-upgrade,post-delete",
+        "helm.sh/hook-weight": "-2",
+        "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+      }
+    },
+    "data": {
+      "set-maintenance.sh": "#!/bin/bash\n\nset -ex\n\n# We exit successfully because we do not want to fail the upgrade on maintenance mode.\ntrap \"echo 'Timeout reached. Exiting successfully'; exit 0\" SIGTERM\n\necho \"Applying update to configmap to set router mode\"\n\nkubectl apply -f - <<EOF\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: nightly-suse-observability-router-automatic\n  namespace: observability\ndata:\n  listeners.yaml: |-\n    resources:\n    - \"@type\": type.googleapis.com/envoy.config.listener.v3.Listener\n      name: listener_0\n      address:\n        socket_address:\n          protocol: TCP\n          address: 0.0.0.0\n          port_value: 8080\n      filter_chains:\n      - filters:\n        - name: envoy.filters.network.http_connection_manager\n          typed_config:\n            \"@type\": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager\n            access_log:\n            - name: envoy.access_loggers.stdout\n              typed_config:\n                \"@type\": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog\n              filter:\n                status_code_filter:\n                  comparison:\n                    op: GE\n                    value:\n                      default_value: 400\n                      runtime_key: log_ge_response_status_code\n            codec_type: AUTO\n            stat_prefix: ingress_http\n            upgrade_configs:\n            - upgrade_type: websocket\n            route_config:\n              name: local_route\n              virtual_hosts:\n              - name: backend\n                domains:\n                - \"*\"\n                routes:\n                - match:\n                    prefix: \"/api\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/loginCallback\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/loginInfo\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/logout\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/ssoLogin\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/prometheus/api/v1/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                    prefix_rewrite: \"/api/metrics/\"\n                - match:\n                    prefix: \"/stsAgent/otel/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-otel-collector\"\n                    prefix_rewrite: \"/\"\n                - match:\n                    prefix: \"/receiver/stsAgent/otel/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-otel-collector\"\n                    prefix_rewrite: \"/\"\n                - match:\n                    prefix: \"/stsAgent\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-receiver\"\n                - match:\n                    prefix: \"/receiver/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-receiver\"\n                    prefix_rewrite: \"/\"\n                - match:\n                    prefix: \"/mcp\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-mcp\"\n                - match:\n                    prefix: \"/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-ui\"\n                  response_headers_to_add:\n                    - header:\n                        key: \"X-Frame-Options\"\n                        value: \"DENY\"\n                      append_action: APPEND_IF_EXISTS_OR_ADD\n            http_filters:\n            - name: envoy.filters.http.router\n              typed_config:\n                \"@type\": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router\n  clusters.yaml: |-\n    resources:\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"nightly-suse-observability-api-main\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      typed_extension_protocol_options:\n        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:\n          \"@type\": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions\n          explicit_http_config:\n            http_protocol_options: {}\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"nightly-suse-observability-api-main\"\n        endpoints:\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"nightly-suse-observability-receiver\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"nightly-suse-observability-api-receiver\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"nightly-suse-observability-receiver\"\n                  port_value: 7077\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"suse-observability-otel-collector\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"suse-observability-otel-collector\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"suse-observability-otel-collector\"\n                  port_value: 4318\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"suse-observability-ui\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      typed_extension_protocol_options:\n        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:\n          \"@type\": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions\n          explicit_http_config:\n            http_protocol_options: {}\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"nightly-suse-observability-api-ui\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"suse-observability-ui\"\n                  port_value: 8080\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"suse-observability-mcp\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      typed_extension_protocol_options:\n        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:\n          \"@type\": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions\n          explicit_http_config:\n            http_protocol_options: {}\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"suse-observability-mcp\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"suse-observability-mcp\"\n                  port_value: 8080\nEOF\n\n# We proactively restart the deployment when it is updated. This is strictly speaking not necessary because the content changes will be\n# picked up automatically, however:\n# - Updating the FS based on a config map can 30 seconds, so a long time\n# - We would like to actively reset connections, to make all clients go in to maintenance\n# - After the restart we are sure the configmap is applied.\n# shellcheck disable=SC2140\nif kubectl get deployment \"nightly-suse-observability-router\" -n \"observability\"; then\n  echo \"Restarting router\"\n  kubectl rollout restart \"deployment/nightly-suse-observability-router\" -n \"observability\"\n\n  echo \"Waiting for rollout to complete...\"\n  while ! kubectl rollout status \"deployment/nightly-suse-observability-router\" -n \"observability\"; do\n    echo \".\"\n    if ! kubectl get deployment \"nightly-suse-observability-router\" -n \"observability\"; then\n      echo \"Deployment went away, exiting\"\n      exit 0\n    fi\n    sleep 1\n  done\nelse\n  echo \"Deployment not yet found, continuing.\"\nfi\n\n# We opted to not http-based dynamic checking of the 503. This is because:\n# when switching from 'active' to 'automatic' mode, the pre-hook will run before the deployment upgrade, so\n# the 'router-automatic' configmap will not have been picked up.\n#\n# A second reason is we do not want to block the pre-hook based on fixes that may be ni the main chart, otherwise we get stuck\n# Leaving here for reference\n#\n#echo \"Waiting for router mode to be applied\"\n#\n#while [[ \"$(curl -I nightly-suse-observability-router:8080/api | head -n 1 | cut -d ' ' -f 2)\" != \"503\" ]]; do\n#  echo -n \".\"\n#  sleep 1\n#done\n\necho \"Router mode enabled\"",
+      "set-active.sh": "#!/bin/bash\n\nset -ex\n\necho \"Applying update to configmap to set the router mode to active\"\n\nkubectl apply -f - <<EOF\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: nightly-suse-observability-router-automatic\n  namespace: observability\ndata:\n  listeners.yaml: |-\n    resources:\n    - \"@type\": type.googleapis.com/envoy.config.listener.v3.Listener\n      name: listener_0\n      address:\n        socket_address:\n          protocol: TCP\n          address: 0.0.0.0\n          port_value: 8080\n      filter_chains:\n      - filters:\n        - name: envoy.filters.network.http_connection_manager\n          typed_config:\n            \"@type\": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager\n            access_log:\n            - name: envoy.access_loggers.stdout\n              typed_config:\n                \"@type\": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog\n              filter:\n                status_code_filter:\n                  comparison:\n                    op: GE\n                    value:\n                      default_value: 400\n                      runtime_key: log_ge_response_status_code\n            codec_type: AUTO\n            stat_prefix: ingress_http\n            upgrade_configs:\n            - upgrade_type: websocket\n            route_config:\n              name: local_route\n              virtual_hosts:\n              - name: backend\n                domains:\n                - \"*\"\n                routes:\n                - match:\n                    prefix: \"/api\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/loginCallback\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/loginInfo\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/logout\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/ssoLogin\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                - match:\n                    prefix: \"/prometheus/api/v1/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-api-main\"\n                    prefix_rewrite: \"/api/metrics/\"\n                - match:\n                    prefix: \"/stsAgent/otel/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-otel-collector\"\n                    prefix_rewrite: \"/\"\n                - match:\n                    prefix: \"/receiver/stsAgent/otel/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-otel-collector\"\n                    prefix_rewrite: \"/\"\n                - match:\n                    prefix: \"/stsAgent\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-receiver\"\n                - match:\n                    prefix: \"/receiver/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"nightly-suse-observability-receiver\"\n                    prefix_rewrite: \"/\"\n                - match:\n                    prefix: \"/mcp\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-mcp\"\n                - match:\n                    prefix: \"/\"\n                  route:\n                    timeout: 0s\n                    cluster: \"suse-observability-ui\"\n                  response_headers_to_add:\n                    - header:\n                        key: \"X-Frame-Options\"\n                        value: \"DENY\"\n                      append_action: APPEND_IF_EXISTS_OR_ADD\n            http_filters:\n            - name: envoy.filters.http.router\n              typed_config:\n                \"@type\": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router\n  clusters.yaml: |-\n    resources:\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"nightly-suse-observability-api-main\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      typed_extension_protocol_options:\n        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:\n          \"@type\": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions\n          explicit_http_config:\n            http_protocol_options: {}\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"nightly-suse-observability-api-main\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"nightly-suse-observability-api-headless\"\n                  port_value: 7070\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"nightly-suse-observability-receiver\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"nightly-suse-observability-api-receiver\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"nightly-suse-observability-receiver\"\n                  port_value: 7077\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"suse-observability-otel-collector\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"suse-observability-otel-collector\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"suse-observability-otel-collector\"\n                  port_value: 4318\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"suse-observability-ui\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      typed_extension_protocol_options:\n        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:\n          \"@type\": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions\n          explicit_http_config:\n            http_protocol_options: {}\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"nightly-suse-observability-api-ui\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"suse-observability-ui\"\n                  port_value: 8080\n    - \"@type\": type.googleapis.com/envoy.config.cluster.v3.Cluster\n      name: \"suse-observability-mcp\"\n      type: STRICT_DNS\n      lb_policy: LEAST_REQUEST\n      typed_extension_protocol_options:\n        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:\n          \"@type\": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions\n          explicit_http_config:\n            http_protocol_options: {}\n      connect_timeout: 2s\n      load_assignment:\n        cluster_name: \"suse-observability-mcp\"\n        endpoints:\n        - lb_endpoints:\n          - endpoint:\n              address:\n                socket_address:\n                  address: \"suse-observability-mcp\"\n                  port_value: 8080\nEOF\n\n# We proactively restart the deployment when it is updated. This is strictly speaking not necessary because the content changes will be\n# picked up automatically, however:\n# - Updating the FS based on a config map can 30 seconds, so a long time\n# - We would like to actively reset connections, to make all clients go in to maintenance\n# - After the restart we are sure the configmap is applied.\n# shellcheck disable=SC2140\nif kubectl get deployment \"nightly-suse-observability-router\" -n \"observability\"; then\n  echo \"Restarting router\"\n  kubectl rollout restart \"deployment/nightly-suse-observability-router\" -n \"observability\"\n\n  echo \"Waiting for rollout to complete...\"\n  while ! kubectl rollout status \"deployment/nightly-suse-observability-router\" -n \"observability\"; do\n    echo \".\"\n    if ! kubectl get deployment \"nightly-suse-observability-router\" -n \"observability\"; then\n      echo \"Deployment went away, exiting\"\n      exit 0\n    fi\n    sleep 1\n  done\nelse\n  echo \"Deployment not yet found, continuing.\"\nfi\n\necho \"Router mode set to active\""
+    }
+  }
+}

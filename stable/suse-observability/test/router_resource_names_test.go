@@ -2,11 +2,9 @@ package test
 
 import (
 	"fmt"
-	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -57,10 +55,11 @@ func TestRouterWorkloadReferencesFollowDedicatedHelpers(t *testing.T) {
 					after := helmtestutil.NewKubernetesResources(t, output)
 
 					legacy := "nightly-suse-observability-router"
-					require.Contains(t, before.Deployments, legacy)
+					canonical := "suse-observability-router"
+					require.Contains(t, before.Deployments, canonical)
 					require.Contains(t, after.Deployments, "explicit-router-workload")
-					assert.NotContains(t, after.Deployments, legacy)
-					originalDeployment := before.Deployments[legacy]
+					assert.NotContains(t, after.Deployments, canonical)
+					originalDeployment := before.Deployments[canonical]
 					expectedDeployment := originalDeployment.DeepCopy()
 					actualDeployment := after.Deployments["explicit-router-workload"]
 					expectedDeployment.Name = "explicit-router-workload"
@@ -138,22 +137,11 @@ func TestRouterWorkloadReferencesFollowDedicatedHelpers(t *testing.T) {
 						require.Contains(t, before.ConfigMaps, scriptsName)
 						require.Contains(t, after.ConfigMaps, scriptsName)
 						expectedScripts := before.ConfigMaps[scriptsName]
-						expectedScripts.Data = maps.Clone(expectedScripts.Data)
-						for _, key := range []string{"set-active.sh", "set-maintenance.sh"} {
-							require.Contains(t, expectedScripts.Data, key)
-							script := expectedScripts.Data[key]
-							for _, prefix := range []string{`deployment "`, `"deployment/`} {
-								previous := prefix + legacy + `"`
-								require.Equal(t, 2, strings.Count(script, previous))
-								script = strings.ReplaceAll(script, previous, prefix+`explicit-router-workload"`)
-							}
-							expectedScripts.Data[key] = script
-						}
-						assert.Equal(t, expectedScripts, after.ConfigMaps[scriptsName], "Only the Deployment targets in hook scripts may change")
+						assert.Equal(t, expectedScripts, after.ConfigMaps[scriptsName], "Hook targets use release labels independently of the Deployment helper")
 						delete(before.ConfigMaps, scriptsName)
 						delete(after.ConfigMaps, scriptsName)
 					}
-					delete(before.Deployments, legacy)
+					delete(before.Deployments, canonical)
 					delete(after.Deployments, "explicit-router-workload")
 					delete(before.ConfigMaps, legacy)
 					delete(after.ConfigMaps, "explicit-router-bootstrap")
