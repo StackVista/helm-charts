@@ -6,6 +6,16 @@ These do not change the generic common.name or common.fullname helpers.
 suse-observability
 {{- end -}}
 
+{{/*
+Prefix for cluster-scoped resources. Include the full release namespace outside
+the default product namespace, preserving default names and avoiding collisions
+from namespace truncation.
+*/}}
+{{- define "suse-observability.clusterResourcePrefix" -}}
+{{- $prefix := include "suse-observability.resourcePrefix" . -}}
+{{ $prefix }}{{ if ne .Release.Namespace $prefix }}-{{ .Release.Namespace }}{{ end }}
+{{- end -}}
+
 {{- define "suse-observability.pullSecret.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-pull-secret
 {{- end -}}

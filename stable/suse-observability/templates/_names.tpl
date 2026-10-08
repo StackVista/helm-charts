@@ -577,12 +577,18 @@ their legacy naming and namespace handling.
 {{ template "common.fullname.cluster.unique" . }}-authorization
 {{- end -}}
 
+{{/*
+Cluster bindings keep their Roles and ServiceAccount subjects. Their canonical
+names include the namespace outside the default product namespace, preserving
+the default identity and keeping installations in different namespaces distinct.
+Use the full namespace: truncating it could introduce cross-namespace collisions.
+*/}}
 {{- define "stackstate.authorization.clusterrolebinding.fullname" -}}
-{{ template "common.fullname.cluster.unique" . }}-authorization
+{{ include "suse-observability.clusterResourcePrefix" . }}-authorization
 {{- end -}}
 
 {{- define "stackstate.authentication.clusterrolebinding.fullname" -}}
-{{ template "common.fullname.cluster.unique" . }}-authentication
+{{ include "suse-observability.clusterResourcePrefix" . }}-authentication
 {{- end -}}
 
 {{- define "stackstate.rbacAgent.role.fullname" -}}

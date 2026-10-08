@@ -214,7 +214,36 @@ bindings; do not delete by shared labels or remove the retained Role,
 ServiceAccounts or customer-managed bindings. Verify Pod-reader access after
 the operation; authorization caches may take time to reconcile.
 Update automation that selects the previous binding name. RBAC agent,
-instance-access and cluster-scoped RBAC resources retain their existing names.
+instance-access resources and ClusterRoles retain their existing names.
+
+The main authentication and authorization ClusterRoleBindings also use canonical
+names from `_names.tpl`. In namespace `suse-observability`, they retain
+`suse-observability-authentication` and `suse-observability-authorization`.
+In other namespaces, their names are
+`suse-observability-<namespace>-authentication` and
+`suse-observability-<namespace>-authorization`, independent of release names or
+fullname overrides/affixes. ClusterRoleBindings are cluster-scoped, so the full
+namespace is included to keep installations in different namespaces distinct.
+Namespace segments are not truncated.
+
+Both bindings preserve their existing immutable `roleRef`, ServiceAccount
+subjects and subject namespaces, labels, annotations, API version and
+`cluster-role.enabled` condition. Authentication still references Kubernetes'
+`system:auth-delegator`; authorization references the existing chart ClusterRole,
+whose name and rules remain unchanged for customer-managed bindings. Accounts,
+application authorization configuration, Pods, storage and credentials do not
+change. No Pod rollout, token replacement or data migration is introduced.
+
+Prune obsolete chart-owned ClusterRoleBindings after replacement, including in
+Argo CD. Duplicate bindings initially grant the same access, but stale subjects
+can retain permissions after later changes. For interrupted upgrades or
+rollbacks, compare the intended revision's cluster-wide binding inventory with
+actual objects, verify release ownership and each subject's namespace, and
+remove only obsolete bindings belonging to this installation. Do not delete
+by shared labels or remove ClusterRoles, ServiceAccounts or bindings for other
+installations. Verify token review, subject access review and authorization
+access after the operation; authorization caches may take time to reconcile.
+Update external automation that selects the previous binding names.
 
 The Elasticsearch exporter Deployment uses the fixed name
 `suse-observability-prometheus-elasticsearch-exporter`, including when exporter

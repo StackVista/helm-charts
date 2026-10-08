@@ -27,13 +27,14 @@ type namingUpgradeContract map[string]map[string]interface{}
 
 func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 	for _, scenario := range []struct {
-		name, release, legacyPrefix, hbaseLegacyPrefix string
-		values                                         map[string]string
+		name, release, legacyPrefix, hbaseLegacyPrefix, legacyClusterPrefix string
+		values                                                              map[string]string
 	}{
-		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability", hbaseLegacyPrefix: "suse-observability-hbase"},
-		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability", hbaseLegacyPrefix: "nightly-hbase"},
+		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability", hbaseLegacyPrefix: "suse-observability-hbase", legacyClusterPrefix: "observability-suse-observability"},
+		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability", hbaseLegacyPrefix: "nightly-hbase", legacyClusterPrefix: "observability-nightly-suse-observability"},
 		{
 			name: "override-mono", release: "nightly", legacyPrefix: "existing-installation", hbaseLegacyPrefix: "nightly-hbase",
+			legacyClusterPrefix: "existing-installation",
 			values: map[string]string{
 				"fullnameOverride":                 "existing-installation",
 				"hbase.deployment.mode":            "Mono",
@@ -42,7 +43,8 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 		},
 		{
 			name: "prefix-suffix", release: "suse-observability", legacyPrefix: "global-team-suse-observability-prod-end",
-			hbaseLegacyPrefix: "global-suse-observability-hbase-end",
+			hbaseLegacyPrefix:   "global-suse-observability-hbase-end",
+			legacyClusterPrefix: "global-team-observability-suse-observability-prod-end",
 			values: map[string]string{
 				"global.fullnamePrefix": "global-", "fullnamePrefix": "team-",
 				"fullnameSuffix": "-prod", "global.fullnameSuffix": "-end",
@@ -90,7 +92,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 			require.NoError(t, err)
 			var expected namingUpgradeContract
 			require.NoError(t, json.Unmarshal(data, &expected))
-			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix)
+			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix, scenario.legacyClusterPrefix)
 
 			for resource, fields := range expected {
 				actualFields, found := actual[resource]
@@ -225,9 +227,19 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 	return contract
 }
 
-func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix string) {
+func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix, legacyClusterPrefix string) {
 	t.Helper()
 	const canonical = "suse-observability"
+	// These fixtures render in namespace observability. Only the two main
+	// ClusterRoleBinding names change; Role references and subjects stay frozen.
+	for _, purpose := range []string{"authentication", "authorization"} {
+		old := "ClusterRoleBinding/" + legacyClusterPrefix + "-" + purpose
+		target := "ClusterRoleBinding/" + canonical + "-observability-" + purpose
+		require.Contains(t, contract, old)
+		require.NotContains(t, contract, target)
+		contract[target] = contract[old]
+		delete(contract, old)
+	}
 	// HBase's legacy prefix differs from its parent. Allow only PDB metadata
 	// names; persistent controllers, Services and credentials retain identities.
 	for _, component := range []string{"hbase-master", "hbase-rs", "hdfs-nn", "hdfs-snn", "hdfs-dn", "tephra"} {

@@ -89,7 +89,7 @@ func TestInternalRBACNamesUseDedicatedHelpers(t *testing.T) {
 					assert.Equal(t, before.ClusterRoles, after.ClusterRoles)
 
 					for _, purpose := range []string{"authentication", "authorization"} {
-						legacy := clusterPrefix + purpose
+						legacy := "suse-observability-" + namespace + "-" + purpose
 						explicit := "explicit-" + purpose + "-binding"
 						if !clusterRBAC {
 							assert.NotContains(t, before.ClusterRoleBindings, legacy)

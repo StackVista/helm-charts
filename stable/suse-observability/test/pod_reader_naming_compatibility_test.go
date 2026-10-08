@@ -51,7 +51,7 @@ func checkPodReaderNamingFixtures(t *testing.T, chart string, renamed bool) {
 					expected.Binding.Name = canonicalPodReader
 				}
 				options := apiResourceNameTestOptions(map[string]string{"stackstate.features.server.split": fmt.Sprint(mode == "split")})
-				output := renderPodReaderNamingChart(t, chart, "nightly", options, upgrade)
+				output := renderRBACNamingChart(t, chart, "nightly", options, upgrade)
 				resources := helmtestutil.NewKubernetesResources(t, output)
 				require.Contains(t, resources.Roles, expected.Role.Name)
 				require.Contains(t, resources.RoleBindings, expected.Binding.Name)
@@ -123,8 +123,8 @@ func TestPodReaderNamingPreservesPlatformResources(t *testing.T) {
 				if tc.sizing != "" {
 					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
 				}
-				beforeOutput := renderPodReaderNamingChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderPodReaderNamingChart(t, "..", tc.release, options, upgrade)
+				beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options, upgrade)
+				afterOutput := renderRBACNamingChart(t, "..", tc.release, options, upgrade)
 				beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
 				afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
 				legacy := tc.legacyPrefix + "-get-pods"
@@ -185,7 +185,7 @@ func assertPodReaderBindingUpgradePatchUnchanged(t *testing.T, before, after rba
 	assert.JSONEq(t, "{}", string(patch), before.Name)
 }
 
-func renderPodReaderNamingChart(t *testing.T, chart, release string, options *helm.Options, upgrade bool) string {
+func renderRBACNamingChart(t *testing.T, chart, release string, options *helm.Options, upgrade bool) string {
 	t.Helper()
 	copied := *options
 	copied.ValuesFiles = make([]string, len(options.ValuesFiles))
