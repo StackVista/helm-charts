@@ -234,41 +234,12 @@ func TestFeaturesTracesDefault(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	deployment, ok := resources.Deployments["suse-observability-api"]
+	_, ok := resources.Deployments["suse-observability-api"]
 	require.True(t, ok, "API deployment should exist")
-
-	expected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces", Value: "true"}
-	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "API deployment should have traces feature flag enabled by default")
 
 	configMap, ok := resources.ConfigMaps["suse-observability-api"]
 	require.True(t, ok, "API configmap should exist")
 	assert.Contains(t, configMap.Data["application_stackstate.conf"], expectedClickhouseConfig, "API configmap should contain traces ClickHouse configuration by default")
-}
-
-func TestFeaturesTracesDisabled(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
-		ValuesFiles: []string{
-			"values/full.yaml",
-		},
-		SetValues: map[string]string{
-			"stackstate.features.traces": "false",
-		},
-		KubectlOptions: &k8s.KubectlOptions{
-			Namespace: "suse-observability",
-		},
-	})
-
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	deployment, ok := resources.Deployments["suse-observability-api"]
-	require.True(t, ok, "API deployment should exist")
-
-	notExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces", Value: "true"}
-	assert.NotContains(t, deployment.Spec.Template.Spec.Containers[0].Env, notExpected, "API deployment should not have traces feature flag when disabled")
-
-	configMap, ok := resources.ConfigMaps["suse-observability-api"]
-	require.True(t, ok, "API configmap should exist")
-	assert.NotContains(t, configMap.Data["application_stackstate.conf"], expectedClickhouseConfig, "API configmap should not contain traces ClickHouse configuration when traces disabled")
 }
 
 func TestFeaturesOtelLogsDefault(t *testing.T) {

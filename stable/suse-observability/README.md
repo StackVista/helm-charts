@@ -1372,7 +1372,6 @@ If you encounter issues not covered here:
 | stackstate.features.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.features.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
 | stackstate.features.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
-| stackstate.features.traces | boolean | `true` | Enable new traces UI and API |
 | stackstate.instanceDebugApi.enabled | bool | `false` |  |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStoreFromExternalSecret":{"key":"java-cacerts","name":"","passwordKey":""},"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret. |
