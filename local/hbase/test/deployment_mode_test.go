@@ -14,10 +14,10 @@ func TestDistributedModeResourcesPresent(t *testing.T) {
 
 	// PodDisruptionBudgets that should exist in Distributed mode
 	expectedPDBs := []string{
-		releaseName + "-hbase-hbase-master",
-		releaseName + "-hbase-hbase-rs",
-		releaseName + "-hbase-hdfs-nn",
-		releaseName + "-hbase-hdfs-dn",
+		"suse-observability-hbase-master",
+		"suse-observability-hbase-rs",
+		"suse-observability-hdfs-nn",
+		"suse-observability-hdfs-dn",
 	}
 
 	for _, expectedName := range expectedPDBs {
@@ -81,11 +81,11 @@ func TestMonoModeResourcesAbsent(t *testing.T) {
 
 	// PodDisruptionBudgets that should NOT exist in Mono mode
 	distributedOnlyPDBs := []string{
-		releaseName + "-hbase-hbase-master",
-		releaseName + "-hbase-hbase-rs",
-		releaseName + "-hbase-hdfs-nn",
-		releaseName + "-hbase-hdfs-dn",
-		releaseName + "-hbase-hdfs-snn",
+		"suse-observability-hbase-master",
+		"suse-observability-hbase-rs",
+		"suse-observability-hdfs-nn",
+		"suse-observability-hdfs-dn",
+		"suse-observability-hdfs-snn",
 	}
 
 	for _, name := range distributedOnlyPDBs {
@@ -153,12 +153,12 @@ func TestDistributedModeSecondaryNameNodeResources(t *testing.T) {
 	// Check PodDisruptionBudget
 	found := false
 	for _, pdb := range resources.Pdbs {
-		if pdb.Name == expectedName {
+		if pdb.Name == "suse-observability-hdfs-snn" {
 			found = true
 			break
 		}
 	}
-	assert.True(t, found, "PodDisruptionBudget %s should exist in Distributed mode when hdfs.secondarynamenode.enabled=true", expectedName)
+	assert.True(t, found, "Canonical secondary NameNode PDB should exist in Distributed mode when hdfs.secondarynamenode.enabled=true")
 
 	// Check Secret
 	found = false

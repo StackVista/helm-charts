@@ -13,6 +13,41 @@ Current chart version is `0.2.160`
 | file://../common/ | common | * |
 | file://../suse-observability-sizing | suse-observability-sizing | * |
 
+## PDB naming and upgrades
+
+HBase PodDisruptionBudgets use canonical product names from `_names.tpl`:
+
+| Component | PDB name |
+| --- | --- |
+| HBase master | `suse-observability-hbase-master` |
+| HBase region server | `suse-observability-hbase-rs` |
+| HDFS NameNode | `suse-observability-hdfs-nn` |
+| HDFS secondary NameNode | `suse-observability-hdfs-snn` |
+| HDFS DataNode | `suse-observability-hdfs-dn` |
+| Tephra | `suse-observability-tephra` |
+
+Release names and fullname overrides, prefixes and suffixes no longer affect
+these PDB names. Existing selectors, `maxUnavailable: 1`, labels, annotations
+and creation conditions are preserved. Distributed mode creates the HBase/HDFS
+budgets, with the secondary NameNode budget conditional on its enabled setting;
+Tephra's budget remains present in both Mono and Distributed modes.
+Budgets belong to the release namespace, so identically named releases in
+different namespaces have separate objects.
+
+StatefulSet and PVC identities, governing Services, claim templates, Pod
+configuration and checksums, configuration/credential objects, RBAC, and
+ServiceMonitors retain their names and settings. This change requires no data
+or storage migration.
+
+Helm creates replacement budgets before deleting old ones. Overlapping budgets
+selecting the same Pod block evictions with HTTP 500 until the obsolete budget
+is removed. Argo CD must prune obsolete budgets; a failed Helm operation can
+also leave stale objects. After an interrupted upgrade or rollback, compare the
+intended revision's rendered PDB inventory with actual objects and release
+ownership. Remove only obsolete budgets belonging to this installation and
+complete the chosen operation. Do not delete by shared labels or remove
+workloads, storage, configuration or credentials.
+
 ## Required Values
 
 ## Values

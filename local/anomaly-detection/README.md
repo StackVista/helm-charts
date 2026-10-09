@@ -10,6 +10,30 @@ Current chart version is `5.2.0`
 |------------|------|---------|
 | file://../common | common | * |
 
+## Resource naming and upgrades
+
+The PodDisruptionBudget and manager ServiceMonitor use the fixed names
+`suse-observability-anomaly-detection` and `suse-observability-spotlight-manager`,
+including standalone rendering. Release names and fullname overrides, prefixes
+and suffixes do not change these two names. The existing selectors, labels,
+disruption limits, scrape configuration and creation conditions are preserved.
+Both resources belong to the release namespace. The manager and worker
+Deployments, Service DNS, artifact PVC, configuration, credentials and RBAC
+retain their names.
+
+Helm replaces an object when its name changes. Overlapping PDBs that select the
+same Pods can block evictions with HTTP 500; overlapping monitors selected by
+Prometheus can duplicate scraping. Argo CD must prune obsolete objects, either
+through automatic pruning or a sync with `--prune`. A failed Helm upgrade or
+rollback can also leave stale objects.
+
+After an interrupted operation, compare the intended revision's rendered
+inventory with the actual resources and release ownership. Remove only obsolete
+PDBs and ServiceMonitors belonging to this installation, then complete the
+upgrade, rollback or pruning sync. Do not delete by shared labels or remove
+workloads, storage, configuration or credentials. No data or storage migration
+is required by this naming change.
+
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:

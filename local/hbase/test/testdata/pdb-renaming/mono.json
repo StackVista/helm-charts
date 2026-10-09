@@ -1,0 +1,26 @@
+{
+  "PodDisruptionBudget/nightly-hbase-tephra": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "tephra",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "hbase",
+        "app.kubernetes.io/part-of": "suse-observability",
+        "app.kubernetes.io/version": "naming-fixture",
+        "helm.sh/chart": "hbase-0.0.0"
+      },
+      "name": "nightly-hbase-tephra"
+    },
+    "spec": {
+      "maxUnavailable": 1,
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "tephra"
+        }
+      }
+    }
+  }
+}

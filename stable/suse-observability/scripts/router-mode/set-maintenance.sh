@@ -21,20 +21,15 @@ EOF
 # - Updating the FS based on a config map can 30 seconds, so a long time
 # - We would like to actively reset connections, to make all clients go in to maintenance
 # - After the restart we are sure the configmap is applied.
-# shellcheck disable=SC2140
-if kubectl get deployment "{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"; then
+# Release labels identify the router before and after a Deployment rename.
+router_selector="app.kubernetes.io/component=router,app.kubernetes.io/instance={{ .Release.Name }}"
+router_deployments=$(kubectl get deployments -n "{{ .Release.Namespace }}" -l "$router_selector" -o name)
+if [[ -n "$router_deployments" ]]; then
   echo "Restarting router"
-  kubectl rollout restart "deployment/{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"
+  kubectl rollout restart deployment -n "{{ .Release.Namespace }}" -l "$router_selector"
 
   echo "Waiting for rollout to complete..."
-  while ! kubectl rollout status "deployment/{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"; do
-    echo "."
-    if ! kubectl get deployment "{{ include "stackstate.router.deployment.fullname" . }}" -n "{{ .Release.Namespace }}"; then
-      echo "Deployment went away, exiting"
-      exit 0
-    fi
-    sleep 1
-  done
+  kubectl rollout status deployment -n "{{ .Release.Namespace }}" -l "$router_selector" --timeout=120s
 else
   echo "Deployment not yet found, continuing."
 fi

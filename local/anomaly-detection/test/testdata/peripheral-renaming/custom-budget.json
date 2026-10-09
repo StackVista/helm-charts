@@ -1,0 +1,65 @@
+{
+  "PodDisruptionBudget/nightly-anomaly-detection-anomaly-detection": {
+    "apiVersion": "policy/v1",
+    "kind": "PodDisruptionBudget",
+    "metadata": {
+      "annotations": {
+        "fixture-note": "preserved"
+      },
+      "labels": {
+        "app.kubernetes.io/component": "anomaly-detection",
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "anomaly-detection",
+        "app.kubernetes.io/version": "naming-fixture",
+        "fixture-scope": "preserved",
+        "helm.sh/chart": "anomaly-detection-0.0.0"
+      },
+      "name": "nightly-anomaly-detection-anomaly-detection"
+    },
+    "spec": {
+      "maxUnavailable": "25%",
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "anomaly-detection"
+        }
+      }
+    }
+  },
+  "ServiceMonitor/nightly-anomaly-detection-spotlight-manager": {
+    "apiVersion": "monitoring.coreos.com/v1",
+    "kind": "ServiceMonitor",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/component": "manager",
+        "app.kubernetes.io/instance": "observability",
+        "app.kubernetes.io/name": "spotlight",
+        "release": "prometheus-operator"
+      },
+      "name": "nightly-anomaly-detection-spotlight-manager",
+      "namespace": "observability"
+    },
+    "spec": {
+      "endpoints": [
+        {
+          "interval": "20s",
+          "path": "/metrics",
+          "port": "metrics",
+          "scheme": "http"
+        }
+      ],
+      "namespaceSelector": {
+        "matchNames": [
+          "observability"
+        ]
+      },
+      "selector": {
+        "matchLabels": {
+          "app.kubernetes.io/component": "manager",
+          "app.kubernetes.io/instance": "observability",
+          "app.kubernetes.io/name": "spotlight"
+        }
+      }
+    }
+  }
+}

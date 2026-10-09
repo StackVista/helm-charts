@@ -96,7 +96,8 @@ Main-chart PodDisruptionBudgets always use `suse-observability-<component>`,
 independently of the release name or root/global fullname overrides, prefixes
 and suffixes. These naming settings no longer affect main-chart PDB names.
 Selectors, disruption limits, labels and creation conditions are unchanged;
-subchart-owned PDBs retain their names.
+other subchart-owned PDBs retain their names, except for anomaly detection and HBase
+as described below.
 When a PDB name changes, Helm creates its replacement before deleting the old
 object. While both budgets select the same Pod, Kubernetes rejects eviction
 requests with HTTP 500, so node drains fail until the obsolete budget is removed.
@@ -114,7 +115,31 @@ count and target configuration are restored once obsolete monitors are removed
 and the operator reconciles. Stale monitors selected by Prometheus can continue
 causing duplicate scraping until cleanup.
 Update external automation that references the previous ServiceMonitor names.
-Subchart-owned ServiceMonitors retain their names.
+Other subchart-owned ServiceMonitors retain their names, except for anomaly
+detection as described below.
+
+Anomaly detection's PDB and manager ServiceMonitor now use the fixed names
+`suse-observability-anomaly-detection` and `suse-observability-spotlight-manager`.
+Release names and root, subchart or global fullname overrides, prefixes and
+suffixes do not change these two names. Their existing labels, selectors,
+disruption limits, namespace selection, scrape settings and creation conditions
+are preserved. The manager and worker Deployments, Service DNS, artifact PVC,
+configuration, credentials and RBAC keep their existing identities.
+Both renamed objects remain in the release namespace, so releases with the
+same name in different namespaces have separate PDBs and ServiceMonitors.
+The same eviction, duplicate-scraping and pruning considerations apply to these
+anomaly-detection objects. Update automation referencing their previous names.
+
+HBase's PDBs also use canonical names:
+`suse-observability-hbase-master`, `suse-observability-hbase-rs`,
+`suse-observability-hdfs-nn`, `suse-observability-hdfs-snn`,
+`suse-observability-hdfs-dn`, and `suse-observability-tephra`.
+Root, HBase and global fullname settings no longer affect these budget names.
+Their labels, selectors, annotations, `maxUnavailable: 1`, namespace scope and
+Mono/Distributed creation conditions are unchanged. HBase StatefulSets, claim
+templates, PVCs, governing Services, configuration, credentials, RBAC and
+ServiceMonitors retain their names and settings. The same eviction and
+stale-budget recovery guidance applies; update automation using old PDB names.
 
 These overlaps are temporary only when obsolete resources are deleted. No data
 or storage migration is required, but failed deployments or disabled pruning can
@@ -149,6 +174,38 @@ To recover stale resources after an interrupted upgrade, rollback or Argo CD syn
 4. Complete or retry the chosen upgrade, rollback or pruning sync if needed.
    Verify that overlapping PDBs no longer block evictions and Prometheus selects
    only the intended monitors.
+
+The Elasticsearch exporter Deployment uses the fixed name
+`suse-observability-prometheus-elasticsearch-exporter`, including when exporter
+fullname or name overrides are configured. Its existing Service DNS name,
+selectors, Pod configuration, accounts and certificate Secret identities are
+preserved. Replacement may briefly interrupt exporter metrics or run both
+exporters; update automation that references the old Deployment name.
+
+The router Deployment uses the fixed name `suse-observability-router`, ignoring
+fullname overrides, prefixes and suffixes. Its Service DNS, selectors, Pod
+configuration, accounts, credentials, static and dynamic ConfigMaps, and hook
+identities stay unchanged. Automatic-mode scripts select router Deployments by
+their component and Helm release labels within the release namespace. The
+pre-upgrade hook can therefore restart the old router into maintenance mode,
+and the post-upgrade hook restores active mode on the replacement. If both
+Deployments are present, the scripts restart and wait for both.
+The hook Role grants Deployment watch permission before the jobs run. Both
+scripts use watched rollout status with a 120-second timeout; this is below the
+maintenance job's 180-second deadline. A timeout or watch error stops the hook
+instead of reporting a completed rollout.
+Replacement can interrupt connections or briefly run both proxies. Update
+automation that references the old Deployment name.
+
+For renamed exporter and router Deployments, Argo CD must prune obsolete
+Deployments to finish replacement. After an interrupted upgrade or rollback,
+compare the intended Deployment inventory and release ownership before deleting
+obsolete controllers individually; old and new controllers share Pod labels.
+Their retained Services, configuration, accounts, Secrets and storage resources
+must not be removed as part of this cleanup.
+
+The main Ingress retains its existing naming settings to preserve ownership of
+controller-managed Certificates and TLS Secrets. The main HTTPRoute is already canonical.
 
 When upgrading a release with a different name, Helm replaces the renamed resources.
 This also applies to affected resources when using root `fullnameOverride`,

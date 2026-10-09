@@ -27,13 +27,13 @@ type namingUpgradeContract map[string]map[string]interface{}
 
 func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 	for _, scenario := range []struct {
-		name, release, legacyPrefix string
-		values                      map[string]string
+		name, release, legacyPrefix, hbaseLegacyPrefix string
+		values                                         map[string]string
 	}{
-		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability"},
-		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability"},
+		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability", hbaseLegacyPrefix: "suse-observability-hbase"},
+		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability", hbaseLegacyPrefix: "nightly-hbase"},
 		{
-			name: "override-mono", release: "nightly", legacyPrefix: "existing-installation",
+			name: "override-mono", release: "nightly", legacyPrefix: "existing-installation", hbaseLegacyPrefix: "nightly-hbase",
 			values: map[string]string{
 				"fullnameOverride":                 "existing-installation",
 				"hbase.deployment.mode":            "Mono",
@@ -42,6 +42,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 		},
 		{
 			name: "prefix-suffix", release: "suse-observability", legacyPrefix: "global-team-suse-observability-prod-end",
+			hbaseLegacyPrefix: "global-suse-observability-hbase-end",
 			values: map[string]string{
 				"global.fullnamePrefix": "global-", "fullnamePrefix": "team-",
 				"fullnameSuffix": "-prod", "global.fullnameSuffix": "-end",
@@ -89,7 +90,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 			require.NoError(t, err)
 			var expected namingUpgradeContract
 			require.NoError(t, json.Unmarshal(data, &expected))
-			allowResourceNamingMigration(t, expected, scenario.legacyPrefix)
+			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix)
 
 			for resource, fields := range expected {
 				actualFields, found := actual[resource]
@@ -122,6 +123,9 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 			continue
 		}
 		name := object.GetName()
+		if name == "" && object.GetGenerateName() != "" {
+			name = object.GetGenerateName() + "<generated>"
+		}
 		if object.GetKind() == "Job" {
 			name = jobTimestamp.ReplaceAllString(name, "<timestamp>")
 		}
@@ -221,12 +225,42 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 	return contract
 }
 
-func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix string) {
+func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix string) {
 	t.Helper()
 	const canonical = "suse-observability"
+	// HBase's legacy prefix differs from its parent. Allow only PDB metadata
+	// names; persistent controllers, Services and credentials retain identities.
+	for _, component := range []string{"hbase-master", "hbase-rs", "hdfs-nn", "hdfs-snn", "hdfs-dn", "tephra"} {
+		old := "PodDisruptionBudget/" + hbaseLegacyPrefix + "-" + component
+		if fields, found := contract[old]; found {
+			target := "PodDisruptionBudget/" + canonical + "-" + component
+			require.NotContains(t, contract, target)
+			contract[target] = fields
+			delete(contract, old)
+		}
+	}
+	// The exporter used its subchart fullname, independent of the parent's
+	// fullname settings. Only its Deployment identity changes.
+	oldExporter := "Deployment/" + release + "-prometheus-elasticsearch-exporter"
+	newExporter := "Deployment/" + canonical + "-prometheus-elasticsearch-exporter"
+	if oldExporter != newExporter {
+		if fields, found := contract[oldExporter]; found {
+			require.NotContains(t, contract, newExporter)
+			contract[newExporter] = fields
+			delete(contract, oldExporter)
+		}
+	}
 	if legacyPrefix == canonical {
 		return
 	}
+	// Router Service DNS, credentials, accounts and configuration names stay
+	// unchanged. Its Deployment is the only resource identity moving here.
+	oldRouter := "Deployment/" + legacyPrefix + "-router"
+	newRouter := "Deployment/" + canonical + "-router"
+	require.Contains(t, contract, oldRouter)
+	require.NotContains(t, contract, newRouter)
+	contract[newRouter] = contract[oldRouter]
+	delete(contract, oldRouter)
 	// PDBs always adopt canonical identities, including with legacy fullname
 	// settings. Only metadata.name changes for these budgets.
 	for _, component := range []string{

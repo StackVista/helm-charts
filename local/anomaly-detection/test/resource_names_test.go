@@ -66,7 +66,7 @@ func TestAnomalyResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 					"Deployment/" + scenario.base + "-spotlight-manager",
 					"Deployment/" + scenario.base + "-spotlight-worker",
 					"Service/" + scenario.base + "-spotlight-manager",
-					"ServiceMonitor/" + scenario.base + "-spotlight-manager",
+					"ServiceMonitor/suse-observability-spotlight-manager",
 					"ServiceAccount/" + scenario.base + "-sa",
 					"Role/stackstate-aad", "RoleBinding/stackstate-aad",
 					"ClusterRoleBinding/" + scenario.clusterBase + "-aad-authentication",
@@ -75,7 +75,7 @@ func TestAnomalyResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 					"ConfigMap/" + scenario.base + "-spotlight-config-base",
 					"PersistentVolumeClaim/spotlight-artifacts-volume-claim",
 					"Ingress/" + scenario.base,
-					"PodDisruptionBudget/" + scenario.base + "-anomaly-detection",
+					"PodDisruptionBudget/suse-observability-anomaly-detection",
 				}
 				require.Len(t, documents, len(expected))
 				for _, key := range expected {
@@ -109,7 +109,7 @@ func TestAnomalyResourcesFollowDedicatedHelpers(t *testing.T) {
 		{"manager.deployment", "Deployment", base + "-spotlight-manager"},
 		{"worker.deployment", "Deployment", base + "-spotlight-worker"},
 		{"manager.service", "Service", base + "-spotlight-manager"},
-		{"manager.servicemonitor", "ServiceMonitor", base + "-spotlight-manager"},
+		{"manager.servicemonitor", "ServiceMonitor", "suse-observability-spotlight-manager"},
 		{"serviceaccount", "ServiceAccount", base + "-sa"},
 		{"authentication.role", "Role", "stackstate-aad"},
 		{"authentication.rolebinding", "RoleBinding", "stackstate-aad"},
@@ -119,7 +119,7 @@ func TestAnomalyResourcesFollowDedicatedHelpers(t *testing.T) {
 		{"config.configmap", "ConfigMap", base + "-spotlight-config-base"},
 		{"manager.artifacts.persistentvolumeclaim", "PersistentVolumeClaim", "spotlight-artifacts-volume-claim"},
 		{"ingress", "Ingress", base},
-		{"pdb", "PodDisruptionBudget", base + "-anomaly-detection"},
+		{"pdb", "PodDisruptionBudget", "suse-observability-anomaly-detection"},
 	}
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))

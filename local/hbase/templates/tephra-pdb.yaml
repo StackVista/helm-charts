@@ -1,6 +1,6 @@
 {{- define "hbase.tephra.poddisruptionbudget" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-tephra
+  name: {{ include "hbase.tephra.poddisruptionbudget.fullname" . }}
   labels:
     app.kubernetes.io/component: tephra
 spec:
