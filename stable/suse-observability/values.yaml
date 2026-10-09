@@ -1771,8 +1771,6 @@ stackstate:
   features:
     # stackstate.features.role-k8s-authz -- (boolean) Deploy the Role(s) to populate permissions on Suse Observability
     role-k8s-authz: true
-    # stackstate.features.traces -- (boolean) Enable new traces UI and API
-    traces: true
     server:
       # stackstate.features.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true

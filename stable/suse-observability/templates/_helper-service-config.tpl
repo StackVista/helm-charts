@@ -108,14 +108,10 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- $_ := set $openEnvVars "STACKSTATE_EDITION" .Values.stackstate.deployment.edition }}
 {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_instanceDebugApi" (.Values.stackstate.instanceDebugApi.enabled | toString) }}
 {{- $_ := set $openEnvVars "PLATFORM_VERSION" .Chart.Version }}
-{{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "rollingupdate" }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" (.Release.Revision | toString) }}
 {{- else }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
-{{- end -}}
-{{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
 {{- end -}}
 {{- if .Values.global.features.experimentalOtelLogs }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_otelLogs" "true" }}
@@ -243,11 +239,9 @@ data:
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate.service.configmap.clickhouseconfig" -}}
-{{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
+{{- define "stackstate.service.configmap.clickhouseconfig" }}
 stackstate.clickHouse = {{- include "stackstate.clickhouse.config" . }}
 {{- end }}
-{{- end -}}
 
 {{/*
 Custom certificates and trust stores to mount into /opt/docker/secrets for stackstate services, as a
