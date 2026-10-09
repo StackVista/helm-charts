@@ -172,6 +172,10 @@ their component and Helm release labels within the release namespace. The
 pre-upgrade hook can therefore restart the old router into maintenance mode,
 and the post-upgrade hook restores active mode on the replacement. If both
 Deployments are present, the scripts restart and wait for both.
+The hook Role grants Deployment watch permission before the jobs run. Both
+scripts use watched rollout status with a 120-second timeout; this is below the
+maintenance job's 180-second deadline. A timeout or watch error stops the hook
+instead of reporting a completed rollout.
 Replacement can interrupt connections or briefly run both proxies. Update
 automation that references the old Deployment name.
 

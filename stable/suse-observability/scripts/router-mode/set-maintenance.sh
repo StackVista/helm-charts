@@ -29,16 +29,7 @@ if [[ -n "$router_deployments" ]]; then
   kubectl rollout restart deployment -n "{{ .Release.Namespace }}" -l "$router_selector"
 
   echo "Waiting for rollout to complete..."
-  # Poll with the existing get/list permissions; the hook Role does not grant watch.
-  while ! kubectl rollout status deployment -n "{{ .Release.Namespace }}" -l "$router_selector" --watch=false; do
-    echo "."
-    router_deployments=$(kubectl get deployments -n "{{ .Release.Namespace }}" -l "$router_selector" -o name)
-    if [[ -z "$router_deployments" ]]; then
-      echo "Deployment went away, exiting"
-      exit 0
-    fi
-    sleep 1
-  done
+  kubectl rollout status deployment -n "{{ .Release.Namespace }}" -l "$router_selector" --timeout=120s
 else
   echo "Deployment not yet found, continuing."
 fi

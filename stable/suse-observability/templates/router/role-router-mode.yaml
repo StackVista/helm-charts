@@ -23,5 +23,5 @@ rules:
     verbs: ["*"]
   - apiGroups: ["apps", "extensions"]
     resources: ["deployments"]
-    verbs: ["get", "patch", "list"]
+    verbs: ["get", "patch", "list", "watch"]
   {{- end }}

@@ -10,10 +10,11 @@ references, static and dynamic ConfigMaps, hook resources and Ingress keep their
 identities. Automatic-mode scripts retain their dynamic ConfigMap target and
 select Deployments by component and Helm release labels in the release namespace.
 This reaches the old router before an upgrade and the replacement afterwards,
-including both during overlap. Empty selection skips restarting; disappearance
-while waiting is handled as before.
-Rollout status is polled without watch, matching the existing hook Role's
-get/list/patch permissions.
+including both during overlap. Empty selection skips restarting.
+The hook Role grants get/list/patch/watch permissions before either job starts.
+Rollout status watches the selected Deployments with a 120-second timeout,
+below the maintenance job's 180-second deadline. Timeout, disappearance or
+watch errors fail the command instead of reporting a completed rollout.
 
 The router is a stateless Envoy proxy. Its default volumes project configuration;
 it has no PVC or background writer. Old and new proxies can temporarily coexist
@@ -48,7 +49,9 @@ long names, split/monolithic services, Argo CD, and all three router modes.
 
 `TestRouterModeScriptsReachOldAndNewDeployments` executes both rendered scripts
 with a synthetic kubectl. It covers old/new/overlapping/absent routers, pending
-rollouts, disappearance while waiting, list errors, and namespace/release
-isolation. These tests do not connect to Kubernetes or run Envoy; actual
+rollouts held pending until released, disappearance while waiting, rollout
+timeouts, watch/list errors, and namespace/release isolation. A non-watching
+status read returns zero for a pending rollout, reproducing kubectl semantics.
+These tests do not connect to Kubernetes or run Envoy; actual
 controller replacement, readiness, routed traffic and rollback remain
 integration checks.

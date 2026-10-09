@@ -157,8 +157,8 @@ func TestRouterDeploymentNamingCompatibility(t *testing.T) {
 	}
 }
 
-// Allow only the reviewed change from exact-name targeting to namespace/release
-// selection. All configuration, hook identities and other script text is frozen.
+// Allow namespace/release selection and a bounded watched rollout wait.
+// All configuration, hook identities and other script text is frozen.
 func allowRouterScriptSelectorChange(t *testing.T, scripts *corev1.ConfigMap) {
 	t.Helper()
 	scripts.Data = maps.Clone(scripts.Data)
@@ -172,12 +172,15 @@ router_deployments=$(` + get + `)
 if [[ -n "$router_deployments" ]]; then`},
 		{`kubectl rollout restart "deployment/nightly-suse-observability-router" -n "observability"`,
 			`kubectl rollout restart deployment -n "observability" -l "$router_selector"`},
-		{`  while ! kubectl rollout status "deployment/nightly-suse-observability-router" -n "observability"; do`,
-			`  # Poll with the existing get/list permissions; the hook Role does not grant watch.
-  while ! kubectl rollout status deployment -n "observability" -l "$router_selector" --watch=false; do`},
-		{`if ! kubectl get deployment "nightly-suse-observability-router" -n "observability"; then`,
-			`router_deployments=$(` + get + `)
-    if [[ -z "$router_deployments" ]]; then`},
+		{`  while ! kubectl rollout status "deployment/nightly-suse-observability-router" -n "observability"; do
+    echo "."
+    if ! kubectl get deployment "nightly-suse-observability-router" -n "observability"; then
+      echo "Deployment went away, exiting"
+      exit 0
+    fi
+    sleep 1
+  done`,
+			`  kubectl rollout status deployment -n "observability" -l "$router_selector" --timeout=120s`},
 	}
 	for _, key := range []string{"set-active.sh", "set-maintenance.sh"} {
 		script := scripts.Data[key]
