@@ -856,6 +856,8 @@ otel:
     kubernetesTopology:
       # otel.k8sResourceCollector.kubernetesTopology.clusterType -- Cluster type used in topology identifiers when global.features.experimentalOtelKubernetesTopology is true: kubernetes or openshift.
       clusterType: kubernetes
+      # otel.k8sResourceCollector.kubernetesTopology.memoryLimit -- Memory limit of the cluster collector when global.features.experimentalOtelKubernetesTopology is true, replacing otel.k8sResourceCollector.resources.limits.memory. Usage grows with the number of Kubernetes objects; the collector's Go runtime keeps within it.
+      memoryLimit: 1Gi
 
     # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec of resources that must not appear under otel.k8sResourceCollector.objects. Spec needs only `group`. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are allowed because the collector sanitizes them; with global.features.experimentalOtelKubernetesTopology, turn their clusterAgent.collection.kubernetesResources switches off instead of denying them.
     deniedObjects: {}

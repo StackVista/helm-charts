@@ -89,6 +89,10 @@ func TestKubernetesTopologyCompatDisabledByDefault(t *testing.T) {
 	env, ok := containerEnv(t, resources, clusterAgentName, "STS_COLLECT_KUBERNETES_TOPOLOGY")
 	require.True(t, ok)
 	assert.Equal(t, "true", env.Value)
+	_, ok = containerEnv(t, resources, resourceCollectorName, "GOMEMLIMIT")
+	assert.False(t, ok)
+	collector := resources.Deployments[resourceCollectorName].Spec.Template.Spec.Containers[0]
+	assert.Equal(t, "512Mi", collector.Resources.Limits.Memory().String())
 }
 
 func TestKubernetesTopologyCompatEnabled(t *testing.T) {
@@ -137,6 +141,25 @@ func TestKubernetesTopologyCompatEnabled(t *testing.T) {
 	env, ok = containerEnv(t, resources, clusterAgentName, "STS_COLLECT_KUBERNETES_TOPOLOGY")
 	require.True(t, ok)
 	assert.Equal(t, "false", env.Value)
+
+	collector := resources.Deployments[resourceCollectorName].Spec.Template.Spec.Containers[0]
+	assert.Equal(t, "1Gi", collector.Resources.Limits.Memory().String())
+	env, ok = containerEnv(t, resources, resourceCollectorName, "GOMEMLIMIT")
+	require.True(t, ok, "the Go runtime must know the memory limit")
+	require.NotNil(t, env.ValueFrom)
+	require.NotNil(t, env.ValueFrom.ResourceFieldRef)
+	assert.Equal(t, "limits.memory", env.ValueFrom.ResourceFieldRef.Resource)
+	assert.Equal(t, collector.Name, env.ValueFrom.ResourceFieldRef.ContainerName)
+}
+
+func TestKubernetesTopologyCompatMemoryLimitIsConfigurable(t *testing.T) {
+	resources := renderCompat(t, &helm.Options{
+		ValuesFiles: []string{"values/kubernetes-topology-compat.yaml"},
+		SetValues:   map[string]string{"otel.k8sResourceCollector.kubernetesTopology.memoryLimit": "3Gi"},
+	})
+	collector := resources.Deployments[resourceCollectorName].Spec.Template.Spec.Containers[0]
+	assert.Equal(t, "3Gi", collector.Resources.Limits.Memory().String())
+	assert.Equal(t, "500m", collector.Resources.Limits.Cpu().String(), "other limits are kept")
 }
 
 func TestKubernetesTopologyCompatUrlFromSecret(t *testing.T) {

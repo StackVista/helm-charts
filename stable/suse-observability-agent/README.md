@@ -551,6 +551,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
 | otel.k8sResourceCollector.image.tag | string | `"v0.0.68-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.kubernetesTopology.clusterType | string | `"kubernetes"` | Cluster type used in topology identifiers when global.features.experimentalOtelKubernetesTopology is true: kubernetes or openshift. |
+| otel.k8sResourceCollector.kubernetesTopology.memoryLimit | string | `"1Gi"` | Memory limit of the cluster collector when global.features.experimentalOtelKubernetesTopology is true, replacing otel.k8sResourceCollector.resources.limits.memory. Usage grows with the number of Kubernetes objects; the collector's Go runtime keeps within it. |
 | otel.k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | otel.k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
 | otel.k8sResourceCollector.leaderElection.leaseName | string | `"k8sresourcereceiver"` | Name of the Lease object. Must be unique per collector deployment. |
