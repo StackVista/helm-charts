@@ -69,6 +69,48 @@ The OpenTelemetry instrumentation namespace defaults to
 
 ## Resource naming
 
+The bundled collector's peripheral resources use fixed names:
+
+| Kind | Name |
+| --- | --- |
+| PodDisruptionBudget | `suse-observability-otel-collector` |
+| ServiceMonitor | `suse-observability-otel-collector` |
+| PodMonitor | `suse-observability-otel-collector-agent` |
+| PrometheusRule | `suse-observability-otel-collector` |
+| NetworkPolicy | `suse-observability-otel-collector` |
+
+These names ignore release names, parent naming settings and collector
+`fullnameOverride`/`nameOverride` settings. Default collector names are unchanged.
+Only metadata names change: selectors, release labels, namespaces, disruption
+limits, scrape configuration, alert rules and network rules stay unchanged.
+Creation conditions are preserved, including the Deployment-only budget and
+DaemonSet-only PodMonitor. Each installation needs its own resource namespace,
+including when `opentelemetry-collector.namespaceOverride` is configured.
+Standalone collector charts retain their existing naming defaults.
+
+This collector change can be deployed independently of other resource renames.
+Workload names and Pod templates, Services and router endpoints, ConfigMaps,
+Secrets, accounts, RBAC, autoscalers and StatefulSet claim templates remain
+unchanged. No later naming step, data migration or collector rollout is required
+to make these peripheral objects select the existing collector.
+
+For custom collector names, an ordinary Helm upgrade creates replacements and
+deletes the previous objects. Rollback restores the previous names. During
+replacement, overlapping PDBs can block eviction with HTTP 500, and overlapping
+monitors or rules can duplicate scraping or alert evaluation. Identical old/new
+NetworkPolicies retain the same additive permissions while they overlap.
+Argo CD must prune obsolete objects; `PruneLast=true` with pruning enabled can
+defer deletion until the intended resources are healthy.
+
+After an interrupted non-atomic upgrade, rollback or Argo CD sync without
+pruning, stale peripheral objects can remain indefinitely. Finish or restore the
+intended revision, compare its five-kind inventory in the collector namespace,
+verify release ownership and remove only obsolete objects belonging to that
+installation. Do not delete by shared labels. Retain collector workloads,
+configuration, credentials, accounts, Services and storage throughout cleanup.
+Verify eviction, Prometheus targets/rules and network enforcement afterwards.
+Local render checks do not establish controller reconciliation or recovery time.
+
 The UI and replication checker now use the fixed names `suse-observability-ui` and
 `suse-observability-replication-checker`, including their component-specific supporting
 resources.
@@ -97,7 +139,7 @@ creation conditions are unchanged. The RBAC agent still identifies its cluster
 by the Helm release name. External global connection Secrets retain precedence.
 The bundled resource names are supplied by the platform; standalone subcharts
 and the SUSE Observability agent chart retain their existing naming defaults.
-Subcharts with fixed default names, including the collector, are unchanged.
+Other resources with fixed default names are unchanged.
 
 Router active/maintenance/automatic and mode-script ConfigMaps retain their names:
 pre-upgrade hooks need the existing configuration, and automatic mode stores

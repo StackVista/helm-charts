@@ -347,6 +347,31 @@ The parent endpoint ConfigMap has its own shared helper in common.
 {{ include "suse-observability.resourcePrefix" . }}-otel-collector
 {{- end -}}
 
+{{/*
+Platform-only peripheral collector identities. Selectors retain the subchart's
+release/component labels; workloads, endpoints, configuration, storage and RBAC
+keep their existing names. These overrides also work without other rename steps.
+*/}}
+{{- define "opentelemetry-collector.poddisruptionbudget.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
+{{- define "opentelemetry-collector.servicemonitor.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
+{{- define "opentelemetry-collector.podmonitor.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-agent
+{{- end -}}
+
+{{- define "opentelemetry-collector.prometheusrule.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
+{{- define "opentelemetry-collector.networkpolicy.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
 {{- define "stackstate.otelCollector.fullname" -}}
 {{- index .Values "opentelemetry-collector" "fullnameOverride" | default (include "stackstate.otelCollector.defaultFullname" .) -}}
 {{- end -}}
