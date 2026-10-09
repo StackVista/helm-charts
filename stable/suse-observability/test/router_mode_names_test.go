@@ -208,23 +208,24 @@ func assertRouterModeHookResources(t *testing.T, before, after *helmtestutil.Kub
 	delete(before.ServiceAccounts, legacy+"-mode-scripts")
 	delete(after.ServiceAccounts, "explicit-hook-account")
 
-	require.Contains(t, before.Roles, legacy+"-mode")
+	const canonical = "suse-observability-router-mode"
+	require.Contains(t, before.Roles, canonical)
 	require.Contains(t, after.Roles, "explicit-hook-role")
-	role := before.Roles[legacy+"-mode"]
+	role := before.Roles[canonical]
 	role.Name = "explicit-hook-role"
 	assert.Equal(t, role, after.Roles["explicit-hook-role"])
-	delete(before.Roles, legacy+"-mode")
+	delete(before.Roles, canonical)
 	delete(after.Roles, "explicit-hook-role")
 
-	require.Contains(t, before.RoleBindings, legacy+"-mode")
+	require.Contains(t, before.RoleBindings, canonical)
 	require.Contains(t, after.RoleBindings, "explicit-hook-binding")
-	binding := before.RoleBindings[legacy+"-mode"]
+	binding := before.RoleBindings[canonical]
 	binding.Name = "explicit-hook-binding"
-	require.Equal(t, legacy+"-mode", binding.RoleRef.Name)
+	require.Equal(t, canonical, binding.RoleRef.Name)
 	binding.RoleRef.Name = "explicit-hook-role"
 	binding.Subjects = renamedServiceAccountSubject(t, binding.Subjects, legacy+"-mode-scripts", "explicit-hook-account")
 	assert.Equal(t, binding, after.RoleBindings["explicit-hook-binding"])
-	delete(before.RoleBindings, legacy+"-mode")
+	delete(before.RoleBindings, canonical)
 	delete(after.RoleBindings, "explicit-hook-binding")
 }
 

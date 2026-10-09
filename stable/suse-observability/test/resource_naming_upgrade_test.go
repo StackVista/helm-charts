@@ -235,6 +235,27 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix, legacyClusterPrefix, backupLegacyName, operatorLegacyName string) {
 	t.Helper()
 	const canonical = "suse-observability"
+	// Only the bundled operator's internal Role/binding and its exact roleRef
+	// change. Account, Deployment, configuration and Kafka selection stay frozen.
+	operatorRole := strings.TrimSuffix(operatorLegacyName, "-config")
+	for _, kind := range []string{"Role", "RoleBinding"} {
+		oldName, targetName := operatorRole, canonical+"-kafkaup"
+		if kind == "RoleBinding" {
+			oldName += "-binding"
+			targetName += "-binding"
+		}
+		old, target := kind+"/"+oldName, kind+"/"+targetName
+		require.Contains(t, contract, old)
+		require.NotContains(t, contract, target)
+		fields := contract[old]
+		if kind == "RoleBinding" {
+			ref := fields["roleRef"].(map[string]interface{})
+			require.Equal(t, operatorRole, ref["name"])
+			ref["name"] = canonical + "-kafkaup"
+		}
+		contract[target] = fields
+		delete(contract, old)
+	}
 	// Generated component ConfigMaps move independently of their environment
 	// Secrets, controllers and endpoints. Only exact ConfigMap references change.
 	configRenames := map[string]string{}

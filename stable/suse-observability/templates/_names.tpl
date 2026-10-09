@@ -45,9 +45,10 @@ independent for customer templates that reference existing names.
 {{- end -}}
 
 {{/*
-Router mode configuration and hook identities retain their legacy names.
+Router mode configuration, accounts and Jobs retain their legacy names.
 Automatic-mode scripts write the automatic ConfigMap; active and maintenance
-ConfigMaps are chart-managed alternatives. Keep each identity independent.
+ConfigMaps are chart-managed alternatives. Only the internal hook Role and
+binding use canonical names; keep configuration, accounts and Jobs independent.
 */}}
 {{- define "stackstate.router.mode.active.configmap.fullname" -}}
 {{ template "common.fullname.short" . }}-router-active
@@ -83,11 +84,11 @@ ConfigMaps are chart-managed alternatives. Keep each identity independent.
 {{- end -}}
 
 {{- define "stackstate.router.mode.role.fullname" -}}
-{{ template "common.fullname.short" . }}-router-mode
+{{ include "suse-observability.resourcePrefix" . }}-router-mode
 {{- end -}}
 
 {{- define "stackstate.router.mode.rolebinding.fullname" -}}
-{{ template "common.fullname.short" . }}-router-mode
+{{ include "suse-observability.resourcePrefix" . }}-router-mode
 {{- end -}}
 
 {{/* Preserve Helm's per-render timestamps and Argo CD's generated-name prefixes. */}}
@@ -624,6 +625,19 @@ Use the full namespace: truncating it could introduce cross-namespace collisions
 
 {{- define "stackstate.rbacAgent.rolebinding.fullname" -}}
 {{ template "common.fullname.short" . }}-rbac-agent
+{{- end -}}
+
+{{/*
+The bundled operator's internal Role and binding move together so roleRef stays
+fixed on subsequent upgrades. Keep its account and controller independent;
+standalone subcharts retain their existing names.
+*/}}
+{{- define "kafkaup-operator.role.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-kafkaup
+{{- end -}}
+
+{{- define "kafkaup-operator.rolebinding.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-kafkaup-binding
 {{- end -}}
 
 {{/* Instance Role identities may be referenced by customer-managed bindings.

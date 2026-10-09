@@ -87,6 +87,47 @@ The OpenTelemetry instrumentation namespace defaults to
 
 ## Resource naming
 
+Two internal Role/RoleBinding pairs use canonical names from `_names.tpl`:
+
+| Component | Role | RoleBinding |
+| --- | --- | --- |
+| Router automatic-mode hooks | `suse-observability-router-mode` | `suse-observability-router-mode` |
+| Bundled Kafka-upgrade operator | `suse-observability-kafkaup` | `suse-observability-kafkaup-binding` |
+
+These names ignore release names and fullname settings. The router pair is
+created only in automatic mode; the operator pair is created only when the
+bundled operator is enabled. Each pair remains in the release namespace, so
+installations in different namespaces can use the same names.
+Standalone Kafka-upgrade operator charts retain their existing naming defaults.
+
+Roles and bindings change together because a RoleBinding's `roleRef` is immutable.
+Helm replaces a renamed binding rather than changing its Role reference in place.
+Later fullname changes keep the canonical Role reference and update only mutable
+account subjects where necessary. Existing accounts, permissions, hook phases,
+weights and deletion policies, workload specifications, Kafka selection, router
+mode configuration and script targets are preserved. The router pair already
+has these names with default product naming; the operator pair changes even for
+the default release. The RBAC-agent Role/binding and its application authorization
+subject retain their existing identities.
+
+This batch can be installed or upgraded independently of the other naming
+changes after helper extraction. It introduces no Pod rollout, account/token
+replacement or data migration. Authorization can be interrupted while old/new
+objects are replaced and caches reconcile; local render and patch checks do not
+establish recovery time or actual controller behavior.
+
+Argo CD must prune obsolete operator RBAC. Successful router hooks retain their
+existing automatic cleanup; a failed hook from an earlier revision can leave
+RBAC under its previous name because `before-hook-creation` matches the new
+name only. After an interrupted upgrade, rollback or sync without pruning,
+finish or restore the intended revision, inspect the rendered Role/binding
+inventory and remove only obsolete objects owned by that installation.
+Check release ownership, hook annotations, namespaces, subjects and Role
+references before cleanup. Preserve accounts and customer-managed bindings.
+Update external automation that selects the old names; any custom binding to
+one of these internal Roles must reference its new name. Verify router hook
+completion and Kafka-operator access after the operation.
+
 The bundled collector's peripheral resources use fixed names:
 
 | Kind | Name |
