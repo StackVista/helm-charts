@@ -34,10 +34,9 @@ Tephra's budget remains present in both Mono and Distributed modes.
 Budgets belong to the release namespace, so identically named releases in
 different namespaces have separate objects.
 
-StatefulSet and PVC identities, governing Services, claim templates, Pod
-configuration and checksums, configuration/credential objects, RBAC, and
-ServiceMonitors retain their names and settings. This change requires no data
-or storage migration.
+The PDB rename preserves StatefulSet and PVC identities, governing Services,
+claim templates, Pod configuration and checksums, configuration/credential
+objects and RBAC. It requires no data or storage migration.
 
 Helm creates replacement budgets before deleting old ones. Overlapping budgets
 selecting the same Pod block evictions with HTTP 500 until the obsolete budget
@@ -47,6 +46,54 @@ intended revision's rendered PDB inventory with actual objects and release
 ownership. Remove only obsolete budgets belonging to this installation and
 complete the chosen operation. Do not delete by shared labels or remove
 workloads, storage, configuration or credentials.
+
+## ServiceMonitor and probe-script naming
+
+HBase's six ServiceMonitors use the same canonical component names listed above
+when stored in the release namespace. Release names and fullname settings do
+not affect those names. Monitor selectors, labels, scrape endpoints, namespace
+selection and creation conditions are unchanged. HBase/HDFS monitors remain
+Distributed-only; Tephra's monitor retains its existing condition in both modes.
+The secondary NameNode monitor retains its existing creation condition even
+when that workload is disabled.
+
+An explicit `servicemonitor.namespace` or `common.servicemonitor.namespace` that
+places monitors outside the release namespace retains the previous names.
+This preserves distinct identities for installations using a shared monitoring
+namespace. As before, legacy names must be distinct within the shared namespace.
+Explicitly selecting the release namespace still uses canonical
+names; direct values retain precedence over common defaults.
+
+The probe-script ConfigMaps now use `suse-observability-hbase-rs-scripts` and
+`suse-observability-hdfs-dn-scripts`, from `_names.tpl`. Both their declarations
+and StatefulSet volume references use those helpers. Script contents, executable
+file modes, mount paths, readiness/liveness probes and creation conditions are
+unchanged. They are generated only in Distributed mode.
+
+An ordinary upgrade changes the script volume reference in each existing
+region-server and DataNode StatefulSet, triggering its normal rolling update
+when the previous name differs. This also occurs with default product naming.
+StatefulSet names, selectors, governing Services, replica counts, data mounts,
+claim templates, PVCs, images, credentials, accounts and permissions are preserved.
+No data copy or migration script is added. Temporary unavailability while storage
+Pods restart is possible; no recovery-time bound is asserted.
+
+This batch works independently after the name-helper extraction baseline.
+Repeated upgrades retain the new names; rollback restores the old ConfigMaps and
+volume references through the existing StatefulSets. Other renamed families are
+not needed for these consumers to resolve their scripts or monitoring targets.
+
+Argo CD must prune obsolete objects. `PruneLast=true` with pruning enabled can
+defer deletion until updated workloads are healthy. Monitor overlap can cause
+duplicate scraping until old monitors are removed. After an interrupted
+upgrade, rollback or sync without pruning, finish or restore the intended
+revision and compare its ConfigMap/monitor inventory with actual owned objects.
+Keep old script maps while any Pod or controller still references them; remove
+only obsolete objects belonging to this installation after consumers converge.
+Preserve storage and credential objects throughout cleanup. Update external
+automation selecting old metadata names and verify probe readiness and scrape
+targets afterwards. Local rendering and patch checks do not establish actual
+Pod recovery or Prometheus reconciliation.
 
 ## Required Values
 

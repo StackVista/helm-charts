@@ -235,6 +235,29 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix, legacyClusterPrefix, backupLegacyName, operatorLegacyName string) {
 	t.Helper()
 	const canonical = "suse-observability"
+	// HBase probe script maps move with only their two StatefulSet volume
+	// references. Persistent identities, credentials and script contents stay fixed.
+	for _, component := range []string{"hbase-rs", "hdfs-dn"} {
+		old, target := hbaseLegacyPrefix+"-"+component+"-scripts", canonical+"-"+component+"-scripts"
+		if fields, found := contract["ConfigMap/"+old]; found {
+			require.NotContains(t, contract, "ConfigMap/"+target)
+			contract["ConfigMap/"+target] = fields
+			delete(contract, "ConfigMap/"+old)
+			for _, raw := range contract["StatefulSet/"+hbaseLegacyPrefix+"-"+component]["volumes"].([]interface{}) {
+				if ref, ok := raw.(map[string]interface{})["configMap"].(map[string]interface{}); ok && ref["name"] == old {
+					ref["name"] = target
+				}
+			}
+		}
+	}
+	for _, component := range []string{"hbase-master", "hbase-rs", "hdfs-nn", "hdfs-snn", "hdfs-dn", "tephra"} {
+		old, target := "ServiceMonitor/"+hbaseLegacyPrefix+"-"+component, "ServiceMonitor/"+canonical+"-"+component
+		if fields, found := contract[old]; found {
+			require.NotContains(t, contract, target)
+			contract[target] = fields
+			delete(contract, old)
+		}
+	}
 	// Only the bundled operator's internal Role/binding and its exact roleRef
 	// change. Account, Deployment, configuration and Kafka selection stay frozen.
 	operatorRole := strings.TrimSuffix(operatorLegacyName, "-config")

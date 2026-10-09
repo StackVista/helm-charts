@@ -119,7 +119,7 @@ spec:
       volumes:
         - name: rs-scripts
           configMap:
-            name: {{ template "common.fullname.short" . }}-hbase-rs-scripts
+            name: {{ include "hbase.hbase.regionserver.scripts.configmap.fullname" . }}
             defaultMode: 0755
     {{- if or .Values.all.nodeSelector .Values.hbase.regionserver.nodeSelector }}
       nodeSelector:

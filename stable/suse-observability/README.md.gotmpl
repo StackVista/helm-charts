@@ -191,8 +191,8 @@ Kubernetes-managed and is outside chart resource naming.
 
 Existing Deployments update their ConfigMap volume/environment references and
 existing configuration checksums through an ordinary Helm upgrade.
-HBase StatefulSets update only the backup environment ConfigMap reference in their
-Pod templates, in both Mono and Distributed modes. Its credential Secret retains
+The HBase backup environment rename updates its StatefulSet ConfigMap reference
+in both Mono and Distributed modes. Its credential Secret retains
 its old name and contents. The Kafka-upgrade operator retains its Deployment,
 replica count, update strategy and Kafka selection; no second controller is created.
 These changes roll affected Pods and can interrupt application processing and
@@ -240,8 +240,8 @@ count and target configuration are restored once obsolete monitors are removed
 and the operator reconciles. Stale monitors selected by Prometheus can continue
 causing duplicate scraping until cleanup.
 Update external automation that references the previous ServiceMonitor names.
-Other subchart-owned ServiceMonitors retain their names, except for anomaly
-detection and the Elasticsearch exporter as described below.
+Other subchart-owned ServiceMonitors retain their names, except for the collector,
+anomaly detection, HBase and the Elasticsearch exporter as described here.
 
 Anomaly detection's PDB and manager ServiceMonitor now use the fixed names
 `suse-observability-anomaly-detection` and `suse-observability-spotlight-manager`.
@@ -261,10 +261,37 @@ HBase's PDBs also use canonical names:
 `suse-observability-hdfs-dn`, and `suse-observability-tephra`.
 Root, HBase and global fullname settings no longer affect these budget names.
 Their labels, selectors, annotations, `maxUnavailable: 1`, namespace scope and
-Mono/Distributed creation conditions are unchanged. HBase StatefulSets, claim
-templates, PVCs, governing Services, configuration, credentials, RBAC and
-ServiceMonitors retain their names and settings. The same eviction and
+Mono/Distributed creation conditions are unchanged. HBase StatefulSet identities,
+claim templates, PVCs, governing Services, credentials and RBAC are preserved.
+The same eviction and
 stale-budget recovery guidance applies; update automation using old PDB names.
+
+HBase's six ServiceMonitors use the same canonical component names when kept
+in the release namespace, preserving selectors, namespace selection, scrape
+settings, labels and creation conditions. Monitors placed outside the release
+namespace by `hbase.servicemonitor.namespace` or
+`hbase.common.servicemonitor.namespace` retain their previous names to avoid
+collisions between installations in a shared monitoring namespace.
+
+The two HBase probe-script ConfigMaps use
+`suse-observability-hbase-rs-scripts` and `suse-observability-hdfs-dn-scripts`.
+Their contents, file modes, probe commands and mount paths stay unchanged.
+Their existing StatefulSets update only the corresponding script volume
+reference, rolling region-server and DataNode Pods in Distributed mode,
+including with default product naming. This can temporarily interrupt storage
+availability. StatefulSet/PVC identities, claim templates, data mounts,
+governing Services, selectors, replicas, images, credentials and accounts are
+preserved. No data migration or follow-up rename is required.
+This batch also works independently on the extraction baseline. Rollback restores
+the previous script ConfigMaps and references; repeated upgrades keep the new
+names. Local render and patch checks do not establish runtime recovery time.
+
+Prune obsolete HBase monitors and script maps in Argo CD; `PruneLast=true` with
+pruning enabled can wait for healthy updated workloads. After an interrupted
+operation, compare the intended revision's owned inventory and preserve any old
+script map still referenced by Pods or controllers until consumers converge.
+Remove only obsolete objects owned by this installation, retaining storage and
+credentials, and verify probe readiness and scrape targets after recovery.
 
 These overlaps are temporary only when obsolete resources are deleted. No data
 or storage migration is required, but failed deployments or disabled pruning can
