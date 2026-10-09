@@ -341,6 +341,23 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{/*
+Platform collector configuration uses its own names, separate from endpoints
+and workloads. Generated names are canonical regardless of fullname settings.
+Standalone charts retain their original definitions.
+*/}}
+{{- define "opentelemetry-collector.deployment.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-config
+{{- end -}}
+
+{{- define "opentelemetry-collector.daemonset.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-agent
+{{- end -}}
+
+{{- define "opentelemetry-collector.statefulset.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-statefulset
+{{- end -}}
+
+{{/*
 Legacy collector base name, retained for endpoint/Envoy naming compatibility.
 The parent endpoint ConfigMap has its own shared helper in common.
 */}}

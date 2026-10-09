@@ -87,6 +87,50 @@ The OpenTelemetry instrumentation namespace defaults to
 
 ## Resource naming
 
+Generated collector relay ConfigMaps use these platform names:
+
+| Mode | ConfigMap |
+| --- | --- |
+| Deployment | `suse-observability-otel-collector-config` |
+| DaemonSet | `suse-observability-otel-collector-agent` |
+| StatefulSet | `suse-observability-otel-collector-statefulset` |
+
+These names ignore release and fullname settings. Explicit
+`opentelemetry-collector.configMap.existingName` selections and disabled generation
+remain unchanged. Standalone collector charts retain their original defaults.
+
+The Deployment relay map has its own `-config` suffix. Older charts using
+Deployment mode and the default collector fullname emitted it under the same
+name as the platform endpoint map, `suse-observability-otel-collector`. The new
+names separate relay configuration from `api.url` and `intake.url`. Endpoint map
+identity, data and all `API_URL`/`INTAKE_URL` references remain unchanged.
+
+Default platform installations use StatefulSet mode and keep their ConfigMap
+identity and checksum. For eligible custom names, existing controllers update
+only the relay volume reference and its configuration checksum, rolling Pods
+through the platform's default `RollingUpdate` strategy. Relay contents, commands,
+probes, mounts, labels, accounts, RBAC, Services, autoscalers, StatefulSet names, governing
+Services, claim templates, PVCs and checkpoint locations are preserved.
+This batch works independently after extraction and requires no data migration,
+account replacement or later naming change. Rollouts can interrupt telemetry
+collection and forwarding; local checks establish no recovery-time bound.
+
+Repeated upgrades retain the intended names. Rollback restores the previous maps
+and references for previously working configurations. Rolling back to the old
+default-fullname Deployment configuration recreates its pre-existing duplicate
+ConfigMap names; that configuration is not a healthy rollback baseline.
+
+Argo CD must prune obsolete generated relay maps. `PruneLast=true` with pruning
+enabled can defer deletion until updated workloads are healthy. After an
+interrupted upgrade, rollback or sync without pruning, finish or restore the
+intended revision and inspect its owned ConfigMap inventory and consumer
+references. Keep maps still referenced by Pods or controllers until consumers
+converge, and preserve explicit external selections.
+Remove only obsolete relay maps owned by this installation; preserve the endpoint
+map, storage and credentials. Verify collector readiness and telemetry forwarding
+afterwards. Actual Helm/Argo CD lifecycle and runtime recovery remain integration
+checks.
+
 Two internal Role/RoleBinding pairs use canonical names from `_names.tpl`:
 
 | Component | Role | RoleBinding |
@@ -147,7 +191,7 @@ DaemonSet-only PodMonitor. Each installation needs its own resource namespace,
 including when `opentelemetry-collector.namespaceOverride` is configured.
 Standalone collector charts retain their existing naming defaults.
 
-This collector change can be deployed independently of other resource renames.
+This collector peripheral change can be deployed independently of other resource renames.
 Workload names and Pod templates, Services and router endpoints, ConfigMaps,
 Secrets, accounts, RBAC, autoscalers and StatefulSet claim templates remain
 unchanged. No later naming step, data migration or collector rollout is required
