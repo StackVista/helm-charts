@@ -674,16 +674,16 @@ func TestAiAssistantUrlSplitDisabled(t *testing.T) {
 	}
 }
 
-func TestFeaturesLegacyKubernetesTopology(t *testing.T) {
-	setting := "CONFIG_FORCE_stackstate_receiver_featureSwitches_legacyKubernetesTopology"
+func TestFeaturesExperimentalOtelClusterTopology(t *testing.T) {
+	setting := "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelClusterTopology"
 	for _, tc := range []struct {
 		name      string
 		setValues map[string]string
-		cleared   bool
+		enabled   bool
 	}{
-		{"default keeps legacy topology required", map[string]string{}, false},
-		{"explicitly required", map[string]string{"global.features.legacyKubernetesTopology": "true"}, false},
-		{"no longer required", map[string]string{"global.features.legacyKubernetesTopology": "false"}, true},
+		{"default leaves it off", map[string]string{}, false},
+		{"explicitly off", map[string]string{"global.features.experimentalOtelClusterTopology": "false"}, false},
+		{"on", map[string]string{"global.features.experimentalOtelClusterTopology": "true"}, true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
@@ -695,9 +695,9 @@ func TestFeaturesLegacyKubernetesTopology(t *testing.T) {
 			receiver, ok := resources.Deployments["suse-observability-receiver"]
 			require.True(t, ok, "Receiver deployment should exist")
 
-			cleared := corev1.EnvVar{Name: setting, Value: "false"}
-			if tc.cleared {
-				assert.Contains(t, receiver.Spec.Template.Spec.Containers[0].Env, cleared)
+			enabled := corev1.EnvVar{Name: setting, Value: "true"}
+			if tc.enabled {
+				assert.Contains(t, receiver.Spec.Template.Spec.Containers[0].Env, enabled)
 			} else {
 				for _, env := range receiver.Spec.Template.Spec.Containers[0].Env {
 					assert.NotEqual(t, setting, env.Name, "the receiver default must apply")

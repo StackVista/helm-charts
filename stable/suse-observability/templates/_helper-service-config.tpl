@@ -119,8 +119,8 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_logs_retentionDays" (include "suse-observability.global.receiverRetention" . | trim) }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_receiver_otelCollector_endpoint" (printf "http://%s:4318" (include "stackstate.otelCollector.fullname" .)) }}
 {{- end -}}
-{{- if eq (toString .Values.global.features.legacyKubernetesTopology) "false" }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_receiver_featureSwitches_legacyKubernetesTopology" "false" }}
+{{- if .Values.global.features.experimentalOtelClusterTopology }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelClusterTopology" "true" }}
 {{- end -}}
 {{- if .Values.stackstate.topology.retentionHours }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackgraph_retentionWindowMs" (mul (.Values.stackstate.topology.retentionHours | int) (mul 60 (mul 60 1000)) | toString) }}
