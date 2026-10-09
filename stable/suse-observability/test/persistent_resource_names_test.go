@@ -47,7 +47,11 @@ func TestPersistentResourceReferencesFollowDedicatedHelpers(t *testing.T) {
 		definition := regexp.MustCompile(`(?s)\{\{- define "` + regexp.QuoteMeta(name) + `" -\}\}.*?\{\{- end -\}\}`)
 		require.Len(t, definition.FindAll(data, -1), 1, name)
 		data = definition.ReplaceAll(data, []byte(`{{- define "`+name+`" -}}`+explicit+`{{- end -}}`))
-		renames["nightly-suse-observability-"+suffix] = explicit
+		legacy := "nightly-suse-observability-" + suffix
+		if helper == "stackpacks.scripts.configmap" {
+			legacy = "suse-observability-stackpacks-scripts"
+		}
+		renames[legacy] = explicit
 	}
 	require.NoError(t, os.WriteFile(namesPath, data, 0600))
 	fullValues, err := filepath.Abs("values/full.yaml")
@@ -119,7 +123,7 @@ func TestPersistentResourceReferencesFollowDedicatedHelpers(t *testing.T) {
 					assert.Len(t, after.ConfigMaps, len(before.ConfigMaps))
 					for name, config := range before.ConfigMaps {
 						expected := config.DeepCopy()
-						if name == "nightly-suse-observability-stackpacks-scripts" {
+						if name == "suse-observability-stackpacks-scripts" {
 							expected.Name = renames[name]
 							assert.NotContains(t, after.ConfigMaps, name)
 						}

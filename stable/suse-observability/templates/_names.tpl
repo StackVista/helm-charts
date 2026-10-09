@@ -5,9 +5,9 @@ names are documented below so extraction can precede an actual naming migration.
 */}}
 
 {{/*
-The stateless router Deployment uses the canonical product name. Its Service,
-static and dynamic configuration, accounts, Secrets and hook resources retain
-their identities. Mode scripts select Deployments by stable release labels so
+The stateless router Deployment and bootstrap ConfigMap use the canonical product
+name. Its Service, dynamic configuration, accounts, Secrets and hook resources
+retain their identities. Mode scripts select Deployments by stable release labels so
 pre-upgrade hooks reach the old router and post-upgrade hooks reach the new one.
 */}}
 {{- define "stackstate.router.deployment.fullname" -}}
@@ -27,7 +27,7 @@ independent of the name; subchart NetworkPolicies keep their existing identities
 {{- end -}}
 
 {{- define "stackstate.router.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-router
+{{ include "suse-observability.resourcePrefix" . }}-router
 {{- end -}}
 
 {{- define "stackstate.router.secret.fullname" -}}
@@ -840,7 +840,28 @@ Stackpack claims are also consumed by the backup configuration.
 
 {{/* Keep the stackpack scripts ConfigMap independent of the stackpack PVCs. */}}
 {{- define "stackstate.stackpacks.scripts.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-stackpacks-scripts
+{{ include "suse-observability.resourcePrefix" . }}-stackpacks-scripts
+{{- end -}}
+
+{{/*
+Platform-owned configuration consumed by bundled subcharts. Override their
+existing name interfaces here; other charts keep the library/subchart defaults.
+Credentials, runtime state, workload identities and storage names stay separate.
+*/}}
+{{- define "kubernetes-rbac-agent.url.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-rbac-agent-url
+{{- end -}}
+
+{{- define "kubernetes-rbac-agent.clusterName.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-rbac-agent-cluster-name
+{{- end -}}
+
+{{- define "kafkaup-operator.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-kafkaup-config
+{{- end -}}
+
+{{- define "stackstate.backup.hbase.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-hbase-backup
 {{- end -}}
 
 {{/*

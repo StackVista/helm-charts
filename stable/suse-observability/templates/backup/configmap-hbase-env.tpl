@@ -1,7 +1,7 @@
 {{- define "stackstate.backup.hbase.configmap" -}}
 {{- $escapedBucketName := .Values.backup.stackGraph.bucketName | replace "_" "___" | replace "-" "__" | replace "." "_" -}}
 metadata:
-  {{- /* Shared with the HBase subchart; retain the legacy global naming semantics. */}}
+{{- /* Shared with the HBase subchart through the platform's ConfigMap name helper. */}}
   name: {{ include "stackstate.backup.hbase.configmap.fullname" . }}
 data:
   HBASE_CONF_fs_s3a_bucket_{{ $escapedBucketName }}_endpoint: {{ include "stackstate.s3proxy.endpoint" . | quote }}

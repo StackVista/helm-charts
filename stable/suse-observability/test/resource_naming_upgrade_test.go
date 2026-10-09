@@ -28,13 +28,17 @@ type namingUpgradeContract map[string]map[string]interface{}
 func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 	for _, scenario := range []struct {
 		name, release, legacyPrefix, hbaseLegacyPrefix, legacyClusterPrefix string
+		backupLegacyName, operatorLegacyName                                string
 		values                                                              map[string]string
 	}{
-		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability", hbaseLegacyPrefix: "suse-observability-hbase", legacyClusterPrefix: "observability-suse-observability"},
-		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability", hbaseLegacyPrefix: "nightly-hbase", legacyClusterPrefix: "observability-nightly-suse-observability"},
+		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability", hbaseLegacyPrefix: "suse-observability-hbase", legacyClusterPrefix: "observability-suse-observability",
+			backupLegacyName: "suse-observability-backup-sts-hbase-backup", operatorLegacyName: "suse-observability-kafkaup-operator-kafkaup-config"},
+		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability", hbaseLegacyPrefix: "nightly-hbase", legacyClusterPrefix: "observability-nightly-suse-observability",
+			backupLegacyName: "nightly-backup-sts-hbase-backup", operatorLegacyName: "nightly-kafkaup-operator-kafkaup-config"},
 		{
 			name: "override-mono", release: "nightly", legacyPrefix: "existing-installation", hbaseLegacyPrefix: "nightly-hbase",
 			legacyClusterPrefix: "existing-installation",
+			backupLegacyName:    "nightly-backup-sts-hbase-backup", operatorLegacyName: "nightly-kafkaup-operator-kafkaup-config",
 			values: map[string]string{
 				"fullnameOverride":                 "existing-installation",
 				"hbase.deployment.mode":            "Mono",
@@ -45,6 +49,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 			name: "prefix-suffix", release: "suse-observability", legacyPrefix: "global-team-suse-observability-prod-end",
 			hbaseLegacyPrefix:   "global-suse-observability-hbase-end",
 			legacyClusterPrefix: "global-team-observability-suse-observability-prod-end",
+			backupLegacyName:    "global-suse-observability-backup-end-sts-hbase-backup", operatorLegacyName: "global-suse-observability-kafkaup-operator-end-kafkaup-config",
 			values: map[string]string{
 				"global.fullnamePrefix": "global-", "fullnamePrefix": "team-",
 				"fullnameSuffix": "-prod", "global.fullnameSuffix": "-end",
@@ -92,7 +97,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 			require.NoError(t, err)
 			var expected namingUpgradeContract
 			require.NoError(t, json.Unmarshal(data, &expected))
-			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix, scenario.legacyClusterPrefix)
+			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix, scenario.legacyClusterPrefix, scenario.backupLegacyName, scenario.operatorLegacyName)
 
 			for resource, fields := range expected {
 				actualFields, found := actual[resource]
@@ -227,11 +232,11 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 	return contract
 }
 
-func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix, legacyClusterPrefix string) {
+func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix, legacyClusterPrefix, backupLegacyName, operatorLegacyName string) {
 	t.Helper()
 	const canonical = "suse-observability"
 	// Generated component ConfigMaps move independently of their environment
-	// Secrets, controllers and endpoints. Only exact volume references change.
+	// Secrets, controllers and endpoints. Only exact ConfigMap references change.
 	configRenames := map[string]string{}
 	for _, component := range []string{
 		"api", "checks", "notification", "health-sync", "authorization-sync",
@@ -250,6 +255,24 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 			}
 		}
 	}
+	for old, target := range map[string]string{
+		legacyPrefix + "-router":             canonical + "-router",
+		legacyPrefix + "-stackpacks-scripts": canonical + "-stackpacks-scripts",
+		release + "-rbac-agent-url":          canonical + "-rbac-agent-url",
+		release + "-rbac-agent-cluster-name": canonical + "-rbac-agent-cluster-name",
+		operatorLegacyName:                   canonical + "-kafkaup-config",
+		backupLegacyName:                     canonical + "-hbase-backup",
+	} {
+		if old == target {
+			continue
+		}
+		if fields, found := contract["ConfigMap/"+old]; found {
+			require.NotContains(t, contract, "ConfigMap/"+target)
+			contract["ConfigMap/"+target] = fields
+			delete(contract, "ConfigMap/"+old)
+			configRenames[old] = target
+		}
+	}
 	for _, fields := range contract {
 		volumes, _ := fields["volumes"].([]interface{})
 		for _, raw := range volumes {
@@ -257,6 +280,18 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 			if ref, ok := volume["configMap"].(map[string]interface{}); ok {
 				if target, found := configRenames[ref["name"].(string)]; found {
 					ref["name"] = target
+				}
+			}
+		}
+		for key, value := range fields {
+			if strings.HasSuffix(key, "/envFrom") {
+				refs, _ := value.([]interface{})
+				for _, raw := range refs {
+					if ref, ok := raw.(map[string]interface{})["configMapRef"].(map[string]interface{}); ok {
+						if target, found := configRenames[ref["name"].(string)]; found {
+							ref["name"] = target
+						}
+					}
 				}
 			}
 		}
@@ -315,8 +350,8 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 	require.NotContains(t, contract, newPodReaderBinding)
 	contract[newPodReaderBinding] = contract[oldPodReaderBinding]
 	delete(contract, oldPodReaderBinding)
-	// Router Service DNS, credentials, accounts and configuration names stay
-	// unchanged. Its Deployment is the only resource identity moving here.
+	// Router Service DNS, credentials, accounts and dynamic mode names stay
+	// unchanged. The bootstrap ConfigMap was allowed separately above.
 	oldRouter := "Deployment/" + legacyPrefix + "-router"
 	newRouter := "Deployment/" + canonical + "-router"
 	require.Contains(t, contract, oldRouter)

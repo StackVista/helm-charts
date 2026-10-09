@@ -52,6 +52,11 @@ and all other Pod fields are compared unchanged.
 
 The independent check uses the actual pre-change Git revision:
 
+It restores the six later peripheral ConfigMap naming expressions in a temporary
+copy of the current chart to isolate this earlier stage. Those later changes have
+their own independent baseline checks in
+[`peripheral-configmap-renaming`](../peripheral-configmap-renaming/README.md).
+
 ```shell
 KUBECONFIG=/path/to/offline-kubeconfig \
 CONFIGMAP_MONITOR_BASELINE_CHART=/path/to/export/stable/suse-observability \

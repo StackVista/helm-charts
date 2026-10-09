@@ -51,11 +51,11 @@ func TestKafkaupOperatorResourceNamesInPlatform(t *testing.T) {
 					require.NoError(t, err)
 					old := scenario.base + "-kafkaup"
 					renames := map[string]string{
-						"Deployment/" + old:               "explicit-deployment",
-						"ServiceAccount/" + old:           "explicit-serviceaccount",
-						"Role/" + old:                     "explicit-role",
-						"RoleBinding/" + old + "-binding": "explicit-rolebinding",
-						"ConfigMap/" + old + "-config":    "explicit-configmap",
+						"Deployment/" + old:                           "explicit-deployment",
+						"ServiceAccount/" + old:                       "explicit-serviceaccount",
+						"Role/" + old:                                 "explicit-role",
+						"RoleBinding/" + old + "-binding":             "explicit-rolebinding",
+						"ConfigMap/suse-observability-kafkaup-config": "explicit-configmap",
 					}
 					seen := map[string]bool{}
 					expected := backupNamingDocuments(t, before, renames, seen)

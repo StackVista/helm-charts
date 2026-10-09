@@ -13,6 +13,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	appsv1 "k8s.io/api/apps/v1"
+	"k8s.io/apimachinery/pkg/api/meta"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 )
 
@@ -44,7 +46,7 @@ func TestApplicationConfigMapNamingCompatibility(t *testing.T) {
 		content += "\n" + `{{- define "elasticsearch-exporter.` + resource + `.fullname" -}}{{ include "elasticsearch-exporter.fullname" . }}{{- end -}}` + "\n"
 	}
 	require.NoError(t, os.WriteFile(path, []byte(content), 0600))
-	checkApplicationConfigMapNamingCompatibility(t, chart)
+	checkApplicationConfigMapNamingCompatibility(t, chart, "..")
 }
 
 func TestApplicationConfigMapNamingGitBaselineCompatibility(t *testing.T) {
@@ -52,14 +54,19 @@ func TestApplicationConfigMapNamingGitBaselineCompatibility(t *testing.T) {
 	if chart == "" {
 		t.Skip("set CONFIGMAP_MONITOR_BASELINE_CHART to the pre-change chart with built local dependencies")
 	}
-	checkApplicationConfigMapNamingCompatibility(t, chart)
+	// Isolate this earlier naming stage from the later peripheral ConfigMap
+	// rename so its independently exported baseline remains reproducible.
+	afterChart := filepath.Join(t.TempDir(), "chart")
+	require.NoError(t, os.CopyFS(afterChart, os.DirFS("..")))
+	restorePeripheralConfigMapNames(t, afterChart)
+	checkApplicationConfigMapNamingCompatibility(t, chart, afterChart)
 }
 
 func applicationConfigMapNamingComponents() []struct{ key, suffix string } {
 	return append([]struct{ key, suffix string }{{"api", "api"}}, explicitConfigurationComponents...)
 }
 
-func checkApplicationConfigMapNamingCompatibility(t *testing.T, beforeChart string) {
+func checkApplicationConfigMapNamingCompatibility(t *testing.T, beforeChart, afterChart string) {
 	t.Helper()
 	const exporter = "elasticsearch.prometheus-elasticsearch-exporter."
 	for _, tc := range []struct {
@@ -125,7 +132,7 @@ func checkApplicationConfigMapNamingCompatibility(t *testing.T, beforeChart stri
 					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
 				}
 				beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderRBACNamingChart(t, "..", tc.release, options, upgrade)
+				afterOutput := renderRBACNamingChart(t, afterChart, tc.release, options, upgrade)
 				before := helmtestutil.NewKubernetesResources(t, beforeOutput)
 				after := helmtestutil.NewKubernetesResources(t, afterOutput)
 				renames := map[string]string{}
@@ -202,31 +209,39 @@ func checkApplicationConfigMapNamingCompatibility(t *testing.T, beforeChart stri
 
 func assertApplicationConfigMapUpgradePatches(t *testing.T, before, after appsv1.Deployment) {
 	t.Helper()
-	for _, pair := range [][2]appsv1.Deployment{{before, after}, {after, after}, {after, before}} {
-		live := pair[0].DeepCopy()
-		if live.Annotations == nil {
-			live.Annotations = map[string]string{}
+	assertConfigMapNamingUpgradePatches(t, &before, &after)
+}
+
+func assertConfigMapNamingUpgradePatches(t *testing.T, before, after runtime.Object) {
+	t.Helper()
+	withLiveMetadata := func(object runtime.Object) runtime.Object {
+		copy := object.DeepCopyObject()
+		accessor, err := meta.Accessor(copy)
+		require.NoError(t, err)
+		annotations := accessor.GetAnnotations()
+		if annotations == nil {
+			annotations = map[string]string{}
 		}
-		live.Annotations["fixture.customer"] = "preserved"
-		live.ResourceVersion = "fixture-version"
+		annotations["fixture.customer"] = "preserved"
+		accessor.SetAnnotations(annotations)
+		accessor.SetResourceVersion("fixture-version")
+		return copy
+	}
+	for _, pair := range [][2]runtime.Object{{before, after}, {after, after}, {after, before}} {
+		live := withLiveMetadata(pair[0])
 		original, err := json.Marshal(pair[0])
 		require.NoError(t, err)
 		modified, err := json.Marshal(pair[1])
 		require.NoError(t, err)
 		current, err := json.Marshal(live)
 		require.NoError(t, err)
-		metadata, err := strategicpatch.NewPatchMetaFromStruct(appsv1.Deployment{})
+		metadata, err := strategicpatch.NewPatchMetaFromStruct(before)
 		require.NoError(t, err)
 		patch, err := strategicpatch.CreateThreeWayMergePatch(original, modified, current, metadata, true)
 		require.NoError(t, err)
-		applied, err := strategicpatch.StrategicMergePatch(current, patch, appsv1.Deployment{})
+		applied, err := strategicpatch.StrategicMergePatch(current, patch, before)
 		require.NoError(t, err)
-		expected := pair[1].DeepCopy()
-		if expected.Annotations == nil {
-			expected.Annotations = map[string]string{}
-		}
-		expected.Annotations["fixture.customer"] = "preserved"
-		expected.ResourceVersion = "fixture-version"
+		expected := withLiveMetadata(pair[1])
 		expectedJSON, err := json.Marshal(expected)
 		require.NoError(t, err)
 		assert.JSONEq(t, string(expectedJSON), string(applied), "Upgrade/repeat/rollback patch must preserve volume entries and live metadata")

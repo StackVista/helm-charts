@@ -29,6 +29,9 @@ type routerNamingFixture struct {
 // static configuration checksums, credentials and dynamic-mode mount selection.
 func TestRouterDeploymentNamingFrozenCompatibility(t *testing.T) {
 	chart := routerNamingTestChart(t, "..", false)
+	// Isolate the earlier Deployment rename from the later ConfigMap rename.
+	// Keep the frozen snapshots intact; the latter has its own baseline tests.
+	restorePeripheralConfigMapNames(t, chart)
 	checkRouterNamingFixtures(t, chart, true)
 }
 

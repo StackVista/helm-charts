@@ -99,19 +99,48 @@ Main application and logging ConfigMaps use `suse-observability-<component>` and
 configuration used by split receiver and correlate workers. Release names and
 root/global fullname settings no longer affect these ConfigMap names. Creation
 conditions, configuration contents, labels and annotations are unchanged.
-Router configuration and automatic-mode state retain their existing names;
-subcharts with fixed default names, including the collector, are unchanged.
+Additional generated ConfigMaps use these fixed names:
 
-For non-default naming, existing Deployments update their ConfigMap volume
-references and configuration checksums through an ordinary Helm upgrade.
-This rolls the affected Pods and can interrupt application processing and
+| Configuration | Name |
+| --- | --- |
+| Router bootstrap | `suse-observability-router` |
+| Stackpack copy scripts | `suse-observability-stackpacks-scripts` |
+| Bundled RBAC-agent URL | `suse-observability-rbac-agent-url` |
+| Bundled RBAC-agent cluster name | `suse-observability-rbac-agent-cluster-name` |
+| Bundled Kafka-upgrade operator | `suse-observability-kafkaup-config` |
+| HBase backup environment | `suse-observability-hbase-backup` |
+
+These names ignore the release name and fullname settings. Their contents and
+creation conditions are unchanged. The RBAC agent still identifies its cluster
+by the Helm release name. External global connection Secrets retain precedence.
+The bundled resource names are supplied by the platform; standalone subcharts
+and the SUSE Observability agent chart retain their existing naming defaults.
+Subcharts with fixed default names, including the collector, are unchanged.
+
+Router active/maintenance/automatic and mode-script ConfigMaps retain their names:
+pre-upgrade hooks need the existing configuration, and automatic mode stores
+runtime state. Backup log, restore-script and backup-CLI ConfigMaps also retain
+their names because existing Jobs and embedded manual-job manifests can reference
+them. Renaming those maps could strand a pending Job. `kube-root-ca.crt` is
+Kubernetes-managed and is outside chart resource naming.
+
+Existing Deployments update their ConfigMap volume/environment references and
+existing configuration checksums through an ordinary Helm upgrade.
+HBase StatefulSets update only the backup environment ConfigMap reference in their
+Pod templates, in both Mono and Distributed modes. Its credential Secret retains
+its old name and contents. The Kafka-upgrade operator retains its Deployment,
+replica count, update strategy and Kafka selection; no second controller is created.
+These changes roll affected Pods and can interrupt application processing and
 availability while replacements start. A completed rollout references the
 replacement ConfigMaps; repeated upgrades retain those names. Rollback restores
-the previous revision's ConfigMaps and volume references and rolls Pods again.
-Default product naming retains the existing ConfigMap names and checksums.
+the previous revision's ConfigMaps and references and rolls Pods again.
+Default product naming retains application/logging, router-bootstrap, stackpack
+and RBAC-agent ConfigMap identities. The Kafka-operator and HBase-backup ConfigMap
+names also change for the default release, causing their consumers to roll.
 Environment and credential Secrets, workload identities and strategies,
-StatefulSets, PVCs, mount paths, Service DNS and external resource choices are
-preserved. No storage or credential migration is required.
+StatefulSet identities and claim templates, PVCs, mount paths, Service DNS and
+external resource choices are preserved. No storage or credential migration is
+required.
 
 Argo CD must prune obsolete ConfigMaps. `PruneLast=true`, together with enabled
 pruning, can defer deletion until the updated workloads are healthy. After an
@@ -304,8 +333,9 @@ shared labels. Verify targets and rules after Prometheus reconciles.
 
 The router Deployment uses the fixed name `suse-observability-router`, ignoring
 fullname overrides, prefixes and suffixes. Its Service DNS, selectors, Pod
-configuration, accounts, credentials, static and dynamic ConfigMaps, and hook
-identities stay unchanged. Automatic-mode scripts select router Deployments by
+configuration contents, accounts, credentials, dynamic-mode ConfigMaps, and hook
+identities stay unchanged. Its bootstrap ConfigMap uses the canonical name listed
+above. Automatic-mode scripts select router Deployments by
 their component and Helm release labels within the release namespace. The
 pre-upgrade hook can therefore restart the old router into maintenance mode,
 and the post-upgrade hook restores active mode on the replacement. If both
