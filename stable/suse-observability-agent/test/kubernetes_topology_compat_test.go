@@ -146,10 +146,7 @@ func TestKubernetesTopologyCompatEnabled(t *testing.T) {
 	assert.Equal(t, "1Gi", collector.Resources.Limits.Memory().String())
 	env, ok = containerEnv(t, resources, resourceCollectorName, "GOMEMLIMIT")
 	require.True(t, ok, "the Go runtime must know the memory limit")
-	require.NotNil(t, env.ValueFrom)
-	require.NotNil(t, env.ValueFrom.ResourceFieldRef)
-	assert.Equal(t, "limits.memory", env.ValueFrom.ResourceFieldRef.Resource)
-	assert.Equal(t, collector.Name, env.ValueFrom.ResourceFieldRef.ContainerName)
+	assert.Equal(t, "921MiB", env.Value, "90% of 1Gi")
 }
 
 func TestKubernetesTopologyCompatMemoryLimitIsConfigurable(t *testing.T) {
@@ -160,6 +157,30 @@ func TestKubernetesTopologyCompatMemoryLimitIsConfigurable(t *testing.T) {
 	collector := resources.Deployments[resourceCollectorName].Spec.Template.Spec.Containers[0]
 	assert.Equal(t, "3Gi", collector.Resources.Limits.Memory().String())
 	assert.Equal(t, "500m", collector.Resources.Limits.Cpu().String(), "other limits are kept")
+	env, ok := containerEnv(t, resources, resourceCollectorName, "GOMEMLIMIT")
+	require.True(t, ok)
+	assert.Equal(t, "2764MiB", env.Value, "90% of 3Gi")
+}
+
+func TestKubernetesTopologyCompatGoMemLimitFollowsQuantityUnits(t *testing.T) {
+	for limit, want := range map[string]string{"1500M": "1287MiB", "2147483648": "1843MiB", "1024Mi": "921MiB"} {
+		resources := renderCompat(t, &helm.Options{
+			ValuesFiles: []string{"values/kubernetes-topology-compat.yaml"},
+			SetValues:   map[string]string{"otel.k8sResourceCollector.kubernetesTopology.memoryLimit": limit},
+		})
+		env, ok := containerEnv(t, resources, resourceCollectorName, "GOMEMLIMIT")
+		require.True(t, ok)
+		assert.Equal(t, want, env.Value, limit)
+	}
+}
+
+func TestKubernetesTopologyCompatRejectsFractionalMemoryLimit(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: []string{"values/kubernetes-topology-compat.yaml"},
+		SetValues:   map[string]string{"otel.k8sResourceCollector.kubernetesTopology.memoryLimit": "1.5Gi"},
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "unsupported memory quantity")
 }
 
 func TestKubernetesTopologyCompatUrlFromSecret(t *testing.T) {

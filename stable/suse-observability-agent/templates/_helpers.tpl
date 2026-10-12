@@ -522,6 +522,31 @@ receiver's five-minute default.
 {{- end -}}
 
 {{/*
+Bytes in a Kubernetes memory quantity such as 512Mi, 1Gi, 1500M or a plain byte count.
+*/}}
+{{- define "stackstate-k8s-agent.memoryQuantityBytes" -}}
+{{- $quantity := toString . }}
+{{- $parts := regexFindAll "^([0-9]+)(Ki|Mi|Gi|Ti|K|M|G|T)?$" $quantity -1 }}
+{{- if not $parts }}
+{{- fail (printf "unsupported memory quantity %q: use a whole number with an optional Ki, Mi, Gi, Ti, K, M, G or T suffix" $quantity) }}
+{{- end }}
+{{- $unit := regexReplaceAll "^[0-9]+" $quantity "" }}
+{{- $number := regexReplaceAll "[A-Za-z]+$" $quantity "" | atoi }}
+{{- $multipliers := dict "" 1 "Ki" 1024 "Mi" 1048576 "Gi" 1073741824 "Ti" 1099511627776 "K" 1000 "M" 1000000 "G" 1000000000 "T" 1000000000000 }}
+{{- mul $number (index $multipliers $unit) }}
+{{- end -}}
+
+{{/*
+Soft Go heap budget for the cluster collector in topology mode: 90% of its
+memory limit, leaving headroom for the binary and non-heap memory GOMEMLIMIT
+does not count.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.goMemLimit" -}}
+{{- $bytes := include "stackstate-k8s-agent.memoryQuantityBytes" .Values.otel.k8sResourceCollector.kubernetesTopology.memoryLimit | int64 }}
+{{- printf "%dMiB" (div (div (mul $bytes 9) 10) 1048576) }}
+{{- end -}}
+
+{{/*
 Resource switches for the cluster-agent-compatible exporter. The receiver
 replaces Secret data by its hash and truncates ConfigMap data on ingestion.
 */}}

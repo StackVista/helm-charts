@@ -75,10 +75,7 @@ spec:
             value: {{ printf "%s/intake" $receiverUrl | quote }}
             {{- end }}
           - name: GOMEMLIMIT
-            valueFrom:
-              resourceFieldRef:
-                containerName: k8s-resource-collector
-                resource: limits.memory
+            value: {{ include "stackstate-k8s-agent.kubernetesTopologyCompat.goMemLimit" . | quote }}
           {{- end }}
           - name: K8S_CLUSTER_NAME
             {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 12 }}
