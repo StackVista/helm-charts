@@ -522,28 +522,11 @@ receiver's five-minute default.
 {{- end -}}
 
 {{/*
-Bytes in a Kubernetes memory quantity such as 512Mi, 1Gi, 1500M or a plain byte count.
+Memory the topology exporter needs on top of the cluster collector's own limit.
+Remove with global.features.experimentalOtelKubernetesTopology.
 */}}
-{{- define "stackstate-k8s-agent.memoryQuantityBytes" -}}
-{{- $quantity := toString . }}
-{{- $parts := regexFindAll "^([0-9]+)(Ki|Mi|Gi|Ti|K|M|G|T)?$" $quantity -1 }}
-{{- if not $parts }}
-{{- fail (printf "unsupported memory quantity %q: use a whole number with an optional Ki, Mi, Gi, Ti, K, M, G or T suffix" $quantity) }}
-{{- end }}
-{{- $unit := regexReplaceAll "^[0-9]+" $quantity "" }}
-{{- $number := regexReplaceAll "[A-Za-z]+$" $quantity "" | atoi }}
-{{- $multipliers := dict "" 1 "Ki" 1024 "Mi" 1048576 "Gi" 1073741824 "Ti" 1099511627776 "K" 1000 "M" 1000000 "G" 1000000000 "T" 1000000000000 }}
-{{- mul $number (index $multipliers $unit) }}
-{{- end -}}
-
-{{/*
-Soft Go heap budget for the cluster collector in topology mode: 90% of its
-memory limit, leaving headroom for the binary and non-heap memory GOMEMLIMIT
-does not count.
-*/}}
-{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.goMemLimit" -}}
-{{- $bytes := include "stackstate-k8s-agent.memoryQuantityBytes" .Values.otel.k8sResourceCollector.kubernetesTopology.memoryLimit | int64 }}
-{{- printf "%dMiB" (div (div (mul $bytes 9) 10) 1048576) }}
+{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.extraMemoryMiB" -}}
+512
 {{- end -}}
 
 {{/*
@@ -555,6 +538,21 @@ replaces Secret data by its hash and truncates ConfigMap data on ingestion.
 {{- range $name := list "persistentvolumes" "persistentvolumeclaims" "namespaces" "daemonsets" "deployments" "replicasets" "statefulsets" "ingresses" "jobs" "cronjobs" "configmaps" "secrets" }}
 {{ $name }}: {{ index $res $name | default false }}
 {{- end }}
+{{- end -}}
+
+{{/*
+Cluster collector memory limit in MiB, empty when no limit is set. Includes the
+topology exporter's extra memory when that flag is on.
+*/}}
+{{- define "stackstate-k8s-agent.k8sResourceCollector.memoryLimitMiB" -}}
+{{- $quantity := dig "limits" "memory" "" .Values.otel.k8sResourceCollector.resources -}}
+{{- if $quantity -}}
+{{- $mib := include "stackstate-k8s-agent.memoryMiB" (dict "quantity" $quantity "field" "otel.k8sResourceCollector.resources.limits.memory" "purpose" "the cluster collector" "min" 64) | int -}}
+{{- if include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . -}}
+{{- $mib = add $mib (include "stackstate-k8s-agent.kubernetesTopologyCompat.extraMemoryMiB" . | int) -}}
+{{- end -}}
+{{- $mib -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -785,16 +783,24 @@ seccompProfile:
   type: RuntimeDefault
 {{- end }}
 
-{{- define "stackstate-k8s-agent.logsAgent.memoryMiB" -}}
-{{- $quantity := dig "limits" "memory" "" .Values.otelLogsAgent.resources | toString -}}
+{{/*
+MiB in a Kubernetes memory quantity. Takes a dict with quantity, field (named in
+errors), purpose and min (MiB).
+*/}}
+{{- define "stackstate-k8s-agent.memoryMiB" -}}
+{{- $quantity := toString .quantity -}}
 {{- if not (regexMatch "^\\+?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([EPTGMK]i|[EPTGMkmun]|[eE][+-]?[0-9]+)?$" $quantity) -}}
-{{- fail "otelLogsAgent.resources.limits.memory must be a positive Kubernetes memory quantity for OTel logs" -}}
+{{- fail (printf "%s must be a positive Kubernetes memory quantity for %s" .field .purpose) -}}
 {{- end -}}
 {{- $unit := regexFind "([EPTGMK]i|[EPTGMkmun])$" $quantity -}}
 {{- $units := dict "" 1.0 "n" 0.000000001 "u" 0.000001 "m" 0.001 "k" 1000.0 "M" 1000000.0 "G" 1000000000.0 "T" 1000000000000.0 "P" 1000000000000000.0 "E" 1000000000000000000.0 "Ki" 1024.0 "Mi" 1048576.0 "Gi" 1073741824.0 "Ti" 1099511627776.0 "Pi" 1125899906842624.0 "Ei" 1152921504606846976.0 -}}
 {{- $mib := divf (mulf (trimSuffix $unit $quantity | float64) (index $units $unit)) 1048576.0 | floor | int -}}
-{{- if lt $mib 3 -}}{{- fail "otelLogsAgent.resources.limits.memory must be at least 3Mi for OTel logs" -}}{{- end -}}
+{{- if lt $mib (int .min) -}}{{- fail (printf "%s must be at least %dMi for %s" .field (int .min) .purpose) -}}{{- end -}}
 {{- $mib -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.logsAgent.memoryMiB" -}}
+{{- include "stackstate-k8s-agent.memoryMiB" (dict "quantity" (dig "limits" "memory" "" .Values.otelLogsAgent.resources) "field" "otelLogsAgent.resources.limits.memory" "purpose" "OTel logs" "min" 3) -}}
 {{- end -}}
 
 {{- define "stackstate-k8s-agent.logsAgent.validate" -}}

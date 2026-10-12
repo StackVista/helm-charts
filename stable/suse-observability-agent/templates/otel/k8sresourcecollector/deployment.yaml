@@ -74,8 +74,10 @@ spec:
             {{- end }}
             value: {{ printf "%s/intake" $receiverUrl | quote }}
             {{- end }}
+          {{- end }}
+          {{- with include "stackstate-k8s-agent.k8sResourceCollector.memoryLimitMiB" . }}
           - name: GOMEMLIMIT
-            value: {{ include "stackstate-k8s-agent.kubernetesTopologyCompat.goMemLimit" . | quote }}
+            value: {{ printf "%dMiB" (div (mul (int .) 9) 10) | quote }}
           {{- end }}
           - name: K8S_CLUSTER_NAME
             {{- include "stackstate-k8s-agent.clusterNameEnvValue" . | nindent 12 }}
@@ -139,10 +141,8 @@ spec:
           {{- end }}
           resources:
             {{- $resources := deepCopy .Values.otel.k8sResourceCollector.resources }}
-            {{- if include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . }}
-            {{- $limits := $resources.limits | default dict }}
-            {{- $_ := set $limits "memory" .Values.otel.k8sResourceCollector.kubernetesTopology.memoryLimit }}
-            {{- $_ := set $resources "limits" $limits }}
+            {{- with include "stackstate-k8s-agent.k8sResourceCollector.memoryLimitMiB" . }}
+            {{- $_ := set $resources.limits "memory" (printf "%sMi" .) }}
             {{- end }}
             {{- toYaml $resources | nindent 12 }}
       volumes:
