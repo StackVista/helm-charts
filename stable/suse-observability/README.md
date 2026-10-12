@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.11.3-pre.77`
+Current chart version is `2.11.3-pre.80`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -675,9 +675,9 @@ If you encounter issues not covered here:
 | gateway.timeouts | object | `{}` | Optional timeouts for the HTTPRoute rule. |
 | global.backup.enabled | bool | `false` |  |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
-| global.features | object | `{"experimentalOtelLogs":false,"legacyKubernetesTopology":true}` | Feature switches for SUSE Observability. |
+| global.features | object | `{"experimentalOtelClusterTopology":false,"experimentalOtelLogs":false}` | Feature switches for SUSE Observability. |
+| global.features.experimentalOtelClusterTopology | bool | `false` | Tell agents that the platform maps OTel cluster topology. Agents with the OTel Kubernetes topology exporter then stop sending legacy topology; older agents are unaffected. This is a preproduction feature: enable only once the Kubernetes StackPack has feature parity with Kubernetes-V2. |
 | global.features.experimentalOtelLogs | bool | `false` | Enable OpenTelemetry-based log ingestion to signal to all components that they should support it alongside legacy Elasticsearch-based log ingestion, preserving backwards compatibility between the two while OTel-based logs are rolled out. This is a preproduction feature, usage may change in upcoming releases. |
-| global.features.legacyKubernetesTopology | bool | `true` | Tell agents that they must keep sending legacy Kubernetes topology. Set to false once no cluster relies on the Kubernetes-V2 StackPack: agents with the OTel Kubernetes topology exporter then stop sending it, while older agents are unaffected. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. When using global.suseObservability (global mode), set this to "registry.rancher.com" to match the default behavior of the suse-observability-values chart. |
 | global.receiverApiKey | string | `""` | Deprecated. Use global.suseObservability.receiverApiKey instead. |
@@ -863,7 +863,7 @@ If you encounter issues not covered here:
 | stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; individual service `pullPolicy`s can be overridden (see below). |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20261009075943-master-bf72572"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
+| stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20261009124925-master-3e170b8"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"pekko_http_requests_active\", \"stackstate*\", \"receiver*\", \"stackgraph*\", \"caffeine*\"]"` |  |
