@@ -13,7 +13,7 @@ data:
   kubernetes_api_events_conf: |
     init_config:
     instances:
-      - collect_events: {{ .Values.clusterAgent.collection.kubernetesEvents }}
+      - collect_events: {{ and .Values.clusterAgent.collection.kubernetesEvents (not (include "stackstate-k8s-agent.kubernetesEventsCompat.enabled" .)) }}
         event_categories:{{ .Values.clusterAgent.config.events.categories | toYaml | nindent 10 }}
   kubernetes_api_topology_conf: |
     init_config:

@@ -465,6 +465,28 @@ true
 {{- end -}}
 
 {{/*
+Send Kubernetes events through the cluster collector's cluster-agent-compatible
+exporter instead of the cluster agent's events check.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesEventsCompat.enabled" -}}
+{{- if and .Values.global.features.experimentalOtelKubernetesEvents (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
+{{- if not .Values.otel.k8sResourceCollector.leaderElection.enabled }}
+{{- fail "global.features.experimentalOtelKubernetesEvents requires otel.k8sResourceCollector.leaderElection.enabled, or every replica would send every event" }}
+{{- end }}
+true
+{{- end }}
+{{- end -}}
+
+{{/*
+The cluster collector posts cluster-agent-compatible payloads to the Receiver intake.
+*/}}
+{{- define "stackstate-k8s-agent.clusterAgentCompat.enabled" -}}
+{{- if or (include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" .) (include "stackstate-k8s-agent.kubernetesEventsCompat.enabled" .) }}
+true
+{{- end }}
+{{- end -}}
+
+{{/*
 Cluster-wide object watches read by the cluster-agent topology collectors, gated by
 the same resource switches as the cluster agent.
 */}}

@@ -1,6 +1,7 @@
 {{- if include "stackstate-k8s-agent.k8sResourceCollector.enabled" . }}
 {{- $rcfg := include "stackstate-k8s-agent.k8sResourceCollector.mergedValues" . | fromYaml }}
 {{- $topologyCompat := include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . }}
+{{- $eventsCompat := include "stackstate-k8s-agent.kubernetesEventsCompat.enabled" . }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -120,6 +121,21 @@ data:
         rancher_enrichment:
           enabled: true
 {{- end }}
+{{- if $eventsCompat }}
+      # Kubernetes events and Pods (for OOM events) as a stream, from now on.
+      k8sobjects/kubernetes-events:
+        auth_type: serviceAccount
+        k8s_leader_elector: k8s_leader_elector
+        objects:
+          - name: events
+            group: ""
+            mode: watch
+            exclude_watch_type: [DELETED]
+          - name: pods
+            group: ""
+            mode: watch
+            exclude_watch_type: [DELETED]
+{{- end }}
 
     processors:
       # Step 1 of 3 for self-metrics enrichment: remove any namespace attribute
@@ -207,6 +223,21 @@ data:
         resources:
 {{- include "stackstate-k8s-agent.kubernetesTopologyCompat.resources" . | nindent 10 }}
 {{- end }}
+{{- if $eventsCompat }}
+      # Cluster-agent-compatible Kubernetes events for the legacy Kubernetes StackPack.
+      stsk8sevents:
+        endpoint: ${env:RECEIVER_INTAKE_URL}
+        api_key: ${env:STS_API_KEY}
+        proxy_url: {{ .Values.global.proxy.url | default "" | quote }}
+        tls:
+          insecure_skip_verify: ${SKIP_SSL_VALIDATION}
+        cluster_name: ${env:K8S_CLUSTER_NAME}
+        cluster_type: {{ .Values.otel.k8sResourceCollector.kubernetesTopology.clusterType | quote }}
+{{- with .Values.clusterAgent.config.events.categories }}
+        event_categories:
+{{- toYaml . | nindent 10 }}
+{{- end }}
+{{- end }}
 {{- include "stackstate-k8s-agent.collector.debugExporter.config" .Values.otel.k8sResourceCollector.debug | nindent 6 }}
 
     extensions:
@@ -254,6 +285,11 @@ data:
         logs/kubernetes-topology:
           receivers: [k8sresource]
           exporters: [stsk8stopology]
+{{- end }}
+{{- if $eventsCompat }}
+        logs/kubernetes-events:
+          receivers: [k8sobjects/kubernetes-events]
+          exporters: [stsk8sevents]
 {{- end }}
         # Collector self-metrics: scrape the local telemetry endpoint, enrich with
         # pod/cluster/service identity, then export to SUSE Observability so the
