@@ -47,7 +47,7 @@ rules:
 {{- end }}
 {{- if include "stackstate-k8s-agent.kubernetesEventsCompat.enabled" . }}
 {{- $core := index $byGroup "" | default (list) }}
-{{- $_ := set $byGroup "" (concat $core (list "events" "pods")) }}
+{{- $_ := set $byGroup "" (concat $core (list "events" "pods" "namespaces")) }}
 {{- end }}
 {{- range $g, $resources := $byGroup }}
   - apiGroups: [{{ $g | quote }}]

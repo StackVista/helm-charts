@@ -90,7 +90,10 @@ func TestKubernetesEventsCompatEnabled(t *testing.T) {
 func TestKubernetesEventsCompatRestrictedRBAC(t *testing.T) {
 	resources := renderCompat(t, &helm.Options{
 		ValuesFiles: []string{"values/kubernetes-events-compat.yaml"},
-		SetValues:   map[string]string{"otel.k8sResourceCollector.rbac.useWildcard": "false"},
+		SetValues: map[string]string{
+			"otel.k8sResourceCollector.rbac.useWildcard":             "false",
+			"clusterAgent.collection.kubernetesResources.namespaces": "false",
+		},
 	})
 	clusterRole, ok := resources.ClusterRoles[resourceCollectorName]
 	require.True(t, ok)
@@ -108,6 +111,7 @@ func TestKubernetesEventsCompatRestrictedRBAC(t *testing.T) {
 	}
 	assert.True(t, granted["events"], "events must be watchable")
 	assert.True(t, granted["pods"], "pods must be watchable for OOM events")
+	assert.True(t, granted["namespaces"], "kube-system must be readable for orch_cluster_id")
 }
 
 func TestKubernetesEventsCompatRequiresLeaderElection(t *testing.T) {
