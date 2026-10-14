@@ -36,8 +36,8 @@ global:
   features:
     # global.features.experimentalOtelLogsAgent -- Allow the experimental OTel pod-log collector; it runs when otelLogsAgent.enabled is true, independently of logsAgent.enabled.
     experimentalOtelLogsAgent: false
-    # global.features.experimentalOtelKubernetesTopology -- Send Kubernetes topology from the OTel cluster collector through its cluster-agent-compatible exporter and disable the cluster agent's topology check. Requires otel.enabled, otel.k8sResourceCollector.enabled and a stackstate.url ending in /stsAgent. The collector always sends legacy topology; it does not consult the platform's /features capabilities. Adds 512Mi to the cluster collector's memory limit. Adds cluster-wide watches for the collected kinds and disables the object payload budget. ConfigMaps and Secrets are sanitized on ingestion: Secret data is replaced by its hash and ConfigMap data is truncated as by the cluster agent, per clusterAgent.config.configMap.maxDataSize. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals.
-    experimentalOtelKubernetesTopology: false
+    # global.features.experimentalOtelKubernetesClusterAgent -- Move the cluster agent's Kubernetes work to the OTel cluster collector, which sends it in the cluster agent's format through the Receiver intake. Disables the cluster agent's topology and events checks; its metrics checks keep running. Requires otel.enabled, otel.k8sResourceCollector.enabled with leader election, and a stackstate.url ending in /stsAgent. Topology: always sends legacy topology without consulting /features. Adds cluster-wide watches for the collected kinds and disables the object payload budget. Sanitizes ConfigMaps and Secrets on ingestion: Secret data is replaced by its hash, and ConfigMap data is truncated as by the cluster agent, per clusterAgent.config.configMap.maxDataSize. Adds 512Mi to the cluster collector's memory limit. Events: watches Events and Pods (for OOM events) from the moment the collector leads; events while no collector leads are not sent. Uses clusterAgent.config.events.categories and otel.k8sResourceCollector.kubernetesTopology.clusterType. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals.
+    experimentalOtelKubernetesClusterAgent: false
 
   # global.receiverApiKey -- This is deprecated and will be removed in a future version.
   # receiverApiKey:
@@ -815,7 +815,7 @@ otel:
       # otel.k8sResourceCollector.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.k8sResourceCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-      tag: "v0.0.68-agent"
+      tag: "v0.0.69-agent"
       # otel.k8sResourceCollector.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
     pprof:
@@ -854,10 +854,10 @@ otel:
     #     labelSelector: "app=foo"
 
     kubernetesTopology:
-      # otel.k8sResourceCollector.kubernetesTopology.clusterType -- Cluster type used in topology identifiers when global.features.experimentalOtelKubernetesTopology is true: kubernetes or openshift.
+      # otel.k8sResourceCollector.kubernetesTopology.clusterType -- Cluster type used in topology and event identifiers when global.features.experimentalOtelKubernetesClusterAgent is true: kubernetes or openshift.
       clusterType: kubernetes
 
-    # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec of resources that must not appear under otel.k8sResourceCollector.objects. Spec needs only `group`. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are allowed because the collector sanitizes them; with global.features.experimentalOtelKubernetesTopology, turn their clusterAgent.collection.kubernetesResources switches off instead of denying them.
+    # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec of resources that must not appear under otel.k8sResourceCollector.objects. Spec needs only `group`. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are allowed because the collector sanitizes them; with global.features.experimentalOtelKubernetesClusterAgent, turn their clusterAgent.collection.kubernetesResources switches off instead of denying them.
     deniedObjects: {}
     # Example:
     # deniedObjects:

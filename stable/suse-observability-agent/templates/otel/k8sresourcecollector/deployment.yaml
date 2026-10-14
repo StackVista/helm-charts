@@ -63,14 +63,14 @@ spec:
           {{- include "stackstate-k8s-agent.platformUrlEnv" . | nindent 10 }}
           - name: PLATFORM_OTLP_ENDPOINT
             value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
-          {{- if include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . }}
+          {{- if include "stackstate-k8s-agent.clusterAgentCompat.enabled" . }}
           - name: RECEIVER_INTAKE_URL
             {{- if .Values.global.url.fromSecret }}
             value: "$(STS_URL)/intake"
             {{- else }}
             {{- $receiverUrl := tpl .Values.stackstate.url . | trimAll "/" }}
             {{- if not (hasSuffix "/stsAgent" $receiverUrl) }}
-            {{- fail "global.features.experimentalOtelKubernetesTopology requires stackstate.url to end in /stsAgent, e.g. https://<host>/receiver/stsAgent" }}
+            {{- fail "global.features.experimentalOtelKubernetesClusterAgent requires stackstate.url to end in /stsAgent, e.g. https://<host>/receiver/stsAgent" }}
             {{- end }}
             value: {{ printf "%s/intake" $receiverUrl | quote }}
             {{- end }}

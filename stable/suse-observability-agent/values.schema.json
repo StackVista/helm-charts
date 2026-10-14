@@ -234,7 +234,7 @@
             "experimentalOtelLogsAgent": {
               "type": "boolean"
             },
-            "experimentalOtelKubernetesTopology": {
+            "experimentalOtelKubernetesClusterAgent": {
               "type": "boolean"
             }
           }
