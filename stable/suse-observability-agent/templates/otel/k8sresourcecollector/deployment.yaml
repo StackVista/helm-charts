@@ -70,7 +70,7 @@ spec:
             {{- else }}
             {{- $receiverUrl := tpl .Values.stackstate.url . | trimAll "/" }}
             {{- if not (hasSuffix "/stsAgent" $receiverUrl) }}
-            {{- fail "global.features.experimentalOtelKubernetesTopology requires stackstate.url to end in /stsAgent, e.g. https://<host>/receiver/stsAgent" }}
+            {{- fail "global.features.experimentalOtelKubernetesClusterAgent requires stackstate.url to end in /stsAgent, e.g. https://<host>/receiver/stsAgent" }}
             {{- end }}
             value: {{ printf "%s/intake" $receiverUrl | quote }}
             {{- end }}

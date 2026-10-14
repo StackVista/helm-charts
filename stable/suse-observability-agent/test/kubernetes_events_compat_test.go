@@ -85,10 +85,6 @@ func TestKubernetesEventsCompatEnabled(t *testing.T) {
 	assert.Equal(t, "https://my-suse-observability-instance.com/receiver/stsAgent/intake", env.Value)
 	assert.Contains(t, clusterAgentEventsConf(t, resources), "collect_events: false")
 
-	assert.NotContains(t, section(t, config, "exporters"), "stsk8stopology", "events and topology are independent")
-	env, ok = containerEnv(t, resources, clusterAgentName, "STS_COLLECT_KUBERNETES_TOPOLOGY")
-	require.True(t, ok)
-	assert.Equal(t, "true", env.Value)
 }
 
 func TestKubernetesEventsCompatRestrictedRBAC(t *testing.T) {
@@ -135,11 +131,8 @@ func TestKubernetesEventsCompatRequiresStsAgentUrl(t *testing.T) {
 	assert.Contains(t, err.Error(), "to end in /stsAgent")
 }
 
-func TestKubernetesEventsAndTopologyCompatTogether(t *testing.T) {
-	resources := renderCompat(t, &helm.Options{
-		ValuesFiles: []string{"values/kubernetes-events-compat.yaml"},
-		SetValues:   map[string]string{"global.features.experimentalOtelKubernetesTopology": "true"},
-	})
+func TestKubernetesClusterAgentFlagMovesTopologyAndEvents(t *testing.T) {
+	resources := renderCompat(t, &helm.Options{ValuesFiles: []string{"values/kubernetes-events-compat.yaml"}})
 	config := collectorConfigMap(t, resources)
 	exporters := section(t, config, "exporters")
 	assert.Contains(t, exporters, "stsk8sevents")
@@ -151,4 +144,7 @@ func TestKubernetesEventsAndTopologyCompatTogether(t *testing.T) {
 	env, ok := containerEnv(t, resources, clusterAgentName, "STS_COLLECT_KUBERNETES_TOPOLOGY")
 	require.True(t, ok)
 	assert.Equal(t, "false", env.Value)
+	env, ok = containerEnv(t, resources, clusterAgentName, "STS_COLLECT_KUBERNETES_METRICS")
+	require.True(t, ok)
+	assert.Equal(t, "true", env.Value, "the cluster agent keeps its metrics checks")
 }

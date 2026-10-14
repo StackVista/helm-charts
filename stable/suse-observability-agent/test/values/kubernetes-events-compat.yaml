@@ -1,6 +1,6 @@
 global:
   features:
-    experimentalOtelKubernetesEvents: true
+    experimentalOtelKubernetesClusterAgent: true
 
 stackstate:
   apiKey: test-api-key
