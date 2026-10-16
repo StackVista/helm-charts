@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.22`
+Current chart version is `1.7.23`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -409,7 +409,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
-| global.features.experimentalOtelKubernetesClusterAgent | bool | `false` | Move the cluster agent's Kubernetes work to the OTel cluster collector, which sends it in the cluster agent's format through the Receiver intake. Disables the cluster agent's topology and events checks; its metrics checks keep running. Requires otel.enabled, otel.k8sResourceCollector.enabled with leader election, and a stackstate.url ending in /stsAgent. Topology: always sends legacy topology without consulting /features. Adds cluster-wide watches for the collected kinds and disables the object payload budget. Sanitizes ConfigMaps and Secrets on ingestion: Secret data is replaced by its hash, and ConfigMap data is truncated as by the cluster agent, per clusterAgent.config.configMap.maxDataSize. Adds 512Mi to the cluster collector's memory limit. Events: watches Events and Pods (for OOM events) from the moment the collector leads; events while no collector leads are not sent. Uses clusterAgent.config.events.categories and otel.k8sResourceCollector.kubernetesTopology.clusterType. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals. |
+| global.features.experimentalOtelKubernetesClusterAgent | bool | `false` | Move the cluster agent's Kubernetes work to the OTel cluster collector, which sends it in the cluster agent's format through the Receiver intake. Disables the cluster agent's topology, events and kube-state-metrics checks. Requires otel.enabled, otel.k8sResourceCollector.enabled with leader election, and a stackstate.url ending in /stsAgent. Topology: always sends legacy topology without consulting /features. Adds cluster-wide watches for the collected kinds and disables the object payload budget. Sanitizes ConfigMaps and Secrets on ingestion: Secret data is replaced by its hash, and ConfigMap data is truncated as by the cluster agent, per clusterAgent.config.configMap.maxDataSize. Adds 512Mi to the cluster collector's memory limit. Events: watches Events and Pods (for OOM events) from the moment the collector leads; events while no collector leads are not sent. Uses clusterAgent.config.events.categories and otel.k8sResourceCollector.kubernetesTopology.clusterType. After turning it off, the platform accepts the cluster agent's topology again once the agent is its only recent producer, which can take several collection intervals. Kube-state-metrics: when clusterAgent.collection.kubeStateMetrics.enabled is true, the collector's stsksm receiver sends the kubernetes_state metrics over OTLP to the platform while it leads, for the same collectors and with OTel attributes alongside the existing labels, and adds another 512Mi to the cluster collector's memory limit. |
 | global.features.experimentalOtelLogsAgent | bool | `false` | Allow the experimental OTel pod-log collector; it runs when otelLogsAgent.enabled is true, independently of logsAgent.enabled. |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
@@ -549,7 +549,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"v0.0.70-agent"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"v0.0.71-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.kubernetesTopology.clusterType | string | `"kubernetes"` | Cluster type used in topology and event identifiers when global.features.experimentalOtelKubernetesClusterAgent is true: kubernetes or openshift. |
 | otel.k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | otel.k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
