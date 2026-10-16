@@ -4,30 +4,22 @@ The snapshots were generated before this rename from
 `91d4b4b016a40d233d05f6285d2dc932fb094bd9` with Helm 3.19.0. The revision's local
 dependency graph was freshly rebuilt using only `file://` repositories.
 
-Only two main-chart ClusterRoleBinding metadata names change. Their existing
-helpers in `_names.tpl` now ignore release names and fullname overrides/affixes.
+Only the authentication ClusterRoleBinding uses canonical naming:
+`suse-observability-authentication` in the product namespace and
+`suse-observability-<namespace>-authentication` elsewhere. It includes the full
+namespace and ignores release names and fullname overrides/affixes. Its immutable
+Role reference is always `system:auth-delegator`.
 
-| Purpose | Previous name | Canonical name outside the product namespace |
-| --- | --- | --- |
-| Authentication | `<common.fullname.cluster.unique>-authentication` | `suse-observability-<namespace>-authentication` |
-| Authorization | `<common.fullname.cluster.unique>-authorization` | `suse-observability-<namespace>-authorization` |
+Authorization retains `<common.fullname.cluster.unique>-authorization` alongside
+its legacy ClusterRole. Changing fullname settings replaces both identities,
+avoiding an immutable `roleRef` patch. The legacy namespace/truncation behavior
+remains unchanged. The canonical namespace-distinction test applies only to
+authentication; it does not claim new collision guarantees for retained Roles.
 
-In namespace `suse-observability`, the names are
-`suse-observability-authentication` and `suse-observability-authorization`,
-preserving the default product release's existing identities.
-Other namespaces are included in full to distinguish cluster-scoped bindings.
-Tests cover two maximum-length namespaces differing only in their last
-character; truncating the namespace would make their binding names collide.
-This check concerns the renamed bindings; retained ClusterRole naming rules
-are unchanged.
-
-`roleRef`, subjects and subject namespaces, labels, annotations, API version and
-creation conditions remain unchanged. The authorization ClusterRole retains
-its name and permissions so customer-managed bindings can still reference it.
-Authentication retains `system:auth-delegator`. All other RBAC resources,
-ServiceAccounts, application authorization mappings, configuration/checksums,
-Pod specifications, stored credential identities, PVCs, StatefulSets and Service
-DNS must stay unchanged.
+Role references, subjects, labels, annotations and creation conditions remain
+unchanged for a given set of naming values. Customer-managed Role references,
+ServiceAccounts, application configuration, Pods, storage and credentials are
+preserved by this fix.
 
 ## Frozen snapshots
 
@@ -55,11 +47,11 @@ CLUSTER_BINDING_BASELINE_CHART=/path/to/export/stable/suse-observability \
 ```
 
 This compares old source to the snapshots without rewriting them. Ordinary tests
-allow only the two binding names to change. Full-platform comparisons cover
+allow only the authentication binding name to change. Full-platform comparisons cover
 default/custom releases, product/custom namespaces, fullname settings,
 long names, already-canonical bindings, split/monolithic services, HA/non-HA,
 Argo CD, disabled cluster RBAC and custom metadata. A separate check confirms
-that the same release name produces distinct binding names in five namespaces,
+that the same release name produces distinct authentication binding names in five namespaces,
 including maximum-length namespaces sharing a prefix.
 
 Helm 3 patch checks produce no changes for bindings retaining their names,
@@ -77,3 +69,9 @@ Prune obsolete chart-owned bindings because stale subjects can retain access
 after later updates. Follow the README's cluster-wide, ownership-based cleanup
 guidance; preserve ClusterRoles, ServiceAccounts and other installations'
 bindings. No Pod rollout or data/token migration is introduced.
+
+`TestBindingNamingOverrideUpgradeRollback` checks override-changing upgrades,
+repeated upgrades and rollback using offline rendering and Helm three-way patch
+generation. Authorization and Pod-reader bindings must be replaced when their
+Role names change; retained binding names must never patch `roleRef`.
+Authentication stays canonical and can update subjects without changing its Role.

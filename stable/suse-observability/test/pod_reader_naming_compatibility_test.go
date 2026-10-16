@@ -17,17 +17,15 @@ import (
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 )
 
-const canonicalPodReader = "suse-observability-get-pods"
-
 type podReaderNamingFixture struct {
 	Role    rbacv1.Role        `json:"Role"`
 	Binding rbacv1.RoleBinding `json:"RoleBinding"`
 }
 
 // Complete pre-rename objects from c6030933f0d8971cb1b8c4ea5079d487089f0e84.
-// Only the binding's metadata name changes; its Role and subjects are retained.
+// The Role and binding retain their complete legacy identities and subjects.
 func TestPodReaderNamingFrozenCompatibility(t *testing.T) {
-	checkPodReaderNamingFixtures(t, "..", true)
+	checkPodReaderNamingFixtures(t, "..")
 }
 
 func TestPodReaderNamingBaselineReproduction(t *testing.T) {
@@ -35,10 +33,10 @@ func TestPodReaderNamingBaselineReproduction(t *testing.T) {
 	if chart == "" {
 		t.Skip("set POD_READER_BASELINE_CHART to the pre-rename chart with built dependencies")
 	}
-	checkPodReaderNamingFixtures(t, chart, false)
+	checkPodReaderNamingFixtures(t, chart)
 }
 
-func checkPodReaderNamingFixtures(t *testing.T, chart string, renamed bool) {
+func checkPodReaderNamingFixtures(t *testing.T, chart string) {
 	t.Helper()
 	for _, mode := range []string{"split", "monolithic"} {
 		for _, upgrade := range []bool{false, true} {
@@ -47,9 +45,6 @@ func checkPodReaderNamingFixtures(t *testing.T, chart string, renamed bool) {
 				require.NoError(t, err)
 				var expected podReaderNamingFixture
 				require.NoError(t, json.Unmarshal(data, &expected))
-				if renamed {
-					expected.Binding.Name = canonicalPodReader
-				}
 				options := apiResourceNameTestOptions(map[string]string{"stackstate.features.server.split": fmt.Sprint(mode == "split")})
 				output := renderRBACNamingChart(t, chart, "nightly", options, upgrade)
 				resources := helmtestutil.NewKubernetesResources(t, output)
@@ -131,25 +126,21 @@ func TestPodReaderNamingPreservesPlatformResources(t *testing.T) {
 				require.Contains(t, beforeResources.Roles, legacy)
 				require.Contains(t, beforeResources.RoleBindings, legacy)
 				require.Contains(t, afterResources.Roles, legacy)
-				require.Contains(t, afterResources.RoleBindings, canonicalPodReader)
+				require.Contains(t, afterResources.RoleBindings, legacy)
 				assert.Equal(t, beforeResources.Roles, afterResources.Roles, "All Role identities and rules must stay unchanged")
 				expectedBinding := beforeResources.RoleBindings[legacy]
 				assert.Equal(t, legacy, expectedBinding.RoleRef.Name)
-				expectedBinding.Name = canonicalPodReader
-				assert.Equal(t, expectedBinding, afterResources.RoleBindings[canonicalPodReader])
-				if legacy != canonicalPodReader {
-					assert.NotContains(t, afterResources.RoleBindings, legacy)
-				}
+				assert.Equal(t, expectedBinding, afterResources.RoleBindings[legacy])
 				for name, binding := range beforeResources.RoleBindings {
 					if after, found := afterResources.RoleBindings[name]; found {
 						assertPodReaderBindingUpgradePatchUnchanged(t, binding, after)
 					}
 				}
 
-				renames := map[string]string{"RoleBinding/" + legacy: canonicalPodReader}
+				renames := map[string]string{"RoleBinding/" + legacy: legacy}
 				seen := map[string]bool{}
 				before := backupNamingDocuments(t, beforeOutput, renames, seen)
-				assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "Only the internal Pod-reader binding metadata name may change")
+				assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "All platform resources must remain unchanged")
 				require.True(t, seen["RoleBinding/"+legacy])
 				assert.Equal(t, beforeResources.ServiceAccounts, afterResources.ServiceAccounts)
 				assert.Equal(t, beforeResources.Deployments, afterResources.Deployments)

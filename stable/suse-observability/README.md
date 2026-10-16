@@ -408,56 +408,37 @@ Do not delete policies in bulk using shared labels or selectors. Network-plugin
 reconciliation may temporarily affect connectivity during replacement; verify
 traffic enforcement after a completed upgrade or rollback.
 
-The internal Pod-reader RoleBinding uses the fixed name
-`suse-observability-get-pods`, defined in `_names.tpl`, regardless of release names
-or fullname overrides, prefixes and suffixes. The referenced Role retains its
-existing name so customer-managed bindings referring to it continue to resolve.
-The chart-owned binding's `roleRef`, ServiceAccount subjects, namespace scope,
-labels and annotations remain unchanged, as do the Role's `get`/`list` permissions
-on Pods. No ServiceAccount, workload, configuration or credential identity changes,
-and no Pod rollout or data migration is required. The default product release
-already has this binding name and keeps its identity.
+The internal Pod-reader Role and RoleBinding retain the matching legacy name
+`<common.fullname.short>-get-pods`. The authorization ClusterRole and
+ClusterRoleBinding likewise retain `<common.fullname.cluster.unique>-authorization`,
+including existing release, namespace and fullname settings. Customer-managed
+bindings can continue referencing these Roles. When fullname overrides or affixes
+change, their chart-owned bindings change names alongside the referenced Roles.
+Helm replaces these bindings on upgrade or rollback instead of patching the
+immutable `roleRef` field. Keeping canonical binding names while their Role names
+change would cause that patch to fail. These two bindings are retained exceptions
+to canonical naming; no replacement machinery or migration flags are introduced.
 
-With non-default naming, Helm creates the new binding and removes the old one.
-Bindings granting the same Role to the same subjects do not add permissions
-during overlap, but stale bindings can retain access after later subject changes.
-Prune obsolete chart-owned RoleBindings in Argo CD and check their inventory
-after interrupted Helm upgrades or rollbacks. Confirm release ownership and
-the intended revision's subjects and Role reference before removing stale
-bindings; do not delete by shared labels or remove the retained Role,
-ServiceAccounts or customer-managed bindings. Verify Pod-reader access after
-the operation; authorization caches may take time to reconcile.
-Update automation that selects the previous binding name. RBAC agent,
-instance-access resources and ClusterRoles retain their existing names.
+The authentication ClusterRoleBinding uses the canonical name
+`suse-observability-authentication` in namespace `suse-observability`, and
+`suse-observability-<namespace>-authentication` elsewhere. It ignores release names
+and fullname overrides/affixes and includes the full namespace without truncation.
+Its Role reference is always Kubernetes' `system:auth-delegator`, so subsequent
+fullname changes can update its subjects without changing immutable `roleRef`.
 
-The main authentication and authorization ClusterRoleBindings also use canonical
-names from `_names.tpl`. In namespace `suse-observability`, they retain
-`suse-observability-authentication` and `suse-observability-authorization`.
-In other namespaces, their names are
-`suse-observability-<namespace>-authentication` and
-`suse-observability-<namespace>-authorization`, independent of release names or
-fullname overrides/affixes. ClusterRoleBindings are cluster-scoped, so the full
-namespace is included to keep installations in different namespaces distinct.
-Namespace segments are not truncated.
+Permissions, ServiceAccount subject selection, labels, annotations and creation
+conditions remain unchanged. No account, workload, storage or credential identity
+is renamed by these binding helpers. Changing fullname settings can still rename
+other legacy resources; this binding fix does not make every such change safe.
 
-Both bindings preserve their existing immutable `roleRef`, ServiceAccount
-subjects and subject namespaces, labels, annotations, API version and
-`cluster-role.enabled` condition. Authentication still references Kubernetes'
-`system:auth-delegator`; authorization references the existing chart ClusterRole,
-whose name and rules remain unchanged for customer-managed bindings. Accounts,
-application authorization configuration, Pods, storage and credentials do not
-change. No Pod rollout, token replacement or data migration is introduced.
-
-Prune obsolete chart-owned ClusterRoleBindings after replacement, including in
-Argo CD. Duplicate bindings initially grant the same access, but stale subjects
-can retain permissions after later changes. For interrupted upgrades or
-rollbacks, compare the intended revision's cluster-wide binding inventory with
-actual objects, verify release ownership and each subject's namespace, and
-remove only obsolete bindings belonging to this installation. Do not delete
-by shared labels or remove ClusterRoles, ServiceAccounts or bindings for other
-installations. Verify token review, subject access review and authorization
-access after the operation; authorization caches may take time to reconcile.
-Update external automation that selects the previous binding names.
+Prune obsolete chart-owned bindings after replacement, including in Argo CD.
+For interrupted upgrades or rollbacks, compare the intended revision's binding
+inventory with actual objects, verify release ownership and subjects, and remove
+only obsolete bindings belonging to this installation. Preserve Roles,
+ServiceAccounts, customer-managed bindings and other installations' resources.
+Verify Pod-reader access, token review and authorization after the operation;
+authorization caches may take time to reconcile. Update external automation that
+selects the previous authentication binding name.
 
 The Elasticsearch exporter Deployment uses the fixed name
 `suse-observability-prometheus-elasticsearch-exporter`, including when exporter
@@ -467,16 +448,22 @@ preserved. Replacement may briefly interrupt exporter metrics or run both
 exporters; update automation that references the old Deployment name.
 
 The exporter's optional ServiceMonitor, PodMonitor and PrometheusRule also use
-`suse-observability-prometheus-elasticsearch-exporter`, independently of release
-names and exporter name/fullname overrides. Their labels, namespace settings,
+`suse-observability-prometheus-elasticsearch-exporter` when placed in the release
+namespace, independently of release names and exporter name/fullname overrides.
+Objects placed elsewhere retain their legacy exporter fullname, including release
+and name/fullname overrides, so previously distinct installations can share a
+monitoring namespace. Each object's own `serviceMonitor.namespace`,
+`podMonitor.namespace` or `prometheusRule.namespace` setting controls this choice.
+An unset namespace or one equal to the release namespace uses the canonical name.
+Their labels, namespace settings,
 creation conditions, selectors, scrape configuration, alert expressions and
 rule-group names are unchanged. Service DNS, Pod specifications, RBAC, accounts
 and certificate Secrets remain unchanged. These names belong to different
 resource kinds; the existing choice between ServiceMonitor and PodMonitor is
 preserved.
 Installations in different namespaces can use the same canonical names.
-An explicitly configured monitoring namespace remains supported; only one
-installation's exporter monitoring objects can use these names in that namespace.
+Explicit monitoring namespaces remain supported without introducing collisions
+between installations whose legacy exporter names are distinct.
 
 Prune obsolete exporter monitors and rules in Argo CD and verify their inventory
 after failed Helm upgrades or rollbacks. Stale monitors can duplicate scraping;

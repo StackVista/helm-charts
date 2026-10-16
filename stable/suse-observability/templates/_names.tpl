@@ -605,17 +605,16 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{- end -}}
 
 {{/*
-The internal Pod-reader binding uses a canonical namespace-scoped name.
-The Role retains its identity for existing customer-managed bindings; permissions,
-ServiceAccount subjects and roleRef stay unchanged. Other RBAC identities retain
-their legacy naming and namespace handling.
+The Pod-reader Role and binding retain matching legacy identities. Fullname
+changes must replace both objects: roleRef is immutable on an existing binding.
+Keep the Role identity compatible with customer-managed bindings.
 */}}
 {{- define "stackstate.getPods.role.fullname" -}}
 {{ template "common.fullname.short" . }}-get-pods
 {{- end -}}
 
 {{- define "stackstate.getPods.rolebinding.fullname" -}}
-{{ include "suse-observability.resourcePrefix" . }}-get-pods
+{{ template "common.fullname.short" . }}-get-pods
 {{- end -}}
 
 {{- define "stackstate.authorization.clusterrole.fullname" -}}
@@ -623,13 +622,13 @@ their legacy naming and namespace handling.
 {{- end -}}
 
 {{/*
-Cluster bindings keep their Roles and ServiceAccount subjects. Their canonical
-names include the namespace outside the default product namespace, preserving
-the default identity and keeping installations in different namespaces distinct.
-Use the full namespace: truncating it could introduce cross-namespace collisions.
+Authorization retains the legacy binding identity alongside its ClusterRole,
+so fullname changes replace the binding instead of patching immutable roleRef.
+Authentication references the fixed system:auth-delegator Role and can retain
+its canonical name. Include the full namespace to avoid binding collisions.
 */}}
 {{- define "stackstate.authorization.clusterrolebinding.fullname" -}}
-{{ include "suse-observability.clusterResourcePrefix" . }}-authorization
+{{ template "common.fullname.cluster.unique" . }}-authorization
 {{- end -}}
 
 {{- define "stackstate.authentication.clusterrolebinding.fullname" -}}

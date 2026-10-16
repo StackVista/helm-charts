@@ -54,7 +54,7 @@ func TestCoreServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
 					after := helmtestutil.NewKubernetesResources(t, output)
 
 					prefix := "nightly-suse-observability-"
-					bindingName := "suse-observability-get-pods"
+					bindingName := prefix + "get-pods"
 					require.Contains(t, before.RoleBindings, bindingName)
 					require.Contains(t, after.RoleBindings, bindingName)
 					expectedBinding := before.RoleBindings[bindingName]
@@ -106,6 +106,9 @@ func TestCoreServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
 					}
 					for _, purpose := range []string{"authentication", "authorization"} {
 						name := "suse-observability-observability-" + purpose
+						if purpose == "authorization" {
+							name = "observability-" + prefix + purpose
+						}
 						if !clusterRBAC {
 							assert.NotContains(t, before.ClusterRoleBindings, name)
 							assert.NotContains(t, after.ClusterRoleBindings, name)

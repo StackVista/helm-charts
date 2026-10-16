@@ -23,7 +23,7 @@ type clusterBindingNamingFixture struct {
 }
 
 // Complete objects captured before renaming from
-// 91d4b4b016a40d233d05f6285d2dc932fb094bd9. Only the two binding names change.
+// 91d4b4b016a40d233d05f6285d2dc932fb094bd9. Only the authentication binding name changes.
 func TestClusterBindingNamingFrozenCompatibility(t *testing.T) {
 	checkClusterBindingNamingFixtures(t, "..", true)
 }
@@ -52,7 +52,7 @@ func checkClusterBindingNamingFixtures(t *testing.T, chart string, renamed bool)
 				actual := clusterBindingNamingFixture{Role: resources.ClusterRoles[expected.Role.Name], Bindings: map[string]rbacv1.ClusterRoleBinding{}}
 				for _, purpose := range []string{"authentication", "authorization"} {
 					binding := expected.Bindings[purpose]
-					if renamed {
+					if renamed && purpose == "authentication" {
 						binding.Name = "suse-observability-observability-" + purpose
 						expected.Bindings[purpose] = binding
 					}
@@ -133,6 +133,9 @@ func TestClusterBindingNamingPreservesPlatformResources(t *testing.T) {
 				renames := map[string]string{}
 				for _, purpose := range []string{"authentication", "authorization"} {
 					old, target := tc.legacyPrefix+"-"+purpose, tc.targetPrefix+"-"+purpose
+					if purpose == "authorization" {
+						target = old
+					}
 					if tc.disabled {
 						assert.NotContains(t, beforeResources.ClusterRoleBindings, old)
 						assert.NotContains(t, afterResources.ClusterRoleBindings, target)
@@ -165,7 +168,7 @@ func TestClusterBindingNamingPreservesPlatformResources(t *testing.T) {
 				}
 				seen := map[string]bool{}
 				before := backupNamingDocuments(t, beforeOutput, renames, seen)
-				assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "Only the two main ClusterRoleBinding metadata names may change")
+				assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "Only the authentication ClusterRoleBinding metadata name may change")
 				for name := range renames {
 					require.True(t, seen[name], name)
 				}
@@ -191,7 +194,7 @@ func TestClusterBindingNamingKeepsNamespacesDistinct(t *testing.T) {
 		if namespace == "suse-observability" {
 			prefix = "suse-observability"
 		}
-		for _, purpose := range []string{"authentication", "authorization"} {
+		for _, purpose := range []string{"authentication"} {
 			name := prefix + "-" + purpose
 			require.Contains(t, resources.ClusterRoleBindings, name)
 			assert.False(t, names[name], "Different namespaces must never share a main cluster binding")

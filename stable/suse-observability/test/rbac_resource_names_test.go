@@ -61,7 +61,7 @@ func TestInternalRBACNamesUseDedicatedHelpers(t *testing.T) {
 					before.Roles[expectedRole.Name] = expectedRole
 					assert.Equal(t, before.Roles, after.Roles)
 
-					podReaderBinding := "suse-observability-get-pods"
+					podReaderBinding := podReader
 					require.Contains(t, before.RoleBindings, podReaderBinding)
 					expectedBinding := before.RoleBindings[podReaderBinding]
 					assert.Equal(t, podReader, expectedBinding.RoleRef.Name)
@@ -90,6 +90,9 @@ func TestInternalRBACNamesUseDedicatedHelpers(t *testing.T) {
 
 					for _, purpose := range []string{"authentication", "authorization"} {
 						legacy := "suse-observability-" + namespace + "-" + purpose
+						if purpose == "authorization" {
+							legacy = clusterPrefix + purpose
+						}
 						explicit := "explicit-" + purpose + "-binding"
 						if !clusterRBAC {
 							assert.NotContains(t, before.ClusterRoleBindings, legacy)

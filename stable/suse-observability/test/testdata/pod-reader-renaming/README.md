@@ -4,26 +4,16 @@ The fixtures were generated before this rename from revision
 `c6030933f0d8971cb1b8c4ea5079d487089f0e84` with Helm 3.19.0. The revision's entire
 local dependency graph was rebuilt using only `file://` repositories.
 
-Only the chart-owned Pod-reader RoleBinding's metadata name changes:
+The Pod-reader Role and RoleBinding retain the matching legacy name
+`<common.fullname.short>-get-pods`, including release and fullname settings.
+The existing dedicated helpers remain independently wired to their declarations.
+A fixed binding name would require patching immutable `roleRef` when a fullname
+override changes the referenced Role. Retaining both identities makes Helm
+replace both objects instead, on upgrade and rollback, without migration machinery.
+Customer-managed bindings can continue referencing the legacy Role.
 
-| Kind | Previous name | Canonical name |
-| --- | --- | --- |
-| RoleBinding | `<common.fullname.short>-get-pods` | `suse-observability-get-pods` |
-
-The target is defined in the existing `stackstate.getPods.rolebinding.fullname`
-helper in `_names.tpl`. It ignores release names and fullname overrides/affixes.
-The default product release already has the canonical binding identity.
-
-The Pod-reader Role keeps its existing name so customer-managed RoleBindings
-can still reference it. The chart binding's `roleRef`, subjects, namespace scope,
-labels, annotations and API version must remain unchanged. So must the Role's
-`get`/`list` Pod permissions, ServiceAccounts, workload/Pod specifications and
-checksums, application authorization mappings, stored credential identities,
-PVCs, StatefulSets and Service DNS.
-
-The RBAC agent Role and binding retain their identities: their Role name is also
-used by the application's authorization subject mapping. Customer-facing
-instance Roles/bindings and cluster-scoped RBAC are outside this rename.
+Permissions, subjects, namespace scope, labels, annotations, workload and storage
+identities remain unchanged by this fix.
 
 ## Frozen snapshots
 
@@ -51,15 +41,14 @@ POD_READER_BASELINE_CHART=/path/to/export/stable/suse-observability \
 ```
 
 This compares old source to the fixtures without modifying them. Ordinary
-tests compare new output with the snapshots, allowing only the binding name
-to change. Whole-platform comparisons exercise default/custom releases, two
+tests compare new output with the snapshots, with no binding-name allowance. Whole-platform comparisons exercise default/custom releases, two
 namespaces, fullname settings, long names, already-canonical names,
 split/monolithic services, HA/non-HA sizing, Argo CD, disabled authorization
 and cluster RBAC, custom metadata and split workers.
 
 For bindings retaining their names, Helm 3 three-way patch checks preserve
 immutable `roleRef` and produce no changes with synthetic live annotations.
-Renamed bindings retain the same Role reference and subjects. Existing helper
+Override changes replace the binding alongside its Role. Existing helper
 tests independently change Role and binding names in temporary chart copies
 to verify producer/consumer wiring; no test chart is installed.
 
@@ -68,7 +57,9 @@ reconciliation, effective API access, Helm/Argo CD replacement, destination
 ownership conflicts, repeated upgrades and rollback remain integration checks.
 No availability or recovery-time guarantee is asserted.
 
-Old and new bindings grant the same permissions during overlap. Prune obsolete
-chart-owned bindings, since stale subjects can retain access after future
-changes. Follow the README's ownership-based cleanup guidance and preserve the
-Role, ServiceAccounts and customer-managed bindings.
+`TestBindingNamingOverrideUpgradeRollback` renders install, changed-override
+upgrade, repeated upgrade and rollback, in split/monolithic modes and two
+namespaces, with and without affixes. It checks replacement inventories and
+Helm three-way patches for every retained binding: `roleRef` must never change.
+These tests use synthetic offline objects; real lifecycle reconciliation remains
+an integration check.

@@ -351,9 +351,9 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 			}
 		}
 	}
-	// These fixtures render in namespace observability. Only the two main
-	// ClusterRoleBinding names change; Role references and subjects stay frozen.
-	for _, purpose := range []string{"authentication", "authorization"} {
+	// These fixtures render in namespace observability. Only authentication
+	// changes identity; authorization stays tied to its legacy ClusterRole.
+	for _, purpose := range []string{"authentication"} {
 		old := "ClusterRoleBinding/" + legacyClusterPrefix + "-" + purpose
 		target := "ClusterRoleBinding/" + canonical + "-observability-" + purpose
 		require.Contains(t, contract, old)
@@ -386,14 +386,6 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 	if legacyPrefix == canonical {
 		return
 	}
-	// Only the internal Pod-reader binding changes identity. Preserve its
-	// roleRef, every subject, and the Role used by customer-managed bindings.
-	oldPodReaderBinding := "RoleBinding/" + legacyPrefix + "-get-pods"
-	newPodReaderBinding := "RoleBinding/" + canonical + "-get-pods"
-	require.Contains(t, contract, oldPodReaderBinding)
-	require.NotContains(t, contract, newPodReaderBinding)
-	contract[newPodReaderBinding] = contract[oldPodReaderBinding]
-	delete(contract, oldPodReaderBinding)
 	// Router Service DNS, credentials, accounts and dynamic mode names stay
 	// unchanged. The bootstrap ConfigMap was allowed separately above.
 	oldRouter := "Deployment/" + legacyPrefix + "-router"
