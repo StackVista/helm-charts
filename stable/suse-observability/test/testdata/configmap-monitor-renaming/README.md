@@ -33,14 +33,17 @@ needed by its selected features and sizing. Split receiver and correlate workers
 continue sharing their component ConfigMaps.
 
 The exporter's optional `ServiceMonitor`, `PodMonitor` and `PrometheusRule` each
-use `suse-observability-prometheus-elasticsearch-exporter`. Their legacy names
+use `suse-observability-prometheus-elasticsearch-exporter` in the release namespace.
+Objects placed outside the release namespace retain their legacy names to preserve
+isolation for previously distinct installations sharing a monitoring namespace.
+Each object's namespace setting is evaluated independently. Their legacy names
 come from `elasticsearch-exporter.fullname`. Monitoring namespaces, selectors,
 labels, scrape configuration, rule expressions and rule-group names are retained.
 Different resource kinds may use the same name. The existing mutually exclusive
 ServiceMonitor/PodMonitor choice stays unchanged.
-Installations in different namespaces use the same canonical names. Explicit
-monitoring namespace settings remain supported for one installation per target
-monitoring namespace; names are not qualified with the installation namespace.
+Installations in different namespaces use the same canonical names locally.
+Explicit monitoring namespace settings preserve the legacy names, including
+exporter name/fullname overrides.
 
 ## Compatibility checks
 
@@ -69,7 +72,7 @@ build dependencies recursively, from children to parents. Use matching Helm
 versions and an offline kubeconfig when running the comparison. Neither check
 deploys a chart, contacts Kubernetes, or accesses installed credentials.
 
-Twenty scenarios cover install/upgrade rendering, default and custom releases,
+Twenty-two scenarios cover install/upgrade rendering, default and custom releases,
 namespaces, fullname overrides/affixes, long names, split/monolithic servers,
 split workers, HA/non-HA sizing, Argo CD, external Secret references, disabled
 authorization, exporter overrides, certificate/account settings, monitor
@@ -79,7 +82,10 @@ synthetic live metadata and checking the complete resulting Deployments.
 Separate exporter tests render the same release in five namespaces and confirm
 distinct namespace/name identities, preserved target namespaces, and valid names.
 Two installation namespaces share their first 62 characters. Additional checks
-verify that an explicit monitoring namespace preserves the selected targets.
+place two installations in a shared monitoring namespace and verify distinct
+identities and the selected targets for ServiceMonitor, PodMonitor and
+PrometheusRule on install and upgrade. Local exporter tests also cover distinct
+fullname overrides, unset namespaces and explicit release-namespace selections.
 
 Default product naming retains ConfigMap names and checksums. Non-default naming
 updates existing Deployments' volume references and triggers normal Pod rollouts.
