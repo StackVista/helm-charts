@@ -40,7 +40,9 @@ func TestCollectorPeripheralNamingGitBaselineCompatibility(t *testing.T) {
 	if beforeChart == "" {
 		t.Skip("set COLLECTOR_PERIPHERAL_BASELINE_CHART to the built pre-change chart")
 	}
-	checkCollectorPeripheralNaming(t, beforeChart, "..")
+	// Apply only this step's current helpers to the actual Git baseline.
+	// Comparing directly with ".." would include unrelated later changes.
+	checkCollectorPeripheralNaming(t, beforeChart, collectorPeripheralNamingStageChart(t, beforeChart))
 }
 
 func TestCollectorPeripheralNamingIndependentOfPreviousSteps(t *testing.T) {
@@ -48,6 +50,14 @@ func TestCollectorPeripheralNamingIndependentOfPreviousSteps(t *testing.T) {
 	if beforeChart == "" {
 		t.Skip("set COLLECTOR_PERIPHERAL_EXTRACTION_CHART to the built extraction baseline")
 	}
+	checkCollectorPeripheralNaming(t, beforeChart, collectorPeripheralNamingStageChart(t, beforeChart))
+}
+
+// Freeze the supplied chart and its dependency graph, adding only the five
+// current peripheral name definitions. The ordinary compatibility test checks
+// their wiring against the current chart; historical checks isolate this step.
+func collectorPeripheralNamingStageChart(t *testing.T, beforeChart string) string {
+	t.Helper()
 	afterChart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(afterChart, os.DirFS(beforeChart)))
 	current, err := os.ReadFile("../templates/_names.tpl")
@@ -64,7 +74,7 @@ func TestCollectorPeripheralNamingIndependentOfPreviousSteps(t *testing.T) {
 		content += "\n" + definitions[0] + "\n"
 	}
 	require.NoError(t, os.WriteFile(path, []byte(content), 0600))
-	checkCollectorPeripheralNaming(t, beforeChart, afterChart)
+	return afterChart
 }
 
 func collectorPeripheralNamingInventory() []struct{ helper, kind, suffix string } {

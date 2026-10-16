@@ -28,11 +28,16 @@ claims, hook scripts and every other resource must stay unchanged.
 Additional checks ensure peripheral selectors still match the retained Pods.
 Current creation conditions remain unchanged in all three collector modes.
 
-The independent Git-baseline test compares the actual pre-change chart with the
-current chart. The independent-step test copies the extraction baseline and adds
-only these five parent definitions. It compares that older chart before/after,
-without applying the intermediate PDB, monitor, Deployment, ConfigMap or RBAC
-rename steps. Neither test rewrites historical fixtures.
+The independent Git-baseline test copies the actual pre-change chart, including
+its built dependency graph, and adds only the five current parent definitions.
+It compares that historical chart before/after this isolated naming step.
+Comparing the baseline directly with today's chart would also include later
+RBAC, HBase, collector relay configuration and other unrelated changes.
+The independent-step test applies the same procedure to the extraction baseline,
+without applying intervening renames. The ordinary compatibility test still
+verifies the current chart and dependencies with only these five metadata-name
+changes allowed. Neither historical test rewrites fixtures or expands its
+allowlist to accommodate unrelated changes.
 
 To reproduce, export both `local/` and `stable/suse-observability/` from each
 revision with `git archive`. Build each `file://` dependency graph recursively
