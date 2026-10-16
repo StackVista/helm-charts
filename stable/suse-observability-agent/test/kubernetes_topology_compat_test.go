@@ -144,10 +144,10 @@ func TestKubernetesTopologyCompatEnabled(t *testing.T) {
 	assert.Equal(t, "false", env.Value)
 
 	collector := resources.Deployments[resourceCollectorName].Spec.Template.Spec.Containers[0]
-	assert.Equal(t, "1Gi", collector.Resources.Limits.Memory().String(), "512Mi plus 512Mi for topology")
+	assert.Equal(t, "1536Mi", collector.Resources.Limits.Memory().String(), "512Mi plus 512Mi each for topology and kube-state-metrics")
 	env, ok = containerEnv(t, resources, resourceCollectorName, "GOMEMLIMIT")
 	require.True(t, ok)
-	assert.Equal(t, "921MiB", env.Value, "90% of 1Gi")
+	assert.Equal(t, "1382MiB", env.Value, "90% of 1536Mi")
 }
 
 func TestKubernetesTopologyCompatAddsMemoryToTheConfiguredLimit(t *testing.T) {
@@ -156,11 +156,11 @@ func TestKubernetesTopologyCompatAddsMemoryToTheConfiguredLimit(t *testing.T) {
 		SetValues:   map[string]string{"otel.k8sResourceCollector.resources.limits.memory": "2Gi"},
 	})
 	collector := resources.Deployments[resourceCollectorName].Spec.Template.Spec.Containers[0]
-	assert.Equal(t, "2560Mi", collector.Resources.Limits.Memory().String())
+	assert.Equal(t, "3Gi", collector.Resources.Limits.Memory().String())
 	assert.Equal(t, "500m", collector.Resources.Limits.Cpu().String(), "other limits are kept")
 	env, ok := containerEnv(t, resources, resourceCollectorName, "GOMEMLIMIT")
 	require.True(t, ok)
-	assert.Equal(t, "2304MiB", env.Value, "90% of 2560Mi")
+	assert.Equal(t, "2764MiB", env.Value, "90% of 3Gi")
 }
 
 func TestK8sResourceCollectorGoMemLimitFollowsQuantityUnits(t *testing.T) {

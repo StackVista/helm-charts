@@ -2,6 +2,7 @@
 {{- $rcfg := include "stackstate-k8s-agent.k8sResourceCollector.mergedValues" . | fromYaml }}
 {{- $topologyCompat := include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . }}
 {{- $eventsCompat := include "stackstate-k8s-agent.kubernetesEventsCompat.enabled" . }}
+{{- $stateMetricsCompat := include "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" . }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -135,6 +136,22 @@ data:
             group: ""
             mode: watch
             exclude_watch_type: [DELETED]
+{{- end }}
+{{- if $stateMetricsCompat }}
+      # The cluster agent's kubernetes_state metrics, collected while this replica leads.
+      stsksm:
+        cluster_name: ${env:K8S_CLUSTER_NAME}
+        k8s_leader_elector: k8s_leader_elector
+        collectors:
+{{- include "stackstate-k8s-agent.kubeStateMetrics.collectors" . | nindent 10 }}
+{{- with .Values.clusterAgent.collection.kubeStateMetrics.labelsAsTags }}
+        labels_as_tags:
+{{- toYaml . | nindent 10 }}
+{{- end }}
+{{- with .Values.clusterAgent.collection.kubeStateMetrics.annotationsAsTags }}
+        annotations_as_tags:
+{{- toYaml . | nindent 10 }}
+{{- end }}
 {{- end }}
 
     processors:
@@ -290,6 +307,12 @@ data:
         logs/kubernetes-events:
           receivers: [k8sobjects/kubernetes-events]
           exporters: [stsk8sevents]
+{{- end }}
+{{- if $stateMetricsCompat }}
+        metrics/kubernetes-state:
+          receivers: [stsksm]
+          processors: [batch]
+          exporters: [{{ $exporterName }}]
 {{- end }}
         # Collector self-metrics: scrape the local telemetry endpoint, enrich with
         # pod/cluster/service identity, then export to SUSE Observability so the

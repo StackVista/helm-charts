@@ -135,7 +135,7 @@ func TestKubernetesEventsCompatRequiresStsAgentUrl(t *testing.T) {
 	assert.Contains(t, err.Error(), "to end in /stsAgent")
 }
 
-func TestKubernetesClusterAgentFlagMovesTopologyAndEvents(t *testing.T) {
+func TestKubernetesClusterAgentFlagMovesTopologyEventsAndMetrics(t *testing.T) {
 	resources := renderCompat(t, &helm.Options{ValuesFiles: []string{"values/kubernetes-events-compat.yaml"}})
 	config := collectorConfigMap(t, resources)
 	exporters := section(t, config, "exporters")
@@ -150,5 +150,6 @@ func TestKubernetesClusterAgentFlagMovesTopologyAndEvents(t *testing.T) {
 	assert.Equal(t, "false", env.Value)
 	env, ok = containerEnv(t, resources, clusterAgentName, "STS_COLLECT_KUBERNETES_METRICS")
 	require.True(t, ok)
-	assert.Equal(t, "true", env.Value, "the cluster agent keeps its metrics checks")
+	assert.Equal(t, "false", env.Value, "its only output, the OOM gauge, is dropped")
+	assert.Contains(t, pipelines, "metrics/kubernetes-state")
 }

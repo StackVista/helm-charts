@@ -20,7 +20,7 @@ data:
     instances:
       - collection_interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}
         resources:{{ .Values.clusterAgent.collection.kubernetesResources | toYaml | nindent 10 }}
-  {{- if .Values.clusterAgent.collection.kubeStateMetrics.enabled }}
+  {{- if and .Values.clusterAgent.collection.kubeStateMetrics.enabled (not (include "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" .)) }}
   kube_state_metrics_core_conf: |
     {{- include "cluster-agent-kube-state-metrics" . | nindent 6 }}
   {{- end }}

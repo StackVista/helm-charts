@@ -74,7 +74,7 @@ spec:
           - name: STS_SKIP_SSL_VALIDATION
             value: {{ or .Values.global.skipSslValidation .Values.clusterAgent.skipSslValidation | quote }}
           - name: STS_COLLECT_KUBERNETES_METRICS
-            value: {{ .Values.clusterAgent.collection.kubernetesMetrics | quote }}
+            value: {{ and .Values.clusterAgent.collection.kubernetesMetrics (not (include "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" .)) | quote }}
           - name: STS_COLLECT_KUBERNETES_TIMEOUT
             value: {{ .Values.clusterAgent.collection.kubernetesTimeout | quote }}
           - name: STS_COLLECT_KUBERNETES_TOPOLOGY
@@ -133,7 +133,7 @@ spec:
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
             subPath: kubernetes_api_topology_conf
             readOnly: true
-          {{- if .Values.clusterAgent.collection.kubeStateMetrics.enabled }}
+          {{- if and .Values.clusterAgent.collection.kubeStateMetrics.enabled (not (include "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" .)) }}
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_state_core.d/conf.yaml
             subPath: kube_state_metrics_core_conf
