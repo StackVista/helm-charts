@@ -1,0 +1,77 @@
+{
+  "bindings": {
+    "authentication": {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "ClusterRoleBinding",
+      "metadata": {
+        "labels": {
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/managed-by": "Helm",
+          "app.kubernetes.io/name": "suse-observability"
+        },
+        "name": "observability-nightly-suse-observability-authentication"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "system:auth-delegator"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "nightly-suse-observability-api",
+          "namespace": "observability"
+        }
+      ]
+    },
+    "authorization": {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "ClusterRoleBinding",
+      "metadata": {
+        "labels": {
+          "app.kubernetes.io/instance": "nightly",
+          "app.kubernetes.io/managed-by": "Helm",
+          "app.kubernetes.io/name": "suse-observability"
+        },
+        "name": "observability-nightly-suse-observability-authorization"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "ClusterRole",
+        "name": "observability-nightly-suse-observability-authorization"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "nightly-suse-observability-api",
+          "namespace": "observability"
+        }
+      ]
+    }
+  },
+  "role": {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "ClusterRole",
+    "metadata": {
+      "labels": {
+        "app.kubernetes.io/instance": "nightly",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "suse-observability"
+      },
+      "name": "observability-nightly-suse-observability-authorization"
+    },
+    "rules": [
+      {
+        "apiGroups": [
+          "rbac.authorization.k8s.io"
+        ],
+        "resources": [
+          "rolebindings"
+        ],
+        "verbs": [
+          "list"
+        ]
+      }
+    ]
+  }
+}

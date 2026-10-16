@@ -165,7 +165,7 @@ spec:
     {{- end }}
       - name: dn-scripts
         configMap:
-          name: {{ template "common.fullname.short" . }}-hdfs-dn-scripts
+          name: {{ include "hbase.hdfs.datanode.scripts.configmap.fullname" . }}
           defaultMode: 0755
 {{- if .Values.hdfs.datanode.persistence.enabled }}
   volumeClaimTemplates:

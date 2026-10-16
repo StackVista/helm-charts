@@ -105,7 +105,10 @@ func TestCoreServiceAccountReferencesFollowDedicatedHelpers(t *testing.T) {
 						apiComponent = "api"
 					}
 					for _, purpose := range []string{"authentication", "authorization"} {
-						name := "observability-" + prefix + purpose
+						name := "suse-observability-observability-" + purpose
+						if purpose == "authorization" {
+							name = "observability-" + prefix + purpose
+						}
 						if !clusterRBAC {
 							assert.NotContains(t, before.ClusterRoleBindings, name)
 							assert.NotContains(t, after.ClusterRoleBindings, name)

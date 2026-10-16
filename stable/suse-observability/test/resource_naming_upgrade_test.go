@@ -27,13 +27,18 @@ type namingUpgradeContract map[string]map[string]interface{}
 
 func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 	for _, scenario := range []struct {
-		name, release, legacyPrefix, hbaseLegacyPrefix string
-		values                                         map[string]string
+		name, release, legacyPrefix, hbaseLegacyPrefix, legacyClusterPrefix string
+		backupLegacyName, operatorLegacyName                                string
+		values                                                              map[string]string
 	}{
-		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability", hbaseLegacyPrefix: "suse-observability-hbase"},
-		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability", hbaseLegacyPrefix: "nightly-hbase"},
+		{name: "default", release: "suse-observability", legacyPrefix: "suse-observability", hbaseLegacyPrefix: "suse-observability-hbase", legacyClusterPrefix: "observability-suse-observability",
+			backupLegacyName: "suse-observability-backup-sts-hbase-backup", operatorLegacyName: "suse-observability-kafkaup-operator-kafkaup-config"},
+		{name: "nightly", release: "nightly", legacyPrefix: "nightly-suse-observability", hbaseLegacyPrefix: "nightly-hbase", legacyClusterPrefix: "observability-nightly-suse-observability",
+			backupLegacyName: "nightly-backup-sts-hbase-backup", operatorLegacyName: "nightly-kafkaup-operator-kafkaup-config"},
 		{
 			name: "override-mono", release: "nightly", legacyPrefix: "existing-installation", hbaseLegacyPrefix: "nightly-hbase",
+			legacyClusterPrefix: "existing-installation",
+			backupLegacyName:    "nightly-backup-sts-hbase-backup", operatorLegacyName: "nightly-kafkaup-operator-kafkaup-config",
 			values: map[string]string{
 				"fullnameOverride":                 "existing-installation",
 				"hbase.deployment.mode":            "Mono",
@@ -42,7 +47,9 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 		},
 		{
 			name: "prefix-suffix", release: "suse-observability", legacyPrefix: "global-team-suse-observability-prod-end",
-			hbaseLegacyPrefix: "global-suse-observability-hbase-end",
+			hbaseLegacyPrefix:   "global-suse-observability-hbase-end",
+			legacyClusterPrefix: "global-team-observability-suse-observability-prod-end",
+			backupLegacyName:    "global-suse-observability-backup-end-sts-hbase-backup", operatorLegacyName: "global-suse-observability-kafkaup-operator-end-kafkaup-config",
 			values: map[string]string{
 				"global.fullnamePrefix": "global-", "fullnamePrefix": "team-",
 				"fullnameSuffix": "-prod", "global.fullnameSuffix": "-end",
@@ -90,7 +97,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 			require.NoError(t, err)
 			var expected namingUpgradeContract
 			require.NoError(t, json.Unmarshal(data, &expected))
-			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix)
+			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix, scenario.legacyClusterPrefix, scenario.backupLegacyName, scenario.operatorLegacyName)
 
 			for resource, fields := range expected {
 				actualFields, found := actual[resource]
@@ -225,9 +232,135 @@ func resourceNamingUpgradeContract(t *testing.T, output string) namingUpgradeCon
 	return contract
 }
 
-func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix string) {
+func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, legacyPrefix, release, hbaseLegacyPrefix, legacyClusterPrefix, backupLegacyName, operatorLegacyName string) {
 	t.Helper()
 	const canonical = "suse-observability"
+	// HBase probe script maps move with only their two StatefulSet volume
+	// references. Persistent identities, credentials and script contents stay fixed.
+	for _, component := range []string{"hbase-rs", "hdfs-dn"} {
+		old, target := hbaseLegacyPrefix+"-"+component+"-scripts", canonical+"-"+component+"-scripts"
+		if fields, found := contract["ConfigMap/"+old]; found {
+			require.NotContains(t, contract, "ConfigMap/"+target)
+			contract["ConfigMap/"+target] = fields
+			delete(contract, "ConfigMap/"+old)
+			for _, raw := range contract["StatefulSet/"+hbaseLegacyPrefix+"-"+component]["volumes"].([]interface{}) {
+				if ref, ok := raw.(map[string]interface{})["configMap"].(map[string]interface{}); ok && ref["name"] == old {
+					ref["name"] = target
+				}
+			}
+		}
+	}
+	for _, component := range []string{"hbase-master", "hbase-rs", "hdfs-nn", "hdfs-snn", "hdfs-dn", "tephra"} {
+		old, target := "ServiceMonitor/"+hbaseLegacyPrefix+"-"+component, "ServiceMonitor/"+canonical+"-"+component
+		if fields, found := contract[old]; found {
+			require.NotContains(t, contract, target)
+			contract[target] = fields
+			delete(contract, old)
+		}
+	}
+	// Only the bundled operator's internal Role/binding and its exact roleRef
+	// change. Account, Deployment, configuration and Kafka selection stay frozen.
+	operatorRole := strings.TrimSuffix(operatorLegacyName, "-config")
+	for _, kind := range []string{"Role", "RoleBinding"} {
+		oldName, targetName := operatorRole, canonical+"-kafkaup"
+		if kind == "RoleBinding" {
+			oldName += "-binding"
+			targetName += "-binding"
+		}
+		old, target := kind+"/"+oldName, kind+"/"+targetName
+		require.Contains(t, contract, old)
+		require.NotContains(t, contract, target)
+		fields := contract[old]
+		if kind == "RoleBinding" {
+			ref := fields["roleRef"].(map[string]interface{})
+			require.Equal(t, operatorRole, ref["name"])
+			ref["name"] = canonical + "-kafkaup"
+		}
+		contract[target] = fields
+		delete(contract, old)
+	}
+	// Generated component ConfigMaps move independently of their environment
+	// Secrets, controllers and endpoints. Only exact ConfigMap references change.
+	configRenames := map[string]string{}
+	for _, component := range []string{
+		"api", "checks", "notification", "health-sync", "authorization-sync",
+		"state", "sync", "slicing", "server", "receiver", "correlate", "initializer", "e2es",
+	} {
+		for _, suffix := range []string{"", "-log"} {
+			old, target := legacyPrefix+"-"+component+suffix, canonical+"-"+component+suffix
+			if old == target {
+				continue
+			}
+			if fields, found := contract["ConfigMap/"+old]; found {
+				require.NotContains(t, contract, "ConfigMap/"+target)
+				contract["ConfigMap/"+target] = fields
+				delete(contract, "ConfigMap/"+old)
+				configRenames[old] = target
+			}
+		}
+	}
+	for old, target := range map[string]string{
+		legacyPrefix + "-router":             canonical + "-router",
+		legacyPrefix + "-stackpacks-scripts": canonical + "-stackpacks-scripts",
+		release + "-rbac-agent-url":          canonical + "-rbac-agent-url",
+		release + "-rbac-agent-cluster-name": canonical + "-rbac-agent-cluster-name",
+		operatorLegacyName:                   canonical + "-kafkaup-config",
+		backupLegacyName:                     canonical + "-hbase-backup",
+	} {
+		if old == target {
+			continue
+		}
+		if fields, found := contract["ConfigMap/"+old]; found {
+			require.NotContains(t, contract, "ConfigMap/"+target)
+			contract["ConfigMap/"+target] = fields
+			delete(contract, "ConfigMap/"+old)
+			configRenames[old] = target
+		}
+	}
+	for _, fields := range contract {
+		volumes, _ := fields["volumes"].([]interface{})
+		for _, raw := range volumes {
+			volume := raw.(map[string]interface{})
+			if ref, ok := volume["configMap"].(map[string]interface{}); ok {
+				if target, found := configRenames[ref["name"].(string)]; found {
+					ref["name"] = target
+				}
+			}
+		}
+		for key, value := range fields {
+			if strings.HasSuffix(key, "/envFrom") {
+				refs, _ := value.([]interface{})
+				for _, raw := range refs {
+					if ref, ok := raw.(map[string]interface{})["configMapRef"].(map[string]interface{}); ok {
+						if target, found := configRenames[ref["name"].(string)]; found {
+							ref["name"] = target
+						}
+					}
+				}
+			}
+		}
+	}
+	for _, kind := range []string{"ServiceMonitor", "PodMonitor", "PrometheusRule"} {
+		old := kind + "/" + release + "-prometheus-elasticsearch-exporter"
+		target := kind + "/" + canonical + "-prometheus-elasticsearch-exporter"
+		if old != target {
+			if fields, found := contract[old]; found {
+				require.NotContains(t, contract, target)
+				contract[target] = fields
+				delete(contract, old)
+			}
+		}
+	}
+	// These fixtures render in namespace observability. Only authentication
+	// changes identity; authorization stays tied to its legacy ClusterRole.
+	for _, purpose := range []string{"authentication"} {
+		old := "ClusterRoleBinding/" + legacyClusterPrefix + "-" + purpose
+		target := "ClusterRoleBinding/" + canonical + "-observability-" + purpose
+		require.Contains(t, contract, old)
+		require.NotContains(t, contract, target)
+		contract[target] = contract[old]
+		delete(contract, old)
+	}
 	// HBase's legacy prefix differs from its parent. Allow only PDB metadata
 	// names; persistent controllers, Services and credentials retain identities.
 	for _, component := range []string{"hbase-master", "hbase-rs", "hdfs-nn", "hdfs-snn", "hdfs-dn", "tephra"} {
@@ -253,8 +386,8 @@ func allowResourceNamingMigration(t *testing.T, contract namingUpgradeContract, 
 	if legacyPrefix == canonical {
 		return
 	}
-	// Router Service DNS, credentials, accounts and configuration names stay
-	// unchanged. Its Deployment is the only resource identity moving here.
+	// Router Service DNS, credentials, accounts and dynamic mode names stay
+	// unchanged. The bootstrap ConfigMap was allowed separately above.
 	oldRouter := "Deployment/" + legacyPrefix + "-router"
 	newRouter := "Deployment/" + canonical + "-router"
 	require.Contains(t, contract, oldRouter)

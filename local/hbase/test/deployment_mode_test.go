@@ -33,8 +33,8 @@ func TestDistributedModeResourcesPresent(t *testing.T) {
 
 	// ConfigMaps for scripts that should exist in Distributed mode
 	expectedConfigMaps := []string{
-		releaseName + "-hbase-hbase-rs-scripts",
-		releaseName + "-hbase-hdfs-dn-scripts",
+		"suse-observability-hbase-rs-scripts",
+		"suse-observability-hdfs-dn-scripts",
 	}
 
 	for _, expectedName := range expectedConfigMaps {
@@ -101,8 +101,8 @@ func TestMonoModeResourcesAbsent(t *testing.T) {
 
 	// ConfigMaps that should NOT exist in Mono mode
 	distributedOnlyConfigMaps := []string{
-		releaseName + "-hbase-hbase-rs-scripts",
-		releaseName + "-hbase-hdfs-dn-scripts",
+		"suse-observability-hbase-rs-scripts",
+		"suse-observability-hdfs-dn-scripts",
 	}
 
 	for _, name := range distributedOnlyConfigMaps {

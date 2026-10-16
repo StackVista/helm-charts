@@ -784,18 +784,18 @@ func TestStackGraphBackupV2UsesV2Script(t *testing.T) {
 func TestStackGraphBackupHBaseEnvResources(t *testing.T) {
 	resources := renderStackGraphBackupImplementation(t, "v2")
 
-	const hbaseEnvName = "suse-observability-backup-sts-hbase-backup"
+	const hbaseSecretName = "suse-observability-backup-sts-hbase-backup"
 	// The escaped bucket name for the default "sts-stackgraph-backup" bucket (- -> __).
 	const endpointKey = "HBASE_CONF_fs_s3a_bucket_sts__stackgraph__backup_endpoint"
 	const accessKeyKey = "HBASE_CONF_fs_s3a_bucket_sts__stackgraph__backup_access_key"
 
-	configMap, ok := resources.ConfigMaps[hbaseEnvName]
+	configMap, ok := resources.ConfigMaps["suse-observability-hbase-backup"]
 	require.True(t, ok, "HBase backup env ConfigMap should exist")
 	assert.Contains(t, configMap.Data, endpointKey, "HBase env ConfigMap should carry the bucket-scoped S3A endpoint")
 	assert.Equal(t, "suse-observability-s3proxy:9000", configMap.Data[endpointKey],
 		"HBase env ConfigMap should point the backup bucket at the S3Proxy endpoint")
 
-	secret, ok := resources.Secrets[hbaseEnvName]
+	secret, ok := resources.Secrets[hbaseSecretName]
 	require.True(t, ok, "HBase backup env Secret should exist")
 	_, hasAccessKey := secret.StringData[accessKeyKey]
 	assert.True(t, hasAccessKey, "HBase env Secret should carry the bucket-scoped S3A access key")
@@ -805,7 +805,7 @@ func TestStackGraphBackupHBaseEnvResources(t *testing.T) {
 // ConfigMap and Secret via envFrom, so HBase can write backups directly to the S3Proxy-backed
 // bucket.
 func assertHBaseEnvConsumedBy(t *testing.T, resources *helmtestutil.KubernetesResources, stsName string) {
-	const hbaseEnvName = "suse-observability-backup-sts-hbase-backup"
+	const hbaseSecretName = "suse-observability-backup-sts-hbase-backup"
 
 	sts, ok := resources.Statefulsets[stsName]
 	require.True(t, ok, "%s StatefulSet should exist", stsName)
@@ -815,10 +815,10 @@ func assertHBaseEnvConsumedBy(t *testing.T, resources *helmtestutil.KubernetesRe
 	foundSecretRef := false
 	for _, container := range sts.Spec.Template.Spec.Containers {
 		for _, envFrom := range container.EnvFrom {
-			if envFrom.ConfigMapRef != nil && envFrom.ConfigMapRef.Name == hbaseEnvName {
+			if envFrom.ConfigMapRef != nil && envFrom.ConfigMapRef.Name == "suse-observability-hbase-backup" {
 				foundConfigMapRef = true
 			}
-			if envFrom.SecretRef != nil && envFrom.SecretRef.Name == hbaseEnvName {
+			if envFrom.SecretRef != nil && envFrom.SecretRef.Name == hbaseSecretName {
 				foundSecretRef = true
 			}
 		}

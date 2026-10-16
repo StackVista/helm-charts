@@ -70,7 +70,7 @@ func TestRouterWorkloadReferencesFollowDedicatedHelpers(t *testing.T) {
 						volume := &expectedDeployment.Spec.Template.Spec.Volumes[i]
 						if volume.Name == "config" {
 							require.NotNil(t, volume.ConfigMap)
-							require.Equal(t, legacy, volume.ConfigMap.Name)
+							require.Equal(t, canonical, volume.ConfigMap.Name)
 							volume.ConfigMap.Name = "explicit-router-bootstrap"
 							staticVolumes++
 						}
@@ -103,10 +103,10 @@ func TestRouterWorkloadReferencesFollowDedicatedHelpers(t *testing.T) {
 					expectedDeployment.Spec.Template.Annotations[checksum] = actualDeployment.Spec.Template.Annotations[checksum]
 					assert.Equal(t, *expectedDeployment, actualDeployment)
 
-					require.Contains(t, before.ConfigMaps, legacy)
+					require.Contains(t, before.ConfigMaps, canonical)
 					require.Contains(t, after.ConfigMaps, "explicit-router-bootstrap")
-					assert.NotContains(t, after.ConfigMaps, legacy)
-					expectedConfig := before.ConfigMaps[legacy]
+					assert.NotContains(t, after.ConfigMaps, canonical)
+					expectedConfig := before.ConfigMaps[canonical]
 					expectedConfig.Name = "explicit-router-bootstrap"
 					assert.Equal(t, expectedConfig, after.ConfigMaps["explicit-router-bootstrap"])
 
@@ -143,7 +143,7 @@ func TestRouterWorkloadReferencesFollowDedicatedHelpers(t *testing.T) {
 					}
 					delete(before.Deployments, canonical)
 					delete(after.Deployments, "explicit-router-workload")
-					delete(before.ConfigMaps, legacy)
+					delete(before.ConfigMaps, canonical)
 					delete(after.ConfigMaps, "explicit-router-bootstrap")
 					delete(before.ServiceAccounts, legacy)
 					delete(after.ServiceAccounts, "explicit-router-account")

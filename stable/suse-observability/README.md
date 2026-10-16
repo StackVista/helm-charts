@@ -87,10 +87,197 @@ The OpenTelemetry instrumentation namespace defaults to
 
 ## Resource naming
 
+Generated collector relay ConfigMaps use these platform names:
+
+| Mode | ConfigMap |
+| --- | --- |
+| Deployment | `suse-observability-otel-collector-config` |
+| DaemonSet | `suse-observability-otel-collector-agent` |
+| StatefulSet | `suse-observability-otel-collector-statefulset` |
+
+These names ignore release and fullname settings. Explicit
+`opentelemetry-collector.configMap.existingName` selections and disabled generation
+remain unchanged. Standalone collector charts retain their original defaults.
+
+The Deployment relay map has its own `-config` suffix. Older charts using
+Deployment mode and the default collector fullname emitted it under the same
+name as the platform endpoint map, `suse-observability-otel-collector`. The new
+names separate relay configuration from `api.url` and `intake.url`. Endpoint map
+identity, data and all `API_URL`/`INTAKE_URL` references remain unchanged.
+
+Default platform installations use StatefulSet mode and keep their ConfigMap
+identity and checksum. For eligible custom names, existing controllers update
+only the relay volume reference and its configuration checksum, rolling Pods
+through the platform's default `RollingUpdate` strategy. Relay contents, commands,
+probes, mounts, labels, accounts, RBAC, Services, autoscalers, StatefulSet names, governing
+Services, claim templates, PVCs and checkpoint locations are preserved.
+This batch works independently after extraction and requires no data migration,
+account replacement or later naming change. Rollouts can interrupt telemetry
+collection and forwarding; local checks establish no recovery-time bound.
+
+Repeated upgrades retain the intended names. Rollback restores the previous maps
+and references for previously working configurations. Rolling back to the old
+default-fullname Deployment configuration recreates its pre-existing duplicate
+ConfigMap names; that configuration is not a healthy rollback baseline.
+
+Argo CD must prune obsolete generated relay maps. `PruneLast=true` with pruning
+enabled can defer deletion until updated workloads are healthy. After an
+interrupted upgrade, rollback or sync without pruning, finish or restore the
+intended revision and inspect its owned ConfigMap inventory and consumer
+references. Keep maps still referenced by Pods or controllers until consumers
+converge, and preserve explicit external selections.
+Remove only obsolete relay maps owned by this installation; preserve the endpoint
+map, storage and credentials. Verify collector readiness and telemetry forwarding
+afterwards. Actual Helm/Argo CD lifecycle and runtime recovery remain integration
+checks.
+
+Two internal Role/RoleBinding pairs use canonical names from `_names.tpl`:
+
+| Component | Role | RoleBinding |
+| --- | --- | --- |
+| Router automatic-mode hooks | `suse-observability-router-mode` | `suse-observability-router-mode` |
+| Bundled Kafka-upgrade operator | `suse-observability-kafkaup` | `suse-observability-kafkaup-binding` |
+
+These names ignore release names and fullname settings. The router pair is
+created only in automatic mode; the operator pair is created only when the
+bundled operator is enabled. Each pair remains in the release namespace, so
+installations in different namespaces can use the same names.
+Standalone Kafka-upgrade operator charts retain their existing naming defaults.
+
+Roles and bindings change together because a RoleBinding's `roleRef` is immutable.
+Helm replaces a renamed binding rather than changing its Role reference in place.
+Later fullname changes keep the canonical Role reference and update only mutable
+account subjects where necessary. Existing accounts, permissions, hook phases,
+weights and deletion policies, workload specifications, Kafka selection, router
+mode configuration and script targets are preserved. The router pair already
+has these names with default product naming; the operator pair changes even for
+the default release. The RBAC-agent Role/binding and its application authorization
+subject retain their existing identities.
+
+This batch can be installed or upgraded independently of the other naming
+changes after helper extraction. It introduces no Pod rollout, account/token
+replacement or data migration. Authorization can be interrupted while old/new
+objects are replaced and caches reconcile; local render and patch checks do not
+establish recovery time or actual controller behavior.
+
+Argo CD must prune obsolete operator RBAC. Successful router hooks retain their
+existing automatic cleanup; a failed hook from an earlier revision can leave
+RBAC under its previous name because `before-hook-creation` matches the new
+name only. After an interrupted upgrade, rollback or sync without pruning,
+finish or restore the intended revision, inspect the rendered Role/binding
+inventory and remove only obsolete objects owned by that installation.
+Check release ownership, hook annotations, namespaces, subjects and Role
+references before cleanup. Preserve accounts and customer-managed bindings.
+Update external automation that selects the old names; any custom binding to
+one of these internal Roles must reference its new name. Verify router hook
+completion and Kafka-operator access after the operation.
+
+The bundled collector's peripheral resources use fixed names:
+
+| Kind | Name |
+| --- | --- |
+| PodDisruptionBudget | `suse-observability-otel-collector` |
+| ServiceMonitor | `suse-observability-otel-collector` |
+| PodMonitor | `suse-observability-otel-collector-agent` |
+| PrometheusRule | `suse-observability-otel-collector` |
+| NetworkPolicy | `suse-observability-otel-collector` |
+
+These names ignore release names, parent naming settings and collector
+`fullnameOverride`/`nameOverride` settings. Default collector names are unchanged.
+Only metadata names change: selectors, release labels, namespaces, disruption
+limits, scrape configuration, alert rules and network rules stay unchanged.
+Creation conditions are preserved, including the Deployment-only budget and
+DaemonSet-only PodMonitor. Each installation needs its own resource namespace,
+including when `opentelemetry-collector.namespaceOverride` is configured.
+Standalone collector charts retain their existing naming defaults.
+
+This collector peripheral change can be deployed independently of other resource renames.
+Workload names and Pod templates, Services and router endpoints, ConfigMaps,
+Secrets, accounts, RBAC, autoscalers and StatefulSet claim templates remain
+unchanged. No later naming step, data migration or collector rollout is required
+to make these peripheral objects select the existing collector.
+
+For custom collector names, an ordinary Helm upgrade creates replacements and
+deletes the previous objects. Rollback restores the previous names. During
+replacement, overlapping PDBs can block eviction with HTTP 500, and overlapping
+monitors or rules can duplicate scraping or alert evaluation. Identical old/new
+NetworkPolicies retain the same additive permissions while they overlap.
+Argo CD must prune obsolete objects; `PruneLast=true` with pruning enabled can
+defer deletion until the intended resources are healthy.
+
+After an interrupted non-atomic upgrade, rollback or Argo CD sync without
+pruning, stale peripheral objects can remain indefinitely. Finish or restore the
+intended revision, compare its five-kind inventory in the collector namespace,
+verify release ownership and remove only obsolete objects belonging to that
+installation. Do not delete by shared labels. Retain collector workloads,
+configuration, credentials, accounts, Services and storage throughout cleanup.
+Verify eviction, Prometheus targets/rules and network enforcement afterwards.
+Local render checks do not establish controller reconciliation or recovery time.
+
 The UI and replication checker now use the fixed names `suse-observability-ui` and
 `suse-observability-replication-checker`, including their component-specific supporting
 resources.
 The vmagent ConfigMap and S3Proxy ServiceMonitor also use the fixed `suse-observability` prefix.
+
+Main application and logging ConfigMaps use `suse-observability-<component>` and
+`suse-observability-<component>-log`. This applies to `api`, `checks`,
+`notification`, `health-sync`, `authorization-sync`, `state`, `sync`, `slicing`,
+`server`, `receiver`, `correlate`, `initializer` and `e2es`, including the shared
+configuration used by split receiver and correlate workers. Release names and
+root/global fullname settings no longer affect these ConfigMap names. Creation
+conditions, configuration contents, labels and annotations are unchanged.
+Additional generated ConfigMaps use these fixed names:
+
+| Configuration | Name |
+| --- | --- |
+| Router bootstrap | `suse-observability-router` |
+| Stackpack copy scripts | `suse-observability-stackpacks-scripts` |
+| Bundled RBAC-agent URL | `suse-observability-rbac-agent-url` |
+| Bundled RBAC-agent cluster name | `suse-observability-rbac-agent-cluster-name` |
+| Bundled Kafka-upgrade operator | `suse-observability-kafkaup-config` |
+| HBase backup environment | `suse-observability-hbase-backup` |
+
+These names ignore the release name and fullname settings. Their contents and
+creation conditions are unchanged. The RBAC agent still identifies its cluster
+by the Helm release name. External global connection Secrets retain precedence.
+The bundled resource names are supplied by the platform; standalone subcharts
+and the SUSE Observability agent chart retain their existing naming defaults.
+Other resources with fixed default names are unchanged.
+
+Router active/maintenance/automatic and mode-script ConfigMaps retain their names:
+pre-upgrade hooks need the existing configuration, and automatic mode stores
+runtime state. Backup log, restore-script and backup-CLI ConfigMaps also retain
+their names because existing Jobs and embedded manual-job manifests can reference
+them. Renaming those maps could strand a pending Job. `kube-root-ca.crt` is
+Kubernetes-managed and is outside chart resource naming.
+
+Existing Deployments update their ConfigMap volume/environment references and
+existing configuration checksums through an ordinary Helm upgrade.
+The HBase backup environment rename updates its StatefulSet ConfigMap reference
+in both Mono and Distributed modes. Its credential Secret retains
+its old name and contents. The Kafka-upgrade operator retains its Deployment,
+replica count, update strategy and Kafka selection; no second controller is created.
+These changes roll affected Pods and can interrupt application processing and
+availability while replacements start. A completed rollout references the
+replacement ConfigMaps; repeated upgrades retain those names. Rollback restores
+the previous revision's ConfigMaps and references and rolls Pods again.
+Default product naming retains application/logging, router-bootstrap, stackpack
+and RBAC-agent ConfigMap identities. The Kafka-operator and HBase-backup ConfigMap
+names also change for the default release, causing their consumers to roll.
+Environment and credential Secrets, workload identities and strategies,
+StatefulSet identities and claim templates, PVCs, mount paths, Service DNS and
+external resource choices are preserved. No storage or credential migration is
+required.
+
+Argo CD must prune obsolete ConfigMaps. `PruneLast=true`, together with enabled
+pruning, can defer deletion until the updated workloads are healthy. After an
+interrupted upgrade or rollback, finish or restore the intended revision first.
+Compare its ConfigMap inventory with live objects and verify release ownership.
+Remove only obsolete chart-owned ConfigMaps once Pods and controller templates
+no longer reference them; old Pods can still need the previous configuration
+during rollout. Do not delete by shared labels, or remove router state,
+externally supplied configuration or credential objects. Verify application
+readiness after the rollout; its duration depends on the installation.
 
 Main-chart PodDisruptionBudgets always use `suse-observability-<component>`,
 independently of the release name or root/global fullname overrides, prefixes
@@ -115,8 +302,8 @@ count and target configuration are restored once obsolete monitors are removed
 and the operator reconciles. Stale monitors selected by Prometheus can continue
 causing duplicate scraping until cleanup.
 Update external automation that references the previous ServiceMonitor names.
-Other subchart-owned ServiceMonitors retain their names, except for anomaly
-detection as described below.
+Other subchart-owned ServiceMonitors retain their names, except for the collector,
+anomaly detection, HBase and the Elasticsearch exporter as described here.
 
 Anomaly detection's PDB and manager ServiceMonitor now use the fixed names
 `suse-observability-anomaly-detection` and `suse-observability-spotlight-manager`.
@@ -136,10 +323,37 @@ HBase's PDBs also use canonical names:
 `suse-observability-hdfs-dn`, and `suse-observability-tephra`.
 Root, HBase and global fullname settings no longer affect these budget names.
 Their labels, selectors, annotations, `maxUnavailable: 1`, namespace scope and
-Mono/Distributed creation conditions are unchanged. HBase StatefulSets, claim
-templates, PVCs, governing Services, configuration, credentials, RBAC and
-ServiceMonitors retain their names and settings. The same eviction and
+Mono/Distributed creation conditions are unchanged. HBase StatefulSet identities,
+claim templates, PVCs, governing Services, credentials and RBAC are preserved.
+The same eviction and
 stale-budget recovery guidance applies; update automation using old PDB names.
+
+HBase's six ServiceMonitors use the same canonical component names when kept
+in the release namespace, preserving selectors, namespace selection, scrape
+settings, labels and creation conditions. Monitors placed outside the release
+namespace by `hbase.servicemonitor.namespace` or
+`hbase.common.servicemonitor.namespace` retain their previous names to avoid
+collisions between installations in a shared monitoring namespace.
+
+The two HBase probe-script ConfigMaps use
+`suse-observability-hbase-rs-scripts` and `suse-observability-hdfs-dn-scripts`.
+Their contents, file modes, probe commands and mount paths stay unchanged.
+Their existing StatefulSets update only the corresponding script volume
+reference, rolling region-server and DataNode Pods in Distributed mode,
+including with default product naming. This can temporarily interrupt storage
+availability. StatefulSet/PVC identities, claim templates, data mounts,
+governing Services, selectors, replicas, images, credentials and accounts are
+preserved. No data migration or follow-up rename is required.
+This batch also works independently on the extraction baseline. Rollback restores
+the previous script ConfigMaps and references; repeated upgrades keep the new
+names. Local render and patch checks do not establish runtime recovery time.
+
+Prune obsolete HBase monitors and script maps in Argo CD; `PruneLast=true` with
+pruning enabled can wait for healthy updated workloads. After an interrupted
+operation, compare the intended revision's owned inventory and preserve any old
+script map still referenced by Pods or controllers until consumers converge.
+Remove only obsolete objects owned by this installation, retaining storage and
+credentials, and verify probe readiness and scrape targets after recovery.
 
 These overlaps are temporary only when obsolete resources are deleted. No data
 or storage migration is required, but failed deployments or disabled pruning can
@@ -175,6 +389,57 @@ To recover stale resources after an interrupted upgrade, rollback or Argo CD syn
    Verify that overlapping PDBs no longer block evictions and Prometheus selects
    only the intended monitors.
 
+The optional main-chart NetworkPolicy now uses the fixed name
+`suse-observability-networkpolicy`, defined in `_names.tpl`. Release names and
+root/global/common fullname settings no longer affect this name. Its API version,
+labels, annotations, Pod selector, ingress/egress rules, policy types and enabled
+setting are unchanged. It belongs to the release namespace, so releases in
+different namespaces have separate policies. Subchart policies keep their names.
+This rename does not change Pod specifications, trigger Pod rollouts or migrate
+storage or credentials; update automation referencing the old policy name.
+
+Standard Kubernetes NetworkPolicy permissions are additive. Old and new copies
+with identical rules allow the same traffic, but an obsolete policy left behind
+can preserve permissions when later updates tighten the intended rules. Enable
+Argo CD pruning and verify cleanup after failed Helm upgrades or rollbacks.
+Compare the intended revision's policy inventory and rules with actual objects
+and release ownership; remove only obsolete policies from this installation.
+Do not delete policies in bulk using shared labels or selectors. Network-plugin
+reconciliation may temporarily affect connectivity during replacement; verify
+traffic enforcement after a completed upgrade or rollback.
+
+The internal Pod-reader Role and RoleBinding retain the matching legacy name
+`<common.fullname.short>-get-pods`. The authorization ClusterRole and
+ClusterRoleBinding likewise retain `<common.fullname.cluster.unique>-authorization`,
+including existing release, namespace and fullname settings. Customer-managed
+bindings can continue referencing these Roles. When fullname overrides or affixes
+change, their chart-owned bindings change names alongside the referenced Roles.
+Helm replaces these bindings on upgrade or rollback instead of patching the
+immutable `roleRef` field. Keeping canonical binding names while their Role names
+change would cause that patch to fail. These two bindings are retained exceptions
+to canonical naming; no replacement machinery or migration flags are introduced.
+
+The authentication ClusterRoleBinding uses the canonical name
+`suse-observability-authentication` in namespace `suse-observability`, and
+`suse-observability-<namespace>-authentication` elsewhere. It ignores release names
+and fullname overrides/affixes and includes the full namespace without truncation.
+Its Role reference is always Kubernetes' `system:auth-delegator`, so subsequent
+fullname changes can update its subjects without changing immutable `roleRef`.
+
+Permissions, ServiceAccount subject selection, labels, annotations and creation
+conditions remain unchanged. No account, workload, storage or credential identity
+is renamed by these binding helpers. Changing fullname settings can still rename
+other legacy resources; this binding fix does not make every such change safe.
+
+Prune obsolete chart-owned bindings after replacement, including in Argo CD.
+For interrupted upgrades or rollbacks, compare the intended revision's binding
+inventory with actual objects, verify release ownership and subjects, and remove
+only obsolete bindings belonging to this installation. Preserve Roles,
+ServiceAccounts, customer-managed bindings and other installations' resources.
+Verify Pod-reader access, token review and authorization after the operation;
+authorization caches may take time to reconcile. Update external automation that
+selects the previous authentication binding name.
+
 The Elasticsearch exporter Deployment uses the fixed name
 `suse-observability-prometheus-elasticsearch-exporter`, including when exporter
 fullname or name overrides are configured. Its existing Service DNS name,
@@ -182,10 +447,36 @@ selectors, Pod configuration, accounts and certificate Secret identities are
 preserved. Replacement may briefly interrupt exporter metrics or run both
 exporters; update automation that references the old Deployment name.
 
+The exporter's optional ServiceMonitor, PodMonitor and PrometheusRule also use
+`suse-observability-prometheus-elasticsearch-exporter` when placed in the release
+namespace, independently of release names and exporter name/fullname overrides.
+Objects placed elsewhere retain their legacy exporter fullname, including release
+and name/fullname overrides, so previously distinct installations can share a
+monitoring namespace. Each object's own `serviceMonitor.namespace`,
+`podMonitor.namespace` or `prometheusRule.namespace` setting controls this choice.
+An unset namespace or one equal to the release namespace uses the canonical name.
+Their labels, namespace settings,
+creation conditions, selectors, scrape configuration, alert expressions and
+rule-group names are unchanged. Service DNS, Pod specifications, RBAC, accounts
+and certificate Secrets remain unchanged. These names belong to different
+resource kinds; the existing choice between ServiceMonitor and PodMonitor is
+preserved.
+Installations in different namespaces can use the same canonical names.
+Explicit monitoring namespaces remain supported without introducing collisions
+between installations whose legacy exporter names are distinct.
+
+Prune obsolete exporter monitors and rules in Argo CD and verify their inventory
+after failed Helm upgrades or rollbacks. Stale monitors can duplicate scraping;
+stale rules can continue evaluating previous alerts. Compare the intended
+revision's objects in their configured namespaces, verify ownership, and remove
+only obsolete objects belonging to this installation. Never delete them using
+shared labels. Verify targets and rules after Prometheus reconciles.
+
 The router Deployment uses the fixed name `suse-observability-router`, ignoring
 fullname overrides, prefixes and suffixes. Its Service DNS, selectors, Pod
-configuration, accounts, credentials, static and dynamic ConfigMaps, and hook
-identities stay unchanged. Automatic-mode scripts select router Deployments by
+configuration contents, accounts, credentials, dynamic-mode ConfigMaps, and hook
+identities stay unchanged. Its bootstrap ConfigMap uses the canonical name listed
+above. Automatic-mode scripts select router Deployments by
 their component and Helm release labels within the release namespace. The
 pre-upgrade hook can therefore restart the old router into maintenance mode,
 and the post-upgrade hook restores active mode on the replacement. If both

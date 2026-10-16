@@ -5,13 +5,21 @@ names are documented below so extraction can precede an actual naming migration.
 */}}
 
 {{/*
-The stateless router Deployment uses the canonical product name. Its Service,
-static and dynamic configuration, accounts, Secrets and hook resources retain
-their identities. Mode scripts select Deployments by stable release labels so
+The stateless router Deployment and bootstrap ConfigMap use the canonical product
+name. Its Service, dynamic configuration, accounts, Secrets and hook resources
+retain their identities. Mode scripts select Deployments by stable release labels so
 pre-upgrade hooks reach the old router and post-upgrade hooks reach the new one.
 */}}
 {{- define "stackstate.router.deployment.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-router
+{{- end -}}
+
+{{/*
+Only the main NetworkPolicy identity is canonicalized. Rules and selectors stay
+independent of the name; subchart NetworkPolicies keep their existing identities.
+*/}}
+{{- define "stackstate.networkpolicy.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-networkpolicy
 {{- end -}}
 
 {{- define "stackstate.router.serviceaccount.fullname" -}}
@@ -19,7 +27,7 @@ pre-upgrade hooks reach the old router and post-upgrade hooks reach the new one.
 {{- end -}}
 
 {{- define "stackstate.router.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-router
+{{ include "suse-observability.resourcePrefix" . }}-router
 {{- end -}}
 
 {{- define "stackstate.router.secret.fullname" -}}
@@ -37,9 +45,10 @@ independent for customer templates that reference existing names.
 {{- end -}}
 
 {{/*
-Router mode configuration and hook identities retain their legacy names.
+Router mode configuration, accounts and Jobs retain their legacy names.
 Automatic-mode scripts write the automatic ConfigMap; active and maintenance
-ConfigMaps are chart-managed alternatives. Keep each identity independent.
+ConfigMaps are chart-managed alternatives. Only the internal hook Role and
+binding use canonical names; keep configuration, accounts and Jobs independent.
 */}}
 {{- define "stackstate.router.mode.active.configmap.fullname" -}}
 {{ template "common.fullname.short" . }}-router-active
@@ -75,11 +84,11 @@ ConfigMaps are chart-managed alternatives. Keep each identity independent.
 {{- end -}}
 
 {{- define "stackstate.router.mode.role.fullname" -}}
-{{ template "common.fullname.short" . }}-router-mode
+{{ include "suse-observability.resourcePrefix" . }}-router-mode
 {{- end -}}
 
 {{- define "stackstate.router.mode.rolebinding.fullname" -}}
-{{ template "common.fullname.short" . }}-router-mode
+{{ include "suse-observability.resourcePrefix" . }}-router-mode
 {{- end -}}
 
 {{/* Preserve Helm's per-render timestamps and Argo CD's generated-name prefixes. */}}
@@ -139,15 +148,16 @@ external Secret names and keys are selected independently.
 {{- end -}}
 
 {{/*
-API configuration resource names. Preserve the existing naming expressions;
-moving declarations and references to these helpers must not rename resources.
+Application and logging ConfigMaps use canonical names. Environment Secrets
+retain their legacy identities. Keep generic helpers separate for workload,
+Service and credential names.
 */}}
 {{- define "stackstate.api.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-api
+{{ include "suse-observability.resourcePrefix" . }}-api
 {{- end -}}
 
 {{- define "stackstate.api.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-api-log
+{{ include "suse-observability.resourcePrefix" . }}-api-log
 {{- end -}}
 
 {{- define "stackstate.api.secret.fullname" -}}
@@ -155,15 +165,15 @@ moving declarations and references to these helpers must not rename resources.
 {{- end -}}
 
 {{/*
-Checks, notification and synchronization configuration resources retain their
-legacy names while declarations and consumers move to dedicated helpers.
+Checks, notification and synchronization ConfigMaps use canonical names;
+environment Secrets retain their existing names.
 */}}
 {{- define "stackstate.checks.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-checks
+{{ include "suse-observability.resourcePrefix" . }}-checks
 {{- end -}}
 
 {{- define "stackstate.checks.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-checks-log
+{{ include "suse-observability.resourcePrefix" . }}-checks-log
 {{- end -}}
 
 {{- define "stackstate.checks.secret.fullname" -}}
@@ -171,11 +181,11 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{- define "stackstate.notification.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-notification
+{{ include "suse-observability.resourcePrefix" . }}-notification
 {{- end -}}
 
 {{- define "stackstate.notification.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-notification-log
+{{ include "suse-observability.resourcePrefix" . }}-notification-log
 {{- end -}}
 
 {{- define "stackstate.notification.secret.fullname" -}}
@@ -183,11 +193,11 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{- define "stackstate.healthSync.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-health-sync
+{{ include "suse-observability.resourcePrefix" . }}-health-sync
 {{- end -}}
 
 {{- define "stackstate.healthSync.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-health-sync-log
+{{ include "suse-observability.resourcePrefix" . }}-health-sync-log
 {{- end -}}
 
 {{- define "stackstate.healthSync.secret.fullname" -}}
@@ -195,11 +205,11 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-authorization-sync
+{{ include "suse-observability.resourcePrefix" . }}-authorization-sync
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-authorization-sync-log
+{{ include "suse-observability.resourcePrefix" . }}-authorization-sync-log
 {{- end -}}
 
 {{- define "stackstate.authorizationSync.secret.fullname" -}}
@@ -207,14 +217,14 @@ legacy names while declarations and consumers move to dedicated helpers.
 {{- end -}}
 
 {{/*
-State, sync and slicing configuration resources retain their existing names.
+State, sync and slicing ConfigMaps use canonical names; Secrets retain their names.
 */}}
 {{- define "stackstate.state.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-state
+{{ include "suse-observability.resourcePrefix" . }}-state
 {{- end -}}
 
 {{- define "stackstate.state.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-state-log
+{{ include "suse-observability.resourcePrefix" . }}-state-log
 {{- end -}}
 
 {{- define "stackstate.state.secret.fullname" -}}
@@ -222,11 +232,11 @@ State, sync and slicing configuration resources retain their existing names.
 {{- end -}}
 
 {{- define "stackstate.sync.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-sync
+{{ include "suse-observability.resourcePrefix" . }}-sync
 {{- end -}}
 
 {{- define "stackstate.sync.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-sync-log
+{{ include "suse-observability.resourcePrefix" . }}-sync-log
 {{- end -}}
 
 {{- define "stackstate.sync.secret.fullname" -}}
@@ -234,11 +244,11 @@ State, sync and slicing configuration resources retain their existing names.
 {{- end -}}
 
 {{- define "stackstate.slicing.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-slicing
+{{ include "suse-observability.resourcePrefix" . }}-slicing
 {{- end -}}
 
 {{- define "stackstate.slicing.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-slicing-log
+{{ include "suse-observability.resourcePrefix" . }}-slicing-log
 {{- end -}}
 
 {{- define "stackstate.slicing.secret.fullname" -}}
@@ -246,15 +256,16 @@ State, sync and slicing configuration resources retain their existing names.
 {{- end -}}
 
 {{/*
-Server, receiver, correlate, initializer and e2es retain their existing configuration names.
+Server, receiver, correlate, initializer and e2es ConfigMaps use canonical names.
+Environment Secrets retain their existing identities.
 Split receiver and correlate Deployments share their component configuration resources.
 */}}
 {{- define "stackstate.server.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-server
+{{ include "suse-observability.resourcePrefix" . }}-server
 {{- end -}}
 
 {{- define "stackstate.server.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-server-log
+{{ include "suse-observability.resourcePrefix" . }}-server-log
 {{- end -}}
 
 {{- define "stackstate.server.secret.fullname" -}}
@@ -262,11 +273,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.receiver.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver
+{{ include "suse-observability.resourcePrefix" . }}-receiver
 {{- end -}}
 
 {{- define "stackstate.receiver.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-receiver-log
+{{ include "suse-observability.resourcePrefix" . }}-receiver-log
 {{- end -}}
 
 {{- define "stackstate.receiver.secret.fullname" -}}
@@ -274,11 +285,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.correlate.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate
+{{ include "suse-observability.resourcePrefix" . }}-correlate
 {{- end -}}
 
 {{- define "stackstate.correlate.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-correlate-log
+{{ include "suse-observability.resourcePrefix" . }}-correlate-log
 {{- end -}}
 
 {{- define "stackstate.correlate.secret.fullname" -}}
@@ -286,11 +297,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.initializer.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-initializer
+{{ include "suse-observability.resourcePrefix" . }}-initializer
 {{- end -}}
 
 {{- define "stackstate.initializer.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-initializer-log
+{{ include "suse-observability.resourcePrefix" . }}-initializer-log
 {{- end -}}
 
 {{- define "stackstate.initializer.secret.fullname" -}}
@@ -298,11 +309,11 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{- define "stackstate.e2es.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-e2es
+{{ include "suse-observability.resourcePrefix" . }}-e2es
 {{- end -}}
 
 {{- define "stackstate.e2es.log.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-e2es-log
+{{ include "suse-observability.resourcePrefix" . }}-e2es-log
 {{- end -}}
 
 {{- define "stackstate.e2es.secret.fullname" -}}
@@ -330,10 +341,52 @@ Split receiver and correlate Deployments share their component configuration res
 {{- end -}}
 
 {{/*
+Platform collector configuration uses its own names, separate from endpoints
+and workloads. Generated names are canonical regardless of fullname settings.
+Standalone charts retain their original definitions.
+*/}}
+{{- define "opentelemetry-collector.deployment.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-config
+{{- end -}}
+
+{{- define "opentelemetry-collector.daemonset.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-agent
+{{- end -}}
+
+{{- define "opentelemetry-collector.statefulset.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-statefulset
+{{- end -}}
+
+{{/*
 Legacy collector base name, retained for endpoint/Envoy naming compatibility.
 The parent endpoint ConfigMap has its own shared helper in common.
 */}}
 {{- define "stackstate.otelCollector.defaultFullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
+{{/*
+Platform-only peripheral collector identities. Selectors retain the subchart's
+release/component labels; workloads, endpoints, configuration, storage and RBAC
+keep their existing names. These overrides also work without other rename steps.
+*/}}
+{{- define "opentelemetry-collector.poddisruptionbudget.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
+{{- define "opentelemetry-collector.servicemonitor.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
+{{- define "opentelemetry-collector.podmonitor.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector-agent
+{{- end -}}
+
+{{- define "opentelemetry-collector.prometheusrule.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-otel-collector
+{{- end -}}
+
+{{- define "opentelemetry-collector.networkpolicy.fullname" -}}
 {{ include "suse-observability.resourcePrefix" . }}-otel-collector
 {{- end -}}
 
@@ -551,8 +604,11 @@ Keep their existing names and type-dependent suffixes unchanged. */}}
 {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
 {{- end -}}
 
-{{/* RBAC resources have independent names, even when their legacy names match.
-Preserve the namespace handling and truncation of the existing common helpers. */}}
+{{/*
+The Pod-reader Role and binding retain matching legacy identities. Fullname
+changes must replace both objects: roleRef is immutable on an existing binding.
+Keep the Role identity compatible with customer-managed bindings.
+*/}}
 {{- define "stackstate.getPods.role.fullname" -}}
 {{ template "common.fullname.short" . }}-get-pods
 {{- end -}}
@@ -565,12 +621,18 @@ Preserve the namespace handling and truncation of the existing common helpers. *
 {{ template "common.fullname.cluster.unique" . }}-authorization
 {{- end -}}
 
+{{/*
+Authorization retains the legacy binding identity alongside its ClusterRole,
+so fullname changes replace the binding instead of patching immutable roleRef.
+Authentication references the fixed system:auth-delegator Role and can retain
+its canonical name. Include the full namespace to avoid binding collisions.
+*/}}
 {{- define "stackstate.authorization.clusterrolebinding.fullname" -}}
 {{ template "common.fullname.cluster.unique" . }}-authorization
 {{- end -}}
 
 {{- define "stackstate.authentication.clusterrolebinding.fullname" -}}
-{{ template "common.fullname.cluster.unique" . }}-authentication
+{{ include "suse-observability.clusterResourcePrefix" . }}-authentication
 {{- end -}}
 
 {{- define "stackstate.rbacAgent.role.fullname" -}}
@@ -579,6 +641,19 @@ Preserve the namespace handling and truncation of the existing common helpers. *
 
 {{- define "stackstate.rbacAgent.rolebinding.fullname" -}}
 {{ template "common.fullname.short" . }}-rbac-agent
+{{- end -}}
+
+{{/*
+The bundled operator's internal Role and binding move together so roleRef stays
+fixed on subsequent upgrades. Keep its account and controller independent;
+standalone subcharts retain their existing names.
+*/}}
+{{- define "kafkaup-operator.role.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-kafkaup
+{{- end -}}
+
+{{- define "kafkaup-operator.rolebinding.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-kafkaup-binding
 {{- end -}}
 
 {{/* Instance Role identities may be referenced by customer-managed bindings.
@@ -820,7 +895,28 @@ Stackpack claims are also consumed by the backup configuration.
 
 {{/* Keep the stackpack scripts ConfigMap independent of the stackpack PVCs. */}}
 {{- define "stackstate.stackpacks.scripts.configmap.fullname" -}}
-{{ template "common.fullname.short" . }}-stackpacks-scripts
+{{ include "suse-observability.resourcePrefix" . }}-stackpacks-scripts
+{{- end -}}
+
+{{/*
+Platform-owned configuration consumed by bundled subcharts. Override their
+existing name interfaces here; other charts keep the library/subchart defaults.
+Credentials, runtime state, workload identities and storage names stay separate.
+*/}}
+{{- define "kubernetes-rbac-agent.url.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-rbac-agent-url
+{{- end -}}
+
+{{- define "kubernetes-rbac-agent.clusterName.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-rbac-agent-cluster-name
+{{- end -}}
+
+{{- define "kafkaup-operator.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-kafkaup-config
+{{- end -}}
+
+{{- define "stackstate.backup.hbase.configmap.fullname" -}}
+{{ include "suse-observability.resourcePrefix" . }}-hbase-backup
 {{- end -}}
 
 {{/*

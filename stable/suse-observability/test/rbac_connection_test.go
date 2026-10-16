@@ -82,7 +82,7 @@ func TestRbacAgentConnectionUsesPlatformConfiguration(t *testing.T) {
 				resources := helmtestutil.NewKubernetesResources(t, output)
 				agent := tc.release + "-rbac-agent"
 				for name, expected := range map[string]struct{ key, value string }{
-					agent + "-url": {"STS_URL", tc.url}, agent + "-cluster-name": {"STS_CLUSTER_NAME", tc.release},
+					"suse-observability-rbac-agent-url": {"STS_URL", tc.url}, "suse-observability-rbac-agent-cluster-name": {"STS_CLUSTER_NAME", tc.release},
 				} {
 					require.Contains(t, resources.ConfigMaps, name)
 					assert.Equal(t, map[string]string{expected.key: expected.value}, resources.ConfigMaps[name].Data)
@@ -94,7 +94,7 @@ func TestRbacAgentConnectionUsesPlatformConfiguration(t *testing.T) {
 						configMapRefs = append(configMapRefs, ref.ConfigMapRef.Name)
 					}
 				}
-				assert.ElementsMatch(t, []string{agent + "-url", agent + "-cluster-name"}, configMapRefs)
+				assert.ElementsMatch(t, []string{"suse-observability-rbac-agent-url", "suse-observability-rbac-agent-cluster-name"}, configMapRefs)
 			})
 		}
 	}
@@ -131,7 +131,7 @@ func TestRbacAgentConnectionGlobalSecretsTakePrecedence(t *testing.T) {
 				{"STS_URL", "url", tc.url},
 				{"STS_CLUSTER_NAME", "cluster-name", tc.cluster},
 			} {
-				configMap := "nightly-rbac-agent-" + field.suffix
+				configMap := "suse-observability-rbac-agent-" + field.suffix
 				ref := corev1.EnvFromSource{ConfigMapRef: &corev1.ConfigMapEnvSource{
 					LocalObjectReference: corev1.LocalObjectReference{Name: configMap},
 				}}

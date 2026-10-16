@@ -61,12 +61,13 @@ func TestInternalRBACNamesUseDedicatedHelpers(t *testing.T) {
 					before.Roles[expectedRole.Name] = expectedRole
 					assert.Equal(t, before.Roles, after.Roles)
 
-					require.Contains(t, before.RoleBindings, podReader)
-					expectedBinding := before.RoleBindings[podReader]
+					podReaderBinding := podReader
+					require.Contains(t, before.RoleBindings, podReaderBinding)
+					expectedBinding := before.RoleBindings[podReaderBinding]
 					assert.Equal(t, podReader, expectedBinding.RoleRef.Name)
 					expectedBinding.Name = "explicit-pod-reader-binding"
 					expectedBinding.RoleRef.Name = "explicit-pod-reader"
-					delete(before.RoleBindings, podReader)
+					delete(before.RoleBindings, podReaderBinding)
 					before.RoleBindings[expectedBinding.Name] = expectedBinding
 					assert.Equal(t, before.RoleBindings, after.RoleBindings)
 
@@ -88,7 +89,10 @@ func TestInternalRBACNamesUseDedicatedHelpers(t *testing.T) {
 					assert.Equal(t, before.ClusterRoles, after.ClusterRoles)
 
 					for _, purpose := range []string{"authentication", "authorization"} {
-						legacy := clusterPrefix + purpose
+						legacy := "suse-observability-" + namespace + "-" + purpose
+						if purpose == "authorization" {
+							legacy = clusterPrefix + purpose
+						}
 						explicit := "explicit-" + purpose + "-binding"
 						if !clusterRBAC {
 							assert.NotContains(t, before.ClusterRoleBindings, legacy)
@@ -183,7 +187,7 @@ func TestRBACAgentNamesPreserveApplicationSubjects(t *testing.T) {
 					if serverSplit {
 						component = "api"
 					}
-					configName := "nightly-suse-observability-" + component
+					configName := "suse-observability-" + component
 					require.Contains(t, after.ConfigMaps, configName)
 					config := after.ConfigMaps[configName].Data["application_stackstate.conf"]
 					subject := "stackstate.authorization.staticSubjects."

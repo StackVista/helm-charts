@@ -91,7 +91,7 @@ func TestExporterResourcesFollowDedicatedHelpers(t *testing.T) {
 				renames := map[string]string{}
 				for _, fixture := range fixtures {
 					name := scenario.fullname + fixture.suffix
-					if fixture.kind == "Deployment" {
+					if fixture.kind == "Deployment" || fixture.kind == "ServiceMonitor" || fixture.kind == "PodMonitor" || fixture.kind == "PrometheusRule" {
 						name = "suse-observability-prometheus-elasticsearch-exporter"
 					}
 					renames[fixture.kind+"/"+name] = "explicit-" + strings.ReplaceAll(fixture.helper, ".", "-")
@@ -104,7 +104,7 @@ func TestExporterResourcesFollowDedicatedHelpers(t *testing.T) {
 	}
 	for _, fixture := range fixtures {
 		name := "orders-prometheus-elasticsearch-exporter" + fixture.suffix
-		if fixture.kind == "Deployment" {
+		if fixture.kind == "Deployment" || fixture.kind == "ServiceMonitor" || fixture.kind == "PodMonitor" || fixture.kind == "PrometheusRule" {
 			name = "suse-observability-prometheus-elasticsearch-exporter"
 		}
 		assert.True(t, seen[fixture.kind+"/"+name], "helper not exercised: %s", fixture.helper)

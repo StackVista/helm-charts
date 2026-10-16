@@ -17,7 +17,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func TestAPIResourceNamesPreserveLegacyConfiguration(t *testing.T) {
+func TestAPIResourceNamesUseCanonicalConfigMapsAndRetainSecrets(t *testing.T) {
 	for _, tc := range []struct {
 		name, release, prefix string
 		values                map[string]string
@@ -42,20 +42,20 @@ func TestAPIResourceNamesPreserveLegacyConfiguration(t *testing.T) {
 				output := helmtestutil.RenderHelmTemplateOptsNoError(t, tc.release, apiResourceNameTestOptions(values))
 				resources := helmtestutil.NewKubernetesResources(t, output)
 				api := tc.prefix + "-api"
+				config := "suse-observability-api"
 				if split {
-					assertAPIConfigurationReferences(t, resources, api, api, api+"-log", api)
-					// Other components retain their existing configuration names.
+					assertAPIConfigurationReferences(t, resources, api, config, config+"-log", api)
 					initializer := tc.prefix + "-initializer"
 					require.Contains(t, resources.Deployments, initializer)
-					assertLegacyConfigurationReferences(t, resources, initializer)
+					assertRetainedSecretConfigurationReferences(t, resources, initializer, "suse-observability-initializer")
 				} else {
 					assert.NotContains(t, resources.Deployments, api)
-					assert.NotContains(t, resources.ConfigMaps, api)
-					assert.NotContains(t, resources.ConfigMaps, api+"-log")
+					assert.NotContains(t, resources.ConfigMaps, config)
+					assert.NotContains(t, resources.ConfigMaps, config+"-log")
 					assert.NotContains(t, resources.Secrets, api)
 					server := tc.prefix + "-server"
 					require.Contains(t, resources.Deployments, server)
-					assertLegacyConfigurationReferences(t, resources, server)
+					assertRetainedSecretConfigurationReferences(t, resources, server, "suse-observability-server")
 				}
 			})
 		}
@@ -108,7 +108,7 @@ func TestAPIConfigurationReferencesFollowDedicatedHelpers(t *testing.T) {
 			assert.NotContains(t, resources.ConfigMaps, "nightly-suse-observability-api")
 			assert.NotContains(t, resources.ConfigMaps, "nightly-suse-observability-api-log")
 			assert.NotContains(t, resources.Secrets, "nightly-suse-observability-api")
-			assertLegacyConfigurationReferences(t, resources, "nightly-suse-observability-initializer")
+			assertRetainedSecretConfigurationReferences(t, resources, "nightly-suse-observability-initializer", "suse-observability-initializer")
 		})
 	}
 }
@@ -157,14 +157,14 @@ func assertConfigurationReferences(t *testing.T, resources helmtestutil.Kubernet
 	assert.Len(t, found, len(expectedSecretData))
 }
 
-func assertLegacyConfigurationReferences(t *testing.T, resources helmtestutil.KubernetesResources, component string) {
+func assertRetainedSecretConfigurationReferences(t *testing.T, resources helmtestutil.KubernetesResources, component, config string) {
 	t.Helper()
 	require.Contains(t, resources.Deployments, component)
-	require.Contains(t, resources.ConfigMaps, component)
-	require.Contains(t, resources.ConfigMaps, component+"-log")
+	require.Contains(t, resources.ConfigMaps, config)
+	require.Contains(t, resources.ConfigMaps, config+"-log")
 	require.Contains(t, resources.Secrets, component)
 	pod := resources.Deployments[component].Spec.Template.Spec
-	assertConfigurationVolumes(t, pod.Volumes, component, component+"-log")
+	assertConfigurationVolumes(t, pod.Volumes, config, config+"-log")
 	found := false
 	for _, container := range pod.Containers {
 		for _, env := range container.Env {

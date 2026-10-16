@@ -57,7 +57,7 @@ func TestBackupResourceReferencesFollowDedicatedHelpers(t *testing.T) {
 		{"victoriaMetrics.list.job.fullname", "Job", "victoria-metrics-list-backups"},
 		{"victoriaMetrics.restore.job.fullname", "Job", "victoria-metrics-restore-backup"},
 		{"stackgraph.restore.persistentvolumeclaim.fullname", "PersistentVolumeClaim", "stackgraph-restore-backup"},
-		{"hbase.configmap.fullname", "ConfigMap", "nightly-backup-sts-hbase-backup"},
+		{"hbase.configmap.fullname", "ConfigMap", "suse-observability-hbase-backup"},
 		{"hbase.secret.fullname", "Secret", "nightly-backup-sts-hbase-backup"},
 	}
 	chart := filepath.Join(t.TempDir(), "chart")
@@ -72,7 +72,7 @@ func TestBackupResourceReferencesFollowDedicatedHelpers(t *testing.T) {
 		explicit := "explicit-" + strings.ToLower(strings.ReplaceAll(fixture.helper, ".", "-"))
 		renames[fixture.kind+"/"+fixture.legacy] = explicit
 		replacement := `{{- define "` + name + `" -}}` + explicit + `{{- end -}}`
-		if strings.HasPrefix(fixture.helper, "hbase.") {
+		if fixture.helper == "hbase.secret.fullname" {
 			// The parent overrides the shared-library interface in the copied chart.
 			names += "\n" + replacement + "\n"
 		} else {

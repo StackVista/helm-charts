@@ -1,0 +1,5 @@
+opentelemetry-collector:
+  serviceMonitor:
+    metricsEndpoints: []
+  podMonitor:
+    metricsEndpoints: []

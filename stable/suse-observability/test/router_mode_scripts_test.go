@@ -130,7 +130,7 @@ func TestRouterModeRolloutWatchPermissions(t *testing.T) {
 			values["deployment.compatibleWithArgoCD"] = fmt.Sprint(argo)
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", routerNamingTestOptions(t, values))
 			resources := helmtestutil.NewKubernetesResources(t, output)
-			role, ok := resources.Roles["nightly-suse-observability-router-mode"]
+			role, ok := resources.Roles["suse-observability-router-mode"]
 			require.True(t, ok)
 			require.Len(t, role.Rules, 2)
 			assert.Equal(t, []string{"deployments"}, role.Rules[1].Resources)
