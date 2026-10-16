@@ -203,6 +203,13 @@ data:
               - set(resource.attributes["service.instance.id"], resource.attributes["k8s.pod.uid"]) where resource.attributes["service.instance.id"] == nil and resource.attributes["k8s.pod.uid"] != nil
               - set(resource.attributes["service.namespace"], resource.attributes["k8s.namespace.name"]) where resource.attributes["service.namespace"] == nil and resource.attributes["k8s.namespace.name"] != nil
       batch: {}
+{{- if $stateMetricsCompat }}
+      # Refuses kubernetes_state collections near the memory limit; stsksm retries at the next interval.
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+{{- end }}
 
 {{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" (eq (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) "true") }}
     exporters:
@@ -311,7 +318,7 @@ data:
 {{- if $stateMetricsCompat }}
         metrics/kubernetes-state:
           receivers: [stsksm]
-          processors: [batch]
+          processors: [memory_limiter, batch]
           exporters: [{{ $exporterName }}]
 {{- end }}
         # Collector self-metrics: scrape the local telemetry endpoint, enrich with

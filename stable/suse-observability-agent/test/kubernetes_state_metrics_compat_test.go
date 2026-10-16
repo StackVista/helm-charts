@@ -33,6 +33,7 @@ func TestKubernetesStateMetricsCompatDisabledByDefault(t *testing.T) {
 	config := collectorConfigMap(t, resources)
 	assert.NotContains(t, section(t, config, "receivers"), "stsksm")
 	assert.NotContains(t, section(t, config, "service", "pipelines"), "metrics/kubernetes-state")
+	assert.NotContains(t, section(t, config, "processors"), "memory_limiter")
 	_, ok := clusterAgentKSMConf(t, resources)
 	assert.True(t, ok)
 	assert.True(t, clusterAgentMountsKSMConf(t, resources))
@@ -52,7 +53,8 @@ func TestKubernetesStateMetricsCompatEnabled(t *testing.T) {
 
 	pipeline := section(t, config, "service", "pipelines", "metrics/kubernetes-state")
 	assert.Equal(t, []any{"stsksm"}, pipeline["receivers"])
-	assert.Equal(t, []any{"batch"}, pipeline["processors"])
+	assert.Equal(t, []any{"memory_limiter", "batch"}, pipeline["processors"])
+	assert.Contains(t, section(t, config, "processors"), "memory_limiter")
 	assert.Len(t, pipeline["exporters"], 1)
 
 	_, ok = clusterAgentKSMConf(t, resources)
