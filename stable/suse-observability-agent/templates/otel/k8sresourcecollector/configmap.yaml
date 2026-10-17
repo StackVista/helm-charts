@@ -2,6 +2,7 @@
 {{- $rcfg := include "stackstate-k8s-agent.k8sResourceCollector.mergedValues" . | fromYaml }}
 {{- $topologyCompat := include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . }}
 {{- $eventsCompat := include "stackstate-k8s-agent.kubernetesEventsCompat.enabled" . }}
+{{- $stateMetricsCompat := include "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" . }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -136,6 +137,22 @@ data:
             mode: watch
             exclude_watch_type: [DELETED]
 {{- end }}
+{{- if $stateMetricsCompat }}
+      # The cluster agent's kubernetes_state metrics, collected while this replica leads.
+      stsksm:
+        cluster_name: ${env:K8S_CLUSTER_NAME}
+        k8s_leader_elector: k8s_leader_elector
+        collectors:
+{{- include "stackstate-k8s-agent.kubeStateMetrics.collectors" . | nindent 10 }}
+{{- with .Values.clusterAgent.collection.kubeStateMetrics.labelsAsTags }}
+        labels_as_tags:
+{{- toYaml . | nindent 10 }}
+{{- end }}
+{{- with .Values.clusterAgent.collection.kubeStateMetrics.annotationsAsTags }}
+        annotations_as_tags:
+{{- toYaml . | nindent 10 }}
+{{- end }}
+{{- end }}
 
     processors:
       # Step 1 of 3 for self-metrics enrichment: remove any namespace attribute
@@ -186,6 +203,13 @@ data:
               - set(resource.attributes["service.instance.id"], resource.attributes["k8s.pod.uid"]) where resource.attributes["service.instance.id"] == nil and resource.attributes["k8s.pod.uid"] != nil
               - set(resource.attributes["service.namespace"], resource.attributes["k8s.namespace.name"]) where resource.attributes["service.namespace"] == nil and resource.attributes["k8s.namespace.name"] != nil
       batch: {}
+{{- if $stateMetricsCompat }}
+      # Refuses kubernetes_state collections near the memory limit; stsksm retries at the next interval.
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+{{- end }}
 
 {{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" (eq (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) "true") }}
     exporters:
@@ -290,6 +314,12 @@ data:
         logs/kubernetes-events:
           receivers: [k8sobjects/kubernetes-events]
           exporters: [stsk8sevents]
+{{- end }}
+{{- if $stateMetricsCompat }}
+        metrics/kubernetes-state:
+          receivers: [stsksm]
+          processors: [memory_limiter, batch]
+          exporters: [{{ $exporterName }}]
 {{- end }}
         # Collector self-metrics: scrape the local telemetry endpoint, enrich with
         # pod/cluster/service identity, then export to SUSE Observability so the

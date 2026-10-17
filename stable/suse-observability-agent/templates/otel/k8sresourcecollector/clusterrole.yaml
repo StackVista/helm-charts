@@ -49,6 +49,12 @@ rules:
 {{- $core := index $byGroup "" | default (list) }}
 {{- $_ := set $byGroup "" (concat $core (list "events" "pods" "namespaces")) }}
 {{- end }}
+{{- if include "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" . }}
+{{- range $entry := list (list "" "nodes" "pods" "services" "persistentvolumeclaims" "persistentvolumes" "namespaces" "endpoints" "secrets" "resourcequotas" "replicationcontrollers" "limitranges") (list "apps" "daemonsets" "deployments" "replicasets" "statefulsets") (list "batch" "cronjobs" "jobs") (list "networking.k8s.io" "ingresses") (list "autoscaling" "horizontalpodautoscalers") (list "policy" "poddisruptionbudgets") (list "storage.k8s.io" "storageclasses" "volumeattachments") }}
+{{- $group := first $entry }}
+{{- $_ := set $byGroup $group (concat (index $byGroup $group | default (list)) (rest $entry)) }}
+{{- end }}
+{{- end }}
 {{- range $g, $resources := $byGroup }}
   - apiGroups: [{{ $g | quote }}]
     resources:

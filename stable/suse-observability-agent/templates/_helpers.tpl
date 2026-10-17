@@ -478,6 +478,47 @@ true
 {{- end -}}
 
 {{/*
+The cluster collector's stsksm receiver produces the cluster agent's kubernetes_state metrics.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" -}}
+{{- if and .Values.global.features.experimentalOtelKubernetesClusterAgent .Values.clusterAgent.collection.kubeStateMetrics.enabled (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
+{{- if not .Values.otel.k8sResourceCollector.leaderElection.enabled }}
+{{- fail "global.features.experimentalOtelKubernetesClusterAgent requires otel.k8sResourceCollector.leaderElection.enabled, or every replica would send every series" }}
+{{- end }}
+true
+{{- end }}
+{{- end -}}
+
+{{/*
+Memory the stsksm receiver's kube-state-metrics stores need on top of the cluster collector's own limit.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesStateMetricsCompat.extraMemoryMiB" -}}
+512
+{{- end -}}
+
+{{/*
+Collectors of the cluster agent's KSM check, shared with the stsksm receiver.
+*/}}
+{{- define "stackstate-k8s-agent.kubeStateMetrics.collectors" -}}
+{{- $kubeRes := .Values.clusterAgent.collection.kubernetesResources -}}
+- nodes
+- pods
+- services
+{{- range $name := list "persistentvolumeclaims" "persistentvolumes" "namespaces" "endpoints" "daemonsets" "deployments" "replicasets" "statefulsets" "cronjobs" "jobs" "ingresses" "secrets" }}
+{{- if index $kubeRes $name }}
+- {{ $name }}
+{{- end }}
+{{- end }}
+- resourcequotas
+- replicationcontrollers
+- limitranges
+- horizontalpodautoscalers
+- poddisruptionbudgets
+- storageclasses
+- volumeattachments
+{{- end -}}
+
+{{/*
 The cluster collector posts cluster-agent-compatible payloads to the Receiver intake.
 */}}
 {{- define "stackstate-k8s-agent.clusterAgentCompat.enabled" -}}
@@ -564,7 +605,7 @@ replaces Secret data by its hash and truncates ConfigMap data on ingestion.
 
 {{/*
 Cluster collector memory limit in MiB, empty when no limit is set. Includes the
-topology exporter's extra memory when that flag is on.
+extra memory of the topology exporter and the stsksm receiver when that flag is on.
 */}}
 {{- define "stackstate-k8s-agent.k8sResourceCollector.memoryLimitMiB" -}}
 {{- $quantity := dig "limits" "memory" "" .Values.otel.k8sResourceCollector.resources -}}
@@ -572,6 +613,9 @@ topology exporter's extra memory when that flag is on.
 {{- $mib := include "stackstate-k8s-agent.memoryMiB" (dict "quantity" $quantity "field" "otel.k8sResourceCollector.resources.limits.memory" "purpose" "the cluster collector" "min" 64) | int -}}
 {{- if include "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" . -}}
 {{- $mib = add $mib (include "stackstate-k8s-agent.kubernetesTopologyCompat.extraMemoryMiB" . | int) -}}
+{{- end -}}
+{{- if include "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" . -}}
+{{- $mib = add $mib (include "stackstate-k8s-agent.kubernetesStateMetricsCompat.extraMemoryMiB" . | int) -}}
 {{- end -}}
 {{- $mib -}}
 {{- end -}}
