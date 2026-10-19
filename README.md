@@ -1,5 +1,10 @@
 # helm-charts
 
+> [!IMPORTANT]
+> **Internal repository — not a supported API.** Only the chart values documented in the
+> [SUSE Observability documentation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/classic.html)
+> are supported. Other values, templates and the charts under `local/` are internal and can change in any release without notice.
+
 StackState curated applications for Kubernetes.
 
 ## CI/CD
