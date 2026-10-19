@@ -573,7 +573,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: "3.6.11-so26"
+    tag: "3.6.11-so27"
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -631,7 +631,7 @@ otelLogsAgent:
     # otelLogsAgent.image.repository -- Container image repository for the logs Collector.
     repository: stackstate/sts-opentelemetry-collector
     # otelLogsAgent.image.tag -- Collector agent image tag for capability discovery and native pod-log export.
-    tag: "v0.0.70-agent"
+    tag: "v0.0.71-agent"
     # otelLogsAgent.image.pullPolicy -- Container image pull policy.
     pullPolicy: IfNotPresent
     # otelLogsAgent.image.pullSecretName -- Name of ImagePullSecret to use for the logs Collector image.
@@ -986,7 +986,7 @@ otel:
         # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
         repository: stackstate/sts-opentelemetry-collector
         # otel.prometheusScraping.collector.image.tag -- Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
-        tag: "v0.0.70-agent"
+        tag: "v0.0.71-agent"
         # otel.prometheusScraping.collector.image.pullPolicy -- Container image pull policy for the Prometheus scraper collector.
         pullPolicy: IfNotPresent
 
@@ -1046,7 +1046,7 @@ otel:
         # otel.prometheusScraping.targetAllocator.image.repository -- SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release.
         repository: stackstate/opentelemetry-target-allocator
         # otel.prometheusScraping.targetAllocator.image.tag -- SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>).
-        tag: "0.160.0-so6"
+        tag: "0.160.0-so7"
         # otel.prometheusScraping.targetAllocator.image.pullPolicy -- Container image pull policy for the Target Allocator.
         pullPolicy: IfNotPresent
 
@@ -1130,7 +1130,7 @@ otel:
       # otel.telemetryGateway.image.repository -- Base container image repository.
       repository: stackstate/sts-opentelemetry-collector
       # otel.telemetryGateway.image.tag -- Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag).
-      tag: "v0.0.70-agent"
+      tag: "v0.0.71-agent"
       # otel.telemetryGateway.image.pullPolicy -- Default container image pull policy.
       pullPolicy: IfNotPresent
 
@@ -1247,7 +1247,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: "1.8.6-so34"
+      tag: "1.8.6-so35"
 
 ########################
 # Rbac Agent variables #

@@ -32,7 +32,7 @@ global:
       # global.wait.image.repository -- Base container image repository for wait containers.
       repository: stackstate/wait
       # global.wait.image.tag -- Container image tag for wait containers.
-      tag: "1.0.12-so16"
+      tag: "1.0.12-so17"
       # global.wait.image.pullPolicy -- Image pull policy for wait containers.
       pullPolicy: IfNotPresent
   # global.suseObservability -- Simplified configuration section that allows users to specify high-level settings.
@@ -854,7 +854,7 @@ stackstate:
         # stackstate.components.mcp.image.repository -- Repository of the mcp component Docker image.
         repository: stackstate/suse-observability-mcp
         # stackstate.components.mcp.image.tag -- Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20261015094250-c9a5da2f"
+        tag: "20261019033940-c9a5da2f"
       # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       replicaCount: 1
       # stackstate.components.mcp.podAnnotations -- Extra annotations
@@ -1185,7 +1185,7 @@ stackstate:
           # stackstate.components.router.mode.image.repository -- Base container image repository for router mode containers.
           repository: stackstate/container-tools
           # stackstate.components.router.mode.image.tag -- Container image tag for router mode containers.
-          tag: "1.8.6-so34"
+          tag: "1.8.6-so35"
           # stackstate.components.router.mode.image.pullPolicy -- Image pull policy for router mode containers.
           pullPolicy:
         # stackstate.components.router.mode.resources -- Resource allocation for `router.mode` pods.
@@ -1465,7 +1465,7 @@ stackstate:
         # stackstate.components.clickhouseCleanup.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
         # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
-        tag: "26.8.2.7-so7"
+        tag: "26.8.30.8-so1"
         # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
@@ -1548,7 +1548,7 @@ stackstate:
         # stackstate.components.nginxPrometheusExporter.image.repository -- Base container image repository for nginx-prometheus-exporter containers.
         repository: stackstate/nginx-prometheus-exporter
         # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
-        tag: "1.5.1-so23"
+        tag: "1.5.1-so24"
         # stackstate.components.nginxPrometheusExporter.image.pullPolicy -- Image pull policy for nginx-prometheus-exporter containers.
         pullPolicy: IfNotPresent
     containerTools:
@@ -1558,7 +1558,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: "1.8.6-so34"
+        tag: "1.8.6-so35"
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
       # stackstate.components.containerTools.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1855,7 +1855,7 @@ stackstate:
 ##############################
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
-  imageTag: "8.19.23-so4"
+  imageTag: "8.19.23-so7"
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: null
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
@@ -1884,7 +1884,7 @@ hbase:
       replicaCount: null
   hdfs:
     # hbase.hdfs.version -- Full HDFS image tag. Updated by updatecli.
-    version: "3.5.0-so22"
+    version: "3.5.0-so23"
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
@@ -1998,7 +1998,7 @@ s3proxy:
     # s3proxy.image.repository -- Image repository for S3Proxy
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "3.2.0-so20"
+    tag: "3.2.0-so22"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
@@ -2100,7 +2100,7 @@ victoria-metrics-0:
   server:
     # victoria-metrics-0.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
     image:
-      tag: "1.144.0-so21"
+      tag: "1.144.0-so22"
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-0
     persistentVolume:
@@ -2116,11 +2116,11 @@ victoria-metrics-0:
     # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: "1.8.6-so34"
+        tag: "1.8.6-so35"
     # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so28"
+        tag: "1.144.0-so30"
     # victoria-metrics-0.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2139,7 +2139,7 @@ victoria-metrics-1:
   server:
     # victoria-metrics-1.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
     image:
-      tag: "1.144.0-so21"
+      tag: "1.144.0-so22"
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-1
     persistentVolume:
@@ -2155,11 +2155,11 @@ victoria-metrics-1:
     # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: "1.8.6-so34"
+        tag: "1.8.6-so35"
     # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so28"
+        tag: "1.144.0-so30"
     # victoria-metrics-1.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2202,7 +2202,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: "26.8.2.7-so7"
+    tag: "26.8.30.8-so1"
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha).
   replicaCount: null
   persistence:
@@ -2226,7 +2226,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: "v0.0.70"
+    tag: "v0.0.71"
   resources:
     requests:
       cpu: 250m
