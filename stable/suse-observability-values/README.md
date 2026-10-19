@@ -2,9 +2,7 @@
 
 Helm Chart for rendering SUSE Observability Values
 
-Only the values documented in the [SUSE Observability documentation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/classic.html) are supported; other values are internal and can change without notice.
-
-Current chart version is `1.4.12`
+Current chart version is `1.4.11`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 

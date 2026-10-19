@@ -2,7 +2,6 @@
   "$schema": "https://json-schema.org/draft/2019-09/schema",
   "$id": "https://stackstate.io/example.json",
   "type": "object",
-  "description": "Only the values documented in the SUSE Observability documentation are supported; other values are internal and can change without notice.",
   "default": {},
   "title": "SUSE Observability Helm chart values",
   "required": [
