@@ -1,8 +1,6 @@
 apiVersion: v2
 appVersion: 1.109.0
-description:
-  Victoria Metrics Single version - high-performance, cost-effective and
-  scalable TSDB, long-term remote storage for Prometheus
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 name: victoria-metrics-single
 sources:
   - https://github.com/VictoriaMetrics/helm-charts

@@ -14,10 +14,7 @@ dependencies:
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
     version: "*"
-description:
-  Apache Kafka is a distributed streaming platform designed to build real-time
-  pipelines and can be used as a message broker or as a replacement for a log aggregation
-  solution for big data applications.
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 home: https://github.com/bitnami/charts/tree/main/bitnami/kafka
 icon: https://bitnami.com/assets/stacks/kafka/img/kafka-stack-220x234.png
 keywords:

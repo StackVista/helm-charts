@@ -1,7 +1,7 @@
 apiVersion: v2
 name: opentelemetry-collector
 version: 0.108.0
-description: OpenTelemetry Collector Helm chart for Kubernetes
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 type: application
 home: https://opentelemetry.io/
 sources:

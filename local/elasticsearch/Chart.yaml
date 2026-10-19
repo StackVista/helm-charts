@@ -1,5 +1,5 @@
 apiVersion: v2
-description: Official Elastic helm chart for Elasticsearch
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 home: https://github.com/elastic/helm-charts
 name: elasticsearch
 version: 8.19.4
