@@ -203,13 +203,12 @@ data:
               - set(resource.attributes["service.instance.id"], resource.attributes["k8s.pod.uid"]) where resource.attributes["service.instance.id"] == nil and resource.attributes["k8s.pod.uid"] != nil
               - set(resource.attributes["service.namespace"], resource.attributes["k8s.namespace.name"]) where resource.attributes["service.namespace"] == nil and resource.attributes["k8s.namespace.name"] != nil
       batch: {}
-{{- if $stateMetricsCompat }}
-      # Refuses kubernetes_state collections near the memory limit; stsksm retries at the next interval.
+      # Refuses data near the memory limit. Only in pipelines whose source resends:
+      # resource snapshots, self-metrics scrapes and kubernetes_state collections.
       memory_limiter:
         check_interval: 5s
         limit_percentage: 80
         spike_limit_percentage: 25
-{{- end }}
 
 {{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" (eq (include "stackstate-k8s-agent.platform.otlp.useGrpc" .) "true") }}
     exporters:
@@ -302,15 +301,17 @@ data:
         # Kubernetes resource discovery - real-time watch of CRDs and custom resources
         logs/k8s-resource:
           receivers: [k8sresource]
-          processors: [batch]
+          processors: [memory_limiter, batch]
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.k8sResourceCollector.debug "signal" "logs") }}]
 {{- if $topologyCompat }}
-        # No processors: snapshot boundaries rely on records arriving in emission order.
+        # No processors: snapshot boundaries rely on records arriving in emission order,
+        # and a refused record would read as a deleted component.
         logs/kubernetes-topology:
           receivers: [k8sresource]
           exporters: [stsk8stopology]
 {{- end }}
 {{- if $eventsCompat }}
+        # No memory limiter: the watch does not resend, so refused events would be lost.
         logs/kubernetes-events:
           receivers: [k8sobjects/kubernetes-events]
           exporters: [stsk8sevents]
@@ -326,6 +327,6 @@ data:
         # suse-observability-2 StackPack can monitor receiver health.
         metrics/self:
           receivers: [prometheus/self]
-          processors: [transform/pre-k8sattributes, k8s_attributes, transform/self-metrics, batch]
+          processors: [memory_limiter, transform/pre-k8sattributes, k8s_attributes, transform/self-metrics, batch]
           exporters: [{{ $exporterName }}{{ include "stackstate-k8s-agent.collector.debugExporter.suffix" (dict "debug" .Values.otel.k8sResourceCollector.debug "signal" "metrics") }}]
 {{- end }}

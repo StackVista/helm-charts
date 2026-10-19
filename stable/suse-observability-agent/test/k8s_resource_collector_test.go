@@ -33,8 +33,8 @@ func TestK8sResourceCollectorBatchesLogs(t *testing.T) {
 			}
 			require.NoError(t, yaml.Unmarshal([]byte(configMap.Data["config.yaml"]), &config))
 			assert.Contains(t, config.Processors, "batch")
-			assert.Equal(t, []string{"batch"}, config.Service.Pipelines["logs/k8s-resource"].Processors)
-			assert.Equal(t, []string{"transform/pre-k8sattributes", "k8s_attributes", "transform/self-metrics", "batch"},
+			assert.Equal(t, []string{"memory_limiter", "batch"}, config.Service.Pipelines["logs/k8s-resource"].Processors)
+			assert.Equal(t, []string{"memory_limiter", "transform/pre-k8sattributes", "k8s_attributes", "transform/self-metrics", "batch"},
 				config.Service.Pipelines["metrics/self"].Processors)
 		})
 	}

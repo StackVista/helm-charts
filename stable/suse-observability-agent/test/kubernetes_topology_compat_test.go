@@ -134,7 +134,7 @@ func TestKubernetesTopologyCompatEnabled(t *testing.T) {
 	assert.Equal(t, []string{"k8sresource"}, pipeline.Receivers)
 	assert.Empty(t, pipeline.Processors, "records must reach the exporter in emission order")
 	assert.Equal(t, []string{"stsk8stopology"}, pipeline.Exporters)
-	assert.Equal(t, []string{"batch"}, config.Service.Pipelines["logs/k8s-resource"].Processors)
+	assert.Equal(t, []string{"memory_limiter", "batch"}, config.Service.Pipelines["logs/k8s-resource"].Processors)
 
 	env, ok := containerEnv(t, resources, resourceCollectorName, "RECEIVER_INTAKE_URL")
 	require.True(t, ok)
