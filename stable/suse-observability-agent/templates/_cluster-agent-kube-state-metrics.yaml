@@ -10,7 +10,7 @@ instances:
     skip_leader_election: true
     {{- end }}
     labels_as_tags:
-      {{ .Values.clusterAgent.collection.kubeStateMetrics.labelsAsTags | toYaml | indent 8 }}
+    {{- .Values.clusterAgent.collection.kubeStateMetrics.labelsAsTags | toYaml | nindent 6 }}
     annotations_as_tags:
-      {{ .Values.clusterAgent.collection.kubeStateMetrics.annotationsAsTags | toYaml | indent 8 }}
+    {{- .Values.clusterAgent.collection.kubeStateMetrics.annotationsAsTags | toYaml | nindent 6 }}
 {{- end -}}
