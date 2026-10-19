@@ -2,7 +2,9 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.24`
+Only the values documented in the [SUSE Observability documentation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/classic.html) are supported; other values are internal and can change without notice.
+
+Current chart version is `1.7.25`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 

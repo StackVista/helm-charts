@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema#",
   "type": "object",
+  "description": "Only the values documented in the SUSE Observability documentation are supported; other values are internal and can change without notice.",
   "required": [
   ],
   "properties": {
