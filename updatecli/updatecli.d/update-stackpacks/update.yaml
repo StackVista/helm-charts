@@ -58,10 +58,10 @@ sources:
     spec:
       image: "quay.io/stackstate/suse-stackpacks"
       architecture: "linux/amd64"
-      tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.suseBranchEnv }}-[0-9a-f]+$"
+      tagfilter: "^platform-[0-9]+-{{ requiredEnv .stackpacks.suseBranchEnv }}-[0-9a-f]+$"
       versionfilter:
         kind: regex/time
-        regex: "^([0-9]+)-{{ requiredEnv .stackpacks.suseBranchEnv }}-[0-9a-f]+$"
+        regex: "^platform-([0-9]+)-{{ requiredEnv .stackpacks.suseBranchEnv }}-[0-9a-f]+$"
         pattern: "20060102150405"
 
 targets:
