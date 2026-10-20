@@ -34,7 +34,6 @@ func TestKubernetesStateMetricsCompatDisabledByDefault(t *testing.T) {
 	config := collectorConfigMap(t, resources)
 	assert.NotContains(t, section(t, config, "receivers"), "stsksm")
 	assert.NotContains(t, section(t, config, "service", "pipelines"), "metrics/kubernetes-state")
-	assert.NotContains(t, section(t, config, "processors"), "memory_limiter")
 	_, ok := clusterAgentKSMConf(t, resources)
 	assert.True(t, ok)
 	assert.True(t, clusterAgentMountsKSMConf(t, resources))
@@ -151,6 +150,29 @@ func TestClusterAgentFlagFollowsCollectionSwitches(t *testing.T) {
 			pipelines := section(t, config, "service", "pipelines")
 			for _, p := range []string{"logs/kubernetes-topology", "logs/kubernetes-events", "metrics/kubernetes-state"} {
 				assert.Equal(t, slices.Contains(tc.pipelines, p), pipelines[p] != nil, p)
+			}
+		})
+	}
+}
+
+func TestMemoryLimiterOnlyWhereTheSourceResends(t *testing.T) {
+	for name, values := range map[string]string{
+		"defaults":           "values/k8s-resource-collector-enabled.yaml",
+		"cluster agent flag": "values/kubernetes-events-compat.yaml",
+	} {
+		t.Run(name, func(t *testing.T) {
+			config := collectorConfigMap(t, renderCompat(t, &helm.Options{ValuesFiles: []string{values}}))
+			assert.Contains(t, section(t, config, "processors"), "memory_limiter")
+			for pipeline, raw := range section(t, config, "service", "pipelines") {
+				processors, _ := raw.(map[string]any)["processors"].([]any)
+				limited := slices.Contains(processors, any("memory_limiter"))
+				switch pipeline {
+				case "logs/kubernetes-topology", "logs/kubernetes-events":
+					assert.False(t, limited, "%s must not refuse data", pipeline)
+				default:
+					assert.True(t, limited, "%s should refuse data near the memory limit", pipeline)
+					assert.Equal(t, "memory_limiter", processors[0], "%s: the limiter goes first", pipeline)
+				}
 			}
 		})
 	}
