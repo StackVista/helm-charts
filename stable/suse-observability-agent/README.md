@@ -98,6 +98,11 @@ disable the caches. The defaults preserve the existing 10-second wait, 50,000
 trace entries per pod, and disabled decision caches. Larger buffers, caches,
 or waiting periods require more memory.
 
+Keep `otel.telemetryGateway.replicaCount` at `1`; horizontal scaling with correct
+tail sampling is currently unsupported. The gateway Service does not route by
+trace ID, so multiple replicas can produce inconsistent sampling decisions.
+A PodDisruptionBudget does not prevent this.
+
 ## OpenTelemetry pod logs
 
 The logs Collector requires capability discovery, native export and the delivery
@@ -664,7 +669,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |
 | otel.telemetryGateway.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.telemetryGateway.priorityClassName | string | `""` | Priority class for gateway pods. |
-| otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA. |
+| otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. Keep at 1 for correct tail sampling; multiple replicas can split traces across samplers. |
 | otel.telemetryGateway.resources.limits.cpu | string | `"1"` | CPU resource limits. |
 | otel.telemetryGateway.resources.limits.memory | string | `"2Gi"` | Memory resource limits. |
 | otel.telemetryGateway.resources.requests.cpu | string | `"250m"` | CPU resource requests. |
