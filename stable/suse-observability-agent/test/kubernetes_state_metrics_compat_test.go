@@ -53,7 +53,9 @@ func TestKubernetesStateMetricsCompatEnabled(t *testing.T) {
 
 	pipeline := section(t, config, "service", "pipelines", "metrics/kubernetes-state")
 	assert.Equal(t, []any{"stsksm"}, pipeline["receivers"])
-	assert.Equal(t, []any{"memory_limiter", "batch"}, pipeline["processors"])
+	assert.Equal(t, []any{"memory_limiter", "batch/kubernetes-state"}, pipeline["processors"])
+	batch := section(t, config, "processors", "batch/kubernetes-state")
+	assert.EqualValues(t, 8192, batch["send_batch_max_size"], "requests must stay under the platform receiver's body limit")
 	assert.Contains(t, section(t, config, "processors"), "memory_limiter")
 	assert.Len(t, pipeline["exporters"], 1)
 
