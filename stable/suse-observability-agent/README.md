@@ -88,6 +88,16 @@ helm install \
 stackstate/suse-observability-agent
 ```
 
+## Telemetry gateway trace sampling
+
+Configure `otel.telemetryGateway.traceSampling.decisionWait` with a positive
+duration, `numTraces` with a positive trace-entry capacity, and
+`decisionCache.sampledCacheSize` / `decisionCache.nonSampledCacheSize` with
+nonnegative counts of remembered keep / drop decisions. Cache sizes of zero
+disable the caches. The defaults preserve the existing 10-second wait, 50,000
+trace entries per pod, and disabled decision caches. Larger buffers, caches,
+or waiting periods require more memory.
+
 ## OpenTelemetry pod logs
 
 The logs Collector requires capability discovery, native export and the delivery
@@ -665,7 +675,11 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.spanMetrics.aggregationCardinalityLimit | int | `5000` | Maximum number of unique span-metric aggregation series held by the gateway. Prevents high-cardinality spans from exhausting memory. |
 | otel.telemetryGateway.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | otel.telemetryGateway.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| otel.telemetryGateway.traceSampling.decisionCache.nonSampledCacheSize | int | `0` | Number of trace IDs with drop decisions remembered for late spans; 0 disables the cache. |
+| otel.telemetryGateway.traceSampling.decisionCache.sampledCacheSize | int | `0` | Number of trace IDs with keep decisions remembered for late spans; 0 disables the cache. |
+| otel.telemetryGateway.traceSampling.decisionWait | string | `"10s"` | Time to wait after first receiving a trace before making a sampling decision. |
 | otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond | int | `500` | Maximum traces spans per second exported by the gateway. |
+| otel.telemetryGateway.traceSampling.numTraces | int | `50000` | Maximum number of trace entries held per gateway pod (not spans or bytes). |
 | otelLogsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | otelLogsAgent.enabled | bool | `true` | Enable OTel pod-log collection when global.features.experimentalOtelLogsAgent is true. |
 | otelLogsAgent.exportMode | string | `"auto"` | `auto` selects the destination from the Receiver's /features endpoint; `promtail` or `native` fixes it without querying /features. |

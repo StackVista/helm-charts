@@ -1178,6 +1178,15 @@ otel:
     traceSampling:
       # otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond -- Maximum traces spans per second exported by the gateway.
       maxTotalSpansPerSecond: 500
+      # otel.telemetryGateway.traceSampling.decisionWait -- Time to wait after first receiving a trace before making a sampling decision.
+      decisionWait: 10s
+      # otel.telemetryGateway.traceSampling.numTraces -- Maximum number of trace entries held per gateway pod (not spans or bytes).
+      numTraces: 50000
+      decisionCache:
+        # otel.telemetryGateway.traceSampling.decisionCache.sampledCacheSize -- Number of trace IDs with keep decisions remembered for late spans; 0 disables the cache.
+        sampledCacheSize: 0
+        # otel.telemetryGateway.traceSampling.decisionCache.nonSampledCacheSize -- Number of trace IDs with drop decisions remembered for late spans; 0 disables the cache.
+        nonSampledCacheSize: 0
 
     # otel.telemetryGateway.podAnnotations -- Additional annotations for gateway pods.
     podAnnotations: {}

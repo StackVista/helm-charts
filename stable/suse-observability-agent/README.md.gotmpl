@@ -82,6 +82,16 @@ helm install \
 stackstate/suse-observability-agent
 ```
 
+## Telemetry gateway trace sampling
+
+Configure `otel.telemetryGateway.traceSampling.decisionWait` with a positive
+duration, `numTraces` with a positive trace-entry capacity, and
+`decisionCache.sampledCacheSize` / `decisionCache.nonSampledCacheSize` with
+nonnegative counts of remembered keep / drop decisions. Cache sizes of zero
+disable the caches. The defaults preserve the existing 10-second wait, 50,000
+trace entries per pod, and disabled decision caches. Larger buffers, caches,
+or waiting periods require more memory.
+
 ## OpenTelemetry pod logs
 
 The logs Collector requires capability discovery, native export and the delivery
