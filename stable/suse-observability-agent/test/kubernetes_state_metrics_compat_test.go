@@ -1,6 +1,7 @@
 package test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -112,5 +113,45 @@ func TestKubernetesStateMetricsCompatRestrictedRBAC(t *testing.T) {
 		"storage.k8s.io/storageclasses", "storage.k8s.io/volumeattachments",
 	} {
 		assert.True(t, granted[want], "%s must be listable for kube-state-metrics", want)
+	}
+}
+
+func TestClusterAgentFlagFollowsCollectionSwitches(t *testing.T) {
+	for name, tc := range map[string]struct {
+		values    map[string]string
+		receivers []string
+		pipelines []string
+	}{
+		"topology off": {
+			values:    map[string]string{"clusterAgent.collection.kubernetesTopology": "false"},
+			receivers: []string{"k8sobjects/kubernetes-events", "stsksm"},
+			pipelines: []string{"logs/kubernetes-events", "metrics/kubernetes-state"},
+		},
+		"events off": {
+			values:    map[string]string{"clusterAgent.collection.kubernetesEvents": "false"},
+			receivers: []string{"stsksm"},
+			pipelines: []string{"logs/kubernetes-topology", "metrics/kubernetes-state"},
+		},
+		"cluster agent off": {
+			values: map[string]string{
+				"clusterAgent.enabled": "false", "nodeAgent.enabled": "false", "checksAgent.enabled": "false",
+			},
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			resources := renderCompat(t, &helm.Options{
+				ValuesFiles: []string{"values/kubernetes-events-compat.yaml"},
+				SetValues:   tc.values,
+			})
+			config := collectorConfigMap(t, resources)
+			receivers := section(t, config, "receivers")
+			for _, r := range []string{"k8sobjects/kubernetes-events", "stsksm"} {
+				assert.Equal(t, slices.Contains(tc.receivers, r), receivers[r] != nil, r)
+			}
+			pipelines := section(t, config, "service", "pipelines")
+			for _, p := range []string{"logs/kubernetes-topology", "logs/kubernetes-events", "metrics/kubernetes-state"} {
+				assert.Equal(t, slices.Contains(tc.pipelines, p), pipelines[p] != nil, p)
+			}
+		})
 	}
 }

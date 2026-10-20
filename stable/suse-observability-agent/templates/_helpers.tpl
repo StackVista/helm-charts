@@ -459,7 +459,7 @@ Send Kubernetes topology through the cluster collector's cluster-agent-compatibl
 exporter instead of the cluster agent's topology check.
 */}}
 {{- define "stackstate-k8s-agent.kubernetesTopologyCompat.enabled" -}}
-{{- if and .Values.global.features.experimentalOtelKubernetesClusterAgent (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
+{{- if and .Values.global.features.experimentalOtelKubernetesClusterAgent .Values.clusterAgent.enabled .Values.clusterAgent.collection.kubernetesTopology (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
 true
 {{- end }}
 {{- end -}}
@@ -469,7 +469,7 @@ Send Kubernetes events through the cluster collector's cluster-agent-compatible
 exporter instead of the cluster agent's events check.
 */}}
 {{- define "stackstate-k8s-agent.kubernetesEventsCompat.enabled" -}}
-{{- if and .Values.global.features.experimentalOtelKubernetesClusterAgent (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
+{{- if and .Values.global.features.experimentalOtelKubernetesClusterAgent .Values.clusterAgent.enabled .Values.clusterAgent.collection.kubernetesEvents (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
 {{- if not .Values.otel.k8sResourceCollector.leaderElection.enabled }}
 {{- fail "global.features.experimentalOtelKubernetesClusterAgent requires otel.k8sResourceCollector.leaderElection.enabled, or every replica would send every event" }}
 {{- end }}
@@ -481,7 +481,7 @@ true
 The cluster collector's stsksm receiver produces the cluster agent's kubernetes_state metrics.
 */}}
 {{- define "stackstate-k8s-agent.kubernetesStateMetricsCompat.enabled" -}}
-{{- if and .Values.global.features.experimentalOtelKubernetesClusterAgent .Values.clusterAgent.collection.kubeStateMetrics.enabled (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
+{{- if and .Values.global.features.experimentalOtelKubernetesClusterAgent .Values.clusterAgent.enabled .Values.clusterAgent.collection.kubeStateMetrics.enabled (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) }}
 {{- if not .Values.otel.k8sResourceCollector.leaderElection.enabled }}
 {{- fail "global.features.experimentalOtelKubernetesClusterAgent requires otel.k8sResourceCollector.leaderElection.enabled, or every replica would send every series" }}
 {{- end }}
