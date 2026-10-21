@@ -1,5 +1,26 @@
 {{/* vim: set filetype=mustache: */}}
 
+{{/* Reserve half the memory request for native memory and filesystem cache. */}}
+{{- define "kafka.heapOpts" -}}
+{{- if .heapOpts -}}
+{{- .heapOpts -}}
+{{- else -}}
+{{- $memoryRequest := .resources.requests.memory | toString -}}
+{{- $units := dict "" 1 "m" 0.001 "k" 1000 "M" 1000000 "G" 1000000000 "T" 1000000000000 "P" 1000000000000000 "E" 1000000000000000000 "Ki" 1024 "Mi" 1048576 "Gi" 1073741824 "Ti" 1099511627776 "Pi" 1125899906842624 "Ei" 1152921504606846976 -}}
+{{- $unit := regexFind "[A-Za-z]+$" $memoryRequest -}}
+{{- $number := trimSuffix $unit $memoryRequest -}}
+{{- if or (not (regexMatch "^\\+?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([eE][+-]?[0-9]+)?$" $number)) (not (hasKey $units $unit)) -}}
+{{- fail "Cannot derive Kafka heap from kafka.resources.requests.memory; use a byte quantity or an SI/binary suffix, or set kafka.heapOpts explicitly" -}}
+{{- end -}}
+{{- $bytes := mulf ($number | float64) (index $units $unit) -}}
+{{- $heapMi := divf $bytes 2097152 | floor | int -}}
+{{- if lt $heapMi 1 -}}
+{{- fail "Kafka memory request must be at least 2Mi to derive a heap; set kafka.heapOpts explicitly to override" -}}
+{{- end -}}
+{{- printf "-Xmx%dm -Xms%dm" $heapMi $heapMi -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Expand the name of the chart.
 */}}

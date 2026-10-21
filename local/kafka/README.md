@@ -124,7 +124,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | global.imagePullSecrets | list | `[]` |  |
 | global.imageRegistry | string | `""` |  |
 | global.storageClass | string | `""` |  |
-| heapOpts | string | `"-Xmx1024m -Xms1024m"` |  |
+| heapOpts | string | `""` | When empty, Xmx and Xms use 50% of the effective memory request, rounded down to MiB. |
 | hostAliases | list | `[]` |  |
 | hostIPC | bool | `false` |  |
 | hostNetwork | bool | `false` |  |

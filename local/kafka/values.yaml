@@ -134,9 +134,8 @@ log4j: ""
 ## NOTE: this will override `log4j`
 ##
 existingLog4jConfigMap: ""
-## @param heapOpts Kafka Java Heap size
-##
-heapOpts: -Xmx1024m -Xms1024m
+# heapOpts -- When empty, Xmx and Xms use 50% of the effective memory request, rounded down to MiB.
+heapOpts: ""
 ## @param deleteTopicEnable Switch to enable topic deletion or not
 ##
 deleteTopicEnable: false
