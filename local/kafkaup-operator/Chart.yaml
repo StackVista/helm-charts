@@ -1,6 +1,6 @@
 apiVersion: v2
 name: "kafkaup-operator"
-description: "The StackState Kafka upgrade operator"
+description: "Internal dependency of the suse-observability chart; not supported as a standalone chart."
 version: 0.1.29
 appVersion: v0.1.0
 home: https://gitlab.com/StackVista/platform/kafkaup-operator

@@ -14,9 +14,7 @@ dependencies:
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
     version: "*"
-description:
-  Apache ZooKeeper provides a reliable, centralized register of configuration
-  data and services for distributed applications.
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 home: https://github.com/bitnami/charts/tree/master/bitnami/zookeeper
 icon: https://bitnami.com/assets/stacks/zookeeper/img/zookeeper-stack-220x234.png
 keywords:

@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: v1.7.0
-description: Elasticsearch stats exporter for Prometheus
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 home: https://github.com/prometheus-community/elasticsearch_exporter
 keywords:
   - metrics

@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 0.4.25
-description: Common chartbuilding components and helpers
+description: Internal dependency of the suse-observability and suse-observability-agent charts; not supported as a standalone chart.
 home: https://gitlab.com/stackvista/devops/helm-charts.git
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 keywords:

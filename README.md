@@ -1,5 +1,8 @@
 # helm-charts
 
+> [!IMPORTANT]
+> The charts under `local/` are internal dependencies of the charts under `stable/`. They are not supported as standalone charts and can change in any release without notice.
+
 StackState curated applications for Kubernetes.
 
 ## CI/CD

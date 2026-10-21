@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 5.0.0
-description: A Helm chart for Anomaly Detection
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 home: https://gitlab.com/stackvista/stackstate-ailab
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 keywords:

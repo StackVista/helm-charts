@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: 1.2.12
 version: 0.2.160
-description: Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
+description: Internal dependency of the suse-observability chart; not supported as a standalone chart.
 keywords:
   - aiops
   - monitoring
