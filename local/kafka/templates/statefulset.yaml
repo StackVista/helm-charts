@@ -1,6 +1,8 @@
 {{- $replicaCount := include "common.sizing.kafka.effectiveReplicaCount" . | int -}}
 {{- $sizingPersistenceSize := include "common.sizing.kafka.persistence.size" . | trim -}}
 {{- $persistenceSize := default $sizingPersistenceSize .Values.persistence.size -}}
+{{- $sizingResources := include "common.sizing.kafka.resources" . | fromYaml -}}
+{{- $evaluatedResources := merge (dict) .Values.resources $sizingResources -}}
 {{- $fullname := include "common.names.fullname" . }}
 {{- $releaseNamespace := .Release.Namespace }}
 {{- $clusterDomain := .Values.clusterDomain }}
@@ -279,7 +281,7 @@ spec:
             - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
               value: {{ .Values.autoCreateTopicsEnable | quote }}
             - name: KAFKA_HEAP_OPTS
-              value: {{ .Values.heapOpts | quote }}
+              value: {{ include "kafka.heapOpts" (dict "heapOpts" .Values.heapOpts "resources" $evaluatedResources) | quote }}
             - name: KAFKA_LOG_FLUSH_INTERVAL_MESSAGES
               value: {{ .Values.logFlushIntervalMessages | replace "_" "" | quote }}
             - name: KAFKA_LOG_FLUSH_INTERVAL_MS
@@ -381,9 +383,6 @@ spec:
           {{- if .Values.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
-          {{- $sizingResources := include "common.sizing.kafka.resources" . | trim -}}
-          {{- $sizingResourcesDict := fromYaml $sizingResources }}
-          {{- $evaluatedResources := merge (dict) .Values.resources $sizingResourcesDict }}
           {{- with $evaluatedResources }}
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}
