@@ -82,7 +82,7 @@
       value: {{ .Values.processAgent.podCorrelation.exporter.interval | quote }}
     {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
     - name: STS_CRI_SOCKET_PATH
-      value: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
+      value: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
     {{- end }}
     {{- if .Values.global.proxy.url }}
     - name: STS_PROXY_HTTPS
@@ -112,22 +112,26 @@
   volumeMounts:
   {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
   - name: customcrisocket
-    mountPath: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
+    mountPath: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
     readOnly: true
   {{- end }}
+  {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
   - name: crisocket
     mountPath: /var/run/crio/crio.sock
     readOnly: true
   - name: containerdsocket
     mountPath: /var/run/containerd/containerd.sock
     readOnly: true
+  {{- end }}
   - name: sys-kernel-debug
     mountPath: /sys/kernel/debug
     # Having sys-kernel-debug as read only breaks specific monitors from receiving metrics
     # readOnly: true
+  {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
   - name: dockersocket
     mountPath: /var/run/docker.sock
     readOnly: true
+  {{- end }}
   # The agent needs access to /etc to figure out what os it is running on.
   - name: etcdir
     mountPath: /host/etc

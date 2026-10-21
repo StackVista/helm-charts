@@ -94,6 +94,20 @@
         }
       }
     },
+    "nodeAgent": {
+      "type": "object",
+      "properties": {
+        "containerRuntime": {
+          "type": "object",
+          "properties": {
+            "mountDefaultSockets": {
+              "type": "boolean",
+              "description": "Mount the default Docker, containerd and CRI-O sockets alongside any custom socket. When false, only a configured custom socket is mounted and validated as a socket."
+            }
+          }
+        }
+      }
+    },
     "clusterAgent": {
       "type": "object",
       "required": [

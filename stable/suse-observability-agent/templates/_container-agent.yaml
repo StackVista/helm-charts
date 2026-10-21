@@ -57,7 +57,7 @@
       {{- include "stackstate-k8s-agent.urlEnvValue" . | nindent 6 }}
     {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
     - name: STS_CRI_SOCKET_PATH
-      value: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
+      value: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
     {{- end }}
     {{- if .Values.global.proxy.url }}
     - name: STS_PROXY_HTTPS
@@ -116,24 +116,28 @@
   volumeMounts:
   {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
   - name: customcrisocket
-    mountPath: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
+    mountPath: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
     readOnly: true
   {{- end }}
+  {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
   - name: crisocket
     mountPath: /var/run/crio/crio.sock
     readOnly: true
   - name: containerdsocket
     mountPath: /var/run/containerd/containerd.sock
     readOnly: true
+  {{- end }}
   - name: kubelet
     mountPath: /var/lib/kubelet
     readOnly: true
   - name: nfs
     mountPath: /var/lib/nfs
     readOnly: true
+  {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
   - name: dockersocket
     mountPath: /var/run/docker.sock
     readOnly: true
+  {{- end }}
   - name: dockernetns
     mountPath: /run/docker/netns
     readOnly: true

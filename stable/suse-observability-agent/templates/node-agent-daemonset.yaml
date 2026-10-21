@@ -70,7 +70,10 @@ spec:
       volumes:
     {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
       - hostPath:
-          path: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
+          path: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
+        {{- if not .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
+          type: Socket
+        {{- end }}
         name: customcrisocket
     {{- end }}
       - hostPath:
@@ -85,18 +88,22 @@ spec:
       - hostPath:
           path: /run/docker/netns
         name: dockernetns
+    {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
       - hostPath:
           path: /var/run/crio/crio.sock
         name: crisocket
       - hostPath:
           path: /var/run/containerd/containerd.sock
         name: containerdsocket
+    {{- end }}
       - hostPath:
           path: /sys/kernel/debug
         name: sys-kernel-debug
+    {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
       - hostPath:
           path: /var/run/docker.sock
         name: dockersocket
+    {{- end }}
       - hostPath:
           path: {{ .Values.nodeAgent.containerRuntime.hostProc }}
         name: procdir
