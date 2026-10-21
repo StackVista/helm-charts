@@ -138,11 +138,15 @@ data:
       # can use up to 33%, and the rest policy samples matching traces up to its 34%
       # allocation. Budgets are per policy and unused capacity is not redistributed;
       # if an earlier matching policy is over budget, the trace is not evaluated by
-      # later policies. Traces still open after 10s are decided on partial data.
+      # later policies. Traces still open when decision_wait expires are decided on partial data.
       # Span metrics are computed upstream of this processor, so tail sampling here
       # does not bias RED metrics or duration histograms.
       tail_sampling:
-        decision_wait: 10s
+        decision_wait: {{ .Values.otel.telemetryGateway.traceSampling.decisionWait | quote }}
+        num_traces: {{ .Values.otel.telemetryGateway.traceSampling.numTraces }}
+        decision_cache:
+          sampled_cache_size: {{ .Values.otel.telemetryGateway.traceSampling.decisionCache.sampledCacheSize }}
+          non_sampled_cache_size: {{ .Values.otel.telemetryGateway.traceSampling.decisionCache.nonSampledCacheSize }}
         policies:
           - name: rate-limited-composite
             type: composite

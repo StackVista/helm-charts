@@ -225,6 +225,55 @@
         }
       }
     },
+    "otel": {
+      "type": "object",
+      "properties": {
+        "telemetryGateway": {
+          "type": "object",
+          "properties": {
+            "traceSampling": {
+              "type": "object",
+              "required": ["decisionWait", "numTraces", "decisionCache"],
+              "properties": {
+                "decisionWait": {
+                  "type": "string",
+                  "description": "Positive duration to wait after first receiving a trace before making a sampling decision.",
+                  "allOf": [
+                    {
+                      "pattern": "^\\+?(([0-9]+(\\.[0-9]*)?|\\.[0-9]+)(ns|us|µs|μs|ms|s|m|h))+$"
+                    },
+                    {
+                      "pattern": "[1-9]"
+                    }
+                  ]
+                },
+                "numTraces": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Maximum number of trace entries held by each sampling collector."
+                },
+                "decisionCache": {
+                  "type": "object",
+                  "required": ["sampledCacheSize", "nonSampledCacheSize"],
+                  "properties": {
+                    "sampledCacheSize": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Number of keep decisions remembered after trace-buffer release; zero disables the cache."
+                    },
+                    "nonSampledCacheSize": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Number of drop decisions remembered after trace-buffer release; zero disables the cache."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "global": {
       "type": "object",
       "properties": {

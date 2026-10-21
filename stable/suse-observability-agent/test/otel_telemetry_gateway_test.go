@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -355,6 +356,99 @@ func TestOtelTelemetryGatewayGrpcExporter(t *testing.T) {
 	require.True(t, exists, "gateway Deployment should exist")
 	envVars := envVarsByName(deployment.Spec.Template.Spec.Containers[0].Env)
 	assert.Equal(t, "otlp-my-suse-observability-instance.com:443", envVars["PLATFORM_OTLP_ENDPOINT"])
+}
+
+func TestOtelTelemetryGatewayTraceSampling(t *testing.T) {
+	tests := []struct {
+		name          string
+		values        map[string]string
+		decisionWait  string
+		numTraces     int
+		sampledCache  int
+		rejectedCache int
+	}{
+		{name: "defaults", decisionWait: "10s", numTraces: 50000},
+		{
+			name: "overrides",
+			values: map[string]string{
+				"decisionWait":                      "1m30.5s",
+				"numTraces":                         "100000",
+				"decisionCache.sampledCacheSize":    "200000",
+				"decisionCache.nonSampledCacheSize": "300000",
+			},
+			decisionWait: "1m30.5s", numTraces: 100000, sampledCache: 200000, rejectedCache: 300000,
+		},
+		{
+			name: "keep cache only",
+			values: map[string]string{
+				"decisionCache.sampledCacheSize": "200000",
+			},
+			decisionWait: "10s", numTraces: 50000, sampledCache: 200000,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			values := map[string]string{}
+			for key, value := range test.values {
+				values["otel.telemetryGateway.traceSampling."+key] = value
+			}
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+				ValuesFiles: []string{"values/minimal.yaml", "values/otel-telemetry-gateway-enabled.yaml"},
+				SetValues:   values,
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			configMap, exists := resources.ConfigMaps[otelTelemetryGatewayConfigName]
+			require.True(t, exists)
+			var config struct {
+				Processors struct {
+					TailSampling struct {
+						DecisionWait  string `yaml:"decision_wait"`
+						NumTraces     int    `yaml:"num_traces"`
+						DecisionCache struct {
+							SampledCacheSize    int `yaml:"sampled_cache_size"`
+							NonSampledCacheSize int `yaml:"non_sampled_cache_size"`
+						} `yaml:"decision_cache"`
+					} `yaml:"tail_sampling"`
+				} `yaml:"processors"`
+			}
+			require.NoError(t, yaml.Unmarshal([]byte(configMap.Data["config.yaml"]), &config))
+			sampling := config.Processors.TailSampling
+			assert.Equal(t, test.decisionWait, sampling.DecisionWait)
+			assert.Equal(t, test.numTraces, sampling.NumTraces)
+			assert.Equal(t, test.sampledCache, sampling.DecisionCache.SampledCacheSize)
+			assert.Equal(t, test.rejectedCache, sampling.DecisionCache.NonSampledCacheSize)
+		})
+	}
+}
+
+func TestOtelTelemetryGatewayInvalidTraceSampling(t *testing.T) {
+	tests := []struct {
+		key   string
+		value string
+	}{
+		{"decisionWait", "0s"},
+		{"decisionWait", "-1s"},
+		{"decisionWait", "10"},
+		{"decisionWait", "invalid"},
+		{"numTraces", "0"},
+		{"numTraces", "-1"},
+		{"numTraces", "1.5"},
+		{"decisionCache.sampledCacheSize", "-1"},
+		{"decisionCache.nonSampledCacheSize", "-1"},
+	}
+	for _, test := range tests {
+		t.Run(test.key+"="+test.value, func(t *testing.T) {
+			stderr, err := helmtestutil.RenderHelmTemplateOptsStdErr(t, "suse-observability-agent", &helm.Options{
+				ValuesFiles: []string{"values/minimal.yaml", "values/otel-telemetry-gateway-enabled.yaml"},
+				SetValues: map[string]string{
+					"otel.telemetryGateway.traceSampling." + test.key: test.value,
+				},
+			})
+			require.Error(t, err)
+			assert.Contains(t, stderr, "traceSampling")
+			assert.Contains(t, stderr, strings.Split(test.key, ".")[0])
+		})
+	}
 }
 
 func TestOtelTelemetryGatewayDebugExporter(t *testing.T) {

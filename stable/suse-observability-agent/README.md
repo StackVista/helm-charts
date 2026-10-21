@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.28`
+Current chart version is `1.7.29`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -87,6 +87,21 @@ helm install \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
 stackstate/suse-observability-agent
 ```
+
+## Telemetry gateway trace sampling
+
+Configure `otel.telemetryGateway.traceSampling.decisionWait` with a positive
+duration, `numTraces` with a positive trace-entry capacity, and
+`decisionCache.sampledCacheSize` / `decisionCache.nonSampledCacheSize` with
+nonnegative counts of remembered keep / drop decisions. Cache sizes of zero
+disable the caches. The defaults preserve the existing 10-second wait, 50,000
+trace entries per pod, and disabled decision caches. Larger buffers, caches,
+or waiting periods require more memory.
+
+Keep `otel.telemetryGateway.replicaCount` at `1`; horizontal scaling with correct
+tail sampling is currently unsupported. The gateway Service does not route by
+trace ID, so multiple replicas can produce inconsistent sampling decisions.
+A PodDisruptionBudget does not prevent this.
 
 ## OpenTelemetry pod logs
 
@@ -654,7 +669,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |
 | otel.telemetryGateway.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.telemetryGateway.priorityClassName | string | `""` | Priority class for gateway pods. |
-| otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. 1 is sufficient for small/medium clusters. Use 2+ with a PDB for HA. |
+| otel.telemetryGateway.replicaCount | int | `1` | Number of gateway pods. Keep at 1 for correct tail sampling; multiple replicas can split traces across samplers. |
 | otel.telemetryGateway.resources.limits.cpu | string | `"1"` | CPU resource limits. |
 | otel.telemetryGateway.resources.limits.memory | string | `"2Gi"` | Memory resource limits. |
 | otel.telemetryGateway.resources.requests.cpu | string | `"250m"` | CPU resource requests. |
@@ -665,7 +680,11 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.spanMetrics.aggregationCardinalityLimit | int | `5000` | Maximum number of unique span-metric aggregation series held by the gateway. Prevents high-cardinality spans from exhausting memory. |
 | otel.telemetryGateway.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | otel.telemetryGateway.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| otel.telemetryGateway.traceSampling.decisionCache.nonSampledCacheSize | int | `0` | Number of trace IDs with drop decisions remembered for late spans; 0 disables the cache. |
+| otel.telemetryGateway.traceSampling.decisionCache.sampledCacheSize | int | `0` | Number of trace IDs with keep decisions remembered for late spans; 0 disables the cache. |
+| otel.telemetryGateway.traceSampling.decisionWait | string | `"10s"` | Time to wait after first receiving a trace before making a sampling decision. |
 | otel.telemetryGateway.traceSampling.maxTotalSpansPerSecond | int | `500` | Maximum traces spans per second exported by the gateway. |
+| otel.telemetryGateway.traceSampling.numTraces | int | `50000` | Maximum number of trace entries held per gateway pod (not spans or bytes). |
 | otelLogsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | otelLogsAgent.enabled | bool | `true` | Enable OTel pod-log collection when global.features.experimentalOtelLogsAgent is true. |
 | otelLogsAgent.exportMode | string | `"auto"` | `auto` selects the destination from the Receiver's /features endpoint; `promtail` or `native` fixes it without querying /features. |
