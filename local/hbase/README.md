@@ -1,6 +1,6 @@
 # hbase
 
-Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 
 Current chart version is `0.2.160`
 
@@ -238,7 +238,7 @@ Pod recovery or Prometheus reconciliation.
 | stackgraph.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | stackgraph.sizing | object | `{"javaHeapMemoryFraction":"60"}` | Stackgraph memory sizing for JVM |
 | stackgraph.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackgraph.version | string | `"8.3.19"` | Version of stackgraph to use |
+| stackgraph.version | string | `"8.3.20"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
