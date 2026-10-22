@@ -1,7 +1,7 @@
 # common
 
 ![Version: 0.4.28](https://img.shields.io/badge/Version-0.4.28-informational?style=flat-square) ![AppVersion: 0.4.25](https://img.shields.io/badge/AppVersion-0.4.25-informational?style=flat-square)
-Common chartbuilding components and helpers
+Internal dependency of the suse-observability and suse-observability-agent charts; not supported as a standalone chart.
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
 

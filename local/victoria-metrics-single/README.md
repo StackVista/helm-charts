@@ -2,7 +2,7 @@
 
  ![Version: 0.8.53](https://img.shields.io/badge/Version-0.8.53-informational?style=flat-square)
 
-Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 
 # Customisation
 

@@ -1,8 +1,6 @@
 # kubernetes-rbac-agent
 
-Helm chart for deploying the kubernetes-rbac-agent, which pick up (cluster)role(bindings) from a k8s cluster and forwards them
-to the SUSE Observability platform
-
+Internal dependency of the suse-observability and suse-observability-agent charts; not supported as a standalone chart.
 **Homepage:** <https://github.com/StackVista/kubernetes-rbac-agent>
 ## Maintainers
 

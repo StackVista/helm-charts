@@ -1,6 +1,6 @@
 # pull-secret
 
-Helm chart for deploying a pull-secret for StackState
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 
 Current chart version is `1.0.3`
 

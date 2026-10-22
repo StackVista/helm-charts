@@ -1,7 +1,7 @@
 # zookeeper
 
 ![Version: 8.1.3](https://img.shields.io/badge/Version-8.1.3-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
-Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 **Homepage:** <https://github.com/bitnami/charts/tree/master/bitnami/zookeeper>
 ## Maintainers
 

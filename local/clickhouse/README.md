@@ -1,7 +1,7 @@
 # clickhouse
 
 ![Version: 3.6.9](https://img.shields.io/badge/Version-3.6.9-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
-ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 **Homepage:** <https://bitnami.com>
 ## Maintainers
 

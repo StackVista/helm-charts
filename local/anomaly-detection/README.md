@@ -1,6 +1,6 @@
 # anomaly-detection
 
-A Helm chart for Anomaly Detection
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 
 Current chart version is `5.2.0`
 
