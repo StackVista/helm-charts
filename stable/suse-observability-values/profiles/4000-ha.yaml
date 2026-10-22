@@ -209,7 +209,6 @@ stackstate:
           CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_request.timeout.ms: "25000"
           CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_delivery.timeout.ms: "30000"
     receiver:
-      retention: 3
       split:
         enabled: true
         logs:
