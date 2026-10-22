@@ -28,14 +28,19 @@ if [ "$current_count" -ge "$BACKUP_CONFIGURATION_MAX_LOCAL_FILES" ]; then
 fi
 
 echo "=== Removing StackPacks backups without a matching settings backup from settings bucket \"${S3_BUCKET_SETTINGS}\"..."
-remaining_files=$(sts-toolbox aws s3 ls --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${S3_BUCKET_SETTINGS}" --prefix "" 2>/dev/null | grep -E '\.sty$' | awk '{print $NF}' || true)
-sts-toolbox aws s3 ls --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${S3_BUCKET_SETTINGS}" --prefix "${BACKUP_STACKPACKS_DIR}" 2>/dev/null | awk '{print $NF}' | grep -E '\.stackpacks\.zip$' | while read -r stackpacks_file; do
-  stackpacks_name="${stackpacks_file##*/}"
-  if ! grep -qxF "${stackpacks_name%.stackpacks.zip}" <<< "${remaining_files}"; then
-    echo "Removing old StackPacks backup: ${stackpacks_name}"
-    sts-toolbox aws s3 delete --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${S3_BUCKET_SETTINGS}" --key "${BACKUP_STACKPACKS_DIR}${stackpacks_name}"
-  fi
-done || true
+remaining_files=$(sts-toolbox aws s3 ls --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${S3_BUCKET_SETTINGS}" --prefix "" 2>/dev/null | awk '{print $NF}' | grep -E '\.sty$') || remaining_files=""
+stackpacks_files=$(sts-toolbox aws s3 ls --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${S3_BUCKET_SETTINGS}" --prefix "${BACKUP_STACKPACKS_DIR}" 2>/dev/null | awk '{print $NF}' | grep -E '\.stackpacks\.zip$') || stackpacks_files=""
+
+# An empty settings listing may be a transient listing failure; skip rather than treat every StackPacks backup as orphaned.
+if [ -n "${remaining_files}" ] && [ -n "${stackpacks_files}" ]; then
+  while read -r stackpacks_file; do
+    stackpacks_name="${stackpacks_file##*/}"
+    if ! grep -qxF "${stackpacks_name%.stackpacks.zip}" <<< "${remaining_files}"; then
+      echo "Removing old StackPacks backup: ${stackpacks_name}"
+      sts-toolbox aws s3 delete --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${S3_BUCKET_SETTINGS}" --key "${BACKUP_STACKPACKS_DIR}${stackpacks_name}"
+    fi
+  done <<< "${stackpacks_files}"
+fi
 
 echo "=== Listing contents of settings bucket \"${S3_BUCKET_SETTINGS}\"..."
 sts-toolbox aws s3 ls --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${S3_BUCKET_SETTINGS}" --prefix "" 2>/dev/null | awk '{print $NF}' || true
