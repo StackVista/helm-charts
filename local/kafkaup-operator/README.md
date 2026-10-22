@@ -2,7 +2,7 @@
 
 ![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
 
-The StackState Kafka upgrade operator
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 
 Current chart version is `0.1.29`
 

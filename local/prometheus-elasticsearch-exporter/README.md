@@ -2,7 +2,7 @@
 
 ![Version: 5.8.0](https://img.shields.io/badge/Version-5.8.0-informational?style=flat-square) ![AppVersion: v1.7.0](https://img.shields.io/badge/AppVersion-v1.7.0-informational?style=flat-square)
 
-Elasticsearch stats exporter for Prometheus
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 
 **Homepage:** <https://github.com/prometheus-community/elasticsearch_exporter>
 

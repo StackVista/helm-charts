@@ -1,7 +1,7 @@
 # elasticsearch
 
 ![Version: 8.19.4](https://img.shields.io/badge/Version-8.19.4-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
-Official Elastic helm chart for Elasticsearch
+Internal dependency of the suse-observability chart; not supported as a standalone chart.
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
 
