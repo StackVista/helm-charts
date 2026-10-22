@@ -865,7 +865,7 @@ If you encounter issues not covered here:
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
 | backup.configuration.enabled | bool | `true` | Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled. |
-| backup.configuration.maxLocalFiles | int | `10` | The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size. |
+| backup.configuration.maxLocalFiles | int | `10` | The maximum number of configuration backups stored on the settings PVC (see backup.storage.settingsPvc.size). Each backup consists of a settings file and a StackPacks archive; StackPacks archives without a matching settings file are removed. |
 | backup.configuration.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.configuration.scheduled.backupRetentionTimeDelta | string | `"365 days ago"` | Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted. |
 | backup.configuration.scheduled.pvc.accessModes | list | `["ReadWriteOnce"]` | Access mode for settings backup data. |

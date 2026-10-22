@@ -234,7 +234,7 @@ backup:
     yaml:
       # backup.configuration.yaml.maxSizeLimit -- Max size of the settings backup or installed via a stackpack
       maxSizeLimit: "100Mi"
-    # backup.configuration.maxLocalFiles -- The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size.
+    # backup.configuration.maxLocalFiles -- The maximum number of configuration backups stored on the settings PVC (see backup.storage.settingsPvc.size). Each backup consists of a settings file and a StackPacks archive; StackPacks archives without a matching settings file are removed.
     maxLocalFiles: 10
     scheduled:
       # backup.configuration.scheduled.schedule -- Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
