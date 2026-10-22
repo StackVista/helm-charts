@@ -911,7 +911,7 @@ Usage: {{ include "common.sizing.stackstate.receiver.retention" . }}
 {{- define "common.sizing.stackstate.receiver.retention" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if or (eq $profile "trial") (eq $profile "4000-ha") }}3
+{{- if eq $profile "trial" }}3
 {{- end }}
 {{- end }}
 {{- end }}
