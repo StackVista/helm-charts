@@ -727,7 +727,7 @@ backup:
       # -- Repository containing busybox image, it is used to prepare th cronjob (create a crontab file).
       repository: stackstate/container-tools
       # -- Tag of the image for the busybox
-      tag: 1.8.6-fa52bb17-main-4
+      tag: "1.8.6-so39"
     resources:
       requests:
         cpu: 20m
@@ -747,7 +747,7 @@ backup:
       # -- Repository containing the image for the Victoria Metrics backup
       repository: stackstate/vmbackup
       # -- Tag of the image for the Victoria Metrics backup
-      tag: 1.144.0-so16
+      tag: "1.144.0-so33"
     resources:
       requests:
         cpu: 10m

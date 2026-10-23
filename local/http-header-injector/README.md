@@ -16,10 +16,10 @@ Internal dependency of the suse-observability-agent chart; not supported as a st
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| certificatePrehook | object | `{"image":{"pullPolicy":"IfNotPresent","registry":null,"repository":"stackstate/container-tools","tag":"1.8.6-so5"},"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"200Mi"}}}` | Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook |
+| certificatePrehook | object | `{"image":{"pullPolicy":"IfNotPresent","registry":null,"repository":"stackstate/container-tools","tag":"1.8.6-so39"},"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"200Mi"}}}` | Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook |
 | certificatePrehook.image.pullPolicy | string | `"IfNotPresent"` | Policy when pulling an image |
 | certificatePrehook.image.registry | string | `nil` | Registry for the docker image. |
-| certificatePrehook.image.tag | string | `"1.8.6-so5"` | The tag for the docker image |
+| certificatePrehook.image.tag | string | `"1.8.6-so39"` | The tag for the docker image |
 | containerSecurityContext.runAsUser | int | `65534` | UID for the injector and certificate hook containers. Their images declare no USER, so a UID is required to satisfy runAsNonRoot on plain Kubernetes. Set to null on OpenShift, where the restricted-v2 SCC assigns a UID from the namespace range and rejects an explicit one outside it. |
 | debug | bool | `false` | Enable debugging. This will leave leave artifacts around like the prehook jobs for further inspection |
 | global.extraAnnotations | object | `{}` | Extra annotations added ta all resources created by the helm chart |
@@ -52,4 +52,3 @@ Internal dependency of the suse-observability-agent chart; not supported as a st
 | webhook.tls.provided.crt | string | `""` | The certificate that is used for the webhook. Only used if you set webhook.tls.mode to "provided". |
 | webhook.tls.provided.key | string | `""` | The key that is used for the webhook. Only used if you set webhook.tls.mode to "provided". |
 | webhook.tls.secret.name | string | `""` | The name of the secret containing the pre-provisioned certificate data that is used for the webhook. Only used if you set webhook.tls.mode to "secret". |
-

@@ -178,7 +178,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.scheduled.schedule | DEPRECATED | `nil` | Use backup.scheduled.hourly instead. If set, overrides hourly. |
 | backup.setupCron.image.registry | string | `"quay.io"` |  |
 | backup.setupCron.image.repository | string | `"stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
-| backup.setupCron.image.tag | string | `"1.8.6-fa52bb17-main-4"` | Tag of the image for the busybox |
+| backup.setupCron.image.tag | string | `"1.8.6-so39"` | Tag of the image for the busybox |
 | backup.setupCron.resources.limits.cpu | string | `"20m"` |  |
 | backup.setupCron.resources.limits.memory | string | `"64Mi"` |  |
 | backup.setupCron.resources.requests.cpu | string | `"20m"` |  |
@@ -187,7 +187,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.supercronic.metrics.port | int | `9746` |  |
 | backup.vmbackup.image.registry | string | `"quay.io"` |  |
 | backup.vmbackup.image.repository | string | `"stackstate/vmbackup"` | Repository containing the image for the Victoria Metrics backup |
-| backup.vmbackup.image.tag | string | `"1.144.0-so16"` | Tag of the image for the Victoria Metrics backup |
+| backup.vmbackup.image.tag | string | `"1.144.0-so33"` | Tag of the image for the Victoria Metrics backup |
 | backup.vmbackup.resources.limits.cpu | string | `"100m"` |  |
 | backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
 | backup.vmbackup.resources.requests.cpu | string | `"10m"` |  |
