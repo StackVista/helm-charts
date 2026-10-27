@@ -52,3 +52,4 @@ Internal dependency of the suse-observability-agent chart; not supported as a st
 | webhook.tls.provided.crt | string | `""` | The certificate that is used for the webhook. Only used if you set webhook.tls.mode to "provided". |
 | webhook.tls.provided.key | string | `""` | The key that is used for the webhook. Only used if you set webhook.tls.mode to "provided". |
 | webhook.tls.secret.name | string | `""` | The name of the secret containing the pre-provisioned certificate data that is used for the webhook. Only used if you set webhook.tls.mode to "secret". |
+

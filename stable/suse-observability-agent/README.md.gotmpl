@@ -7,6 +7,20 @@ Current chart version is `{{ template "chart.version" . }}`
 
 {{ template "chart.requirementsSection" . }}
 
+## Node draining
+
+On Kubernetes 1.27 and newer, all agent PodDisruptionBudgets default to
+`unhealthyPodEvictionPolicy: AlwaysAllow`. Node drains can evict running, unready
+pods while ready pods remain subject to the existing budget. The field is
+omitted on older Kubernetes versions.
+
+Each component exposes `podDisruptionBudget.unhealthyPodEvictionPolicy` under
+`clusterAgent`, `checksAgent`, `otel.k8sResourceCollector`,
+`otel.prometheusScraping.collector`, `otel.prometheusScraping.targetAllocator`
+or `otel.telemetryGateway`. Set it to `IfHealthyBudget` to retain recovery
+protection, or `null` to omit the field. Existing PDB creation conditions,
+budgets and selectors are preserved.
+
 ## Required Values
 
 Provide the following values directly, or use existing Secrets as described below:

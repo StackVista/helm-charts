@@ -361,6 +361,8 @@ remoteKubeCache:
       memory: "200Mi"
 
 clusterAgent:
+  podDisruptionBudget:
+    unhealthyPodEvictionPolicy: AlwaysAllow
   collection:
     # clusterAgent.collection.kubernetesEvents -- Enable / disable the cluster agent events collection.
     kubernetesEvents: true
@@ -677,6 +679,8 @@ otelLogsAgent:
     annotations: {}
 
 checksAgent:
+  podDisruptionBudget:
+    unhealthyPodEvictionPolicy: AlwaysAllow
   # checksAgent.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
   enabled: true
   # checksAgent.skipSslValidation -- Set to true if self signed certificates are used.
@@ -806,6 +810,8 @@ otel:
   ####################################
 
   k8sResourceCollector:
+    podDisruptionBudget:
+      unhealthyPodEvictionPolicy: AlwaysAllow
     # otel.k8sResourceCollector.enabled -- Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true.
     enabled: true
 
@@ -983,6 +989,8 @@ otel:
       keep: true
 
     collector:
+      podDisruptionBudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
       image:
         # otel.prometheusScraping.collector.image.repository -- Base container image repository for the Prometheus scraper collector. Shares the SUSE Observability collector image with the k8sResourceCollector component but keeps its own tag/pullPolicy so the two can be overridden independently.
         repository: stackstate/sts-opentelemetry-collector
@@ -1041,6 +1049,8 @@ otel:
           - metrics
 
     targetAllocator:
+      podDisruptionBudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
       image:
         # otel.prometheusScraping.targetAllocator.image.registry -- Override registry for the Target Allocator image. Defaults to global.imageRegistry.
         registry:
@@ -1118,6 +1128,8 @@ otel:
         denyFSAccessThroughSMs: true
 
   telemetryGateway:
+    podDisruptionBudget:
+      unhealthyPodEvictionPolicy: AlwaysAllow
     # otel.telemetryGateway.enabled -- Enable the telemetry gateway for OTLP push-based
     # telemetry. Metrics and traces are forwarded to SUSE Observability; log signals are
     # accepted for debug visibility only and written to the gateway pod logs.

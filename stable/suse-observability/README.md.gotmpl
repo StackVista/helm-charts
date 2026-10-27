@@ -7,6 +7,25 @@ Current chart version is `{{ template "chart.version" . }}`
 
 {{ template "chart.requirementsSection" . }}
 
+## Node draining
+
+Application PodDisruptionBudgets default to
+`unhealthyPodEvictionPolicy: AlwaysAllow`. This allows node drains to evict
+running, unready pods while ready pods remain subject to the existing budget.
+Set `stackstate.components.<component>.poddisruptionbudget.unhealthyPodEvictionPolicy`
+to `IfHealthyBudget` to retain recovery protection, or `null` to omit the field.
+
+Database and storage PDBs use Kubernetes' default `IfHealthyBudget` policy to
+keep eviction conservative during recovery. This applies to Elasticsearch,
+Kafka, ZooKeeper, VictoriaMetrics (including the combined budget), HBase, HDFS
+and Tephra. The AI assistant and anomaly detection use the same policy because
+the assistant stores conversations in SQLite and the anomaly detection manager
+owns persistent model state. ClickHouse has no PDB template.
+
+The bundled OTel collector uses the same default when its Deployment PDB is
+enabled. Override it through
+`opentelemetry-collector.podDisruptionBudget.unhealthyPodEvictionPolicy`.
+
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:

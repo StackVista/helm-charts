@@ -90,6 +90,10 @@ func TestPDBNamingBaselineCompatibility(t *testing.T) {
 					if _, found := pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"]; found {
 						pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"] = tc.release
 					}
+					if component != "ai-assistant" && component != "victoriametrics" {
+						policy := policyv1.AlwaysAllow
+						pdb.Spec.UnhealthyPodEvictionPolicy = &policy
+					}
 					expected[component] = pdb
 				}
 
@@ -123,7 +127,7 @@ func TestPDBNamingBaselineCompatibility(t *testing.T) {
 				if tc.namespace != "" {
 					options.KubectlOptions.Namespace = tc.namespace
 				}
-				args := []string{"--api-versions", "policy/v1/PodDisruptionBudget"}
+				args := []string{"--api-versions", "policy/v1/PodDisruptionBudget", "--kube-version", "1.31.0"}
 				if upgrade {
 					args = append(args, "--is-upgrade")
 				}

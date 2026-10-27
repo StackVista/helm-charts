@@ -82,7 +82,7 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 				SetValues:      setValues,
 				KubectlOptions: &k8s.KubectlOptions{Namespace: "observability"},
 				Logger:         logger.Discard,
-			}, chartPath, scenario.release, nil)
+			}, chartPath, scenario.release, nil, "--kube-version", "1.31.0")
 			require.NoError(t, err)
 			actual := resourceNamingUpgradeContract(t, output)
 			fixturePath := filepath.Join("testdata/resource-naming-upgrade", scenario.name+".json")
@@ -98,6 +98,18 @@ func TestResourceNamingUpgradeCompatibility(t *testing.T) {
 			var expected namingUpgradeContract
 			require.NoError(t, json.Unmarshal(data, &expected))
 			allowResourceNamingMigration(t, expected, scenario.legacyPrefix, scenario.release, scenario.hbaseLegacyPrefix, scenario.legacyClusterPrefix, scenario.backupLegacyName, scenario.operatorLegacyName)
+			for _, component := range []string{
+				"api", "authorization-sync", "checks", "correlate", "e2es", "health-sync",
+				"mcp", "notification", "receiver", "router", "server", "state", "sync",
+				"ui", "vmagent", "workload-observer",
+			} {
+				if fields, found := expected["PodDisruptionBudget/suse-observability-"+component]; found {
+					spec, ok := fields["spec"].(map[string]interface{})
+					require.True(t, ok)
+					require.NotContains(t, spec, "unhealthyPodEvictionPolicy")
+					spec["unhealthyPodEvictionPolicy"] = "AlwaysAllow"
+				}
+			}
 
 			for resource, fields := range expected {
 				actualFields, found := actual[resource]

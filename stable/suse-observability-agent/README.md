@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.46`
+Current chart version is `1.7.47`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -12,6 +12,20 @@ Current chart version is `1.7.46`
 |------------|------|---------|
 | file://../../local/http-header-injector/ | httpHeaderInjectorWebhook(http-header-injector) | * |
 | file://../../local/kubernetes-rbac-agent/ | kubernetes-rbac-agent | * |
+
+## Node draining
+
+On Kubernetes 1.27 and newer, all agent PodDisruptionBudgets default to
+`unhealthyPodEvictionPolicy: AlwaysAllow`. Node drains can evict running, unready
+pods while ready pods remain subject to the existing budget. The field is
+omitted on older Kubernetes versions.
+
+Each component exposes `podDisruptionBudget.unhealthyPodEvictionPolicy` under
+`clusterAgent`, `checksAgent`, `otel.k8sResourceCollector`,
+`otel.prometheusScraping.collector`, `otel.prometheusScraping.targetAllocator`
+or `otel.telemetryGateway`. Set it to `IfHealthyBudget` to retain recovery
+protection, or `null` to omit the field. Existing PDB creation conditions,
+budgets and selectors are preserved.
 
 ## Required Values
 
@@ -355,6 +369,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | checksAgent.logLevel | string | `"INFO"` | Logging level for clusterchecks agent processes. |
 | checksAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | checksAgent.podAnnotations | object | `{}` | Additional annotations on the checks agent pods. |
+| checksAgent.podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
 | checksAgent.podLabels | object | `{}` | Additional labels on the checks agent pods. |
 | checksAgent.priorityClassName | string | `""` | Priority class for clusterchecks agent pods. |
 | checksAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
@@ -419,6 +434,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | clusterAgent.logLevel | string | `"INFO"` | Logging level for stackstate-k8s-agent processes. |
 | clusterAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clusterAgent.podAnnotations | object | `{}` | Additional annotations on the cluster agent pods. |
+| clusterAgent.podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
 | clusterAgent.podLabels | object | `{}` | Additional labels on the cluster agent pods. |
 | clusterAgent.priorityClassName | string | `""` | Priority class for stackstate-k8s-agent pods. |
 | clusterAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
@@ -609,6 +625,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by cr_api_groups are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
 | otel.k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
 | otel.k8sResourceCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
+| otel.k8sResourceCollector.podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
 | otel.k8sResourceCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
 | otel.k8sResourceCollector.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.k8sResourceCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
@@ -640,6 +657,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.collector.image.tag | string | `"v0.0.73-agent"` | Container image tag for the Prometheus scraper collector. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.prometheusScraping.collector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.collector.podAnnotations | object | `{}` | Additional annotations for Prometheus scraper collector pods. |
+| otel.prometheusScraping.collector.podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
 | otel.prometheusScraping.collector.podLabels | object | `{}` | Additional labels for Prometheus scraper collector pods. |
 | otel.prometheusScraping.collector.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.prometheusScraping.collector.priorityClassName | string | `nil` | Priority class for Prometheus scraper collector pods. |
@@ -664,6 +682,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.targetAllocator.mtlsEnabled | bool | `false` | Enable mTLS between scraper collectors and the Target Allocator. When true, credentials referenced by ServiceMonitors and PodMonitors are fetched over a mutually authenticated TLS connection. Requires cert-manager to be installed. See the README for details. |
 | otel.prometheusScraping.targetAllocator.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.targetAllocator.podAnnotations | object | `{}` | Additional annotations for Target Allocator pods. |
+| otel.prometheusScraping.targetAllocator.podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
 | otel.prometheusScraping.targetAllocator.podLabels | object | `{}` | Additional labels for Target Allocator pods. |
 | otel.prometheusScraping.targetAllocator.priorityClassName | string | `nil` | Priority class for Target Allocator pods. |
 | otel.prometheusScraping.targetAllocator.prometheusCR.allowNamespaces | list | `[]` | Namespaces where monitor resources are allowed. Mutually exclusive with denyNamespaces. |
@@ -693,6 +712,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.telemetryGateway.image.tag | string | `"v0.0.73-agent"` | Container image tag for the telemetry gateway. Uses the strict agent collector BOM image (the "-agent" suffixed tag). |
 | otel.telemetryGateway.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.telemetryGateway.podAnnotations | object | `{}` | Additional annotations for gateway pods. |
+| otel.telemetryGateway.podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
 | otel.telemetryGateway.podLabels | object | `{}` | Additional labels for gateway pods. |
 | otel.telemetryGateway.pprof.enabled | bool | `true` | Enable the pprof extension for profiling/debugging. Opt-out: enabled by default. The pprof endpoint is reachable inside the pod (port 1777) via kubectl port-forward. |
 | otel.telemetryGateway.priorityClassName | string | `""` | Priority class for gateway pods. |
