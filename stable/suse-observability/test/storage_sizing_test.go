@@ -1,6 +1,8 @@
 package test
 
 import (
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -313,8 +315,39 @@ func TestStorageSizing(t *testing.T) {
 					assertVCTStorage(t, name, ss.Spec.VolumeClaimTemplates, expected)
 				})
 			}
+
+			t.Run("vmagent-disk-usage-fits-volume", func(t *testing.T) {
+				ss := resources.Statefulsets["suse-observability-vmagent"]
+				assertVmagentDiskUsageFitsVolume(t, ss.Spec.Template.Spec.Containers, tc.expected["suse-observability-vmagent"].size)
+			})
 		})
 	}
+}
+
+// The persistent queues for all remote-write URLs share the volume and must leave room for filesystem overhead.
+func assertVmagentDiskUsageFitsVolume(t *testing.T, containers []corev1.Container, volumeSize string) {
+	t.Helper()
+	var perURLMB, urls int64
+	for _, c := range containers {
+		if c.Name != "vmagent" {
+			continue
+		}
+		for _, arg := range c.Args {
+			if v, ok := strings.CutPrefix(arg, "-remoteWrite.maxDiskUsagePerURL="); ok {
+				mb, err := strconv.ParseInt(strings.TrimSuffix(strings.Trim(v, `"`), "MB"), 10, 64)
+				require.NoError(t, err)
+				perURLMB = mb
+			}
+			if strings.HasPrefix(arg, "-remoteWrite.url=") {
+				urls++
+			}
+		}
+	}
+	require.Positive(t, perURLMB, "vmagent should set -remoteWrite.maxDiskUsagePerURL")
+	require.Positive(t, urls, "vmagent should have at least one -remoteWrite.url")
+	volume := resource.MustParse(volumeSize)
+	assert.LessOrEqual(t, perURLMB*urls*1_000_000, volume.Value()*8/10,
+		"vmagent queues (%d x %dMB) should use at most 80%% of the %s volume", urls, perURLMB, volumeSize)
 }
 
 func assertVCTStorage(t *testing.T, ssName string, vcts []corev1.PersistentVolumeClaim, expected expectedVCTStorage) {
