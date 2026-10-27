@@ -234,6 +234,9 @@ Authentication config
   {{- if $apiAuth.oidc.customParameters }}
   customParams {{ $apiAuth.oidc.customParameters | toJson }}
   {{- end }}
+  {{- if $apiAuth.oidc.omitClientNameParameter }}
+  omitClientNameParameter = true
+  {{- end }}
   {{- if $apiAuth.oidc.jwtClaims }}
   jwtClaims {
     {{- if $apiAuth.oidc.jwtClaims.usernameField }}
@@ -289,6 +292,9 @@ Authentication config
   }
   {{- if $apiAuth.rancher.customParameters }}
   customParams {{ $apiAuth.rancher.customParameters | toJson }}
+  {{- end }}
+  {{- if $apiAuth.rancher.omitClientNameParameter }}
+  omitClientNameParameter = true
   {{- end }}
 }
   {{- end }}

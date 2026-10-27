@@ -879,6 +879,8 @@ stackstate:
         access_type: offline # Custom request parameter
 ```
 
+By default SUSE Observability appends `?client_name=StsOidcClient` to the redirect URI. Some providers, such as AD FS, require an exact redirect URI match but cannot register a URI with a query string. For those, set `omitClientNameParameter: true` inside the `oidc` (or `rancher`) block to send the `redirectUri` exactly as configured, and register `https://<base-url>/loginCallback` at the provider.
+
 The OIDC-based authentication providers (`oidc`, `keycloak` and `rancher`) support two additional options that map directly to the SUSE Observability backend authentication configuration. Set them **inside the active provider block** &mdash; they have no effect for the `ldap` or file-based providers, and are ignored when placed anywhere else under `stackstate.authentication`:
 
 - `oidcLogout` (default `false`): when enabled, logging out of SUSE Observability (via the `/logout` URL) also performs an OIDC RP-initiated logout, ending the user's session at the identity provider. When disabled, logging out only clears the local SUSE Observability session and the provider session stays active.
@@ -932,6 +934,7 @@ You can override and extend some of the OIDC config for Rancher with the followi
 - `discoveryUri`
 - `redirectUri`
 - `customParams`
+- `omitClientNameParameter`
 
 Set `stackstate.authentication.rancher.scope` to an array containing `openid` and any of `profile`, `offline_access`, and `groups`.
 When omitted, the scope remains `[openid, profile, offline_access]`.

@@ -152,6 +152,16 @@ func TestAuthenticationLogoutFlagsIgnoredForNonOidc(t *testing.T) {
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/ldap_authentication.yaml", "values/authentication_logout_flags.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
 }
 
+const expectedOmitClientNameParameter = "\n  omitClientNameParameter = true\n"
+
+func TestAuthenticationOidcOmitClientNameParameter(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml", "values/oidc_omit_client_name.yaml"}, expectedOmitClientNameParameter)
+}
+
+func TestAuthenticationRancherOmitClientNameParameter(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml", "values/rancher_omit_client_name.yaml"}, expectedOmitClientNameParameter)
+}
+
 const expectedRancherAuthConfig = `stackstate.api.authentication.authServer.oidcAuthServer {
   clientId = ${oidc_client_id}
   secret = ${oidc_secret}
