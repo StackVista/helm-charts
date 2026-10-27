@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.12.1-pre.44`
+Current chart version is `2.12.1-pre.45`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -1048,7 +1048,7 @@ If you encounter issues not covered here:
 | kafkaup-operator.image.pullPolicy | string | `""` |  |
 | kafkaup-operator.image.registry | string | `"quay.io"` |  |
 | kafkaup-operator.image.repository | string | `"stackstate/kafkaup-operator"` |  |
-| kafkaup-operator.image.tag | string | `"0.0.16"` |  |
+| kafkaup-operator.image.tag | string | `"0.0.0-candidate.994f006ddfa7.40515571121.1"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
 | kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |
