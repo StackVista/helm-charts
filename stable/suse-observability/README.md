@@ -1682,7 +1682,7 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.images[0].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[0].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[0].repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[0].version | string | `"20261023123450-master-99a1c04"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
+| stackstate.stackpacks.images[0].version | string | `"20261027074613-refresh-bci-ca-certificates-db51b63"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
 | stackstate.stackpacks.images[1].name | string | `"contrib"` | name for the init container |
 | stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
