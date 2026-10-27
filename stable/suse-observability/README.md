@@ -1632,7 +1632,7 @@ If you encounter issues not covered here:
 | stackstate.components.ui.image.imageRegistry | string | `""` | `imageRegistry` used for the `ui` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.ui.image.pullPolicy | string | `""` | `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.ui.image.repository | string | `"stackstate/stackstate-ui"` | Repository of the ui component Docker image. |
-| stackstate.components.ui.image.tag | string | `""` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.ui.image.tag | string | `"7.0.0-snapshot.20261027133735-master-37d8256"` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.ui.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.ui.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `ui` pods. |

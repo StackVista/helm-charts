@@ -1435,7 +1435,7 @@ stackstate:
         # stackstate.components.ui.image.repository -- Repository of the ui component Docker image.
         repository: stackstate/stackstate-ui
         # stackstate.components.ui.image.tag -- Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
+        tag: "7.0.0-snapshot.20261027133735-master-37d8256"
       # stackstate.components.ui.podAnnotations -- Extra annotations
       podAnnotations: {}
       # stackstate.components.ui.poddisruptionbudget -- PodDisruptionBudget settings for `ui` pods.
