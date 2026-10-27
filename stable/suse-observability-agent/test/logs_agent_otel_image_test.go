@@ -143,7 +143,9 @@ func TestLogsAgentOtelImageTrust(t *testing.T) {
 					found := false
 					for _, cm := range resources.ConfigMaps {
 						for name, content := range cm.Data {
-							if strings.Contains(content, string(discoveryPEM)) && strings.Contains(content, string(exportPEM)) {
+							// Splitting rendered YAML documents can remove the final PEM newline.
+							if strings.Contains(content, strings.TrimSpace(string(discoveryPEM))) &&
+								strings.Contains(content, strings.TrimSpace(string(exportPEM))) {
 								require.NoError(t, os.WriteFile(filepath.Join(certDir, name), []byte(content), 0644))
 								found = true
 							}
