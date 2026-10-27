@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.51`
+Current chart version is `1.7.52`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -101,6 +101,28 @@ helm install \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
 stackstate/suse-observability-agent
 ```
+
+## Custom CA certificates
+
+For a privately signed SUSE Observability endpoint, enable
+`global.customCertificates.enabled` and supply its issuing CA certificates using
+either `global.customCertificates.pemData` or `global.customCertificates.configMapName`,
+not both. Inline PEM is stored under the `tls.pem` key. An existing ConfigMap must
+be in the release namespace; use `tls.pem` for a PEM CA bundle, or separate keys
+containing PEM CA certificates.
+
+The resource collector and metrics scraper mount these files at
+`/etc/ssl/certs/custom`; the telemetry gateway and OTel logs collector use
+`/etc/pki/tls/certs`. Their `SSL_CERT_DIR` includes these directories and Go's
+normal Linux certificate directories, preserving system trust for HTTP and gRPC
+export. Certificate verification remains enabled unless explicitly disabled
+through the TLS verification settings. Configure Prometheus target-specific TLS
+settings through the monitor resources.
+
+With custom certificates disabled, no trust environment override is set.
+Inline PEM changes restart workloads through their checksum annotation. Restart
+workloads after updating an external ConfigMap; its changes do not trigger a
+chart checksum or live trust reload.
 
 ## Container runtime sockets
 

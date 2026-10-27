@@ -9,6 +9,14 @@ KUBECONFIG=/dev/null OTEL_AGENT_BINARY=/absolute/path/to/collector \
 Extract `OTEL_AGENT_BINARY` from the same image. Without these variables, binary
 validation and container transport tests skip.
 
+`TestOtelCustomCertificatesExport` uses the binary without Docker. It preserves
+each OTel workload's rendered platform exporter, authentication and trust
+environment, replacing Kubernetes receivers with a local Prometheus fixture.
+HTTP and gRPC export must trust inline PEM and external ConfigMap files, reject
+an unrelated CA or incorrect hostname, and retain system-bundle trust with custom
+certificates enabled or disabled. Certificate mount paths are relocated into temporary directories
+for this process fixture.
+
 The container tests require a locally available image and Linux Docker host networking. They use synthetic log
 files and ephemeral TLS servers, replacing Kubernetes metadata lookup. They
 exercise discovery, Promtail-compatible export and native HTTP/gRPC with inline
