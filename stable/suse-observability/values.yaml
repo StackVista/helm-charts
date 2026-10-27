@@ -456,6 +456,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.api.poddisruptionbudget -- PodDisruptionBudget settings for `api` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.api.resources -- Resource allocation for `api` pods.
       resources: {}
@@ -509,6 +510,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.authorizationSync.poddisruptionbudget -- PodDisruptionBudget settings for `notification` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.authorizationSync.resources -- Resource allocation for `notification` pods.
       resources: {}
@@ -595,6 +597,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.correlate.poddisruptionbudget -- PodDisruptionBudget settings for `correlate` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources: {}
@@ -714,6 +717,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.checks.poddisruptionbudget -- PodDisruptionBudget settings for `checks` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.checks.resources -- Resource allocation for `state` pods.
       resources: {}
@@ -766,6 +770,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.healthSync.poddisruptionbudget -- PodDisruptionBudget settings for `healthSync` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.healthSync.resources -- Resource allocation for `healthSync` pods.
       resources: {}
@@ -861,6 +866,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.mcp.poddisruptionbudget -- PodDisruptionBudget settings for `mcp` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.mcp.resources -- Resource allocation for `mcp` pods.
       resources: {}
@@ -933,6 +939,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.e2es.poddisruptionbudget -- PodDisruptionBudget settings for `e2es` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.e2es.resources -- Resource allocation for `e2es` pods.
       resources: {}
@@ -981,6 +988,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.notification.poddisruptionbudget -- PodDisruptionBudget settings for `notification` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.notification.resources -- Resource allocation for `notification` pods.
       resources: {}
@@ -1028,6 +1036,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.receiver.poddisruptionbudget -- PodDisruptionBudget settings for `receiver` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources: {}
@@ -1151,6 +1160,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.router.resources -- Resource allocation for `router` pods.
       resources: {}
@@ -1241,6 +1251,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.server.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.server.resources -- Resource allocation for `server` pods.
       resources: {}
@@ -1287,6 +1298,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.state.poddisruptionbudget -- PodDisruptionBudget settings for `state` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources: {}
@@ -1339,6 +1351,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.sync.poddisruptionbudget -- PodDisruptionBudget settings for `sync` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources: {}
@@ -1427,6 +1440,7 @@ stackstate:
       podAnnotations: {}
       # stackstate.components.ui.poddisruptionbudget -- PodDisruptionBudget settings for `ui` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.ui.resources -- Resource allocation for `ui` pods.
       resources: {}
@@ -1577,6 +1591,7 @@ stackstate:
         tag: "1.144.0-so23"
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       extraArgs: {}
       persistence:
@@ -1657,6 +1672,7 @@ stackstate:
         storageClass:
       # stackstate.components.workloadObserver.poddisruptionbudget -- Number of `workloadObserver` replicas.
       poddisruptionbudget:
+        unhealthyPodEvictionPolicy: AlwaysAllow
         maxUnavailable: 1
       # stackstate.components.workloadObserver.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}

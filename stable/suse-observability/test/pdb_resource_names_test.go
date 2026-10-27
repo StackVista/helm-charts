@@ -50,7 +50,7 @@ func TestPDBNamesUseDedicatedHelpers(t *testing.T) {
 		{"assistant-enables-mcp", false, true, true, false, true, true, true, "40%"},
 	} {
 		for _, policyV1 := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/policy-v1=%t", tc.name, policyV1), func(t *testing.T) {
+			t.Run(fmt.Sprintf("%s/discovered-pdb-api=%t", tc.name, policyV1), func(t *testing.T) {
 				values := componentResourceNameTestValues()
 				values["stackstate.features.server.split"] = fmt.Sprint(tc.split)
 				values["stackstate.components.receiver.split.enabled"] = fmt.Sprint(tc.workers)
@@ -68,11 +68,9 @@ func TestPDBNamesUseDedicatedHelpers(t *testing.T) {
 				}
 				options := apiResourceNameTestOptions(values)
 				options.ValuesFiles = []string{fullValues}
-				var args []string
-				apiVersion := "policy/v1beta1"
+				args := []string{"--kube-version", "1.34.0"}
 				if policyV1 {
-					args = []string{"--api-versions", "policy/v1/PodDisruptionBudget"}
-					apiVersion = "policy/v1"
+					args = append(args, "--api-versions", "policy/v1/PodDisruptionBudget")
 				}
 				before := helmtestutil.NewKubernetesResources(t, helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options, args...))
 				output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
@@ -106,6 +104,10 @@ func TestPDBNamesUseDedicatedHelpers(t *testing.T) {
 					require.Contains(t, after.Pdbs, explicit)
 					expected := before.Pdbs[legacy]
 					expected.Name = explicit
+					apiVersion := "policy/v1beta1"
+					if policyV1 {
+						apiVersion = "policy/v1"
+					}
 					assert.Equal(t, apiVersion, expected.APIVersion)
 					assert.Equal(t, "retained", expected.Annotations["naming-test"])
 					require.NotNil(t, expected.Spec.MaxUnavailable)

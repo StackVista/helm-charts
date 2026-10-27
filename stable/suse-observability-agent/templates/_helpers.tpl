@@ -894,3 +894,13 @@ errors), purpose and min (MiB).
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "stackstate-k8s-agent.pdb.unhealthyPodEvictionPolicy" -}}
+{{- if semverCompare ">=1.27-0" .context.Capabilities.KubeVersion.Version -}}
+{{- with .budget -}}
+{{- with .unhealthyPodEvictionPolicy -}}
+unhealthyPodEvictionPolicy: {{ . | quote }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

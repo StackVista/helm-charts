@@ -260,6 +260,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{"ad.stackstate.com/opentelemetry-collector.check_names":"[\"openmetrics\"]","ad.stackstate.com/opentelemetry-collector.init_configs":"[{}]","ad.stackstate.com/opentelemetry-collector.instances":"[ { \"prometheus_url\": \"http://%%host%%:8888/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | SUSE Observability scrape config (Datadog auto-discovery format) — applied to every install. |
 | podDisruptionBudget.enabled | bool | `false` |  |
+| podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
 | podLabels | object | `{}` |  |
 | podMonitor.enabled | bool | `false` |  |
 | podMonitor.extraLabels | object | `{}` |  |

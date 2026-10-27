@@ -819,6 +819,7 @@ serviceMonitor:
 # PodDisruptionBudget is used only if deployment enabled
 podDisruptionBudget:
   enabled: false
+  unhealthyPodEvictionPolicy: AlwaysAllow
 #   minAvailable: 2
 #   maxUnavailable: 1
 

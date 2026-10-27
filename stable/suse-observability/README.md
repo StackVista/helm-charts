@@ -25,6 +25,24 @@ Current chart version is `2.12.1-pre.39`
 | file://../../local/victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | * |
 | file://../../local/zookeeper/ | zookeeper | * |
 
+## Node draining
+
+Application PodDisruptionBudgets default to
+`unhealthyPodEvictionPolicy: AlwaysAllow`. This allows node drains to evict
+running, unready pods while ready pods remain subject to the existing budget.
+Set `stackstate.components.<component>.poddisruptionbudget.unhealthyPodEvictionPolicy`
+to `IfHealthyBudget` to retain recovery protection, or `null` to omit the field.
+
+Database and storage budgets retain their existing policy: Elasticsearch, Kafka,
+ZooKeeper, VictoriaMetrics (including the combined budget), HBase, HDFS and
+Tephra. The AI assistant also retains its policy because it stores conversations
+in SQLite, as does anomaly detection because its manager owns persistent model
+state. ClickHouse currently has no PDB template.
+
+The bundled OTel collector uses the same default when its Deployment PDB is
+enabled. Override it through
+`opentelemetry-collector.podDisruptionBudget.unhealthyPodEvictionPolicy`.
+
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:
@@ -1187,7 +1205,7 @@ If you encounter issues not covered here:
 | stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
+| stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `api` pods. |
 | stackstate.components.api.replicaCount | int | `1` | Number of `api` replicas. |
 | stackstate.components.api.resources | object | `{}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
@@ -1207,7 +1225,7 @@ If you encounter issues not covered here:
 | stackstate.components.authorizationSync.image.tag | string | `""` | Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.authorizationSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.authorizationSync.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.authorizationSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `notification` pods. |
+| stackstate.components.authorizationSync.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `notification` pods. |
 | stackstate.components.authorizationSync.replicaCount | int | `1` | Number of `notification` replicas. |
 | stackstate.components.authorizationSync.resources | object | `{}` | Resource allocation for `notification` pods. |
 | stackstate.components.authorizationSync.sizing.baseMemoryConsumption | string | `"25Mi"` |  |
@@ -1236,7 +1254,7 @@ If you encounter issues not covered here:
 | stackstate.components.checks.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.checks.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.checks.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.checks.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `checks` pods. |
+| stackstate.components.checks.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `checks` pods. |
 | stackstate.components.checks.replicaCount | int | `1` | Number of `checks` replicas. |
 | stackstate.components.checks.resources | object | `{}` | Resource allocation for `state` pods. |
 | stackstate.components.checks.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
@@ -1289,7 +1307,7 @@ If you encounter issues not covered here:
 | stackstate.components.correlate.image.tag | string | `""` | Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
+| stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | string | `nil` | Number of `correlate` replicas. |
 | stackstate.components.correlate.resources | object | `{}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
@@ -1336,7 +1354,7 @@ If you encounter issues not covered here:
 | stackstate.components.e2es.image.tag | string | `""` | Tag used for the `e2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.e2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.e2es.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.e2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `e2es` pods. |
+| stackstate.components.e2es.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `e2es` pods. |
 | stackstate.components.e2es.replicaCount | int | `1` | Number of `e2es` replicas. |
 | stackstate.components.e2es.resources | object | `{}` | Resource allocation for `e2es` pods. |
 | stackstate.components.e2es.retention | int | `30` | Number of days to keep the events data on Es |
@@ -1355,7 +1373,7 @@ If you encounter issues not covered here:
 | stackstate.components.healthSync.image.tag | string | `""` | Tag used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.healthSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.healthSync.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `healthSync` pods. |
+| stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `healthSync` pods. |
 | stackstate.components.healthSync.replicaCount | int | `1` | Number of `healthSync` replicas. |
 | stackstate.components.healthSync.resources | object | `{}` | Resource allocation for `healthSync` pods. |
 | stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"450Mi"` |  |
@@ -1407,7 +1425,7 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.image.tag | string | `"20261027033832-71d28fbc"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mcp` pods. |
+| stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `mcp` pods. |
 | stackstate.components.mcp.replicaCount | int | `1` | Number of `mcp` replicas. |
 | stackstate.components.mcp.resources | object | `{}` | Resource allocation for `mcp` pods. |
 | stackstate.components.mcp.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -1427,7 +1445,7 @@ If you encounter issues not covered here:
 | stackstate.components.notification.image.tag | string | `""` | Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.notification.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.notification.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.notification.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `notification` pods. |
+| stackstate.components.notification.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `notification` pods. |
 | stackstate.components.notification.replicaCount | int | `1` | Number of `notification` replicas. |
 | stackstate.components.notification.resources | object | `{}` | Resource allocation for `notification` pods. |
 | stackstate.components.notification.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
@@ -1445,7 +1463,7 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.image.tag | string | `""` | Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
+| stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
 | stackstate.components.receiver.resources | object | `{}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
@@ -1523,7 +1541,7 @@ If you encounter issues not covered here:
 | stackstate.components.router.mode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
+| stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `router` pods. |
 | stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
 | stackstate.components.router.resources | object | `{}` | Resource allocation for `router` pods. |
 | stackstate.components.router.secureCookies.enabled | bool | `false` | When enabled, the router appends the `Secure` attribute to `Set-Cookie` response headers for requests that reached the edge over HTTPS (detected via the `X-Forwarded-Proto: https` header set by a TLS-terminating proxy such as Traefik or an ingress controller). Plain-HTTP deployments are left untouched. |
@@ -1540,7 +1558,7 @@ If you encounter issues not covered here:
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
+| stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `server` pods. |
 | stackstate.components.server.replicaCount | int | `1` | Number of `server` replicas. |
 | stackstate.components.server.resources | object | `{}` | Resource allocation for `server` pods. |
 | stackstate.components.server.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
@@ -1575,7 +1593,7 @@ If you encounter issues not covered here:
 | stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.state.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
+| stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `state` pods. |
 | stackstate.components.state.replicaCount | int | `1` | Number of `state` replicas. |
 | stackstate.components.state.resources | object | `{}` | Resource allocation for `state` pods. |
 | stackstate.components.state.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
@@ -1596,7 +1614,7 @@ If you encounter issues not covered here:
 | stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.sync.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
+| stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `sync` pods. |
 | stackstate.components.sync.replicaCount | int | `1` | Number of `sync` replicas. |
 | stackstate.components.sync.resources | object | `{}` | Resource allocation for `sync` pods. |
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
@@ -1616,7 +1634,7 @@ If you encounter issues not covered here:
 | stackstate.components.ui.image.tag | string | `""` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.ui.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.ui.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ui` pods. |
+| stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `ui` pods. |
 | stackstate.components.ui.replicaCount | string | `nil` | Number of `ui` replicas. |
 | stackstate.components.ui.resources | object | `{}` | Resource allocation for `ui` pods. |
 | stackstate.components.ui.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
@@ -1631,7 +1649,7 @@ If you encounter issues not covered here:
 | stackstate.components.vmagent.image.tag | string | `"1.144.0-so23"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
-| stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `vmagent` pods. |
+| stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `vmagent` pods. |
 | stackstate.components.vmagent.resources | object | `{}` | Resource allocation for vmagent pod. |
 | stackstate.components.workloadObserver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.workloadObserver.enabled | bool | `true` | Enable/disable the workload observer |
@@ -1644,7 +1662,7 @@ If you encounter issues not covered here:
 | stackstate.components.workloadObserver.persistence.size | string | `"1Gi"` |  |
 | stackstate.components.workloadObserver.persistence.storageClass | string | `nil` |  |
 | stackstate.components.workloadObserver.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.workloadObserver.poddisruptionbudget | object | `{"maxUnavailable":1}` | Number of `workloadObserver` replicas. |
+| stackstate.components.workloadObserver.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | Number of `workloadObserver` replicas. |
 | stackstate.components.workloadObserver.resources | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"128Mi"},"requests":{"cpu":"20m","ephemeral-storage":"1Mi","memory":"24Mi"}}` | Resource allocation for `workloadObserver` pods. |
 | stackstate.components.workloadObserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |

@@ -7,6 +7,9 @@ metadata:
   labels:
     {{- include "opentelemetry-collector.labels" . | nindent 4 }}
 spec:
+  {{- with .Values.podDisruptionBudget.unhealthyPodEvictionPolicy }}
+  unhealthyPodEvictionPolicy: {{ . | quote }}
+  {{- end }}
   {{- if .Values.podDisruptionBudget.minAvailable }}
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
   {{- end  }}
