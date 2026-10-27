@@ -21,7 +21,8 @@ helm-charts/
 │   ├── clickhouse/
 │   └── ...                     # Pinned as version: "*" by consumers; no version bumps needed
 ├── helmtestutil/               # Go test utilities
-├── .gitlab-ci.jsonnet          # CI source (generates .gitlab-ci.yml)
+├── .github/workflows/          # Active GitHub CI and publication workflows
+├── .gitlab-ci.jsonnet          # Historical GitLab configuration
 ├── .pre-commit-config.yaml     # Pre-commit hooks
 └── go.mod                      # Go module for tests
 ```
@@ -31,8 +32,10 @@ The split between `stable/` and `local/` is defined in
 - Keys of `public_charts` / `internal_charts` are the published chart names (in `stable/`).
 - Values of `public_charts` list each parent's local-dep subchart names (in `local/`).
 
-Changes to any chart under `local/` trigger a rebuild + auto pre-release bump of every
-parent that lists it.
+Changes to a chart under `local/` trigger CI for the parents listed in the dependency
+catalog. Local charts use wildcard dependency versions and need no version bump.
+For stable chart changes, use `scripts/bump-chart-version/bump_chart_version.py`;
+it bumps the selected chart and regenerates its README.
 
 ## Build & Test Commands
 
@@ -260,7 +263,7 @@ This test file demonstrates:
 
 ## CI/CD Notes
 
-- `.gitlab-ci.yml` is auto-generated from `.gitlab-ci.jsonnet` - DO NOT EDIT MANUALLY
+- GitHub Actions is the active CI and publisher; GitLab configuration is historical.
 - Pre-commit hooks run: helm lint, shellcheck, helm-docs, jsonnet formatting
 - CI validates with: yamale, yamllint, kubeconform, helm lint
 
