@@ -15,11 +15,12 @@ running, unready pods while ready pods remain subject to the existing budget.
 Set `stackstate.components.<component>.poddisruptionbudget.unhealthyPodEvictionPolicy`
 to `IfHealthyBudget` to retain recovery protection, or `null` to omit the field.
 
-Database and storage budgets retain their existing policy: Elasticsearch, Kafka,
-ZooKeeper, VictoriaMetrics (including the combined budget), HBase, HDFS and
-Tephra. The AI assistant also retains its policy because it stores conversations
-in SQLite, as does anomaly detection because its manager owns persistent model
-state. ClickHouse currently has no PDB template.
+Database and storage PDBs use Kubernetes' default `IfHealthyBudget` policy to
+keep eviction conservative during recovery. This applies to Elasticsearch,
+Kafka, ZooKeeper, VictoriaMetrics (including the combined budget), HBase, HDFS
+and Tephra. The AI assistant and anomaly detection use the same policy because
+the assistant stores conversations in SQLite and the anomaly detection manager
+owns persistent model state. ClickHouse has no PDB template.
 
 The bundled OTel collector uses the same default when its Deployment PDB is
 enabled. Override it through
