@@ -19,24 +19,23 @@ func TestPDBUnhealthyEvictionPolicy(t *testing.T) {
 		otelTelemetryGatewayName:                          "otel.telemetryGateway.podDisruptionBudget.unhealthyPodEvictionPolicy",
 	}
 	type scenario struct {
-		name, version, override, expected, apiVersion, component string
+		name, version, override, expected, component string
 	}
 	scenarios := []scenario{
-		{"legacy-api", "1.20.0", "", "", "policy/v1beta1", ""},
-		{"stable-api", "1.21.0", "", "", "policy/v1", ""},
-		{"alpha-disabled", "1.26.0", "", "", "policy/v1", ""},
-		{"beta-default", "1.27.0", "", "AlwaysAllow", "policy/v1", ""},
-		{"stable-default", "1.31.0", "", "AlwaysAllow", "policy/v1", ""},
-		{"newer-default", "1.34.0", "", "AlwaysAllow", "policy/v1", ""},
-		{"newer-default-1.35", "1.35.0", "", "AlwaysAllow", "policy/v1", ""},
-		{"newer-default-1.36", "1.36.0", "", "AlwaysAllow", "policy/v1", ""},
-		{"override", "1.31.0", "IfHealthyBudget", "IfHealthyBudget", "policy/v1", ""},
-		{"unset", "1.31.0", "null", "", "policy/v1", ""},
-		{"legacy-override", "1.26.0", "AlwaysAllow", "", "policy/v1", ""},
+		{"stable-api", "1.21.0", "", "", ""},
+		{"alpha-disabled", "1.26.0", "", "", ""},
+		{"beta-default", "1.27.0", "", "AlwaysAllow", ""},
+		{"stable-default", "1.31.0", "", "AlwaysAllow", ""},
+		{"newer-default", "1.34.0", "", "AlwaysAllow", ""},
+		{"newer-default-1.35", "1.35.0", "", "AlwaysAllow", ""},
+		{"newer-default-1.36", "1.36.0", "", "AlwaysAllow", ""},
+		{"override", "1.31.0", "IfHealthyBudget", "IfHealthyBudget", ""},
+		{"unset", "1.31.0", "null", "", ""},
+		{"legacy-override", "1.26.0", "AlwaysAllow", "", ""},
 	}
 	for name, key := range policyKeys {
 		scenarios = append(scenarios, scenario{
-			"override-" + name, "1.31.0", "IfHealthyBudget", "IfHealthyBudget", "policy/v1", key,
+			"override-" + name, "1.31.0", "IfHealthyBudget", "IfHealthyBudget", key,
 		})
 	}
 	for _, tc := range scenarios {
@@ -65,7 +64,7 @@ func TestPDBUnhealthyEvictionPolicy(t *testing.T) {
 			for name, key := range policyKeys {
 				pdb, ok := resources.Pdbs[name]
 				require.True(t, ok, name)
-				assert.Equal(t, tc.apiVersion, pdb.APIVersion, name)
+				assert.Equal(t, "policy/v1", pdb.APIVersion, name)
 				expected := tc.expected
 				if tc.component != "" && tc.component != key {
 					expected = "AlwaysAllow"
