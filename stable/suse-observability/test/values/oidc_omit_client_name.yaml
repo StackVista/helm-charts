@@ -1,0 +1,4 @@
+stackstate:
+  authentication:
+    oidc:
+      omitClientNameParameter: true
