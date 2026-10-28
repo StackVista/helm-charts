@@ -384,16 +384,6 @@ Custom certificates volume mount definition
 {{- end -}}
 
 {{/*
-Go scans certificate directories non-recursively; retain its Linux defaults.
-*/}}
-{{- define "stackstate-k8s-agent.customCertificates.goEnv" -}}
-{{- if .Values.global.customCertificates.enabled }}
-- name: SSL_CERT_DIR
-  value: /etc/ssl/certs:/etc/pki/tls/certs:/etc/ssl/certs/custom
-{{- end }}
-{{- end -}}
-
-{{/*
 Custom certificates ConfigMap checksum annotation
 */}}
 {{- define "stackstate-k8s-agent.customCertificates.checksum" -}}
