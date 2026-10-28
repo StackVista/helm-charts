@@ -53,6 +53,21 @@ func TestAuthenticationLdapSecret(t *testing.T) {
 	RunSecretTest(t, "suse-observability-auth", []string{"values/ldap_authentication.yaml"}, expectedLdapSecretContent)
 }
 
+const expectedLdapSkipCertificateValidation = `    ssl {
+      sslType = ssl
+      skipCertificateValidation = true
+    }`
+
+func TestAuthenticationLdapSkipCertificateValidation(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/ldap_authentication_skip_certificate_validation.yaml"}, expectedLdapSkipCertificateValidation)
+}
+
+func TestAuthenticationLdapCertificateValidationByDefault(t *testing.T) {
+	RunConfigMapTestF(t, "suse-observability-api", []string{"values/ldap_authentication.yaml"}, func(stringData string) {
+		require.NotContains(t, stringData, "skipCertificateValidation")
+	})
+}
+
 func TestAuthenticationLdapMissingValues(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/ldap_authentication_missing_userQuery_parameters.yaml")
 	require.Contains(t, err.Error(), "userQuery parameters")
