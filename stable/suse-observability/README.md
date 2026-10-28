@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.12.1-pre.54`
+Current chart version is `2.12.1-pre.60`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -880,7 +880,7 @@ If you encounter issues not covered here:
 | anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
 | anomaly-detection.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | anomaly-detection.image.spotlightRepository | string | `"stackstate/spotlight"` | Repository of the spotlight Docker image. |
-| anomaly-detection.image.tag | string | `"5.2.0-snapshot.234.rebuild.74"` | the chart image tag, e.g. 4.1.3-latest |
+| anomaly-detection.image.tag | string | `"5.2.0-snapshot.245.cve-20-spotlight.6f44b385"` | the chart image tag, e.g. 4.1.3-latest |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
 | backup.configuration.enabled | bool | `true` | Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled. |
