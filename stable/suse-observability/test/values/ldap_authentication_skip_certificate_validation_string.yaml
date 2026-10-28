@@ -1,0 +1,22 @@
+stackstate:
+  authentication:
+    ldap:
+      host: ldap-server
+      port: 636
+      ssl:
+        type: ssl
+        skipCertificateValidation: "false"
+      userQuery:
+        emailKey: email
+        usernameKey: cn
+        parameters:
+          - ou: employees
+          - dc: stackstate
+          - dc: com
+      groupQuery:
+        groupMemberKey: member
+        rolesKey: cn
+        parameters:
+          - ou: groups
+          - dc: stackstate
+          - dc: com

@@ -188,8 +188,14 @@ Authentication config
   {{- if fromYaml (include "stackstate.trustStore.ldap" $) }}
       trustStorePath = "/opt/docker/secrets/ldap-cacerts"
   {{- end }}
-  {{- if $apiAuth.ldap.ssl.skipCertificateValidation }}
+  {{- if hasKey $apiAuth.ldap.ssl "skipCertificateValidation" }}
+    {{- $skipCertificateValidation := $apiAuth.ldap.ssl.skipCertificateValidation }}
+    {{- if not (kindIs "bool" $skipCertificateValidation) }}
+      {{- fail (printf "stackstate.authentication.ldap.ssl.skipCertificateValidation must be a boolean (got %T %q)" $skipCertificateValidation (toString $skipCertificateValidation)) }}
+    {{- end }}
+    {{- if $skipCertificateValidation }}
       skipCertificateValidation = true
+    {{- end }}
   {{- end }}
     }
 {{- end }}

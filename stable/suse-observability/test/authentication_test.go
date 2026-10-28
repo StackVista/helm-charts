@@ -68,6 +68,29 @@ func TestAuthenticationLdapCertificateValidationByDefault(t *testing.T) {
 	})
 }
 
+func TestAuthenticationLdapSkipCertificateValidationFalse(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml", "values/ldap_authentication_skip_certificate_validation.yaml"},
+		SetValues:   map[string]string{"stackstate.authentication.ldap.ssl.skipCertificateValidation": "false"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	configMap, ok := resources.ConfigMaps["suse-observability-api"]
+	require.True(t, ok, "API configmap should exist")
+	require.NotContains(t, configMap.Data["application_stackstate.conf"], "skipCertificateValidation")
+}
+
+func TestAuthenticationLdapSkipCertificateValidationRejectsString(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/ldap_authentication_skip_certificate_validation_string.yaml")
+	require.Contains(t, err.Error(), "skipCertificateValidation must be a boolean")
+
+	_, err = helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
+		ValuesFiles:  []string{"values/full.yaml", "values/ldap_authentication_skip_certificate_validation.yaml"},
+		SetStrValues: map[string]string{"stackstate.authentication.ldap.ssl.skipCertificateValidation": "false"},
+	})
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "skipCertificateValidation must be a boolean")
+}
+
 func TestAuthenticationLdapMissingValues(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/ldap_authentication_missing_userQuery_parameters.yaml")
 	require.Contains(t, err.Error(), "userQuery parameters")
