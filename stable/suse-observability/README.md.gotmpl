@@ -1014,6 +1014,8 @@ There are also Base64 Encoded analogues of these values. They are ignored if `tr
 
 Only one of `trustCertificates`/`trustCertificatesBase64Encoded` or `trustStore`/`trustStoreBase64Encoded` will be used, `trustCertificates` takes precedence over `trustStore`, and `trustStore`/`trustCertificates` takes precedence over `trustStoreBase64Encoded`/`trustCertificatesBase64Encoded` respectively.
 
+Setting `stackstate.authentication.ldap.ssl.skipCertificateValidation: true` disables validation of the LDAP server certificate and hostname, and any configured trust store or certificates are ignored. The connection is still encrypted but is open to man-in-the-middle attacks, so use it only temporarily or for testing.
+
 In order to search the groups that a user belongs to and from those get the roles the user can have in StackState we need to config values `rolesKey` and `groupMemberKey`.
 
 Those values in the end will be used to form a filter (and extract the relevant attribute) that looks like:
