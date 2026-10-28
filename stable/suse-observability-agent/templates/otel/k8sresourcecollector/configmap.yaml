@@ -247,7 +247,7 @@ data:
         tls:
           insecure_skip_verify: ${SKIP_SSL_VALIDATION}
         cluster_name: ${env:K8S_CLUSTER_NAME}
-        cluster_type: {{ .Values.otel.k8sResourceCollector.kubernetesTopology.clusterType | quote }}
+        cluster_type: {{ include "stackstate-k8s-agent.kubernetesTopologyCompat.clusterType" . | quote }}
         # /features answers for one platform; behind trafficmirror it cannot decide, so always send.
         discovery_enabled: false
         interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}s
@@ -264,7 +264,7 @@ data:
         tls:
           insecure_skip_verify: ${SKIP_SSL_VALIDATION}
         cluster_name: ${env:K8S_CLUSTER_NAME}
-        cluster_type: {{ .Values.otel.k8sResourceCollector.kubernetesTopology.clusterType | quote }}
+        cluster_type: {{ include "stackstate-k8s-agent.kubernetesTopologyCompat.clusterType" . | quote }}
 {{- with .Values.clusterAgent.config.events.categories }}
         event_categories:
 {{- toYaml . | nindent 10 }}

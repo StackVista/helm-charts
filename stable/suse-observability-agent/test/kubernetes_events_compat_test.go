@@ -153,3 +153,36 @@ func TestKubernetesClusterAgentFlagMovesTopologyEventsAndMetrics(t *testing.T) {
 	assert.Equal(t, "false", env.Value, "its only output, the OOM gauge, is dropped")
 	assert.Contains(t, pipelines, "metrics/kubernetes-state")
 }
+
+func compatClusterTypes(t *testing.T, opts *helm.Options, args ...string) (topology, events any) {
+	t.Helper()
+	output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "suse-observability-agent", opts, args...)
+	config := collectorConfigMap(t, helmtestutil.NewKubernetesResources(t, output))
+	return section(t, config, "exporters", "stsk8stopology")["cluster_type"], section(t, config, "exporters", "stsk8sevents")["cluster_type"]
+}
+
+func TestKubernetesCompatDetectsOpenShift(t *testing.T) {
+	opts := &helm.Options{ValuesFiles: []string{"values/kubernetes-topology-compat.yaml"}}
+	topology, events := compatClusterTypes(t, opts, "--api-versions", "quota.openshift.io/v1")
+	assert.Equal(t, "openshift", topology)
+	assert.Equal(t, "openshift", events)
+}
+
+func TestKubernetesCompatClusterTypeOverridesDetection(t *testing.T) {
+	opts := &helm.Options{
+		ValuesFiles: []string{"values/kubernetes-topology-compat.yaml"},
+		SetValues:   map[string]string{"otel.k8sResourceCollector.kubernetesTopology.clusterType": "kubernetes"},
+	}
+	topology, events := compatClusterTypes(t, opts, "--api-versions", "quota.openshift.io/v1")
+	assert.Equal(t, "kubernetes", topology)
+	assert.Equal(t, "kubernetes", events)
+}
+
+func TestKubernetesCompatRejectsUnknownClusterType(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: []string{"values/kubernetes-topology-compat.yaml"},
+		SetValues:   map[string]string{"otel.k8sResourceCollector.kubernetesTopology.clusterType": "eks"},
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "clusterType must be kubernetes, openshift or empty")
+}
