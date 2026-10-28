@@ -100,11 +100,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/otel
-            {{- if .Values.global.customCertificates.enabled }}
-            - name: custom-certificates
-              mountPath: /etc/ssl/certs/custom
-              readOnly: true
-            {{- end }}
+            {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 12 }}
           ports:
             - containerPort: 13133
               name: health
@@ -149,11 +145,7 @@ spec:
         - name: config
           configMap:
             name: {{ .Release.Name }}-k8s-resource-collector-config
-        {{- if .Values.global.customCertificates.enabled }}
-        - name: custom-certificates
-          configMap:
-            name: {{ include "stackstate-k8s-agent.customCertificates.configmap.name" . }}
-        {{- end }}
+        {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 8 }}
       {{- with .Values.otel.k8sResourceCollector.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -84,11 +84,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/otel
-            {{- if .Values.global.customCertificates.enabled }}
-            - name: custom-certificates
-              mountPath: /etc/ssl/certs/custom
-              readOnly: true
-            {{- end }}
+            {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 12 }}
             {{- if .Values.otel.prometheusScraping.targetAllocator.mtlsEnabled }}
             - name: target-allocator-ca
               mountPath: /etc/otel-target-allocator/ca

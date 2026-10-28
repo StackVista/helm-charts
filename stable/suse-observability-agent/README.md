@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.51`
+Current chart version is `1.7.52`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -101,6 +101,10 @@ helm install \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
 stackstate/suse-observability-agent
 ```
+
+## Custom CA certificates
+
+Every agent component mounts custom CA certificates at `/etc/pki/tls/certs`, alongside system trust.
 
 ## Container runtime sockets
 

@@ -96,6 +96,10 @@ helm install \
 stackstate/suse-observability-agent
 ```
 
+## Custom CA certificates
+
+Every agent component mounts custom CA certificates at `/etc/pki/tls/certs`, alongside system trust.
+
 ## Container runtime sockets
 
 By default, both agents mount the standard Docker, containerd and CRI-O socket

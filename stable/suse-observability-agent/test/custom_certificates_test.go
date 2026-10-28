@@ -6,9 +6,11 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	corev1 "k8s.io/api/core/v1"
 )
 
 func TestCustomCertificatesConfigMapCreation(t *testing.T) {
@@ -128,6 +130,83 @@ func TestCustomCertificatesVolumeMountInDaemonSets(t *testing.T) {
 					}
 				}
 				assert.True(t, customCertsVolumeMountFound, "custom-certificates volume mount not found in container %s of daemonset %s", container.Name, daemonSetName)
+			}
+		})
+	}
+}
+
+func TestCustomCertificatesVolumeMountInOtelWorkloads(t *testing.T) {
+	for _, scenario := range []struct {
+		name      string
+		values    string
+		configMap string
+	}{
+		{"inline", "values/custom-certificates-pem.yaml", "suse-observability-agent-custom-certificates"},
+		{"external", "values/custom-certificates-configmap.yaml", "external-ca-certificates"},
+		{"disabled", "", ""},
+	} {
+		t.Run(scenario.name, func(t *testing.T) {
+			valuesFiles := []string{"values/minimal.yaml"}
+			if scenario.values != "" {
+				valuesFiles = append(valuesFiles, scenario.values)
+			}
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+				ValuesFiles: valuesFiles,
+				SetValues: map[string]string{
+					"stackstate.url":                            "https://platform.example/receiver/stsAgent",
+					"otel.enabled":                              "true",
+					"otel.telemetryGateway.enabled":             "true",
+					"global.features.experimentalOtelLogsAgent": "true",
+				},
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			pods := map[string]corev1.PodSpec{}
+			for _, name := range []string{"suse-observability-agent-k8s-resource-collector", otelTelemetryGatewayName} {
+				deployment, exists := resources.Deployments[name]
+				require.True(t, exists, "deployment %s was not found", name)
+				pods[name] = deployment.Spec.Template.Spec
+			}
+			scraper, exists := resources.Statefulsets["suse-observability-agent-otel-metrics-scraper"]
+			require.True(t, exists, "metrics scraper StatefulSet was not found")
+			pods[scraper.Name] = scraper.Spec.Template.Spec
+			logsAgent, exists := resources.DaemonSets[otelLogsAgentName]
+			require.True(t, exists, "OTel logs agent DaemonSet was not found")
+			pods[logsAgent.Name] = logsAgent.Spec.Template.Spec
+
+			for name, pod := range pods {
+				t.Run(name, func(t *testing.T) {
+					var certificateVolumes []corev1.Volume
+					for _, volume := range pod.Volumes {
+						if volume.Name == "custom-certificates" {
+							certificateVolumes = append(certificateVolumes, volume)
+						}
+					}
+					if scenario.configMap == "" {
+						assert.Empty(t, certificateVolumes)
+					} else {
+						require.Len(t, certificateVolumes, 1)
+						require.NotNil(t, certificateVolumes[0].ConfigMap)
+						assert.Equal(t, scenario.configMap, certificateVolumes[0].ConfigMap.Name)
+					}
+					for _, container := range pod.Containers {
+						var certificateMounts []corev1.VolumeMount
+						for _, mount := range container.VolumeMounts {
+							if mount.Name == "custom-certificates" {
+								certificateMounts = append(certificateMounts, mount)
+							}
+						}
+						if scenario.configMap == "" {
+							assert.Empty(t, certificateMounts, container.Name)
+						} else {
+							require.Len(t, certificateMounts, 1, container.Name)
+							assert.Equal(t, "/etc/pki/tls/certs", certificateMounts[0].MountPath)
+							assert.True(t, certificateMounts[0].ReadOnly)
+						}
+						for _, env := range container.Env {
+							assert.NotContains(t, []string{"SSL_CERT_DIR", "SSL_CERT_FILE"}, env.Name)
+						}
+					}
+				})
 			}
 		})
 	}
