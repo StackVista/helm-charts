@@ -593,6 +593,20 @@ Remove with global.features.experimentalOtelKubernetesClusterAgent.
 {{- end -}}
 
 {{/*
+Cluster type for the topology and events exporters. Empty detects OpenShift from
+the quota.openshift.io API group, as the cluster agent does.
+*/}}
+{{- define "stackstate-k8s-agent.kubernetesTopologyCompat.clusterType" -}}
+{{- $type := .Values.otel.k8sResourceCollector.kubernetesTopology.clusterType -}}
+{{- if not $type -}}
+{{- $type = ternary "openshift" "kubernetes" (.Capabilities.APIVersions.Has "quota.openshift.io/v1") -}}
+{{- else if not (has $type (list "kubernetes" "openshift")) -}}
+{{- fail "otel.k8sResourceCollector.kubernetesTopology.clusterType must be kubernetes, openshift or empty" -}}
+{{- end -}}
+{{- $type -}}
+{{- end -}}
+
+{{/*
 Resource switches for the cluster-agent-compatible exporter. The receiver
 replaces Secret data by its hash and truncates ConfigMap data on ingestion.
 */}}
