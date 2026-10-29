@@ -130,6 +130,7 @@ function verifySignatureCopy() {
 cd stable/suse-observability-agent || exit
 
 echo "Pushing container images to Rancher container registry"
+"${build_root}/scripts/ci/build_nested_local_deps.sh" .
 helm dependencies update .
 
 image_list_file="o11y-agent-images.txt"

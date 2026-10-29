@@ -59,7 +59,12 @@ jobs:
           helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
           helm repo update
       - name: helm deps update
-        run: helm dependencies update --skip-refresh "$CHART"
+        run: |
+          ./scripts/ci/build_nested_local_deps.sh "$CHART"
+          helm dependencies update --skip-refresh "$CHART"
+          pkg_tmp_dir="$(mktemp -d)"
+          helm package --destination "$pkg_tmp_dir" "$CHART"
+          ./scripts/ci/verify_packaged_deps.sh "$pkg_tmp_dir"/*.tgz
       - name: Rewrite Chart.yaml to prerelease version
         if: env.DRY_RUN == 'false'
         run: ./scripts/ci/modify_chart_to_prerelease_version.sh "$CHART"
@@ -124,7 +129,12 @@ jobs:
           helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
           helm repo update
       - name: helm deps update
-        run: helm dependencies update --skip-refresh "$CHART"
+        run: |
+          ./scripts/ci/build_nested_local_deps.sh "$CHART"
+          helm dependencies update --skip-refresh "$CHART"
+          pkg_tmp_dir="$(mktemp -d)"
+          helm package --destination "$pkg_tmp_dir" "$CHART"
+          ./scripts/ci/verify_packaged_deps.sh "$pkg_tmp_dir"/*.tgz
       - name: cm-push release to public chartmuseum
         if: env.DRY_RUN == 'false'
         # See `cm-push prerelease to public chartmuseum` above for the env-var-vs-inlining rationale.

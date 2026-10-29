@@ -85,16 +85,14 @@ jobs:
           helm repo add stackstate      https://helm.stackstate.io
           helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
           helm repo update
-      - name: Build 2nd-degree file:// deps
-        run: |
-          yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' \
-            stable/${{ matrix.chart }}/Chart.yaml \
-            | xargs -I % helm dependencies build --skip-refresh stable/${{ matrix.chart }}/%
+      - name: Build nested file:// deps
+        run: ./scripts/ci/build_nested_local_deps.sh stable/${{ matrix.chart }}
       - name: Build chart
         run: |
           helm dependencies build stable/${{ matrix.chart }}
           pkg_tmp_dir="$(mktemp -d)"
           helm package --destination "$pkg_tmp_dir" stable/${{ matrix.chart }}
+          ./scripts/ci/verify_packaged_deps.sh "$pkg_tmp_dir"/*.tgz
       - uses: actions/upload-artifact@v6
         with:
           name: build-${{ matrix.chart }}
@@ -127,11 +125,8 @@ jobs:
           helm repo add stackstate      https://helm.stackstate.io
           helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
           helm repo update
-      - name: Build 2nd-degree deps
-        run: |
-          yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' \
-            local/${{ matrix.chart }}/Chart.yaml \
-            | xargs -I % helm dependencies build --skip-refresh local/${{ matrix.chart }}/%
+      - name: Build nested file:// deps
+        run: ./scripts/ci/build_nested_local_deps.sh local/${{ matrix.chart }}
       - name: Build chart
         run: helm dependencies build local/${{ matrix.chart }}
       # Multi-path upload: `charts/` is what consumers actually need, but it can be empty
@@ -398,9 +393,7 @@ jobs:
           helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
           helm repo update
       - run: |
-          yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' \
-            stable/suse-observability/Chart.yaml \
-            | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
+          ./scripts/ci/build_nested_local_deps.sh stable/suse-observability
           helm dependencies build stable/suse-observability
           helm dependencies build stable/suse-observability-values
           go mod download
@@ -493,18 +486,16 @@ jobs:
           version="${GITHUB_REF_NAME#suse-observability/}"
           ./scripts/ci/set_chart_release_version.sh stable/suse-observability "$version"
 
-      # Only suse-observability has nested file:// deps that need walking before `helm dep update`.
-      - name: Build 2nd-degree file:// deps (suse-observability only)
-        if: matrix.chart == 'suse-observability'
-        run: |
-          yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' \
-            "$CHART/Chart.yaml" \
-            | xargs -I % helm dependencies build --skip-refresh "$CHART/%"
+      - name: Build nested file:// deps
+        run: ./scripts/ci/build_nested_local_deps.sh "$CHART"
 
       - name: helm deps update
         # Always run — writes only to local charts/ + Chart.lock; exercises helm repo auth.
         run: |
           helm dependencies update --skip-refresh "$CHART"
+          pkg_tmp_dir="$(mktemp -d)"
+          helm package --destination "$pkg_tmp_dir" "$CHART"
+          ./scripts/ci/verify_packaged_deps.sh "$pkg_tmp_dir"/*.tgz
 
       # Idempotency: chartmuseum 409s on duplicate uploads. Pre-check via API so re-pushes
       # of an already-published version skip cleanly instead of failing the step.

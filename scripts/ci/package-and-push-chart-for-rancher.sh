@@ -20,6 +20,7 @@ mkdir -p "${build_dir}"
 
 echo "Packaging the chart ${chart} for repository ${chart_repo_name} at url ${chart_repo_url}"
 helm package "${chart}" -d "${build_dir}"
+../scripts/ci/verify_packaged_deps.sh "${build_dir}/${chart}-$(yq e '.version' "${chart}/Chart.yaml").tgz"
 
 echo "Downloading the index.yaml from the upstream"
 if ! curl -slf "${chart_repo_url}/index.yaml" > upstream-index.yaml; then
