@@ -1525,7 +1525,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: "3.9.2-so33"
+        tag: "3.9.2-so35"
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1871,7 +1871,7 @@ stackstate:
 ##############################
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
-  imageTag: "8.19.23-so11"
+  imageTag: "8.19.23-so14"
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: null
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
@@ -1939,7 +1939,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: "3.9.2-so33"
+    tag: "3.9.2-so35"
   metrics:
     jmx:
       image:
@@ -2014,7 +2014,7 @@ s3proxy:
     # s3proxy.image.repository -- Image repository for S3Proxy
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "3.2.0-so27"
+    tag: "3.2.0-so29"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
@@ -2084,7 +2084,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: "3.9.6-so4"
+    tag: "3.9.6-so6"
   resources: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
   replicaCount: null

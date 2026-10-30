@@ -969,7 +969,7 @@ If you encounter issues not covered here:
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
 | elasticsearch.esJavaOpts | string | `nil` | JVM options |
-| elasticsearch.imageTag | string | `"8.19.23-so11"` | Elasticsearch image tag. Updated by updatecli. |
+| elasticsearch.imageTag | string | `"8.19.23-so14"` | Elasticsearch image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"1.10.0-so26"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
 | elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
@@ -1031,7 +1031,7 @@ If you encounter issues not covered here:
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"3.9.2-so33"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.image.tag | string | `"3.9.2-so35"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
 | kafka.metrics.jmx.image.tag | string | `"0.20.0-so23"` | Kafka JMX exporter image tag |
@@ -1099,7 +1099,7 @@ If you encounter issues not covered here:
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.2.0-so27"` | Image tag for S3Proxy |
+| s3proxy.image.tag | string | `"3.2.0-so29"` | Image tag for S3Proxy |
 | s3proxy.jetty.maxThreads | int | `32` |  |
 | s3proxy.logLevel | string | `"info"` |  |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
@@ -1404,7 +1404,7 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.9.2-so33"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.9.2-so35"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.jobAnnotations | object | `{}` | Annotations for KafkaTopicCreate job. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.podAnnotations | object | `{}` | Extra annotations for kafka topic create job pods. |
@@ -1764,7 +1764,7 @@ If you encounter issues not covered here:
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.9.6-so4"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"3.9.6-so6"` | ZooKeeper image tag |
 | zookeeper.persistence.size | string | `nil` | Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.replicaCount | string | `nil` | Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.resources | object | `{}` |  |
