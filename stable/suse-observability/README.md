@@ -1083,6 +1083,8 @@ If you encounter issues not covered here:
 | minio.serviceAccount.name | string | `""` | DEPRECATED: Use s3proxy.serviceAccount.name instead. If set, will be used as fallback for the S3Proxy service account name. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
+| opentelemetry-collector.extraEnvs[0].name | string | `"GOMEMLIMIT"` |  |
+| opentelemetry-collector.extraEnvs[0].value | string | `"256MiB"` |  |
 | opentelemetry-collector.image.registry | string | `"quay.io"` | Base container image registry. |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
 | opentelemetry-collector.image.tag | string | `"test-675-log-writer"` | Container image tag for 'opentelemetry-collector' containers. |
@@ -1090,6 +1092,7 @@ If you encounter issues not covered here:
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
 | opentelemetry-collector.resources.requests.memory | string | `"512Mi"` |  |
+| opentelemetry-collector.useGOMEMLIMIT | bool | `false` |  |
 | pull-secret.credentials | list | `[]` | Registry and associated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
