@@ -17,6 +17,8 @@ import (
 // using a shared helper. These fixture-only StatefulSet renames are not a
 // migration procedure for the persistent claims of an installed release.
 func TestOperationalResourcesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")

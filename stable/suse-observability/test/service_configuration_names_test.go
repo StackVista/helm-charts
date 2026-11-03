@@ -16,6 +16,8 @@ import (
 // Exercise invalid callers in an isolated chart copy. Existing component tests
 // verify that real callers supply the names from their dedicated helpers.
 func TestServiceConfigurationRequiresExplicitNames(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	deploymentPath := filepath.Join(chart, "templates", "api", "deployment-api.yaml")

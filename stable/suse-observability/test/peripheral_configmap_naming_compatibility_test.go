@@ -18,6 +18,8 @@ import (
 // Normal tests restore only the six old naming expressions. The optional test
 // compares against an independently exported Git revision with local dependencies.
 func TestPeripheralConfigMapNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	restorePeripheralConfigMapNames(t, chart)
@@ -25,6 +27,8 @@ func TestPeripheralConfigMapNamingCompatibility(t *testing.T) {
 }
 
 func TestPeripheralConfigMapNamingGitBaselineCompatibility(t *testing.T) {
+	t.Parallel()
+
 	chart := os.Getenv("PERIPHERAL_CONFIGMAP_BASELINE_CHART")
 	if chart == "" {
 		t.Skip("set PERIPHERAL_CONFIGMAP_BASELINE_CHART to the pre-change chart with built local dependencies")

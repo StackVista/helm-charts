@@ -11,6 +11,8 @@ import (
 )
 
 func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -31,6 +33,8 @@ func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
 	require.Contains(t, resources.ClusterRoles, "suse-observability-suse-observability-rbac-agent") // from rbac-agent chart
 }
 func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -52,6 +56,8 @@ func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 }
 
 func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stacky", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -73,6 +79,8 @@ func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *test
 }
 
 func TestResourcesNamesLength(t *testing.T) {
+	t.Parallel()
+
 	// 15 chars is the max release name length
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "max-length-name", &helm.Options{
 		ValuesFiles: []string{

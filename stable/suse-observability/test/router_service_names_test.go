@@ -17,6 +17,8 @@ import (
 )
 
 func TestRouterServiceNamePreservesGlobalNaming(t *testing.T) {
+	t.Parallel()
+
 	chart, valuesFile := routerServiceNameTestChart(t, false)
 	for _, tc := range []struct {
 		name, release, prefix string
@@ -59,6 +61,8 @@ func TestRouterServiceNamePreservesGlobalNaming(t *testing.T) {
 }
 
 func TestRouterServiceReferencesFollowDedicatedHelper(t *testing.T) {
+	t.Parallel()
+
 	chart, valuesFile := routerServiceNameTestChart(t, true)
 	for _, edge := range []string{"ingress", "gateway"} {
 		for _, split := range []bool{false, true} {

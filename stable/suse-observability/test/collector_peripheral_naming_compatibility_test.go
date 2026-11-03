@@ -20,6 +20,8 @@ import (
 // The independent-step check uses the extraction baseline
 // c851a02ae1f2f7eb64c5538a148194ea36eee4b4, without intervening renames.
 func TestCollectorPeripheralNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(beforeChart, os.DirFS("..")))
 	path := filepath.Join(beforeChart, "templates/_names.tpl")
@@ -36,6 +38,8 @@ func TestCollectorPeripheralNamingCompatibility(t *testing.T) {
 }
 
 func TestCollectorPeripheralNamingGitBaselineCompatibility(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := os.Getenv("COLLECTOR_PERIPHERAL_BASELINE_CHART")
 	if beforeChart == "" {
 		t.Skip("set COLLECTOR_PERIPHERAL_BASELINE_CHART to the built pre-change chart")
@@ -46,6 +50,8 @@ func TestCollectorPeripheralNamingGitBaselineCompatibility(t *testing.T) {
 }
 
 func TestCollectorPeripheralNamingIndependentOfPreviousSteps(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := os.Getenv("COLLECTOR_PERIPHERAL_EXTRACTION_CHART")
 	if beforeChart == "" {
 		t.Skip("set COLLECTOR_PERIPHERAL_EXTRACTION_CHART to the built extraction baseline")

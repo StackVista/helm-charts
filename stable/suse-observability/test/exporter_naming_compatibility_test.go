@@ -19,6 +19,8 @@ import (
 // probes, Elasticsearch URLs, security settings and credential references stay
 // unchanged when Helm replaces the controller.
 func TestExporterDeploymentNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	const canonical = "suse-observability-prometheus-elasticsearch-exporter"
 	const prefix = "elasticsearch.prometheus-elasticsearch-exporter."
 	for _, tc := range []struct {

@@ -18,6 +18,8 @@ import (
 // Give each managed resource a distinct identity in a copied chart. PVC renames
 // here only test wiring; real installations must retain their existing claims.
 func TestS3ProxyResourcesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")

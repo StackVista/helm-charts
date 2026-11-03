@@ -16,6 +16,8 @@ import (
 )
 
 func TestResourceNamingStatelessComponents(t *testing.T) {
+	t.Parallel()
+
 	for _, release := range []string{"suse-observability", "nightly"} {
 		for _, split := range []bool{false, true} {
 			t.Run(fmt.Sprintf("%s/split=%t", release, split), func(t *testing.T) {
@@ -116,6 +118,8 @@ func TestResourceNamingStatelessComponents(t *testing.T) {
 }
 
 func TestResourceNamingPreservesStorageIdentity(t *testing.T) {
+	t.Parallel()
+
 	for _, mode := range []string{"Distributed", "Mono"} {
 		t.Run(mode, func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "nightly", &helm.Options{
@@ -164,6 +168,8 @@ func TestResourceNamingPreservesStorageIdentity(t *testing.T) {
 }
 
 func TestResourceNamingVictoriaMetricsInstances(t *testing.T) {
+	t.Parallel()
+
 	for _, release := range []string{"suse-observability", "nightly"} {
 		for _, secondInstance := range []bool{false, true} {
 			t.Run(fmt.Sprintf("%s/secondInstance=%t", release, secondInstance), func(t *testing.T) {
@@ -221,6 +227,8 @@ func TestResourceNamingVictoriaMetricsInstances(t *testing.T) {
 }
 
 func TestResourceNamingBackupAndHTTPRoute(t *testing.T) {
+	t.Parallel()
+
 	for _, release := range []string{"suse-observability", "nightly"} {
 		t.Run(release, func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplate(t, release, "values/full.yaml", "values/gateway_enabled.yaml")
@@ -256,6 +264,8 @@ func TestResourceNamingBackupAndHTTPRoute(t *testing.T) {
 }
 
 func TestResourceNamingSharedPullSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "nightly", "values/global_suse_observability_pull_secret_ha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	const secretName = "suse-observability-pull-secret"

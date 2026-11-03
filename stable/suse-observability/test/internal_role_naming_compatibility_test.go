@@ -21,6 +21,8 @@ import (
 // Pre-change source: 7979fb76f8d9edd5f27d119265bf2f947fe38dba. Independent extraction baseline:
 // c851a02ae1f2f7eb64c5538a148194ea36eee4b4.
 func TestInternalRoleNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	before := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(before, os.DirFS("..")))
 	restoreInternalRoleNames(t, before)
@@ -28,6 +30,8 @@ func TestInternalRoleNamingCompatibility(t *testing.T) {
 }
 
 func TestInternalRoleNamingGitBaselineCompatibility(t *testing.T) {
+	t.Parallel()
+
 	before := os.Getenv("INTERNAL_ROLE_BASELINE_CHART")
 	if before == "" {
 		t.Skip("set INTERNAL_ROLE_BASELINE_CHART to the built pre-change chart")
@@ -36,6 +40,8 @@ func TestInternalRoleNamingGitBaselineCompatibility(t *testing.T) {
 }
 
 func TestInternalRoleNamingIndependentOfPreviousSteps(t *testing.T) {
+	t.Parallel()
+
 	before := os.Getenv("INTERNAL_ROLE_EXTRACTION_CHART")
 	if before == "" {
 		t.Skip("set INTERNAL_ROLE_EXTRACTION_CHART to the built extraction baseline")
@@ -261,6 +267,8 @@ func renderInternalRoleChart(t *testing.T, chart, release string, options *helm.
 }
 
 func TestInternalRoleNamingSubsequentUpgradePatches(t *testing.T) {
+	t.Parallel()
+
 	options := apiResourceNameTestOptions(map[string]string{
 		"stackstate.components.router.mode.status": "automatic",
 		"kafkaup-operator.enabled":                 "true", "fullnameOverride": "first-platform",

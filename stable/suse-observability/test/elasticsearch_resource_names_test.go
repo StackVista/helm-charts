@@ -17,6 +17,8 @@ import (
 )
 
 func TestElasticsearchHeadlessServiceReferencesFollowDedicatedHelper(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	require.NoError(t, os.WriteFile(filepath.Join(chart, "templates", "_elasticsearch-resource-names.tpl"), []byte(
@@ -95,6 +97,8 @@ func rewritePlatformElasticsearchHeadless(value interface{}, old string) {
 }
 
 func TestElasticsearchCertificateLookupUsesDedicatedHelper(t *testing.T) {
+	t.Parallel()
+
 	for _, renamed := range []bool{false, true} {
 		for _, upgrade := range []bool{false, true} {
 			t.Run(fmt.Sprintf("renamed=%t/upgrade=%t", renamed, upgrade), func(t *testing.T) {

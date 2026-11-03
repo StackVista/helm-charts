@@ -20,6 +20,8 @@ import (
 // Canonical PDB names from the default-release fixture apply in every scenario,
 // including when legacy fullname overrides, prefixes or suffixes are supplied.
 func TestPDBNamingBaselineCompatibility(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name, release, namespace, fixture, valuesFile string
 		set                                           map[string]string

@@ -25,10 +25,14 @@ type clusterBindingNamingFixture struct {
 // Complete objects captured before renaming from
 // 91d4b4b016a40d233d05f6285d2dc932fb094bd9. Only the authentication binding name changes.
 func TestClusterBindingNamingFrozenCompatibility(t *testing.T) {
+	t.Parallel()
+
 	checkClusterBindingNamingFixtures(t, "..", true)
 }
 
 func TestClusterBindingNamingBaselineReproduction(t *testing.T) {
+	t.Parallel()
+
 	chart := os.Getenv("CLUSTER_BINDING_BASELINE_CHART")
 	if chart == "" {
 		t.Skip("set CLUSTER_BINDING_BASELINE_CHART to the pre-rename chart with built dependencies")
@@ -70,6 +74,8 @@ func checkClusterBindingNamingFixtures(t *testing.T, chart string, renamed bool)
 }
 
 func TestClusterBindingNamingPreservesPlatformResources(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(beforeChart, os.DirFS("..")))
 	path := filepath.Join(beforeChart, "templates/_names.tpl")
@@ -184,6 +190,8 @@ func TestClusterBindingNamingPreservesPlatformResources(t *testing.T) {
 }
 
 func TestClusterBindingNamingKeepsNamespacesDistinct(t *testing.T) {
+	t.Parallel()
+
 	names := map[string]bool{}
 	for _, namespace := range []string{"suse-observability", "tenant-a", "tenant-b", strings.Repeat("n", 62) + "a", strings.Repeat("n", 62) + "b"} {
 		options := apiResourceNameTestOptions(nil)

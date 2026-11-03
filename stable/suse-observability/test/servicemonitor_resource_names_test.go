@@ -16,6 +16,8 @@ import (
 )
 
 func TestServiceMonitorNamesUseDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")
@@ -151,6 +153,8 @@ func TestServiceMonitorNamesUseDedicatedHelpers(t *testing.T) {
 }
 
 func TestServiceMonitorRequiresResolvedVariantName(t *testing.T) {
+	t.Parallel()
+
 	fullValues, err := filepath.Abs("values/full.yaml")
 	require.NoError(t, err)
 	for _, component := range []string{"receiver", "correlate"} {

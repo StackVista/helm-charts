@@ -30,6 +30,8 @@ var explicitConfigurationComponents = []struct{ key, suffix string }{
 }
 
 func TestComponentResourceNamesUseCanonicalConfigMapsAndRetainSecrets(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name, release, prefix string
 		values                map[string]string
@@ -81,6 +83,8 @@ func TestComponentResourceNamesUseCanonicalConfigMapsAndRetainSecrets(t *testing
 }
 
 func TestComponentConfigurationReferencesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	helperPath := filepath.Join(chart, "templates", "_names.tpl")
