@@ -49,6 +49,10 @@ data:
 {{- else }}
         max_object_total_data_size_bytes: {{ .Values.otel.k8sResourceCollector.dataLimits.maxObjectTotalDataSizeBytes | int }}
 {{- end }}
+{{- if .Values.global.features.experimentalOtelKubernetesClusterAgent }}
+        # Caches objects as compact JSON and decodes them only to emit; output is unchanged.
+        compact_cache: true
+{{- end }}
 {{- if eq .Values.otel.k8sResourceCollector.crDiscovery.discoveryMode "api_groups" }}
 {{- $includes := list }}
 {{- range $pattern, $enabled := $rcfg.crDiscovery.apiGroups.include }}
@@ -204,8 +208,8 @@ data:
               - set(resource.attributes["service.namespace"], resource.attributes["k8s.namespace.name"]) where resource.attributes["service.namespace"] == nil and resource.attributes["k8s.namespace.name"] != nil
       batch: {}
 {{- if $stateMetricsCompat }}
-      # stsksm hands over a whole collection at once; bound each request below the
-      # platform OTLP receiver's body limit, which rejects larger requests permanently.
+      # stsksm sends a collection in parts of at least min_points_per_send points; cap each
+      # request below the platform OTLP receiver's body limit, which rejects larger ones permanently.
       batch/kubernetes-state:
         send_batch_size: 8192
         send_batch_max_size: 8192
