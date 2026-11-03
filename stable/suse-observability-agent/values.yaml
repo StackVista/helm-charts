@@ -229,7 +229,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: "910b2c7b"
+        tag: "cbc36853"
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
@@ -576,7 +576,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: "3.6.11-so30"
+    tag: "3.6.11-so32"
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -863,7 +863,6 @@ otel:
     kubernetesTopology:
       # otel.k8sResourceCollector.kubernetesTopology.clusterType -- (string) Cluster type for topology tags and event identifiers when global.features.experimentalOtelKubernetesClusterAgent is true: kubernetes or openshift. Empty detects OpenShift from the quota.openshift.io API group, as the cluster agent does.
       clusterType:
-
     # otel.k8sResourceCollector.deniedObjects -- Map of resource name (plural, used as the key) -> spec of resources that must not appear under otel.k8sResourceCollector.objects. Spec needs only `group`. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are allowed because the collector sanitizes them; with global.features.experimentalOtelKubernetesClusterAgent, turn their clusterAgent.collection.kubernetesResources switches off instead of denying them.
     deniedObjects: {}
     # Example:
@@ -1057,7 +1056,7 @@ otel:
         # otel.prometheusScraping.targetAllocator.image.repository -- SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release.
         repository: stackstate/opentelemetry-target-allocator
         # otel.prometheusScraping.targetAllocator.image.tag -- SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>).
-        tag: "0.160.0-so10"
+        tag: "0.161.0-so1"
         # otel.prometheusScraping.targetAllocator.image.pullPolicy -- Container image pull policy for the Target Allocator.
         pullPolicy: IfNotPresent
 
@@ -1244,7 +1243,7 @@ httpHeaderInjectorWebhook:
       # proxy.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy"
       # proxy.image.tag - Tag for the docker image
-      tag: "1.39.5-so2"
+      tag: "1.39.6-so2"
 
   # proxyInit -- InitContainer within pod which redirects traffic to the proxy container.
   proxyInit:
@@ -1252,7 +1251,7 @@ httpHeaderInjectorWebhook:
       # proxyInit.image.repository - Repository for the docker image
       repository: "stackstate/http-header-injector-proxy-init"
       # proxyInit.image.tag - Tag for the docker image
-      tag: "1.0.0-so11"
+      tag: "1.0.0-so13"
 
   # sidecarInjector -- Service for injecting the proxy sidecar into pods
   sidecarInjector:
@@ -1260,7 +1259,7 @@ httpHeaderInjectorWebhook:
       # sidecarInjector.image.repository - Repository for the docker image
       repository: "stackstate/generic-sidecar-injector"
       # sidecarInjector.image.tag - Tag for the docker image
-      tag: "b11745cd-1074-release"
+      tag: "775a2038-1088-release"
 
   # certificatePrehook -- Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook
   certificatePrehook:
@@ -1268,7 +1267,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: "1.8.6-so39"
+      tag: "1.8.6-so42"
 
 ########################
 # Rbac Agent variables #
@@ -1294,7 +1293,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: "3f63e63d-1079-release"
+        tag: "6262b54f-1092-release"
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
