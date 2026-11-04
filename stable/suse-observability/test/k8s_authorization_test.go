@@ -45,7 +45,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"agents", "apitokens", "metrics", "metricbindings", "settings", "stackpacks", "silencingrules", "systemnotifications", "topology", "traces"},
+				Resources: []string{"agents", "apitokens", "logs", "metrics", "metricbindings", "settings", "stackpacks", "silencingrules", "systemnotifications", "topology", "traces"},
 				Verbs:     []string{"get"},
 			},
 			{
@@ -107,7 +107,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"agents", "apitokens", "metrics", "syncdata", "systemnotifications", "topology", "traces", "stackpacks", "silencingrules"},
+				Resources: []string{"agents", "apitokens", "logs", "metrics", "syncdata", "systemnotifications", "topology", "traces", "stackpacks", "silencingrules"},
 				Verbs:     []string{"get"},
 			},
 			{
@@ -158,7 +158,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"agents", "apitokens", "metrics", "metricbindings", "syncdata", "systemnotifications", "topology", "topicmessages", "traces"},
+				Resources: []string{"agents", "apitokens", "logs", "metrics", "metricbindings", "syncdata", "systemnotifications", "topology", "topicmessages", "traces"},
 				Verbs:     []string{"get"},
 			},
 			{
@@ -194,7 +194,7 @@ var expectedRoles = map[string]v1.Role{
 		Rules: []v1.PolicyRule{
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"metrics", "topology", "traces"},
+				Resources: []string{"logs", "metrics", "topology", "traces"},
 				Verbs:     []string{"get"},
 			},
 		},

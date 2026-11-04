@@ -32,6 +32,7 @@
         "get-system-notifications",
         "get-topology",
         "get-traces",
+        "get-logs",
         "get-views",
         "create-views",
         "update-views",

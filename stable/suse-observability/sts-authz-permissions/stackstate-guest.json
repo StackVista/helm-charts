@@ -9,6 +9,7 @@
         "get-settings",
         "get-metrics",
         "get-traces",
+        "get-logs",
         "update-visualization",
         "get-monitors",
         "get-metric-bindings",
