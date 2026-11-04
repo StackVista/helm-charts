@@ -45,7 +45,7 @@ fi
 	promtailImage := "docker://quay.io/stackstate/test-promtail:promtail"
 	otelImage := "docker://quay.io/stackstate/test-filelog:filelog"
 
-	for _, validator := range []string{"scripts/ci/validate_chart_images.sh", ".gitlab/validate_chart_images.sh"} {
+	for _, validator := range []string{"scripts/ci/validate_chart_images.sh"} {
 		t.Run(validator, func(t *testing.T) {
 			for _, mode := range []bool{false, true} {
 				values["global"].(map[string]any)["features"].(map[string]any)["experimentalOtelLogsAgent"] = mode

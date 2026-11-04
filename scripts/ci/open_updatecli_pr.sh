@@ -2,9 +2,7 @@
 # Open a PR from $1 (source branch) into $2 (target branch) with title $3.
 #
 # Idempotent: if an open PR for the same head→base pair already exists, log its
-# URL and exit 0 instead of erroring. Matches the legacy GitLab equivalent
-# (.gitlab/open_updatecli_mr.sh) behaviour — the `gh pr create` predecessor of
-# this script lacked it.
+# URL and exit 0 instead of erroring.
 #
 # Uses the REST API directly via curl + jq because the stackstate-devops CI
 # container image does not ship the `gh` binary.

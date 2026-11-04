@@ -21,8 +21,7 @@ helm-charts/
 │   ├── clickhouse/
 │   └── ...                     # Pinned as version: "*" by consumers; no version bumps needed
 ├── helmtestutil/               # Go test utilities
-├── .github/workflows/          # Active GitHub CI and publication workflows
-├── .gitlab-ci.jsonnet          # Historical GitLab configuration
+├── .github/workflows/          # GitHub CI and publication workflows
 ├── .pre-commit-config.yaml     # Pre-commit hooks
 └── go.mod                      # Go module for tests
 ```
@@ -263,7 +262,7 @@ This test file demonstrates:
 
 ## CI/CD Notes
 
-- GitHub Actions is the active CI and publisher; GitLab configuration is historical.
+- GitHub Actions is the CI and publisher.
 - Pre-commit hooks run: helm lint, shellcheck, helm-docs, jsonnet formatting
 - CI validates with: yamale, yamllint, kubeconform, helm lint
 
