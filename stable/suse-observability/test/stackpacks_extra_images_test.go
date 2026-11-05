@@ -4,6 +4,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
@@ -36,7 +37,7 @@ func TestExtraStackpackImages(t *testing.T) {
 					stackpacks = append(stackpacks, container)
 				}
 			}
-			expected := []string{"init-stackpacks-v1", "init-stackpacks-contrib"}
+			expected := []string{"init-stackpacks-v1", "init-stackpacks-core"}
 			if tc.prime {
 				expected = append(expected, "init-stackpacks-suse")
 			}
@@ -50,6 +51,7 @@ func TestExtraStackpackImages(t *testing.T) {
 				names = append(names, container.Name)
 			}
 			require.Equal(t, expected, names)
+			assert.Contains(t, stackpacks[1].Image, "my.registry.com/stackvista/core-stackpacks:")
 			assert.Contains(t, stackpacks[0].Args, "--clear")
 
 			for _, container := range stackpacks[1:] {
@@ -74,6 +76,37 @@ func TestExtraStackpackImages(t *testing.T) {
 				assert.Equal(t, "registry.example.com/integrations/private-stackpack:1.2.3", private.Image)
 				assert.Equal(t, v1.PullAlways, private.ImagePullPolicy)
 			}
+		})
+	}
+}
+
+func TestCoreStackpackImageRegistry(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		values   string
+		registry string
+		expected string
+	}{
+		{"Default", "values/full.yaml", "", "ghcr.io"},
+		{"GlobalProfile", "values/workload_global_nonha.yaml", "", "registry.rancher.com"},
+		{"CustomGlobalRegistry", "values/workload_global_nonha.yaml", "mirror.example.com", "mirror.example.com"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+				ValuesFiles: []string{tc.values},
+				SetValues:   map[string]string{"global.imageRegistry": tc.registry},
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			deployment := resources.Deployments["suse-observability-api"]
+			if tc.name != "Default" {
+				deployment = resources.Deployments["suse-observability-server"]
+			}
+			require.NotNil(t, deployment)
+			idx := slices.IndexFunc(deployment.Spec.Template.Spec.InitContainers, func(container v1.Container) bool {
+				return container.Name == "init-stackpacks-core"
+			})
+			require.GreaterOrEqual(t, idx, 0)
+			assert.Contains(t, deployment.Spec.Template.Spec.InitContainers[idx].Image, tc.expected+"/stackvista/core-stackpacks:")
 		})
 	}
 }

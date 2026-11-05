@@ -1840,15 +1840,15 @@ stackstate:
         # stackstate.stackpacks.images[0].deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
         deploymentModeOverride: ""
         # stackstate.stackpacks.images[1].name -- name for the init container
-      - name: contrib
+      - name: core
         # stackstate.stackpacks.images[1].registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
-        registry: "quay.io"
+        registry: "ghcr.io"
         # stackstate.stackpacks.images[1].pullPolicy -- `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.stackpacks.images[1].repository -- Repository of the `stackpacks` Docker image.
-        repository: stackstate/contrib-stackpacks
+        repository: stackvista/core-stackpacks
         # stackstate.stackpacks.images[1].tag -- Tag used for the `stackpacks` Docker image
-        tag: "20261029133009-main-9730d52"
+        tag: "20261105150221-main-a9e00be"
         # stackstate.stackpacks.images[2].name -- name for the init container
       - name: suse
         # stackstate.stackpacks.images[2].registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
