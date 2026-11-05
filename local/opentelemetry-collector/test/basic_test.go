@@ -238,8 +238,8 @@ func TestOtelLogsClickHousePipeline(t *testing.T) {
 
 		logsExporter := config.Exporters["clickhousests/logs"]
 		assert.Equal(t, false, logsExporter["create_logs_table"])
-		assert.Equal(t, "otel_logs", logsExporter["logs_table_name"])
-		assert.Equal(t, "otel_logs_resources", logsExporter["logs_resources_table_name"])
+		assert.Equal(t, "otel_logs_v1", logsExporter["logs_table_name"])
+		assert.Equal(t, "otel_logs_resources_v1", logsExporter["logs_resources_table_name"])
 		assert.Equal(t, config.Exporters["clickhousests"]["endpoint"], logsExporter["endpoint"], "reuses the traces connection")
 		assert.Equal(t, map[string]interface{}{
 			"batch": map[string]interface{}{"sizer": "items", "flush_timeout": "2s", "min_size": 10000, "max_size": 20000},

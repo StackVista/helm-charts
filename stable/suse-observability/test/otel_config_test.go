@@ -11,9 +11,19 @@ import (
 )
 
 func TestOtelLogsWithTracesEnabledRenders(t *testing.T) {
-	// Test that OTel logs can be enabled when traces is enabled (the default)
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/otel_logs_with_traces_valid.yaml")
-	helmtestutil.NewKubernetesResources(t, output)
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	var config struct {
+		Exporters map[string]map[string]interface{} `yaml:"exporters"`
+	}
+	relay := resources.ConfigMaps["suse-observability-otel-collector-statefulset"].Data["relay"]
+	require.NoError(t, yaml.Unmarshal([]byte(relay), &config))
+	logs := config.Exporters["clickhousests/logs"]
+	require.NotNil(t, logs)
+	assert.Equal(t, "otel_logs_v1", logs["logs_table_name"])
+	assert.Equal(t, "otel_logs_resources_v1", logs["logs_resources_table_name"])
+	assert.Equal(t, false, logs["create_logs_table"])
+	assert.Equal(t, "otel_traces", config.Exporters["clickhousests"]["traces_table_name"])
 }
 
 func TestCollectorConfigOverrides(t *testing.T) {
