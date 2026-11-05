@@ -48,7 +48,7 @@ For tasks involving updatecli pipelines — adding/removing tracked images, chan
 - **`stable/`** - Independently published Helm charts. Key charts: `suse-observability` (main), `suse-observability-agent`, `suse-observability-values`, plus internal operations charts.
 - **`local/`** - Local-only subcharts consumed via `file://` deps by published charts (`common`, `elasticsearch`, `hbase`, `kafka`, `clickhouse`, `zookeeper`, `victoria-metrics-single`, `anomaly-detection`, `opentelemetry-collector`, `prometheus-elasticsearch-exporter`, `pull-secret`, `kafkaup-operator`, `kubernetes-rbac-agent`, `suse-observability-sizing`). Pinned to `version: "*"` by consumers, so their `Chart.yaml` version field does not need to be bumped on changes. The membership of `local/` is enforced by `.jsonnet-libs/extras/helm_chart_repo/variables.libsonnet` (`public_charts` / `internal_charts` maps).
 - **`helmtestutil/`** - Custom Go test utilities wrapping Terratest. Provides `RenderHelmTemplate()`, `RenderHelmTemplateError()`, `RenderHelmTemplateOptsNoError()`, and `NewKubernetesResources()` for parsing rendered output into typed K8s objects (Deployments, StatefulSets, ConfigMaps, Services, etc.)
-- **`.gitlab-ci.jsonnet`** - CI pipeline source. Generates `.gitlab-ci.yml` (auto-generated, never edit manually). Build/test/publish jobs are generated only for published charts (`stable/`); local charts get lightweight validate/test jobs but no version-bump check or publish.
+- **`.github/workflows/`** - CI and publication. `scripts/ci/detect-changes.sh` selects the charts a change affects; build/test/publish runs only for published charts (`stable/`), while local charts get lightweight validate/test jobs but no version-bump check or publish.
 - **`scripts/`** - Build/publish/version-bump scripts
 
 ## Test Structure
@@ -75,7 +75,6 @@ output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &h
 ## Key Rules
 
 - **README.md files in chart directories are auto-generated** from `README.md.gotmpl` via helm-docs. Never edit them manually.
-- **`.gitlab-ci.yml` is auto-generated** from `.gitlab-ci.jsonnet`. Never edit manually.
 - **Document values** in `values.yaml` using helm-docs comment format: `# key.subkey -- Description.`
 - **Go imports order**: stdlib, external, internal (`gitlab.com/StackVista/DevOps/helm-charts/helmtestutil`).
 - **Test naming**: `Test<Feature><Scenario>` (e.g., `TestAuthenticationLdapMissingValues`).

@@ -17,21 +17,34 @@ func TestStackgraphImageVersionSource(t *testing.T) {
 	require.NoError(t, err, "%s", output)
 }
 
+type graphImageDefaults struct {
+	Image struct{ Repository string }
+}
+
+type hbaseImageDefaults struct {
+	Stackgraph struct {
+		Version string
+		Image   struct{ Repository string }
+	}
+	Console graphImageDefaults
+	Tephra  graphImageDefaults
+	Hbase   struct {
+		Master       graphImageDefaults
+		Regionserver graphImageDefaults
+	}
+}
+
 func TestDatastoreImageDefaults(t *testing.T) {
 	var defaults struct {
 		Elasticsearch struct {
 			ImageTag string `yaml:"imageTag"`
 		}
-		Hbase struct {
-			Stackgraph struct{ Version string }
-		}
+		Hbase hbaseImageDefaults
 	}
 	data, err := os.ReadFile("../values.yaml")
 	require.NoError(t, err)
 	require.NoError(t, yaml.Unmarshal(data, &defaults))
-	var localDefaults struct {
-		Stackgraph struct{ Version string }
-	}
+	var localDefaults hbaseImageDefaults
 	data, err = os.ReadFile("../../../local/hbase/values.yaml")
 	require.NoError(t, err)
 	require.NoError(t, yaml.Unmarshal(data, &localDefaults))
@@ -61,14 +74,22 @@ func TestDatastoreImageDefaults(t *testing.T) {
 			for _, deployment := range resources.Deployments {
 				collect(deployment.Spec.Template.Spec)
 			}
-			repositories := []string{"stackgraph-console", "tephra-server"}
-			if mode == "Mono" {
-				repositories = append(repositories, "stackgraph-hbase")
-			} else {
-				repositories = append(repositories, "hbase-master", "hbase-regionserver")
+			repositories := map[string]string{
+				localDefaults.Console.Image.Repository: defaults.Hbase.Console.Image.Repository,
+				localDefaults.Tephra.Image.Repository:  defaults.Hbase.Tephra.Image.Repository,
 			}
-			for _, repository := range repositories {
-				require.Contains(t, images, "my.registry.com/stackstate/"+repository+":2.5-"+defaults.Hbase.Stackgraph.Version)
+			if mode == "Mono" {
+				repositories[localDefaults.Stackgraph.Image.Repository] = defaults.Hbase.Stackgraph.Image.Repository
+			} else {
+				repositories[localDefaults.Hbase.Master.Image.Repository] = defaults.Hbase.Hbase.Master.Image.Repository
+				repositories[localDefaults.Hbase.Regionserver.Image.Repository] = defaults.Hbase.Hbase.Regionserver.Image.Repository
+			}
+			for fallback, repository := range repositories {
+				require.NotEmpty(t, fallback)
+				if repository == "" {
+					repository = fallback
+				}
+				require.Contains(t, images, "my.registry.com/"+repository+":2.5-"+defaults.Hbase.Stackgraph.Version)
 			}
 			require.Contains(t, images, "my.registry.com/stackstate/elasticsearch:"+defaults.Elasticsearch.ImageTag)
 		})

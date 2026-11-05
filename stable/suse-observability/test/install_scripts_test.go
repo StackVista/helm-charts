@@ -113,6 +113,17 @@ exec "$COPY_TEST_REAL_HELM" "${args[@]:0:2}" "$COPY_TEST_CHART" "${args[@]:5}"
 }
 
 func TestChangeImageSourceScriptRewritesImages(t *testing.T) {
+	for _, source := range []string{"", "source", "source/team/nested"} {
+		for _, destination := range []string{"repo", "mirror/team"} {
+			t.Run(fmt.Sprintf("source=%s/destination=%s", source, destination), func(t *testing.T) {
+				testChangeImageSourceScriptRewritesImages(t, source, destination)
+			})
+		}
+	}
+}
+
+func testChangeImageSourceScriptRewritesImages(t *testing.T, source, targetRepo string) {
+	t.Helper()
 	curDir, err := os.Getwd()
 	require.NoError(t, err)
 
@@ -125,22 +136,103 @@ func TestChangeImageSourceScriptRewritesImages(t *testing.T) {
 
 	helmDir := filepath.Join(tmpDir, "suse-observability")
 
-	targetReg := "reg"
-	targetRepo := "repo"
-	currentImages := RunGetImagesScript(t, helmDir)
-	expectedImages := strings.ReplaceAll(currentImages, "quay.io/stackstate", fmt.Sprintf("%s/%s", targetReg, targetRepo))
-	RunChangeImageScript(t, helmDir, targetReg, targetRepo)
-	renamedImages := RunGetImagesScript(t, helmDir)
+	repositoryPaths := []string{
+		".global.wait.image.repository",
+		".stackstate.components.api.image.repository",
+		".stackstate.components.checks.image.repository",
+		".stackstate.components.correlate.image.repository",
+		".stackstate.components.authorizationSync.image.repository",
+		".stackstate.components.healthSync.image.repository",
+		".stackstate.components.initializer.image.repository",
+		".stackstate.components.mcp.image.repository",
+		".stackstate.components.aiAssistant.image.repository",
+		".stackstate.components.e2es.image.repository",
+		".stackstate.components.notification.image.repository",
+		".stackstate.components.receiver.image.repository",
+		".stackstate.components.router.image.repository",
+		".stackstate.components.router.mode.image.repository",
+		".stackstate.components.slicing.image.repository",
+		".stackstate.components.state.image.repository",
+		".stackstate.components.sync.image.repository",
+		".stackstate.components.server.image.repository",
+		".stackstate.components.ui.image.repository",
+		".stackstate.components.clickhouseCleanup.image.repository",
+		".stackstate.components.kafkaTopicCreate.image.repository",
+		".stackstate.components.nginxPrometheusExporter.image.repository",
+		".stackstate.components.containerTools.image.repository",
+		".stackstate.components.vmagent.image.repository",
+		".stackstate.components.workloadObserver.image.repository",
+		".stackstate.stackpacks.images[0].repository",
+		".stackstate.stackpacks.images[1].repository",
+		".stackstate.stackpacks.images[2].repository",
+		".elasticsearch.imageRepository",
+		".elasticsearch.prometheus-elasticsearch-exporter.image.repository",
+		".hbase.stackgraph.image.repository",
+		".hbase.console.image.repository",
+		".hbase.wait.image.repository",
+		".hbase.hbase.master.image.repository",
+		".hbase.hbase.regionserver.image.repository",
+		".hbase.hdfs.image.repository",
+		".hbase.tephra.image.repository",
+		".hbase.zookeeper.image.repository",
+		".kafkaup-operator.image.repository",
+		".kafka.image.repository",
+		".kafka.metrics.jmx.image.repository",
+		".s3proxy.image.repository",
+		".zookeeper.image.repository",
+		".anomaly-detection.image.spotlightRepository",
+		".victoria-metrics-0.server.image.repository",
+		".victoria-metrics-1.server.image.repository",
+		".victoria-metrics-0.backup.vmbackup.image.repository",
+		".victoria-metrics-1.backup.vmbackup.image.repository",
+		".victoria-metrics-0.backup.setupCron.image.repository",
+		".victoria-metrics-1.backup.setupCron.image.repository",
+		".victoria-metrics.restore.image.repository",
+		".clickhouse.image.repository",
+		".clickhouse.backup.image.repository",
+		".opentelemetry-collector.image.repository",
+		".kubernetes-rbac-agent.containers.rbacAgent.image.repository",
+	}
+	if source != "" {
+		var overrides []string
+		for i, path := range repositoryPaths {
+			overrides = append(overrides, fmt.Sprintf(`%s = "%s/custom-%d"`, path, source, i))
+		}
+		output, err := exec.Command("yq", "-i", strings.Join(overrides, " | "), filepath.Join(helmDir, "values.yaml")).CombinedOutput()
+		require.NoError(t, err, "%s", output)
+	}
 
-	require.NotContains(t, renamedImages, fmt.Sprintf("%s/stackstate/", targetReg))
+	targetReg := "mirror.example.com:5000"
+	currentImages := RunGetImagesScript(t, helmDir)
+	expectedImages := strings.Split(strings.TrimSpace(currentImages), "\n")
+	for i, image := range expectedImages {
+		expectedImages[i] = targetReg + "/" + targetRepo + "/" + image[strings.LastIndex(image, "/")+1:]
+	}
+	slices.Sort(expectedImages)
+	RunChangeImageScript(t, helmDir, targetReg, targetRepo)
+	renamedImages := strings.Split(strings.TrimSpace(RunGetImagesScript(t, helmDir)), "\n")
+
 	require.Equal(t, expectedImages, renamedImages)
+	if source != "" {
+		output, err := exec.Command("yq", "["+strings.Join(repositoryPaths, ", ")+"] | .[]", filepath.Join(helmDir, "values.yaml")).CombinedOutput()
+		require.NoError(t, err, "%s", output)
+		repositories := strings.Split(strings.TrimSpace(string(output)), "\n")
+		require.Len(t, repositories, len(repositoryPaths))
+		for i, repository := range repositories {
+			require.Equal(t, fmt.Sprintf("%s/custom-%d", targetRepo, i), repository, repositoryPaths[i])
+		}
+	}
 }
 
 func RunGetImagesScript(t *testing.T, dir string) string {
+	t.Helper()
 	cmd := exec.Command(filepath.Join(dir, "installation", "o11y-get-images.sh"))
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
 	stdout, err := cmd.Output()
 
-	require.NoError(t, err)
+	require.NoError(t, err, "%s", stderr.String())
+	require.NotEmpty(t, strings.TrimSpace(string(stdout)), "%s", stderr.String())
 	return string(stdout)
 }
 

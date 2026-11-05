@@ -78,43 +78,51 @@ fi
 function updateDockerImagesInValues() {
   echo "Updating values.yaml to use new docker images"
   "${sed_inplace[@]}" "s#registry: [^/:]\{1,\}\$#registry: $docker_registry_to#g" "$helm_chart_dir/values.yaml"
-  "${sed_inplace[@]}" "s#repository: [^/:]\{1,\}\/[^/:]\{1,\}\/\([^/:]\{1,\}\)\$#repository: $docker_registry_to/$docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
-  "${sed_inplace[@]}" "s#repository: [^/:]\{1,\}\/\([^/:]\{1,\}\)\$#repository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
-  "${sed_inplace[@]}" "s#spotlightRepository: [^/:]\{1,\}\/\([^/:]\{1,\}\)\$#spotlightRepository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
 
   # Set the global image registry
   DOCKER_REGISTRY_TO="$docker_registry_to" yq -i -e  '.global.imageRegistry = env(DOCKER_REGISTRY_TO)' "$helm_chart_dir/values.yaml"
 
   # Update elasticsearch
   yq e -i ".elasticsearch.imageRegistry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".elasticsearch.imageRepository = \"$docker_repo_to/elasticsearch\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.elasticsearch.imageRepository |= . // "stackstate/elasticsearch"' "$helm_chart_dir/values.yaml"
   yq e -i ".elasticsearch.prometheus-elasticsearch-exporter.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".elasticsearch.prometheus-elasticsearch-exporter.image.repository = \"$docker_repo_to/elasticsearch-exporter\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.elasticsearch.prometheus-elasticsearch-exporter.image.repository |= . // "stackstate/elasticsearch-exporter"' "$helm_chart_dir/values.yaml"
   # Update hbase
   yq e -i ".hbase.all.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
   yq e -i ".hbase.wait.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
   yq e -i ".hbase.zookeeper.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.stackgraph.image.repository = \"$docker_repo_to/stackgraph-hbase\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.console.image.repository = \"$docker_repo_to/stackgraph-console\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.wait.image.repository = \"$docker_repo_to/wait\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.hbase.master.image.repository = \"$docker_repo_to/hbase-master\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.hbase.regionserver.image.repository = \"$docker_repo_to/hbase-regionserver\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.hdfs.image.repository = \"$docker_repo_to/hadoop\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.tephra.image.repository = \"$docker_repo_to/tephra-server\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".hbase.zookeeper.image.repository = \"$docker_repo_to/zookeeper\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.stackgraph.image.repository |= . // "stackstate/stackgraph-hbase"' "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.console.image.repository |= . // "stackstate/stackgraph-console"' "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.wait.image.repository |= . // "stackstate/wait"' "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.hbase.master.image.repository |= . // "stackstate/hbase-master"' "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.hbase.regionserver.image.repository |= . // "stackstate/hbase-regionserver"' "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.hdfs.image.repository |= . // "stackstate/hadoop"' "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.tephra.image.repository |= . // "stackstate/tephra-server"' "$helm_chart_dir/values.yaml"
+  yq e -i '.hbase.zookeeper.image.repository |= . // "stackstate/zookeeper"' "$helm_chart_dir/values.yaml"
   # Update Victoria Metrics
   yq e -i ".victoria-metrics-0.server.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".victoria-metrics-0.server.image.repository = \"$docker_repo_to/victoria-metrics\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.victoria-metrics-0.server.image.repository |= . // "stackstate/victoria-metrics"' "$helm_chart_dir/values.yaml"
   yq e -i ".victoria-metrics-1.server.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".victoria-metrics-1.server.image.repository = \"$docker_repo_to/victoria-metrics\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.victoria-metrics-1.server.image.repository |= . // "stackstate/victoria-metrics"' "$helm_chart_dir/values.yaml"
   yq e -i ".victoria-metrics-0.backup.vmbackup.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".victoria-metrics-0.backup.vmbackup.image.repository = \"$docker_repo_to/vmbackup\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.victoria-metrics-0.backup.vmbackup.image.repository |= . // "stackstate/vmbackup"' "$helm_chart_dir/values.yaml"
   yq e -i ".victoria-metrics-1.backup.vmbackup.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".victoria-metrics-1.backup.vmbackup.image.repository = \"$docker_repo_to/vmbackup\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.victoria-metrics-1.backup.vmbackup.image.repository |= . // "stackstate/vmbackup"' "$helm_chart_dir/values.yaml"
   yq e -i ".victoria-metrics-0.backup.setupCron.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".victoria-metrics-0.backup.setupCron.image.repository = \"$docker_repo_to/container-tools\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.victoria-metrics-0.backup.setupCron.image.repository |= . // "stackstate/container-tools"' "$helm_chart_dir/values.yaml"
   yq e -i ".victoria-metrics-1.backup.setupCron.image.registry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
-  yq e -i ".victoria-metrics-1.backup.setupCron.image.repository = \"$docker_repo_to/container-tools\"" "$helm_chart_dir/values.yaml"
+  yq e -i '.victoria-metrics-1.backup.setupCron.image.repository |= . // "stackstate/container-tools"' "$helm_chart_dir/values.yaml"
+
+  DOCKER_REPO_TO="$docker_repo_to" yq e -i '
+    (
+      (
+        (.. | select(has("repository")) | .repository),
+        (.. | select(has("spotlightRepository")) | .spotlightRepository),
+        (.. | select(has("imageRepository")) | .imageRepository)
+      ) | select(tag == "!!str")
+    ) |=
+      env(DOCKER_REPO_TO) + "/" + (split("/") | .[-1])
+  ' "$helm_chart_dir/values.yaml"
 
   echo "Updating documentations (README.md)"
   (cd  "$helm_chart_dir" && helm-docs)

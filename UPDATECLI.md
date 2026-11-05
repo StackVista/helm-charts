@@ -40,15 +40,9 @@ There are two pipelines that run sequentially in CI:
 - If `stable/suse-observability-agent/values.yaml` changed vs master, runs `scripts/bump-chart-version/bump_chart_version.py suse-observability-agent` to bump the agent chart version.
 - Creates a GitLab merge request titled `[master] Bump helm chart docker images`.
 
-### CI Jobs (in `.gitlab-ci.jsonnet`)
+### CI Workflow (`.github/workflows/updatecli.yml`)
 
-Three jobs in the `update` stage, triggered only when `$RUN_UPDATECLI` is set:
-
-```
-update_helm_chart_docker_images          # runs update-docker-images pipeline
-  -> finalize_helm_chart_docker_images   # runs finalize-docker-images pipeline
-    -> open_updatecli_docker_images_mr   # ensures MR exists via .gitlab/open_updatecli_mr.sh
-```
+A manual `workflow_dispatch` runs the chosen pipeline with `updatecli pipeline apply`, then either squash-pushes the result to the target branch (`scripts/ci/updatecli_squash_push.sh`) or pushes the working branch and opens a pull request (`scripts/ci/open_updatecli_pr.sh`).
 
 ## Source Configuration
 
@@ -156,7 +150,7 @@ docker run --rm --network host -v $(pwd):/workspace:z -w /workspace -e GITLAB_TO
   python3 scripts/bump-chart-version/bump_chart_version.py -d -v common        # dry run
   python3 scripts/bump-chart-version/bump_chart_version.py --check common      # validate deps
   ```
-- **`.gitlab/open_updatecli_mr.sh`** - Ensures a GitLab merge request exists for the updatecli branch. Idempotent (skips if MR already open).
+- **`scripts/ci/open_updatecli_pr.sh`** - Ensures a pull request exists for the updatecli branch. Idempotent (skips if a PR is already open).
 
 ## Required Environment Variables
 

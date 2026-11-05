@@ -41,6 +41,7 @@
         "get-topic-messages",
         "get-topology",
         "get-traces",
+        "get-logs",
         "get-views",
         "create-views",
         "update-views",
