@@ -6,6 +6,7 @@ rules:
 - apiGroups:
     - instance.observability.cattle.io
   resources:
+    - logs
     - metrics
     - topology
     - traces

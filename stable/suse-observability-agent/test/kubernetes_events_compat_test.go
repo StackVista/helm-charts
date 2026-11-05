@@ -186,3 +186,14 @@ func TestKubernetesCompatRejectsUnknownClusterType(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "clusterType must be kubernetes, openshift or empty")
 }
+
+func TestK8sResourceCollectorCompactCacheOnlyUnderTheFlag(t *testing.T) {
+	for valuesFile, want := range map[string]any{
+		"values/kubernetes-topology-compat.yaml":     true,
+		"values/k8s-resource-collector-enabled.yaml": nil,
+	} {
+		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{ValuesFiles: []string{valuesFile}})
+		receiver := section(t, collectorConfigMap(t, helmtestutil.NewKubernetesResources(t, output)), "receivers", "k8sresource")
+		assert.Equal(t, want, receiver["compact_cache"], valuesFile)
+	}
+}

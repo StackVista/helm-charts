@@ -25,6 +25,7 @@ rules:
   resources:
     - agents
     - apitokens
+    - logs
     - metrics
     - syncdata
     - systemnotifications

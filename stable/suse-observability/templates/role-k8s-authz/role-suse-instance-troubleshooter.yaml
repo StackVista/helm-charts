@@ -21,6 +21,7 @@ rules:
   resources:
     - agents
     - apitokens
+    - logs
     - metrics
     - metricbindings
     - settings

@@ -40,15 +40,9 @@ repos:
   rev: v1.0.10
   hooks:
   - id: jsonnet_format
-  - id: jsonnet_to_yaml
-    name: GitLab CI JSONnet to YAML
-    args:
-    - --only=./.gitlab-ci.jsonnet
-    files: '.*\.(j|lib)sonnet$|.json$'
   - id: jsonnet_to_json
     name: Grafana Dashboards JSONnet to JSON
     args:
-    - --ignore=.gitlab-ci.jsonnet
     - --ignore=test/ct.jsonnet
     - --ignore=jsonnet-vendor
     - --jpath=jsonnet-vendor/github.com/grafana

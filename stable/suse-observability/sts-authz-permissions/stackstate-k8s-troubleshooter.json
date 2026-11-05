@@ -10,6 +10,7 @@
         "get-settings",
         "get-metrics",
         "get-traces",
+        "get-logs",
         "update-visualization",
         "get-metric-bindings",
         "get-notifications",
