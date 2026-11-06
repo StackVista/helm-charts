@@ -1,165 +1,160 @@
-# UPDATECLI.md
+# Updatecli chart adoption
 
-Guidance for working with updatecli pipelines in this repository. For general Helm chart work, see `CLAUDE.md` and `AGENTS.md`.
+The active workflow is [`.github/workflows/updatecli.yml`](.github/workflows/updatecli.yml).
+It evaluates and applies the manifests under `updatecli/updatecli.d/`.
+The public chart repository is a mirror, not a second updater or editing target.
 
-## Overview
+## CVE ownership
 
-Updatecli automates Docker image tag updates across Helm chart values files. It watches `quay.io/stackstate/*` images for new release tags and writes the latest tag into the appropriate `values.yaml` keys.
+Producer fixers publish ready normal components, including agent images, under standing
+approval regardless of registry visibility. Source merged through normal repository
+protections, including approved bot automerge, qualifies. Review the full release range
+to know what ships, not to add approval for every change; preserve immutable releases.
+Producers must not write chart pins, open adoption PRs or dispatch chart-mutating
+workflows. Read-only inspection and disposable renders with external values overrides
+are allowed.
 
-## File Layout
+The CVE planner coordinates adoption through Updatecli, reusing existing automatic
+work and batching compatible ready releases. A planner may explicitly assign a
+repair for a demonstrated updater/template defect and its necessary tests/docs.
+That exception does not permit routine image bumps or candidate-pin restoration.
+Final platform and agent-chart releases are outside CVE remediation execution; hand them
+to the existing release owner and runbooks. Here, agent release means publication of the
+suse-observability-agent chart, not its component images. Human PR review covering the
+actual release changes is the approval record; do not request a second confirmation. A
+producer PR review alone does not approve those release changes or authorize
+deployments, infrastructure changes or other runbook side effects.
 
-```
-updatecli/
-├── updatecli.d/
-│   ├── update-docker-images/
-│   │   ├── update.yaml              # Main pipeline: sources + targets for 21 images
-│   │   └── README.md
-│   └── finalize-docker-images/
-│       └── update.yaml              # Post-update: bump agent chart version, create MR
-├── values.d/
-│   ├── values.yaml                  # SCM + registry config (templated into pipelines)
-│   └── values-local.yaml            # Local dev override (sets clone directory)
-└── updatecli-image-mapping.md       # Reference table: image -> values file key(s)
-```
+## Evaluation and application
 
-## Pipeline Architecture
+A push changing `updatecli/**` or the workflow triggers configuration validation
+and `updatecli pipeline diff`. The workflow evaluates the pushed branch; ensure any
+referenced scripts exist in that checkout. An actual diff resolves sources and
+executes the manifest's shell resources, so inspect those commands before running it.
 
-There are two pipelines that run sequentially in CI:
+Manual dispatch chooses a pipeline and target branch:
 
-### 1. `update-docker-images/update.yaml` (main pipeline)
+| Pipeline | Manifest | Apply follow-up |
+| --- | --- | --- |
+| `docker_images` | `update-docker-images/update.yaml` | Force-reset updater branch, add a signed squash commit, then find/open a PR. Re-dispatch can close/recreate an existing PR and invalidate review/CI. |
+| `stackstate` | `update-stackstate/update.yaml` | Squash-push to the selected target branch. |
+| `stackpacks` | `update-stackpacks/update.yaml` | Squash-push to the selected target branch. |
 
-- **Pipeline ID:** `docker-images`
-- Contains 21 `sources` (one per Docker image) and 21 `targets` (the values keys to update).
-- All targets are **chained via `dependson`** so they execute sequentially. This is intentional: split pipelines ran in parallel and only the last write survived because they all modify the same values file.
-- Almost all targets write to `stable/suse-observability/values.yaml`. Two exceptions write to `stable/suse-observability-agent/values.yaml` (`containerToolsSuseObservabilityAgent`, `kubernetesRbacAgentSuseObservabilityAgent`).
-- Some images update multiple keys (use `keys:` list instead of `key:`).
-
-### 2. `finalize-docker-images/update.yaml` (post-update pipeline)
-
-- Shares the same `pipelineid: docker-images` so it operates on the same working branch (`updatecli-docker-images-master`).
-- If `stable/suse-observability-agent/values.yaml` changed vs master, runs `scripts/bump-chart-version/bump_chart_version.py suse-observability-agent` to bump the agent chart version.
-- Creates a GitLab merge request titled `[master] Bump helm chart docker images`.
-
-### CI Workflow (`.github/workflows/updatecli.yml`)
-
-A manual `workflow_dispatch` runs the chosen pipeline with `updatecli pipeline apply`, then either squash-pushes the result to the target branch (`scripts/ci/updatecli_squash_push.sh`) or pushes the working branch and opens a pull request (`scripts/ci/open_updatecli_pr.sh`).
-
-## Source Configuration
-
-Every source is a `dockerimage` kind pulling from `quay.io/stackstate/<name>` with `architecture: linux/amd64`.
-
-### Tag Filter Patterns
-
-Images use a small set of tag formats. Keep the source entry in
-`updatecli/updatecli.d/update-docker-images/update.yaml` close to the image it
-tracks, and keep the reference table in
-[`updatecli-image-mapping.md`](updatecli/updatecli-image-mapping.md).
-
-### Commit-hash sources (agent images)
-
-`processAgentHash` and `agentHash` are `shell` sources that resolve the latest
-commit hash of `stackstate-process-agent` / `stackstate-agent` and use it as the
-image tag. Because a fresh commit may not have its image built/pushed yet, each
-source verifies the consumed image(s) exist with `skopeo inspect` before bumping:
-
-- `processAgentHash` → `quay.io/stackstate/stackstate-k8s-process-agent:<hash>`
-- `agentHash` → `quay.io/stackstate/stackstate-k8s-agent:<hash>` **and**
-  `quay.io/stackstate/stackstate-k8s-cluster-agent:<hash>`
-
-If every consumed image exists, the source emits the new hash and the tag is
-bumped. If any is still missing, the source instead **re-emits the current tag**
-(read from `stable/suse-observability-agent/values.yaml` via `scmid: default`, so
-it reads the same checkout the targets diff against). Re-emitting the current
-value produces no diff — so no bump happens until the build lands — while keeping
-the source successful. This matters because the sources live in the single shared
-`docker-images` manifest: a source that *failed* (non-zero exit) would red-fail
-the whole pipeline and block every unrelated image bump, whereas a missing build
-should only hold back the agent tags.
-
-## Target Configuration
-
-Targets are `yaml` kind with `scmid: default`. Key fields:
-
-- `sourceid` - links to the source providing the tag value
-- `dependson` - `["target#previousTarget"]` to enforce sequential execution
-- `spec.file` - the values file to update
-- `spec.key` or `spec.keys` - JSONPath(s) to the image tag field(s)
-
-### Special Cases
-
-- **container-tools**: Updates 5 keys across 3 targets (suse-observability, victoria-metrics backup cron, suse-observability-agent). Matches only standard `main` tags; `1.8.6_dev-*` tags are CI/dev images and must not be used in customer-runtime chart defaults.
-- **kubernetes-rbac-agent (suse-observability target)**: May need to be temporarily disabled if the tag key doesn't exist on master yet (updatecli clones from remote).
-
-## Values Templating
-
-Pipeline YAML files use Go templates referencing values from `values.d/values.yaml`:
-
-- `{{ .scm.owner }}`, `{{ .scm.repository }}`, `{{ .scm.branch }}` - GitLab project coordinates
-- `{{ env .scm.userEnv }}`, `{{ requiredEnv .scm.tokenEnv }}` - credentials from environment
-- `{{ .scm.directory }}` - optional clone directory (only set for local testing)
-
-## Adding a New Image
-
-1. Add a **source** entry in `update-docker-images/update.yaml` with the image name, `tagfilter`, and `versionfilter` matching the image's tag format (see table above).
-2. Add a **target** entry with:
-   - `sourceid` pointing to the new source
-   - `dependson` pointing to the last target in the chain (currently `zookeeper`)
-   - `spec.file` and `spec.key`/`spec.keys` for the values file location(s)
-3. Update the `dependson` so the new target becomes the last in the chain (or insert it alphabetically and fix the chain).
-4. Update `updatecli-image-mapping.md` with the new image's mapping.
-5. If the target writes to `stable/suse-observability-agent/values.yaml`, the finalize pipeline will automatically bump the agent chart version.
-
-## Removing an Image
-
-1. Remove the source and target entries from `update-docker-images/update.yaml`.
-2. Fix the `dependson` chain so the target before and after the removed one are linked.
-3. Update `updatecli-image-mapping.md`.
-
-## Local Testing
-
-Dry-run without committing or pushing (requires `GITLAB_TOKEN` in `.env`):
+**A dispatch with `dry_run=true` skips both apply and evaluation.** Its summary
+records inputs; green status does not prove that the selected pipeline was tested.
+For repair branches changing `updatecli/**`, use the push-validation job. For
+adoption without a source change, use a real local pipeline diff:
 
 ```bash
-source .env
-docker run --rm --network host -v $(pwd):/workspace:z -w /workspace -e GITLAB_TOKEN \
-  quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4 \
-  updatecli diff \
-    -c updatecli/updatecli.d/update-docker-images/ \
-    -v updatecli/values.d/values.yaml
+export TARGET_BRANCH=master
+updatecli pipeline diff \
+  --config updatecli/updatecli.d/update-docker-images/ \
+  --values updatecli/values.d/values.yaml
 ```
 
-To apply locally and inspect changes (writes to `updatecli-work/` subdirectory):
+Supply credentials through the existing environment, never as literal command
+arguments. Select the branch actually under review rather than assuming master
+contains a proposed resolver. Match the local checkout and target-branch revision:
+shell resources can use either working directory. A diff can create local SCM
+checkouts; it is not a zero-side-effect evaluation of arbitrary unreviewed manifests.
+Diff may omit generated README, quoted-tag and version changes; inspect the full resulting PR diff before
+merge or handoff.
 
-```bash
-source .env
-docker run --rm --network host -v $(pwd):/workspace:z -w /workspace -e GITLAB_TOKEN \
-  quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4 \
-  updatecli apply --commit=false --push=false --clean=false \
-    -c updatecli/updatecli.d/update-docker-images/ \
-    -v updatecli/values.d/values.yaml -v updatecli/values.d/values-local.yaml
-```
+An applying dispatch uses `dry_run=false`. Inspect its complete proposed changes
+and workflow side effects first. Use each pipeline's existing supported apply path.
+StackState/StackPack workflows write directly to their selected target; verify that
+target and the complete normal update before dispatch. Standing adoption approval
+covers those workflow writes, not manual default-branch pushes or unrelated App
+bypass. Existing producer-triggered automation continues normally.
 
-**Warning:** Never set `scm.directory` to `/workspace` in local values - updatecli may clear it before cloning.
+The PR helper alone reuses an open head/base PR. The preceding squash step force-
+resets the updater branch to the target tip before adding the new commit; GitHub
+can close the old PR and discard its approval/auto-merge state. Reuse an active run
+or open candidate by following it, not re-dispatching. Record the dispatch identity
+and candidate link in the planner notebook. Only a deliberate correction should
+replace an open candidate, with fresh CI and review; late routine arrivals wait.
+Existing producer-triggered automation continues; do not race it with manual apply.
 
-## Related Scripts
+The planner has standing approval to run existing Updatecli adoption workflows and merge
+their verified normal-update PRs, including normal publication side effects. No
+additional human approval is needed for that adoption.
+Satisfy required branch reviews through the repository's existing reviewer path; never
+self-approve, fabricate approval or weaken protection. If that review is absent, request
+or wait for it. This is the existing merge prerequisite, not a new authorization
+question for Updatecli adoption. Review the complete diff,
+selected artifacts and required CI before merge; honor scoped holds and preserve
+candidates already under review. Updater/template repair-code merges retain their source approval boundary. Final
+platform and agent-chart releases remain with the existing release owner.
 
-- **`scripts/bump-chart-version/bump_chart_version.py`** - Bumps a chart's version and cascades to all dependents via the reverse dependency graph. Called by the finalize pipeline for agent chart changes. Also useful standalone:
-  ```bash
-  python3 scripts/bump-chart-version/bump_chart_version.py common              # patch bump
-  python3 scripts/bump-chart-version/bump_chart_version.py -t minor elasticsearch
-  python3 scripts/bump-chart-version/bump_chart_version.py -d -v common        # dry run
-  python3 scripts/bump-chart-version/bump_chart_version.py --check common      # validate deps
-  ```
-- **`scripts/ci/open_updatecli_pr.sh`** - Ensures a pull request exists for the updatecli branch. Idempotent (skips if a PR is already open).
+The image pipeline evaluates all tracked images; it has no CVE-only apply selector. The
+planner may include other verified, compatible normal-channel updates in the same CVE
+batch. Inspect every selected artifact before applying and review every resulting change
+before merge. Unverified, incompatible or off-channel changes remain preview-only until
+resolved. Do not copy selected pins by hand or describe the full pipeline as a targeted
+apply.
 
-## Required Environment Variables
+## Release selection and diagnosis
+
+The manifests and [image mapping](updatecli/updatecli-image-mapping.md) define
+supported producer channels and actual chart fields. Sources include registry
+lookups and shell resolvers. Normal snapshots, rebuild suffixes and commit-based
+releases are valid where the producer contract supports them. Temporary candidate
+images are qualification artifacts and must not become chart defaults.
+
+Before applying, compare intended releases with the selected source results and
+all changed targets, including unrelated images in the same pipeline.
+
+| Observation | Action |
+| --- | --- |
+| The normal release is absent or the producer used an unsupported name | Return publication/naming work to the producer; do not hand-pin its candidate or broaden a filter to admit it. |
+| A valid supported release exists but filtering, ordering or target mapping misses it | Prepare a scoped updater repair with a reproducer and regression checks. |
+| Lookup/authentication or publication completion is uncertain | Establish the failing boundary before choosing a producer or updater repair. |
+| The intended artifact is already adopted | Verify identity and delivery; do not create duplicate changes. |
+| A different selected tag has findings | Compare actual source, packages, digest, scanner evidence and VEX applicability; a changed tag alone does not prove the source fix was lost. |
+
+`latest-so-tag.sh` compares numeric upstream components and release increments.
+The agent shell sources check that the images for their selected producer commit
+exist; when unavailable, they retain the current pin. Such a successful no-change
+result does not prove a new artifact was adopted or all producer checks passed.
+
+Keep a candidate stable during full CI and independent review. Late routine
+releases belong in the next batch; blocked producers need not delay ready fixes.
+If the complete diff is unsuitable, resolve its scope before apply. Do not assume
+there is a selective mode or manually copy a desired pin around the updater.
+
+## Targets, documentation and versions
+
+Each YAML target names its source with `sourceid` and its chart field with
+`spec.file` plus `spec.key` or `spec.keys`. Use `dependson` for real dependencies,
+not an artificial chain through every image.
+
+The Docker-image manifest contains the final shell targets: normalize quoted tags,
+regenerate platform documentation and bump the agent chart when needed. There is
+no separate finalization pipeline. The platform publisher owns its prerelease;
+ordinary adoption must not allocate a speculative platform version on a branch.
+The [version helper](scripts/bump-chart-version/README.md) changes one selected
+stable chart and regenerates docs; it does not cascade versions through dependents
+or regenerate lockfiles. Local dependencies use wildcard versions.
+
+For an assigned updater repair, inspect source/target wiring, resolver tests and a
+real pipeline diff against the candidate. Validate required chart checks on the
+actual head. Render/image-reference checks do not replace artifact scan evidence.
+After chart publication, use a complete VEX-aware delivery scan for CVE closure.
+
+## Environment and helpers
+
+`updatecli/values.d/values.yaml` defines environment-variable mappings. Workflow
+credentials and signing are configured by `scripts/ci/configure_git.sh`.
 
 | Variable | Purpose |
-|----------|---------|
-| `GITLAB_TOKEN` | GitLab API token (required) |
-| `UPDATE_CLI_USER` | Git committer name |
-| `UPDATE_CLI_EMAIL` | Git committer email |
-| `UPDATE_CLI_PGP_KEY` | GPG signing key |
-| `UPDATE_CLI_PGP_PASSPHRASE` | GPG key passphrase |
-| `REGISTRY_USER` | quay.io registry username |
-| `REGISTRY_PASSWORD` | quay.io registry password |
+| --- | --- |
+| `TARGET_BRANCH` | Intended chart SCM branch. |
+| `HELM_CHARTS_PAT` | GitHub SCM/API credential supplied through the environment. |
+| `UPDATE_CLI_USER`, `UPDATE_CLI_EMAIL` | Updater commit identity. |
+| `REGISTRY_USER`, `REGISTRY_PASSWORD` | Registry credentials where required. |
+| `STACKSTATE_SOURCE_BRANCH` | Producer branch for the StackState pipeline. |
+| `STACKPACKS_SOURCE_BRANCH`, `STACKPACKS_CONTRIB_SOURCE_BRANCH`, `STACKPACKS_SUSE_SOURCE_BRANCH` | Producer branches for the StackPack pipeline. |
+
+The workflow's `apply` and `follow_up` jobs supply their own GitHub App credentials.
+`scripts/ci/updatecli_squash_push.sh` handles signed final commits;
+`scripts/ci/open_updatecli_pr.sh` reuses or opens the Docker-image adoption PR.

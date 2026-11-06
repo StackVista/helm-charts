@@ -33,8 +33,32 @@ The split between `stable/` and `local/` is defined in
 
 Changes to a chart under `local/` trigger CI for the parents listed in the dependency
 catalog. Local charts use wildcard dependency versions and need no version bump.
-For stable chart changes, use `scripts/bump-chart-version/bump_chart_version.py`;
-it bumps the selected chart and regenerates its README.
+The platform publisher manages the `suse-observability` prerelease; ordinary image
+adoption does not allocate a platform version on a branch. For stable charts that
+require a branch bump, use `scripts/bump-chart-version/bump_chart_version.py`;
+it bumps the selected chart and regenerates its README, without a dependency cascade.
+
+## CVE adoption ownership
+
+CVE producer workers must not edit this repository or its public mirror, open
+adoption PRs or dispatch chart-mutating workflows. They may read source and test
+disposable renders with external values overrides. They have standing approval to
+publish ready subcomponents through normal component release workflows;
+missing releases or unsupported names must be fixed in the producer.
+
+The CVE planner has standing approval to run existing Updatecli adoption and merge
+verified normal-update PRs with their normal publication side effects, reusing
+automatic work and batching compatible ready releases. Required reviews use the
+existing reviewer path; never self-approve or weaken protection. Only an explicit
+assignment to repair a demonstrated updater/template defect permits a CVE worker
+to change chart source and necessary tests/docs. It does not permit routine image
+bumps or candidate-pin restoration. Reviewers do not push corrections themselves.
+Other source merges retain their approval boundaries. Final platform and agent-chart
+releases stay with the existing release owner and runbooks; human review of the actual
+release PR counts as approval without a second confirmation. Agent images are
+subcomponents. CVE roles do not execute final chart releases or their deployment side
+effects.
+Read [UPDATECLI.md](UPDATECLI.md) for evaluation, failure routing and apply behavior.
 
 ## Build & Test Commands
 
