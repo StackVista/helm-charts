@@ -1704,9 +1704,9 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.images[0].version | string | `"20261027091512-master-11bd260"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
 | stackstate.stackpacks.images[1].name | string | `"core"` | name for the init container |
 | stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.stackpacks.images[1].registry | string | `"ghcr.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.stackpacks.images[1].repository | string | `"stackvista/core-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[1].tag | string | `"20261105150221-main-a9e00be"` | Tag used for the `stackpacks` Docker image |
+| stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.stackpacks.images[1].repository | string | `"stackstate/core-stackpacks"` | Repository of the `stackpacks` Docker image. |
+| stackstate.stackpacks.images[1].tag | string | `"20261106090329-main-f1c8402"` | Tag used for the `stackpacks` Docker image |
 | stackstate.stackpacks.images[2].editions | list | `["Prime"]` | Editions that include the stackpacks |
 | stackstate.stackpacks.images[2].name | string | `"suse"` | name for the init container |
 | stackstate.stackpacks.images[2].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |

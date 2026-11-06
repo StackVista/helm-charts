@@ -45,7 +45,7 @@ sources:
     name: "stackpacks from {{ requiredEnv .stackpacks.coreBranchEnv }}"
     kind: dockerimage
     spec:
-      image: "ghcr.io/stackvista/core-stackpacks"
+      image: "quay.io/stackstate/core-stackpacks"
       architecture: "linux/amd64"
       tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.coreBranchEnv }}-[0-9a-f]+(-retry-[0-9]+)?$"
       versionfilter:

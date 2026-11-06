@@ -26,7 +26,7 @@ func TestStackpacks2NonSplit(t *testing.T) {
 	assert.Regexp(t, ".*/stackstate/stackpacks:.*", server.Spec.Template.Spec.InitContainers[stackpacksInitIdx].Image)
 	// Stackpacks 2 Core Docker image should be mounted
 	coreStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-core" })
-	assert.Regexp(t, ".*/stackvista/core-stackpacks:.*", server.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
+	assert.Regexp(t, ".*/stackstate/core-stackpacks:.*", server.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
 	// Stackpacks 2 SUSE Docker image should be mounted
 	suseStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-suse" })
 	assert.Regexp(t, ".*/stackstate/suse-stackpacks:.*", server.Spec.Template.Spec.InitContainers[suseStackpacksInitIdx].Image)
@@ -48,7 +48,7 @@ func TestStackpacks2Split(t *testing.T) {
 	assert.Regexp(t, ".*/stackstate/stackpacks:.*", api.Spec.Template.Spec.InitContainers[stackpacksInitIdx].Image)
 	// Stackpacks 2 Core Docker image should be mounted
 	coreStackpacksInitIdx := slices.IndexFunc(api.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-core" })
-	assert.Regexp(t, ".*/stackvista/core-stackpacks:.*", api.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
+	assert.Regexp(t, ".*/stackstate/core-stackpacks:.*", api.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
 }
 
 func TestStackpacks2NonSplitCommunity(t *testing.T) {
@@ -67,7 +67,7 @@ func TestStackpacks2NonSplitCommunity(t *testing.T) {
 	assert.Regexp(t, ".*/stackstate/stackpacks:.*", server.Spec.Template.Spec.InitContainers[stackpacksInitIdx].Image)
 	// Stackpacks 2 Core Docker image should be mounted
 	coreStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-core" })
-	assert.Regexp(t, ".*/stackvista/core-stackpacks:.*", server.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
+	assert.Regexp(t, ".*/stackstate/core-stackpacks:.*", server.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
 
 	// Stackpacks 2 SUSE Docker image should be absent
 	assert.Equal(t, -1, slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool {
@@ -87,7 +87,7 @@ func TestStackpacks2NonSplitPrimeWithInternalStackpacks(t *testing.T) {
 
 	coreStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-core" })
 	require.GreaterOrEqual(t, coreStackpacksInitIdx, 0)
-	assert.Regexp(t, ".*/stackvista/core-stackpacks:.*", server.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
+	assert.Regexp(t, ".*/stackstate/core-stackpacks:.*", server.Spec.Template.Spec.InitContainers[coreStackpacksInitIdx].Image)
 
 	suseStackpacksInitIdx := slices.IndexFunc(server.Spec.Template.Spec.InitContainers, func(container v1.Container) bool { return container.Name == "init-stackpacks-suse" })
 	require.GreaterOrEqual(t, suseStackpacksInitIdx, 0)

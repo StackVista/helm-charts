@@ -1842,13 +1842,13 @@ stackstate:
         # stackstate.stackpacks.images[1].name -- name for the init container
       - name: core
         # stackstate.stackpacks.images[1].registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
-        registry: "ghcr.io"
+        registry: "quay.io"
         # stackstate.stackpacks.images[1].pullPolicy -- `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.stackpacks.images[1].repository -- Repository of the `stackpacks` Docker image.
-        repository: stackvista/core-stackpacks
+        repository: stackstate/core-stackpacks
         # stackstate.stackpacks.images[1].tag -- Tag used for the `stackpacks` Docker image
-        tag: "20261105150221-main-a9e00be"
+        tag: "20261106090329-main-f1c8402"
         # stackstate.stackpacks.images[2].name -- name for the init container
       - name: suse
         # stackstate.stackpacks.images[2].registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.

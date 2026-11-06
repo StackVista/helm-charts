@@ -51,7 +51,7 @@ func TestExtraStackpackImages(t *testing.T) {
 				names = append(names, container.Name)
 			}
 			require.Equal(t, expected, names)
-			assert.Contains(t, stackpacks[1].Image, "my.registry.com/stackvista/core-stackpacks:")
+			assert.Contains(t, stackpacks[1].Image, "my.registry.com/stackstate/core-stackpacks:")
 			assert.Contains(t, stackpacks[0].Args, "--clear")
 
 			for _, container := range stackpacks[1:] {
@@ -87,7 +87,8 @@ func TestCoreStackpackImageRegistry(t *testing.T) {
 		registry string
 		expected string
 	}{
-		{"Default", "values/full.yaml", "", "ghcr.io"},
+		{"Default", "values/full.yaml", "", "quay.io"},
+		{"SaaSGlobalRegistry", "values/workload_global_nonha.yaml", "quay.io", "quay.io"},
 		{"GlobalProfile", "values/workload_global_nonha.yaml", "", "registry.rancher.com"},
 		{"CustomGlobalRegistry", "values/workload_global_nonha.yaml", "mirror.example.com", "mirror.example.com"},
 	} {
@@ -106,7 +107,7 @@ func TestCoreStackpackImageRegistry(t *testing.T) {
 				return container.Name == "init-stackpacks-core"
 			})
 			require.GreaterOrEqual(t, idx, 0)
-			assert.Contains(t, deployment.Spec.Template.Spec.InitContainers[idx].Image, tc.expected+"/stackvista/core-stackpacks:")
+			assert.Contains(t, deployment.Spec.Template.Spec.InitContainers[idx].Image, tc.expected+"/stackstate/core-stackpacks:")
 		})
 	}
 }
