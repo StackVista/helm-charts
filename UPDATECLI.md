@@ -153,7 +153,7 @@ credentials and signing are configured by `scripts/ci/configure_git.sh`.
 | `UPDATE_CLI_USER`, `UPDATE_CLI_EMAIL` | Updater commit identity. |
 | `REGISTRY_USER`, `REGISTRY_PASSWORD` | Registry credentials where required. |
 | `STACKSTATE_SOURCE_BRANCH` | Producer branch for the StackState pipeline. |
-| `STACKPACKS_SOURCE_BRANCH`, `STACKPACKS_CONTRIB_SOURCE_BRANCH`, `STACKPACKS_SUSE_SOURCE_BRANCH` | Producer branches for the StackPack pipeline. |
+| `STACKPACKS_SOURCE_BRANCH`, `STACKPACKS_CORE_SOURCE_BRANCH`, `STACKPACKS_SUSE_SOURCE_BRANCH` | Producer branches for the StackPack pipeline. |
 
 The workflow's `apply` and `follow_up` jobs supply their own GitHub App credentials.
 `scripts/ci/updatecli_squash_push.sh` handles signed final commits;

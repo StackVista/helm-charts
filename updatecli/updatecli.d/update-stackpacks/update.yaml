@@ -41,17 +41,15 @@ sources:
         kind: regex/time
         regex: "^([0-9]+)-{{ requiredEnv .stackpacks.legacyBranchEnv }}-[0-9a-f]+-(prime|community)-(selfhosted|saas)$"
         pattern: "20060102150405"
-  contribStackpacks:
-    name: "stackpacks from {{ requiredEnv .stackpacks.contribBranchEnv }}"
-    kind: dockerimage
+  coreStackpacks:
+    name: "stackpacks from {{ requiredEnv .stackpacks.coreBranchEnv }}"
+    kind: shell
     spec:
-      image: "quay.io/stackstate/contrib-stackpacks"
-      architecture: "linux/amd64"
-      tagfilter: "^[0-9]+-{{ requiredEnv .stackpacks.contribBranchEnv }}-[0-9a-f]+$"
-      versionfilter:
-        kind: regex/time
-        regex: "^([0-9]+)-{{ requiredEnv .stackpacks.contribBranchEnv }}-[0-9a-f]+$"
-        pattern: "20060102150405"
+      command: updatecli/latest-core-stackpacks-tag.sh
+      environments:
+        - name: PATH
+        - name: STACKPACKS_CORE_SOURCE_BRANCH
+          value: "{{ requiredEnv .stackpacks.coreBranchEnv }}"
   suseStackpacks:
     name: "stackpacks from {{ requiredEnv .stackpacks.suseBranchEnv }}"
     kind: dockerimage
@@ -79,11 +77,11 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.stackpacks.images[0].version"
-  contribStackpacksImageVersion:
-    name: "contrib stackpacks image version (suse-observability values.yaml)"
+  coreStackpacksImageVersion:
+    name: "core stackpacks image version (suse-observability values.yaml)"
     kind: yaml
     scmid: "default"
-    sourceid: contribStackpacks
+    sourceid: coreStackpacks
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.stackpacks.images[1].tag"
@@ -112,7 +110,7 @@ targets:
     disablesourceinput: true
     dependson:
       - "target#legacyStackpacksImageVersion"
-      - "target#contribStackpacksImageVersion"
+      - "target#coreStackpacksImageVersion"
       - "target#suseStackpacksImageVersion"
     spec:
       command: |

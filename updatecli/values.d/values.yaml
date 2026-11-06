@@ -16,7 +16,7 @@ stackstate:
 # (e.g. `<ts>-master-<sha>-prime-selfhosted`).
 stackpacks:
   legacyBranchEnv: STACKPACKS_SOURCE_BRANCH
-  contribBranchEnv: STACKPACKS_CONTRIB_SOURCE_BRANCH
+  coreBranchEnv: STACKPACKS_CORE_SOURCE_BRANCH
   suseBranchEnv: STACKPACKS_SUSE_SOURCE_BRANCH
 
 docker:
