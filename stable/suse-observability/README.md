@@ -880,7 +880,7 @@ If you encounter issues not covered here:
 | anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
 | anomaly-detection.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | anomaly-detection.image.spotlightRepository | string | `"stackstate/spotlight"` | Repository of the spotlight Docker image. |
-| anomaly-detection.image.tag | string | `"5.2.0-snapshot.246"` | the chart image tag, e.g. 4.1.3-latest |
+| anomaly-detection.image.tag | string | `"5.2.0-snapshot.247"` | the chart image tag, e.g. 4.1.3-latest |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
 | backup.configuration.enabled | bool | `true` | Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled. |
@@ -958,7 +958,7 @@ If you encounter issues not covered here:
 | clickhouse.backup.enabled | bool | `true` | Enable scheduled ClickHouse backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.7.2-so32"` | Container image tag for 'clickhouse' backup containers. |
+| clickhouse.backup.image.tag | string | `"2.7.2-so34"` | Container image tag for 'clickhouse' backup containers. |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
 | clickhouse.image.tag | string | `"26.8.34.13-so2"` | Container image tag for 'clickhouse' containers. |
@@ -1020,7 +1020,7 @@ If you encounter issues not covered here:
 | hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.version | string | `"3.5.0-so31"` | Full HDFS image tag. Updated by updatecli. |
+| hbase.hdfs.version | string | `"3.5.0-so32"` | Full HDFS image tag. Updated by updatecli. |
 | hbase.stackgraph.version | string | `"8.3.24"` |  |
 | hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
@@ -1085,7 +1085,7 @@ If you encounter issues not covered here:
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.image.registry | string | `"quay.io"` | Base container image registry. |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.76"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.77"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.resources.limits.cpu | string | `"500m"` |  |
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
@@ -1732,7 +1732,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-0.backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
 | victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.6-so43"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-0.backup.vmbackup.image.tag | string | `"1.144.0-so38"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-0.backup.vmbackup.image.tag | string | `"1.144.0-so39"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.tag | string | `"1.144.0-so26"` | Victoria Metrics server image tag. Updated by updatecli. |
@@ -1747,7 +1747,7 @@ If you encounter issues not covered here:
 | victoria-metrics-1.backup.scheduled.daily | string | `"5 1 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-1.backup.scheduled.hourly | string | `"35 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
 | victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.6-so43"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-1.backup.vmbackup.image.tag | string | `"1.144.0-so38"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-1.backup.vmbackup.image.tag | string | `"1.144.0-so39"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |
 | victoria-metrics-1.server.image.tag | string | `"1.144.0-so26"` | Victoria Metrics server image tag. Updated by updatecli. |
@@ -1756,7 +1756,7 @@ If you encounter issues not covered here:
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
 | victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
 | victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
-| victoria-metrics.restore.image.tag | string | `"1.144.0-so29"` | Container image tag for 'vmrestore' containers. |
+| victoria-metrics.restore.image.tag | string | `"1.144.0-so30"` | Container image tag for 'vmrestore' containers. |
 | victoria-metrics.restore.securityContext.enabled | bool | `true` |  |
 | victoria-metrics.restore.securityContext.fsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |

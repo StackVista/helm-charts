@@ -1900,7 +1900,7 @@ hbase:
       replicaCount: null
   hdfs:
     # hbase.hdfs.version -- Full HDFS image tag. Updated by updatecli.
-    version: "3.5.0-so31"
+    version: "3.5.0-so32"
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
@@ -2096,7 +2096,7 @@ anomaly-detection:
   enabled: false
   image:
     # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.3-latest
-    tag: "5.2.0-snapshot.246"
+    tag: "5.2.0-snapshot.247"
     # anomaly-detection.image.registry -- Base container image registry for all containers, except for the wait container
     registry: quay.io
     # anomaly-detection.image.spotlightRepository -- Repository of the spotlight Docker image.
@@ -2136,7 +2136,7 @@ victoria-metrics-0:
     # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so38"
+        tag: "1.144.0-so39"
     # victoria-metrics-0.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2175,7 +2175,7 @@ victoria-metrics-1:
     # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
-        tag: "1.144.0-so38"
+        tag: "1.144.0-so39"
     # victoria-metrics-1.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2197,7 +2197,7 @@ victoria-metrics:
       # victoria-metrics.restore.image.repository -- Base container image repository for 'vmrestore' containers.
       repository: stackstate/vmrestore
       # victoria-metrics.restore.image.tag -- Container image tag for 'vmrestore' containers.
-      tag: "1.144.0-so29"
+      tag: "1.144.0-so30"
       # victoria-metrics.restore.image.pullPolicy -- Image pull policy for `vmrestore` containers.
       pullPolicy: IfNotPresent
     securityContext:
@@ -2234,7 +2234,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
-      tag: "2.7.2-so32"
+      tag: "2.7.2-so34"
 opentelemetry-collector:
   image:
     # opentelemetry-collector.image.registry -- Base container image registry.
@@ -2242,7 +2242,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: "v0.0.76"
+    tag: "v0.0.77"
   resources:
     requests:
       cpu: 250m
