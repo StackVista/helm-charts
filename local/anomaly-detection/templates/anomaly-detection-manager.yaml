@@ -68,6 +68,9 @@ spec:
         ad.stackstate.com/spotlight.init_configs: "[{}]"
         ad.stackstate.com/spotlight.instances: '[ { "prometheus_url": "http://%%host%%:9404/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
         {{ include "anomaly-detection.secret.checksum" . | nindent 8 }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: manager
         app.kubernetes.io/instance: {{ .Release.Namespace }}

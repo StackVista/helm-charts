@@ -26,6 +26,8 @@ version: "2.5"
 deployment:
   mode: "Distributed"
 all:
+  podAnnotations: {}
+  podLabels: {}
   image:
     # all.image.registry -- Base container image registry for all containers, except for the wait container
     registry: quay.io
@@ -61,6 +63,8 @@ all:
   # all.affinity -- Affinity settings for pod assignment on all components.
   affinity: {}
 stackgraph:
+  podAnnotations: {}
+  podLabels: {}
   # stackgraph.affinity -- Affinity settings for pod assignment.
   affinity: {}
   # stackgraph.agentMetricsFilter -- Configure metrics scraped by the agent
@@ -102,6 +106,8 @@ stackgraph:
   # stackgraph.version -- Version of stackgraph to use
   version: "8.3.26"
 console:
+  podAnnotations: {}
+  podLabels: {}
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
   securityContext:
@@ -152,6 +158,8 @@ hbase:
     # hbase.securityContext.runAsUser -- UID of the Linux user to use for all pod.
     runAsUser: 65534
   master:
+    podAnnotations: {}
+    podLabels: {}
     experimental:
       execLivenessProbe:
         # hbase.master.experimental.execLivenessProbe.enabled -- Whether to use a new scripted livenessProbe instead of the original HTTP check.
@@ -185,6 +193,8 @@ hbase:
     # hbase.master.affinity -- Affinity settings for pod assignment.
     affinity: {}
   regionserver:
+    podAnnotations: {}
+    podLabels: {}
     extraEnv:
       # hbase.regionserver.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -248,6 +258,8 @@ hdfs:
     runAsUser: 65534
     fsGroup: 65534
   datanode:
+    podAnnotations: {}
+    podLabels: {}
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -278,6 +290,8 @@ hdfs:
     # hdfs.datanode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   namenode:
+    podAnnotations: {}
+    podLabels: {}
     extraEnv:
       # hdfs.namenode.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -306,6 +320,8 @@ hdfs:
     # hdfs.namenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   secondarynamenode:
+    podAnnotations: {}
+    podLabels: {}
     extraEnv:
       # hdfs.secondarynamenode.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -336,6 +352,8 @@ hdfs:
     # hdfs.secondarynamenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
 tephra:
+  podAnnotations: {}
+  podLabels: {}
   securityContext:
     # tephra.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
     enabled: true

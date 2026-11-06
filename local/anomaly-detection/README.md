@@ -36,6 +36,9 @@ is required by this naming change.
 
 ## Required Values
 
+`podAnnotations` applies to both the manager and worker pod templates.
+Both workloads inherit pod labels from `global.commonLabels`.
+
 In order to successfully install this chart, you **must** provide the following variables:
 
 * `stackstate.instance`
@@ -112,6 +115,7 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 | metrics.serviceMonitor.enabled | bool | `false` |  |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | pdb.maxUnavailable | int | `0` | PodDisruptionBudget settings for `anomaly-detection` pods. |
+| podAnnotations | object | `{}` |  |
 | replicas | int | `1` |  |
 | securityContext | object | `{"enabled":true,"fsGroup":65534,"runAsGroup":65534,"runAsNonRoot":true,"runAsUser":65534}` | Pod Security Context |
 | securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |

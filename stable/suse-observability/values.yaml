@@ -1588,6 +1588,7 @@ stackstate:
           memory: "2000Mi"
           ephemeral-storage: "1Mi"
     vmagent:
+      podAnnotations: {}
       image:
         repository: stackstate/vmagent
         tag: "1.144.0-so26"

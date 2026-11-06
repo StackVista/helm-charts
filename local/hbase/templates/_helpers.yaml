@@ -296,15 +296,17 @@ Uses global.commonLabels only.
 {{- end }}
 {{- end -}}
 
-{{/*
-Return the proper HBase pod labels for Pod templates.
-Uses global.commonLabels only.
-*/}}
 {{- define "hbase.podLabels" -}}
-{{- if .Values.global.commonLabels }}
-{{- range $key, $value := .Values.global.commonLabels }}
+{{- $labels := merge (dict) (.component.podLabels | default dict) (.context.Values.all.podLabels | default dict) (.context.Values.global.commonLabels | default dict) -}}
+{{- range $key, $value := $labels }}
 {{ $key }}: {{ $value | quote }}
 {{- end }}
+{{- end -}}
+
+{{- define "hbase.podAnnotations" -}}
+{{- $annotations := merge (dict) (.component.podAnnotations | default dict) (.context.Values.all.podAnnotations | default dict) (.metrics | default dict) -}}
+{{- range $key, $value := $annotations }}
+{{ $key }}: {{ $value | quote }}
 {{- end }}
 {{- end -}}
 

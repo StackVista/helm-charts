@@ -28,6 +28,15 @@ enabled. Override it through
 
 ## Required Values
 
+Pod annotations for HBase workloads can be set through
+`hbase.all.podAnnotations` or each HBase component's `podAnnotations` value.
+The corresponding `podLabels` values configure their pod labels.
+Vmagent accepts `stackstate.components.vmagent.podAnnotations` and inherits
+`stackstate.components.all.podAnnotations`. The KafkaUp operator accepts
+`kafkaup-operator.podAnnotations` and `kafkaup-operator.podLabels`.
+Anomaly detection accepts `anomaly-detection.podAnnotations` for both its
+manager and worker pods.
+
 In order to successfully install this chart, you **must** provide the following variables:
 * `stackstate.license.key`
 * `stackstate.baseUrl`

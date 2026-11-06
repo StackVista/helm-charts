@@ -46,6 +46,15 @@ enabled. Override it through
 
 ## Required Values
 
+Pod annotations for HBase workloads can be set through
+`hbase.all.podAnnotations` or each HBase component's `podAnnotations` value.
+The corresponding `podLabels` values configure their pod labels.
+Vmagent accepts `stackstate.components.vmagent.podAnnotations` and inherits
+`stackstate.components.all.podAnnotations`. The KafkaUp operator accepts
+`kafkaup-operator.podAnnotations` and `kafkaup-operator.podLabels`.
+Anomaly detection accepts `anomaly-detection.podAnnotations` for both its
+manager and worker pods.
+
 In order to successfully install this chart, you **must** provide the following variables:
 * `stackstate.license.key`
 * `stackstate.baseUrl`
@@ -1718,6 +1727,7 @@ If you encounter issues not covered here:
 | stackstate.components.vmagent.image.tag | string | `"1.144.0-so26"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
+| stackstate.components.vmagent.podAnnotations | object | `{}` |  |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `vmagent` pods. |
 | stackstate.components.vmagent.resources | object | `{}` | Resource allocation for vmagent pod. |
 | stackstate.components.workloadObserver.affinity | object | `{}` | Affinity settings for pod assignment. |

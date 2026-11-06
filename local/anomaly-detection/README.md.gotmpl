@@ -31,6 +31,9 @@ is required by this naming change.
 
 ## Required Values
 
+`podAnnotations` applies to both the manager and worker pod templates.
+Both workloads inherit pod labels from `global.commonLabels`.
+
 In order to successfully install this chart, you **must** provide the following variables:
 
 * `stackstate.instance`

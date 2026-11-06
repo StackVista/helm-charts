@@ -23,9 +23,15 @@ spec:
     metadata:
       labels:
         app: {{ include "common.fullname.short" . }}-kafkaup
-        {{- include "kafkaup-operator.commonLabels" . | nindent 8 }}
+        {{- $podLabels := merge (dict) .Values.podLabels (include "kafkaup-operator.commonLabels" . | fromYaml) }}
+        {{- with $podLabels }}
+        {{- include "common.tplvalue.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
       annotations:
         {{ include "kafkaup-operator.checksum-configs" . | nindent 8 }}
+        {{- with .Values.podAnnotations }}
+        {{- include "common.tplvalue.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ include "kafkaup-operator.serviceaccount.fullname" . }}
       {{- include "kafkaup.image.pullSecret.name" . | nindent 6 }}

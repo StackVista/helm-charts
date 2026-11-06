@@ -35,6 +35,9 @@ commonLabels: {}
 ##
 commonAnnotations: {}
 
+podAnnotations: {}
+podLabels: {}
+
 resources:
   limits:
     cpu: 50m

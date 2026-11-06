@@ -91,4 +91,12 @@ Pod recovery or Prometheus reconciliation.
 
 ## Required Values
 
+Pod annotations and labels can be set through `all.podAnnotations` and
+`all.podLabels`. Component values under `console`, `stackgraph`, `tephra`,
+`hbase.master`, `hbase.regionserver`, `hdfs.datanode`, `hdfs.namenode` and
+`hdfs.secondarynamenode` take precedence over the shared values.
+The integrity CronJob uses the console values. Pod labels also inherit
+`global.commonLabels`; component and shared pod labels take precedence.
+Metrics annotations are preserved unless overridden explicitly.
+
 {{ template "chart.valuesSection" . }}

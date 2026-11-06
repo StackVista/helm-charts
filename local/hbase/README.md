@@ -97,6 +97,14 @@ Pod recovery or Prometheus reconciliation.
 
 ## Required Values
 
+Pod annotations and labels can be set through `all.podAnnotations` and
+`all.podLabels`. Component values under `console`, `stackgraph`, `tephra`,
+`hbase.master`, `hbase.regionserver`, `hdfs.datanode`, `hdfs.namenode` and
+`hdfs.secondarynamenode` take precedence over the shared values.
+The integrity CronJob uses the console values. Pod labels also inherit
+`global.commonLabels`; component and shared pod labels take precedence.
+Metrics annotations are preserved unless overridden explicitly.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -113,6 +121,8 @@ Pod recovery or Prometheus reconciliation.
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
+| all.podAnnotations | object | `{}` |  |
+| all.podLabels | object | `{}` |  |
 | all.sizing | object | `{"baseMemoryConsumption":"125Mi","javaHeapMemoryFraction":"75"}` | Default memory sizing for JVMs in pods |
 | all.tolerations | string | `nil` | Toleration labels for pod assignment on all components. |
 | commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
@@ -126,6 +136,8 @@ Pod recovery or Prometheus reconciliation.
 | console.integrity.enabled | bool | `false` | Enable / disable periodic integrity check to run though a cronjob. |
 | console.integrity.schedule | string | `"*/30 * * * *"` | Schedule at which the integrity check runs |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| console.podAnnotations | object | `{}` |  |
+| console.podLabels | object | `{}` |  |
 | console.replicaCount | int | `0` | Amount of console replicas to provision. Default of 0, |
 | console.resources | object | `{}` | Resources to allocate for HDFS console. |
 | console.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
@@ -148,6 +160,8 @@ Pod recovery or Prometheus reconciliation.
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `version`-`stackgraph.version` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hbase.master.podAnnotations | object | `{}` |  |
+| hbase.master.podLabels | object | `{}` |  |
 | hbase.master.replicaCount | string | `nil` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{}` | Resources to allocate for HBase masters. |
 | hbase.master.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase master memory sizing for JVM |
@@ -160,6 +174,8 @@ Pod recovery or Prometheus reconciliation.
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `version`-`stackgraph.version` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hbase.regionserver.podAnnotations | object | `{}` |  |
+| hbase.regionserver.podLabels | object | `{}` |  |
 | hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"70"}` | HBase region server memory sizing for JVM |
@@ -177,6 +193,8 @@ Pod recovery or Prometheus reconciliation.
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `nil` | Size of volume for HDFS data nodes. |
 | hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
+| hdfs.datanode.podAnnotations | object | `{}` |  |
+| hdfs.datanode.podLabels | object | `{}` |  |
 | hdfs.datanode.replicaCount | string | `nil` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS Datanode memory sizing for JVMs in pods |
@@ -194,6 +212,8 @@ Pod recovery or Prometheus reconciliation.
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
+| hdfs.namenode.podAnnotations | object | `{}` |  |
+| hdfs.namenode.podLabels | object | `{}` |  |
 | hdfs.namenode.resources | object | `{}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS name node memory sizing for JVM |
 | hdfs.namenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
@@ -209,6 +229,8 @@ Pod recovery or Prometheus reconciliation.
 | hdfs.secondarynamenode.persistence.enabled | bool | `true` | Enable persistence for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
+| hdfs.secondarynamenode.podAnnotations | object | `{}` |  |
+| hdfs.secondarynamenode.podLabels | object | `{}` |  |
 | hdfs.secondarynamenode.resources | object | `{}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS secondary name node memory sizing for JVM |
 | hdfs.secondarynamenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
@@ -231,6 +253,8 @@ Pod recovery or Prometheus reconciliation.
 | stackgraph.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | stackgraph.persistence.size | string | `nil` | Size of volume for HDFS data nodes. |
 | stackgraph.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
+| stackgraph.podAnnotations | object | `{}` |  |
+| stackgraph.podLabels | object | `{}` |  |
 | stackgraph.resources | object | `{}` | Resources to allocate for Stackgraph mono image. |
 | stackgraph.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | stackgraph.securityContext.fsGroup | int | `65534` | UID of the Linux user to use for all pod. |
@@ -251,6 +275,8 @@ Pod recovery or Prometheus reconciliation.
 | tephra.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for Tephra on Mono mode. |
 | tephra.persistence.size | string | `"1Gi"` | Size of volume for Tephra on Mono mode. |
 | tephra.persistence.storageClass | string | `nil` | Storage class of the volume for Tephra on Mono mode |
+| tephra.podAnnotations | object | `{}` |  |
+| tephra.podLabels | object | `{}` |  |
 | tephra.replicaCount | string | `nil` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{}` | Resources to allocate for Tephra pods. |
 | tephra.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |

@@ -115,11 +115,9 @@ spec:
         app.kubernetes.io/component: hdfs-nn
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
         app.kubernetes.io/name: {{ template "common.name" . }}
-{{- if .Values.global.commonLabels }}
-{{- include "hbase.podLabels" . | indent 8 }}
-{{- end }}
+{{- include "hbase.podLabels" (dict "context" . "component" .Values.hdfs.namenode) | indent 8 }}
       annotations:
-      {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "namenode" "filter" .Values.hdfs.namenode.agentMetricsFilter) | indent 8 }}
+        {{- include "hbase.podAnnotations" (dict "context" . "component" .Values.hdfs.namenode "metrics" (include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "namenode" "filter" .Values.hdfs.namenode.agentMetricsFilter) | fromYaml)) | nindent 8 }}
     spec:
       {{- include "hbase.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
       {{- if .Values.serviceAccount.create }}

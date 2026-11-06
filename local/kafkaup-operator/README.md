@@ -6,6 +6,11 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 
 Current chart version is `0.1.29`
 
+`podAnnotations` and `podLabels` apply to the operator's pod template.
+Pod labels take precedence over `commonLabels` and `global.commonLabels`.
+`commonAnnotations` applies to resource metadata; use `podAnnotations` to
+annotate pods.
+
 **Homepage:** <https://gitlab.com/StackVista/platform/kafkaup-operator>
 
 ## Maintainers
@@ -34,6 +39,8 @@ Current chart version is `0.1.29`
 | image.tag | string | `"0.0.1"` | Tag of the image for the KafkaUp operator |
 | kafkaSelectors.podLabel | object | `{"key":"app.kubernetes.io/component","value":"kafka"}` | pod label of kafka pods to operate on |
 | kafkaSelectors.statefulSetName | string | `"kafka"` | name of the statefulSet to operate on |
+| podAnnotations | object | `{}` |  |
+| podLabels | object | `{}` |  |
 | resources.limits.cpu | string | `"50m"` |  |
 | resources.limits.memory | string | `"64Mi"` |  |
 | resources.requests.cpu | string | `"25m"` |  |

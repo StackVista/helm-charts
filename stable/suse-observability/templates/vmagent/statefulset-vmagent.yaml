@@ -93,6 +93,7 @@ spec:
       annotations:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "8429" "container_name" "vmagent" "filter" (include "stackstate.vmagent.agentMetricsFilter" .)) | indent 8 }}
         {{- include "stackstate.vmagent.configmap.checksum" . | nindent 8 }}
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "vmagent") .) }}
       labels:
         app.kubernetes.io/component: vmagent
         {{- include "suse-observability.labels.global" . | nindent 8 }}
