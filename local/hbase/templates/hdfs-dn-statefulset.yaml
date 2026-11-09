@@ -136,27 +136,14 @@ spec:
       {{- end }}
     {{- end }}
     {{- $sizingAffinity := include "common.sizing.hbase.hdfs.datanode.affinityConfig" . | fromYaml -}}
-    {{- if or .Values.all.affinity .Values.hdfs.datanode.affinity $sizingAffinity }}
+    {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.hdfs.datanode.affinity .Values.all.affinity) "generated" $sizingAffinity "context" $) }}
       affinity:
-      {{- with $sizingAffinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.hdfs.datanode.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.hdfs.datanode.terminationGracePeriodSeconds }}
-    {{- if or .Values.all.tolerations .Values.hdfs.datanode.tolerations }}
+    {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.hdfs.datanode.tolerations .Values.all.tolerations) "context" $) }}
       tolerations:
-      {{- with .Values.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.hdfs.datanode.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
       volumes:
     {{- if not .Values.hdfs.datanode.persistence.enabled }}

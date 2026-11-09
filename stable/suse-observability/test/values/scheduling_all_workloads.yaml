@@ -1,0 +1,17 @@
+stackstate:
+  components:
+    router:
+      mode:
+        status: automatic
+kafka:
+  metrics:
+    kafka:
+      enabled: true
+  provisioning:
+    enabled: true
+    topics:
+      - name: test
+hbase:
+  console:
+    integrity:
+      enabled: true

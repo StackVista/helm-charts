@@ -253,8 +253,7 @@ nodeSelector:
 {{- end -}}
 
 {{- /*
-  Merge affinity from stackstate.components.all and the selected backup settings.
-  Component affinity takes precedence over all.affinity.
+  Resolve affinity per field: the selected backup settings, else stackstate.components.all, else global.
 
   Usage:
   {{- include "stackstate.backup.affinity" . | nindent 8 }}
@@ -268,19 +267,15 @@ affinity:
 {{- end -}}
 
 {{- /*
-  Concatenate tolerations from stackstate.components.all and the selected backup settings.
-  Component tolerations are appended after all tolerations.
+  Resolve tolerations: the selected backup settings, else stackstate.components.all, else global.
 
   Usage:
   {{- include "stackstate.backup.tolerations" . | nindent 8 }}
 */ -}}
 {{- define "stackstate.backup.tolerations" -}}
-{{- $allTolerations := .Values.stackstate.components.all.tolerations | default list -}}
-{{- $backupTolerations := (index .Values.stackstate.components (.BackupSettings | default "backup")).tolerations | default list -}}
-{{- $merged := concat $allTolerations $backupTolerations -}}
-{{- if $merged -}}
+{{- with include "suse-observability.tolerations" (dict "layers" (list (index .Values.stackstate.components (.BackupSettings | default "backup")).tolerations .Values.stackstate.components.all.tolerations) "context" .) -}}
 tolerations:
-  {{- toYaml $merged | nindent 2 }}
+  {{- . | nindent 2 }}
 {{- end -}}
 {{- end -}}
 

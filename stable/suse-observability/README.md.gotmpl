@@ -781,6 +781,73 @@ global:
 - `requiredDuringSchedulingIgnoredDuringExecution: true` - **Hard anti-affinity**: Pods will NOT schedule if they cannot be placed on separate nodes. Use when you have enough nodes.
 - `requiredDuringSchedulingIgnoredDuringExecution: false` - **Soft anti-affinity**: Pods will prefer separate nodes but can co-locate if necessary. Use when node count is limited.
 
+The global affinity applies with and without a sizing profile.
+
+### Scheduling Precedence (Affinity and Tolerations)
+
+Affinity and tolerations resolve through layers, from most to least specific. The most specific layer that sets a value wins:
+
+| Workload | Layers (most specific first) |
+|----------|------------------------------|
+| Application components | split type (`stackstate.components.<component>.split.<type>`), `stackstate.components.<component>`, `stackstate.components.all`, `global.suseObservability` |
+| Backup and restore jobs | `stackstate.components.backup` (`stackstate.components.configurationBackup` for configuration backups), `stackstate.components.all`, `global.suseObservability` |
+| HBase | `hbase.<component>`, `hbase.all`, `global.suseObservability` |
+| Other infrastructure subcharts | the subchart's own value (for example `kafka.affinity`, `clickhouse.backup.tolerations`, `victoria-metrics-0.server.affinity`), `global.suseObservability` |
+
+**Tolerations** are resolved as a whole list. The first layer that sets `tolerations` replaces every less specific layer; lists are not concatenated. Set `tolerations: []` to clear inherited tolerations for a component.
+
+```yaml
+global:
+  suseObservability:
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: observability
+        effect: NoSchedule
+stackstate:
+  components:
+    api:
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: observability
+          effect: NoSchedule
+        - key: api-only
+          operator: Exists
+    ui:
+      tolerations: []
+```
+
+**Affinity** is resolved per field: `nodeAffinity`, `podAffinity` and `podAntiAffinity` are picked independently from the most specific layer that sets them. A component that only sets `podAffinity` keeps the inherited `nodeAffinity` and the sizing profile's HA anti-affinity. A field is replaced as a whole, never merged with less specific layers. Set a field to `{}` to clear it:
+
+```yaml
+kafka:
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 10
+          podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: zookeeper
+clickhouse:
+  affinity:
+    podAntiAffinity: {}
+```
+
+Elasticsearch keeps its own values: `elasticsearch.nodeAffinity` overrides the global node affinity, and `elasticsearch.antiAffinity` (`hard`/`soft`) overrides the sizing profile's anti-affinity mode. Leaving them unset inherits the global and sizing values.
+
+#### Breaking changes
+
+- Tolerations are no longer concatenated. Previously `stackstate.components.all.tolerations` was appended to each component's tolerations, and `hbase.all.tolerations` to each HBase component's. A component that sets its own tolerations must now repeat any shared ones it still needs.
+- An explicit `tolerations: []` now clears. It used to be the default everywhere, so a values file copied from `helm show values` with a leftover `stackstate.components.api.tolerations: []` gave api the `stackstate.components.all` tolerations; now it gets none. Likewise a leftover `elasticsearch.nodeAffinity: {}` (the old default) now drops the global node affinity on Elasticsearch. On tainted or dedicated node pools these pods stay Pending. Remove such leftovers.
+- A local `affinity` on Kafka, ClickHouse, ZooKeeper, VictoriaMetrics, HBase and the other infrastructure subcharts no longer drops the global node affinity or the sizing profile's anti-affinity. Only the fields it sets are replaced. On HA profiles a `nodeAffinity`-only override now gets the sizing profile's required pod anti-affinity back, so pods can stay Pending on clusters with fewer nodes than replicas. Set `podAntiAffinity: {}` to keep the old behaviour.
+- `elasticsearch.nodeAffinity` and the global node affinity are combined with the anti-affinity instead of being dropped when either is set.
+- Elasticsearch follows the global anti-affinity mode. It used to be `hard` regardless; with an HA profile and `global.suseObservability.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution: false` it is now `soft`. Set `elasticsearch.antiAffinity: hard` to keep the old behaviour.
+- `global.suseObservability.affinity` now also applies without a sizing profile.
+- The ClickHouse `checksum/backup-config` annotation no longer includes backup scheduling values, so ClickHouse restarts once on upgrade.
+
 ### Backward Compatibility
 
 The traditional configuration method (without sizing profiles) is still supported for backward compatibility:

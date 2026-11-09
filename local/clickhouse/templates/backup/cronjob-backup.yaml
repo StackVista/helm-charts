@@ -59,14 +59,13 @@ spec:
           nodeSelector:
             {{- toYaml . | nindent 12 }}
         {{- end }}
-        {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.backup.affinity "context" .) }}
-        {{- if $affinity }}
+        {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.backup.affinity) "context" $) }}
           affinity:
-            {{- $affinity | nindent 12 }}
+            {{- . | nindent 12 }}
         {{- end }}
-        {{- with .Values.backup.tolerations }}
+        {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.backup.tolerations) "context" $) }}
           tolerations:
-            {{- toYaml . | nindent 12 }}
+            {{- . | nindent 12 }}
         {{- end }}
           restartPolicy: Never
 {{- end -}}

@@ -37,19 +37,14 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.tolerations) "context" $) }}
       tolerations:
-        {{- with .Values.tolerations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- . | nindent 8 }}
       {{- end }}
-      {{- $sizingAffinity := include "common.sizing.anomaly-detection.affinityConfig" . | fromYaml -}}
-      {{- $finalAffinity := .Values.affinity | default dict -}}
-      {{- if and (not .Values.affinity) $sizingAffinity -}}
-        {{- $finalAffinity = $sizingAffinity -}}
-      {{- end -}}
-      {{- if $finalAffinity }}
-      affinity: {{ $finalAffinity | toYaml | nindent 8 }}
+      {{- $generated := include "common.sizing.anomaly-detection.affinityConfig" . | fromYaml -}}
+      {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.affinity) "generated" $generated "context" $) }}
+      affinity:
+        {{- . | nindent 8 }}
       {{- end }}
       {{- if .Values.securityContext.enabled }}
       securityContext: {{- omit .Values.securityContext "enabled" | toYaml | nindent 8 }}

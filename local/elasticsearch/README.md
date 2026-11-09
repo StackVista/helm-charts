@@ -22,8 +22,8 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| antiAffinity | string | `"hard"` |  |
-| antiAffinityTopologyKey | string | `"kubernetes.io/hostname"` |  |
+| antiAffinity | string | `""` |  |
+| antiAffinityTopologyKey | string | `""` |  |
 | clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` |  |
 | clusterName | string | `"suse-observability-elasticsearch"` |  |
 | commonLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
@@ -67,7 +67,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | minimumMasterNodes | int | `2` |  |
 | nameOverride | string | `""` |  |
 | networkHost | string | `"0.0.0.0"` |  |
-| nodeAffinity | object | `{}` |  |
+| nodeAffinity | string | `nil` |  |
 | nodeGroup | string | `"master"` |  |
 | nodeSelector | object | `{}` |  |
 | persistence.annotations | object | `{}` |  |
@@ -136,7 +136,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | sysctlInitContainer.enabled | bool | `true` |  |
 | sysctlVmMaxMapCount | int | `262144` |  |
 | terminationGracePeriod | int | `120` |  |
-| tolerations | list | `[]` |  |
+| tolerations | string | `nil` |  |
 | transportPort | int | `9300` |  |
 | updateStrategy | string | `"RollingUpdate"` |  |
 | volumeClaimTemplate.accessModes[0] | string | `"ReadWriteOnce"` |  |

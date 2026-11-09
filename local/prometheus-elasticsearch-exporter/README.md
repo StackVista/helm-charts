@@ -122,6 +122,6 @@ Kubernetes: `>=1.10.0-0`
 | serviceMonitor.scheme | string | `"http"` |  |
 | serviceMonitor.scrapeTimeout | string | `"10s"` |  |
 | serviceMonitor.targetLabels | list | `[]` |  |
-| tolerations | list | `[]` |  |
+| tolerations | string | `nil` |  |
 | web.path | string | `"/metrics"` |  |
 

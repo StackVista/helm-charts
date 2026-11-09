@@ -116,26 +116,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- $componentAffinity := .Values.stackstate.components.correlate.affinity }}
-    {{- if .TypeConfig.affinity }}
-      {{- $componentAffinity = .TypeConfig.affinity }}
-    {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" $componentAffinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- $typeScheduling := get (dict "connection" .Values.stackstate.components.correlate.split.connection "http-tracing" .Values.stackstate.components.correlate.split.httpTracing "aggregator" .Values.stackstate.components.correlate.split.aggregator) .CorrelateType | default dict }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "typeAffinity" $typeScheduling.affinity "componentAffinity" .Values.stackstate.components.correlate.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
     {{- if $affinity }}
       affinity:
         {{- $affinity | nindent 8 }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations (or .Values.stackstate.components.correlate.tolerations .TypeConfig.tolerations) }}
+    {{- with include "suse-observability.tolerations" (dict "layers" (list $typeScheduling.tolerations .Values.stackstate.components.correlate.tolerations .Values.stackstate.components.all.tolerations) "context" .) }}
       tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.correlate.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .TypeConfig.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
     {{- if .Values.stackstate.components.all.securityContext.enabled }}
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}

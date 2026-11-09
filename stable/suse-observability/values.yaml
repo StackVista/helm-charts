@@ -66,7 +66,9 @@ global:
     # global.suseObservability.receiverApiKey -- Optional, prefer to use Service Tokens instead for more control and better security. Will use stackstate.apiKey.key if not provided, stackstate.apiKey can also be used to provide the apiKey via an external secret.
     # Please see the documentation on how to use Service Tokens instead.
     receiverApiKey: ""
-    # global.suseObservability.affinity -- Affinity configuration for all SUSE Observability components including infrastructure.
+    # global.suseObservability.tolerations -- Tolerations applied to every SUSE Observability workload, including subcharts, hooks, backup and restore jobs and CronJobs. A component's own tolerations (or `stackstate.components.all.tolerations`) replace this list rather than extending it; set them to `[]` to clear.
+    tolerations: null
+    # global.suseObservability.affinity -- Affinity configuration for all SUSE Observability components including infrastructure. Resolved per field (nodeAffinity, podAffinity, podAntiAffinity): a component value, then `stackstate.components.all`, then this global value; set a field to `{}` to clear it.
     affinity:
       # global.suseObservability.affinity.nodeAffinity -- Node affinity configuration applied to all components (application and infrastructure). Standard Kubernetes nodeAffinity spec.
       nodeAffinity: null
@@ -425,7 +427,7 @@ stackstate:
       # stackstate.components.all.nodeSelector -- Node labels for pod assignment on all components.
       nodeSelector: {}
       # stackstate.components.all.tolerations -- Toleration labels for pod assignment on all components.
-      tolerations: []
+      tolerations: null
       # stackstate.components.all.affinity -- Affinity settings for pod assignment on all components.
       affinity: {}
     api:
@@ -468,7 +470,7 @@ stackstate:
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.api.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.api.config -- Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -522,7 +524,7 @@ stackstate:
       # stackstate.components.authorizationSync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.authorizationSync.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.authorizationSync.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.authorizationSync.config -- Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -537,7 +539,7 @@ stackstate:
       # stackstate.components.backup.podLabels -- Extra labels for backup pods.
       podLabels: {}
       # stackstate.components.backup.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.backup.affinity -- Affinity settings for pod assignment.
       affinity: {}
       resources:
@@ -557,7 +559,7 @@ stackstate:
       # stackstate.components.configurationBackup.podLabels -- Extra labels for configuration backup pods.
       podLabels: {}
       # stackstate.components.configurationBackup.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.configurationBackup.affinity -- Affinity settings for pod assignment.
       affinity: {}
       resources:
@@ -609,7 +611,7 @@ stackstate:
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.correlate.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.correlate.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.correlate.additionalLogging -- Additional logback config
@@ -637,9 +639,9 @@ stackstate:
           replicaCount: 1
           # stackstate.components.correlate.split.connection.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
-          # stackstate.components.correlate.split.connection.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: []
-          # stackstate.components.correlate.split.connection.affinity -- Additional affinity settings for pod assignment.
+          # stackstate.components.correlate.split.connection.tolerations -- Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set.
+          tolerations: null
+          # stackstate.components.correlate.split.connection.affinity -- Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity.
           affinity: {}
         httpTracing:
           extraEnv:
@@ -661,9 +663,9 @@ stackstate:
           replicaCount: 1
           # stackstate.components.correlate.split.httpTracing.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
-          # stackstate.components.correlate.split.httpTracing.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: []
-          # stackstate.components.correlate.split.httpTracing.affinity -- Additional affinity settings for pod assignment.
+          # stackstate.components.correlate.split.httpTracing.tolerations -- Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set.
+          tolerations: null
+          # stackstate.components.correlate.split.httpTracing.affinity -- Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity.
           affinity: {}
         aggregator:
           extraEnv:
@@ -685,9 +687,9 @@ stackstate:
           replicaCount: 1
           # stackstate.components.correlate.split.aggregator.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
-          # stackstate.components.correlate.split.aggregator.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: []
-          # stackstate.components.correlate.split.aggregator.affinity -- Additional affinity settings for pod assignment.
+          # stackstate.components.correlate.split.aggregator.tolerations -- Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set.
+          tolerations: null
+          # stackstate.components.correlate.split.aggregator.affinity -- Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity.
           affinity: {}
     checks:
       # stackstate.components.checks.envsFromExistingSecrets -- Configure environment variables from existing secrets.
@@ -729,7 +731,7 @@ stackstate:
       # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.checks.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.checks.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.checks.config -- Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -782,7 +784,7 @@ stackstate:
       # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.healthSync.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.healthSync.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.healthSync.config -- Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -829,7 +831,7 @@ stackstate:
       # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.initializer.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.initializer.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.initializer.config -- Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -873,7 +875,7 @@ stackstate:
       # stackstate.components.mcp.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.mcp.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.mcp.affinity -- Affinity settings for pod assignment.
       affinity: {}
     aiAssistant:
@@ -919,7 +921,7 @@ stackstate:
       # stackstate.components.aiAssistant.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.aiAssistant.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.aiAssistant.affinity -- Affinity settings for pod assignment.
       affinity: {}
     e2es:
@@ -951,7 +953,7 @@ stackstate:
       # stackstate.components.e2es.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.e2es.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.e2es.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.e2es.additionalLogging -- Additional logback config
@@ -1000,7 +1002,7 @@ stackstate:
       # stackstate.components.notification.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.notification.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.notification.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.notification.config -- Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -1048,7 +1050,7 @@ stackstate:
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.receiver.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.receiver.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.receiver.additionalLogging -- Additional logback config
@@ -1077,9 +1079,9 @@ stackstate:
           replicaCount: 1
           # stackstate.components.receiver.split.base.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
-          # stackstate.components.receiver.split.base.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: []
-          # stackstate.components.receiver.split.base.affinity -- Additional affinity settings for pod assignment.
+          # stackstate.components.receiver.split.base.tolerations -- Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set.
+          tolerations: null
+          # stackstate.components.receiver.split.base.affinity -- Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity.
           affinity: {}
         processAgent:
           extraEnv:
@@ -1098,9 +1100,9 @@ stackstate:
           replicaCount: 1
           # stackstate.components.receiver.split.processAgent.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
-          # stackstate.components.receiver.split.processAgent.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: []
-          # stackstate.components.receiver.split.processAgent.affinity -- Additional affinity settings for pod assignment.
+          # stackstate.components.receiver.split.processAgent.tolerations -- Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set.
+          tolerations: null
+          # stackstate.components.receiver.split.processAgent.affinity -- Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity.
           affinity: {}
         logs:
           extraEnv:
@@ -1119,9 +1121,9 @@ stackstate:
           replicaCount: 1
           # stackstate.components.receiver.split.logs.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
-          # stackstate.components.receiver.split.logs.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: []
-          # stackstate.components.receiver.split.logs.affinity -- Additional affinity settings for pod assignment.
+          # stackstate.components.receiver.split.logs.tolerations -- Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set.
+          tolerations: null
+          # stackstate.components.receiver.split.logs.affinity -- Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity.
           affinity: {}
     router:
       errorlog:
@@ -1169,7 +1171,7 @@ stackstate:
       # stackstate.components.router.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.router.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.router.affinity -- Affinity settings for pod assignment.
       affinity: {}
       mode:
@@ -1220,7 +1222,7 @@ stackstate:
         # stackstate.components.router.mode.nodeSelector -- Node labels for pod assignment.
         nodeSelector: {}
         # stackstate.components.router.mode.tolerations -- Toleration labels for pod assignment.
-        tolerations: []
+        tolerations: null
         # stackstate.components.router.mode.affinity -- Affinity settings for pod assignment.
         affinity: {}
     server:
@@ -1263,7 +1265,7 @@ stackstate:
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.server.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.server.config -- Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -1310,7 +1312,7 @@ stackstate:
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.state.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.state.config -- Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -1363,7 +1365,7 @@ stackstate:
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.sync.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.sync.config -- Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -1412,7 +1414,7 @@ stackstate:
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.slicing.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.slicing.config -- Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
@@ -1460,7 +1462,7 @@ stackstate:
       # stackstate.components.ui.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.ui.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
       affinity: {}
     clickhouseCleanup:
@@ -1506,7 +1508,7 @@ stackstate:
       # stackstate.components.clickhouseCleanup.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.clickhouseCleanup.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.clickhouseCleanup.affinity -- Affinity settings for pod assignment.
       affinity: {}
     kafkaTopicCreate:
@@ -1552,7 +1554,7 @@ stackstate:
       # stackstate.components.kafkaTopicCreate.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.kafkaTopicCreate.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.kafkaTopicCreate.affinity -- Affinity settings for pod assignment.
       affinity: {}
     nginxPrometheusExporter:
@@ -1626,7 +1628,7 @@ stackstate:
       # stackstate.components.replicationChecker.nodeSelector -- Node labels for replication checker Pod assignment.
       nodeSelector: {}
       # stackstate.components.replicationChecker.tolerations -- Tolerations for replication checker Pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.replicationChecker.affinity -- Affinity settings for replication checker Pod assignment.
       affinity: {}
       resources:
@@ -1677,7 +1679,7 @@ stackstate:
       # stackstate.components.workloadObserver.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.workloadObserver.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
+      tolerations: null
       # stackstate.components.workloadObserver.affinity -- Affinity settings for pod assignment.
       affinity: {}
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -2042,9 +2044,9 @@ s3proxy:
     secret: {}
   # s3proxy.nodeSelector -- Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector)
   nodeSelector: {}
-  # s3proxy.tolerations -- Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations)
-  tolerations: []
-  # s3proxy.affinity -- Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity)
+  # s3proxy.tolerations -- Tolerations for the S3Proxy pod. Replaces `stackstate.components.all.tolerations` and global tolerations when set.
+  tolerations: null
+  # s3proxy.affinity -- Affinity settings for the S3Proxy pod. Each field set here replaces the same field from `stackstate.components.all.affinity` and global affinity.
   affinity: {}
   # s3proxy.podAnnotations -- Annotations for S3Proxy pod
   podAnnotations: {}
@@ -2281,7 +2283,7 @@ kubernetes-rbac-agent:
       # kubernetes-rbac-agent.containers.rbacAgent.nodeSelector -- Set a nodeSelector
       nodeSelector: {}
       # kubernetes-rbac-agent.containers.rbacAgent.tolerations -- Set tolerations
-      tolerations: []
+      tolerations: null
       # kubernetes-rbac-agent.containers.rbacAgent.affinity -- Set affinity
       affinity: {}
       # kubernetes-rbac-agent.containers.rbacAgent.priorityClassName -- Set priorityClassName

@@ -1,0 +1,5 @@
+global:
+  suseObservability:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution: false

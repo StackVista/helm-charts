@@ -152,9 +152,9 @@ spec:
       {{- else if not (eq .Values.rbac.serviceAccountName "") }}
       serviceAccountName: {{ .Values.rbac.serviceAccountName | quote }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.tolerations) "context" $) }}
       tolerations:
-{{ toYaml . | indent 6 }}
+        {{- . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -163,12 +163,12 @@ spec:
       {{- $sizingAntiAffinity := include "common.sizing.elasticsearch.antiAffinityConfig" . | trim -}}
       {{- $sizingAntiAffinityTopologyKey := include "common.sizing.elasticsearch.antiAffinityTopologyKeyConfig" . | trim -}}
       {{- $sizingNodeAffinity := include "common.sizing.elasticsearch.nodeAffinityConfig" . | trim -}}
-      {{- $antiAffinity := .Values.antiAffinity | default $sizingAntiAffinity | toString -}}
+      {{- $antiAffinity := .Values.antiAffinity | default $sizingAntiAffinity | default "hard" | toString -}}
       {{- $antiAffinity = tpl $antiAffinity . -}}
-      {{- $antiAffinityTopologyKey := .Values.antiAffinityTopologyKey | default $sizingAntiAffinityTopologyKey | toString -}}
+      {{- $antiAffinityTopologyKey := .Values.antiAffinityTopologyKey | default $sizingAntiAffinityTopologyKey | default "kubernetes.io/hostname" | toString -}}
       {{- $antiAffinityTopologyKey = tpl $antiAffinityTopologyKey . -}}
       {{- $nodeAffinity := .Values.nodeAffinity -}}
-      {{- if and (not $nodeAffinity) $sizingNodeAffinity -}}
+      {{- if and (not (kindIs "map" $nodeAffinity)) $sizingNodeAffinity -}}
         {{- $nodeAffinity = $sizingNodeAffinity | fromYaml -}}
       {{- end -}}
       {{- if or (eq $antiAffinity "hard") (eq $antiAffinity "soft") $nodeAffinity }}

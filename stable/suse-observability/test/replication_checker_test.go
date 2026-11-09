@@ -183,7 +183,7 @@ func TestReplicationCheckerOverrides(t *testing.T) {
 	assert.Equal(t, int32(2), *deployment.Spec.Replicas)
 	assert.Equal(t, appsv1.RollingUpdateDeploymentStrategyType, deployment.Spec.Strategy.Type)
 	assert.Equal(t, map[string]string{"pool": "observability", "disk": "ssd"}, deployment.Spec.Template.Spec.NodeSelector)
-	assert.ElementsMatch(t, []corev1.Toleration{{Key: "all", Operator: corev1.TolerationOpExists}, {Key: "checker", Operator: corev1.TolerationOpExists}}, deployment.Spec.Template.Spec.Tolerations)
+	assert.Equal(t, []corev1.Toleration{{Key: "checker", Operator: corev1.TolerationOpExists}}, deployment.Spec.Template.Spec.Tolerations)
 	require.NotNil(t, deployment.Spec.Template.Spec.Affinity.NodeAffinity)
 	assert.Equal(t, "zone", deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms[0].MatchExpressions[0].Key)
 	assert.Equal(t, "yes", deployment.Spec.Template.Annotations["shared"])

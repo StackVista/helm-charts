@@ -247,70 +247,27 @@ Usage:
 {{- end -}}
 
 {{/*
-Get the effective affinity configuration for a component.
-Merges affinity from multiple sources in priority order:
-1. Component-specific affinity (highest priority)
-2. Global affinity (global.suseObservability.affinity)
-3. Profile-based affinity (for HA profiles)
+Resolve the affinity of an application workload. Per field (nodeAffinity, podAffinity,
+podAntiAffinity) the first set layer wins: typeAffinity, componentAffinity, allAffinity,
+then global.suseObservability.affinity. An explicit empty map clears the field.
 
 Usage:
 {{ include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.api.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
-
-Parameters:
-- componentAffinity: Component-specific affinity override
-- allAffinity: All-components affinity override
-- context: The root context (.)
 */}}
 {{- define "suse-observability.global.affinity" -}}
-{{- $componentAffinity := .componentAffinity -}}
-{{- $allAffinity := .allAffinity -}}
-{{- $context := .context -}}
-{{- $result := dict -}}
-
-{{- /* Step 1: Merge global.suseObservability.affinity (for application components) */ -}}
-{{- if include "suse-observability.global.enabled" $context -}}
-  {{- if $context.Values.global.suseObservability.affinity -}}
-    {{- /* Merge nodeAffinity */ -}}
-    {{- if $context.Values.global.suseObservability.affinity.nodeAffinity -}}
-      {{- $_ := set $result "nodeAffinity" $context.Values.global.suseObservability.affinity.nodeAffinity -}}
-    {{- end -}}
-
-    {{- /* Merge podAffinity */ -}}
-    {{- if $context.Values.global.suseObservability.affinity.podAffinity -}}
-      {{- $_ := set $result "podAffinity" $context.Values.global.suseObservability.affinity.podAffinity -}}
-    {{- end -}}
-
-    {{- /* Merge podAntiAffinity if explicitly provided in proper Kubernetes format */ -}}
-    {{- if $context.Values.global.suseObservability.affinity.podAntiAffinity -}}
-      {{- $podAntiAffinity := $context.Values.global.suseObservability.affinity.podAntiAffinity -}}
-      {{- /* Check if it's a list (proper Kubernetes format), not a boolean (simplified format) */ -}}
-      {{- $hasValidRequired := and (hasKey $podAntiAffinity "requiredDuringSchedulingIgnoredDuringExecution") (kindOf $podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution | eq "slice") -}}
-      {{- $hasValidPreferred := and (hasKey $podAntiAffinity "preferredDuringSchedulingIgnoredDuringExecution") (kindOf $podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution | eq "slice") -}}
-      {{- if or $hasValidRequired $hasValidPreferred -}}
-        {{- $_ := set $result "podAntiAffinity" $podAntiAffinity -}}
-      {{- end -}}
-    {{- end -}}
-  {{- end -}}
+{{- $generated := include "common.scheduling.globalAffinity" (dict "context" .context "application" true) | fromYaml -}}
+{{- include "common.scheduling.affinity" (dict "layers" (list .typeAffinity .componentAffinity .allAffinity) "generated" $generated) -}}
 {{- end -}}
 
-{{- /* Step 3: Merge stackstate.components.all.affinity */ -}}
-{{- if $allAffinity -}}
-  {{- range $key, $value := $allAffinity -}}
-    {{- $_ := set $result $key $value -}}
-  {{- end -}}
-{{- end -}}
+{{/*
+Resolve the tolerations of a workload: the first layer that is a list wins, falling back to
+global.suseObservability.tolerations. An explicit empty list clears the value.
 
-{{- /* Step 4: Merge component-specific affinity (highest priority) */ -}}
-{{- if $componentAffinity -}}
-  {{- range $key, $value := $componentAffinity -}}
-    {{- $_ := set $result $key $value -}}
-  {{- end -}}
-{{- end -}}
-
-{{- /* Output the merged affinity */ -}}
-{{- if $result -}}
-{{- toYaml $result -}}
-{{- end -}}
+Usage:
+{{ include "suse-observability.tolerations" (dict "layers" (list .Values.stackstate.components.api.tolerations .Values.stackstate.components.all.tolerations) "context" .) }}
+*/}}
+{{- define "suse-observability.tolerations" -}}
+{{- include "common.scheduling.tolerations" . -}}
 {{- end -}}
 
 {{/*

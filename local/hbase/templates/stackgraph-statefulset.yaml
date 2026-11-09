@@ -147,26 +147,13 @@ spec:
     {{- if $hasSizingProfile -}}
       {{- $sizingAffinity = include "common.sizing.hbase.stackgraph.affinityConfig" . | fromYaml -}}
     {{- end -}}
-    {{- if or .Values.all.affinity .Values.stackgraph.affinity $sizingAffinity }}
+    {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.stackgraph.affinity .Values.all.affinity) "generated" $sizingAffinity "context" $) }}
       affinity:
-      {{- with $sizingAffinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackgraph.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
-    {{- if or .Values.all.tolerations .Values.stackgraph.tolerations }}
+    {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.stackgraph.tolerations .Values.all.tolerations) "context" $) }}
       tolerations:
-      {{- with .Values.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackgraph.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
 {{- if .Values.hdfs.datanode.persistence.enabled }}
   volumeClaimTemplates:

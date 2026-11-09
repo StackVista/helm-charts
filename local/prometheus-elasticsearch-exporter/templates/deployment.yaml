@@ -190,17 +190,13 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.tolerations) "context" $) }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- . | nindent 8 }}
       {{- end }}
-      {{- $sizingAffinity := include "common.sizing.prometheus-elasticsearch-exporter.affinityConfig" . | fromYaml -}}
-      {{- $finalAffinity := .Values.affinity | default dict -}}
-      {{- if and (not .Values.affinity) $sizingAffinity -}}
-        {{- $finalAffinity = $sizingAffinity -}}
-      {{- end -}}
-      {{- if $finalAffinity }}
-      affinity: {{- include "common.tplvalues.render" (dict "value" $finalAffinity "context" $) | nindent 8 }}
+      {{- $generated := include "common.sizing.prometheus-elasticsearch-exporter.affinityConfig" . | fromYaml -}}
+      {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.affinity) "generated" $generated "context" $) }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" (fromYaml .) "context" $) | nindent 8 }}
       {{- end }}
       volumes:
         {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}

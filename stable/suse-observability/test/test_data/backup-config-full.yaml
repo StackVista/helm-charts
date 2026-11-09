@@ -66,9 +66,6 @@ stackgraph:
             topologyKey: kubernetes.io/hostname
       tolerations:
         - effect: NoSchedule
-          key: node-role.kubernetes.io/backup-config-full-all
-          operator: Exists
-        - effect: NoSchedule
           key: node-role.kubernetes.io/backup-config-full-backup
           operator: Exists
 settings:
@@ -119,9 +116,6 @@ settings:
                 - backup-config-full-backup
             topologyKey: kubernetes.io/hostname
       tolerations:
-        - effect: NoSchedule
-          key: node-role.kubernetes.io/backup-config-full-all
-          operator: Exists
         - effect: NoSchedule
           key: node-role.kubernetes.io/backup-config-full-backup
           operator: Exists
@@ -199,9 +193,6 @@ victoriaMetrics:
                 - backup-config-full-backup
             topologyKey: kubernetes.io/hostname
       tolerations:
-        - effect: NoSchedule
-          key: node-role.kubernetes.io/backup-config-full-all
-          operator: Exists
         - effect: NoSchedule
           key: node-role.kubernetes.io/backup-config-full-backup
           operator: Exists

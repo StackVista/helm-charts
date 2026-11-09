@@ -101,7 +101,7 @@ containers:
     nodeSelector: {}
 
     # containers.rbacAgent.tolerations -- Set tolerations
-    tolerations: []
+    tolerations: null
 
     # containers.rbacAgent.affinity -- Set affinity
     affinity: {}

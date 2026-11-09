@@ -258,7 +258,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | metrics.kafka.tlsCaSecret | string | `""` |  |
 | metrics.kafka.tlsCert | string | `"cert-file"` |  |
 | metrics.kafka.tlsKey | string | `"key-file"` |  |
-| metrics.kafka.tolerations | list | `[]` |  |
+| metrics.kafka.tolerations | string | `nil` |  |
 | metrics.kafka.topologySpreadConstraints | list | `[]` |  |
 | metrics.prometheusRule.enabled | bool | `false` |  |
 | metrics.prometheusRule.groups | list | `[]` |  |
@@ -313,6 +313,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | podSecurityContext.enabled | bool | `true` |  |
 | podSecurityContext.fsGroup | int | `1001` |  |
 | priorityClassName | string | `""` |  |
+| provisioning.affinity | object | `{}` |  |
 | provisioning.args | list | `[]` |  |
 | provisioning.auth.tls.caCert | string | `"ca.crt"` |  |
 | provisioning.auth.tls.cert | string | `"tls.crt"` |  |
@@ -360,7 +361,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | provisioning.serviceAccount.create | bool | `false` |  |
 | provisioning.serviceAccount.name | string | `""` |  |
 | provisioning.sidecars | list | `[]` |  |
-| provisioning.tolerations | list | `[]` |  |
+| provisioning.tolerations | string | `nil` |  |
 | provisioning.topics | list | `[]` |  |
 | provisioning.waitForKafka | bool | `true` |  |
 | rbac.create | bool | `false` |  |
@@ -405,7 +406,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | startupProbe.timeoutSeconds | int | `1` |  |
 | superUsers | string | `"User:admin"` |  |
 | terminationGracePeriodSeconds | int | `300` |  |
-| tolerations | list | `[]` |  |
+| tolerations | string | `nil` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | transactionStateLogMinIsr | int | `1` |  |
 | transactionStateLogReplicationFactor | int | `2` |  |

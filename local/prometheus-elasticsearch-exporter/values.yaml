@@ -63,7 +63,7 @@ priorityClassName: ""
 
 nodeSelector: {}
 
-tolerations: []
+tolerations: null
 
 podAnnotations: {}
 

@@ -471,7 +471,7 @@ securityContext:
     type: RuntimeDefault
 
 nodeSelector: {}
-tolerations: []
+tolerations: null
 affinity: {}
 topologySpreadConstraints: []
 

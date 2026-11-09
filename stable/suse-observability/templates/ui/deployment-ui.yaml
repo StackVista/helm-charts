@@ -123,14 +123,9 @@ spec:
       affinity:
         {{- $affinity | nindent 8 }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.ui.tolerations }}
+    {{- with include "suse-observability.tolerations" (dict "layers" (list .Values.stackstate.components.ui.tolerations .Values.stackstate.components.all.tolerations) "context" .) }}
       tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.ui.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
     {{- if .Values.stackstate.components.ui.securityContext.enabled }}
       securityContext: {{- omit .Values.stackstate.components.ui.securityContext "enabled" | toYaml | nindent 8 }}

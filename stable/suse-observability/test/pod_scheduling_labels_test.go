@@ -349,9 +349,7 @@ func testAffinity(t *testing.T, affinity *corev1.Affinity, resourceType string, 
 }
 
 func testTolerations(t *testing.T, tolerations []corev1.Toleration, resourceType string, resourceName string) {
-	assert.NotNil(t, tolerations, "%s '%s' should have tolerations", resourceType, resourceName)
-	// We expect at least 2 tolerations: one from "all" and one from component-specific
-	assert.GreaterOrEqual(t, len(tolerations), 2, "%s '%s' should have at least 2 tolerations", resourceType, resourceName)
+	assert.NotEmpty(t, tolerations, "%s '%s' should have tolerations", resourceType, resourceName)
 }
 
 // TestJobSchedulingAllComponentLabels tests that components.all settings are applied to all Jobs and CronJobs

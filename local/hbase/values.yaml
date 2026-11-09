@@ -57,7 +57,7 @@ all:
   # all.nodeSelector -- Node labels for pod assignment on all components.
   nodeSelector: {}
   # all.tolerations -- Toleration labels for pod assignment on all components.
-  tolerations: []
+  tolerations: null
   # all.affinity -- Affinity settings for pod assignment on all components.
   affinity: {}
 stackgraph:
@@ -98,7 +98,7 @@ stackgraph:
     # stackgraph.securityContext.fsGroup -- UID of the Linux user to use for all pod.
     fsGroup: 65534
   # stackgraph.tolerations -- Toleration labels for pod assignment.
-  tolerations: []
+  tolerations: null
   # stackgraph.version -- Version of stackgraph to use
   version: "8.3.25"
 console:
@@ -135,7 +135,7 @@ console:
   # console.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
   # console.tolerations -- Toleration labels for pod assignment.
-  tolerations: []
+  tolerations: null
   # console.affinity -- Affinity settings for pod assignment.
   affinity: {}
   integrity:
@@ -181,7 +181,7 @@ hbase:
     # hbase.master.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.master.tolerations -- Toleration labels for pod assignment.
-    tolerations: []
+    tolerations: null
     # hbase.master.affinity -- Affinity settings for pod assignment.
     affinity: {}
   regionserver:
@@ -209,7 +209,7 @@ hbase:
     # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
-    tolerations: []
+    tolerations: null
     # hbase.regionserver.affinity -- Affinity settings for pod assignment.
     affinity: {}
   zookeeper:
@@ -272,7 +272,7 @@ hdfs:
     # hdfs.datanode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
-    tolerations: []
+    tolerations: null
     # hdfs.datanode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
     terminationGracePeriodSeconds: 600
     # hdfs.datanode.affinity -- Affinity settings for pod assignment.
@@ -302,7 +302,7 @@ hdfs:
     # hdfs.namenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.namenode.tolerations -- Toleration labels for pod assignment.
-    tolerations: []
+    tolerations: null
     # hdfs.namenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   secondarynamenode:
@@ -332,7 +332,7 @@ hdfs:
     # hdfs.secondarynamenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.secondarynamenode.tolerations -- Toleration labels for pod assignment.
-    tolerations: []
+    tolerations: null
     # hdfs.secondarynamenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
 tephra:
@@ -367,7 +367,7 @@ tephra:
   # tephra.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
   # tephra.tolerations -- Toleration labels for pod assignment.
-  tolerations: []
+  tolerations: null
   # tephra.affinity -- Affinity settings for pod assignment.
   affinity: {}
   persistence:

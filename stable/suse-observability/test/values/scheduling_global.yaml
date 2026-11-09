@@ -1,0 +1,15 @@
+global:
+  suseObservability:
+    tolerations:
+      - key: global-taint
+        operator: Exists
+        effect: NoSchedule
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-pool
+                  operator: In
+                  values:
+                    - observability

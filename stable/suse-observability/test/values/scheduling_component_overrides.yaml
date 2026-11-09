@@ -1,0 +1,56 @@
+stackstate:
+  components:
+    all:
+      tolerations:
+        - {key: all-taint, operator: Exists}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - {key: node-pool, operator: In, values: [all]}
+    api:
+      tolerations:
+        - {key: api-taint, operator: Exists}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - {key: node-pool, operator: In, values: [api]}
+    backup:
+      tolerations:
+        - {key: backup-taint, operator: Exists}
+    correlate:
+      tolerations:
+        - {key: correlate-taint, operator: Exists}
+      split:
+        connection:
+          tolerations:
+            - {key: connection-taint, operator: Exists}
+    receiver:
+      tolerations:
+        - {key: receiver-taint, operator: Exists}
+      split:
+        logs:
+          tolerations:
+            - {key: logs-taint, operator: Exists}
+    router:
+      mode:
+        tolerations:
+          - {key: router-mode-taint, operator: Exists}
+kafka:
+  tolerations:
+    - {key: kafka-taint, operator: Exists}
+hbase:
+  all:
+    tolerations:
+      - {key: hbase-all-taint, operator: Exists}
+  hbase:
+    master:
+      tolerations:
+        - {key: hbase-master-taint, operator: Exists}
+clickhouse:
+  backup:
+    tolerations:
+      - {key: clickhouse-backup-taint, operator: Exists}

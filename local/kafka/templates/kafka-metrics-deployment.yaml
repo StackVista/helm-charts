@@ -37,19 +37,20 @@ spec:
       {{- if .Values.metrics.kafka.hostAliases }}
       hostAliases: {{- include "common.tplvalues.render" (dict "value" .Values.metrics.kafka.hostAliases "context" $) | nindent 8 }}
       {{- end }}
-      {{- if .Values.metrics.kafka.affinity }}
-      affinity: {{- include "common.tplvalues.render" ( dict "value" .Values.metrics.kafka.affinity "context" $) | nindent 8 }}
-      {{- else }}
-      affinity:
-        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.metrics.kafka.podAffinityPreset "component" "metrics" "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.metrics.kafka.podAntiAffinityPreset "component" "metrics" "context" $) | nindent 10 }}
-        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.metrics.kafka.nodeAffinityPreset.type "key" .Values.metrics.kafka.nodeAffinityPreset.key "values" .Values.metrics.kafka.nodeAffinityPreset.values) | nindent 10 }}
+      {{- $generated := dict -}}
+      {{- range $field, $preset := dict "podAffinity" (include "common.affinities.pods" (dict "type" .Values.metrics.kafka.podAffinityPreset "component" "metrics" "context" $)) "podAntiAffinity" (include "common.affinities.pods" (dict "type" .Values.metrics.kafka.podAntiAffinityPreset "component" "metrics" "context" $)) "nodeAffinity" (include "common.affinities.nodes" (dict "type" .Values.metrics.kafka.nodeAffinityPreset.type "key" .Values.metrics.kafka.nodeAffinityPreset.key "values" .Values.metrics.kafka.nodeAffinityPreset.values)) -}}
+        {{- if $preset -}}
+          {{- $_ := set $generated $field ($preset | fromYaml) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- with include "common.scheduling.infraAffinity" (dict "layers" (list (include "common.tplvalues.render" (dict "value" (.Values.metrics.kafka.affinity | default dict) "context" $) | fromYaml)) "generated" $generated "context" $) }}
+      affinity: {{- . | nindent 8 }}
       {{- end }}
       {{- if .Values.metrics.kafka.nodeSelector }}
       nodeSelector: {{- include "common.tplvalues.render" ( dict "value" .Values.metrics.kafka.nodeSelector "context" $) | nindent 8 }}
       {{- end }}
-      {{- if .Values.metrics.kafka.tolerations }}
-      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.metrics.kafka.tolerations "context" .) | nindent 8 }}
+      {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.metrics.kafka.tolerations) "context" $) }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" (fromYamlArray .) "context" $) | nindent 8 }}
       {{- end }}
       {{- if .Values.metrics.kafka.topologySpreadConstraints }}
       topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.metrics.kafka.topologySpreadConstraints "context" .) | nindent 8 }}

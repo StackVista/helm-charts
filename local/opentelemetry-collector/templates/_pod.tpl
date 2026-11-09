@@ -219,27 +219,17 @@ volumes:
 nodeSelector:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- $finalAffinity := .Values.affinity | default dict -}}
-{{- /* Use sizing-based affinity when deployed via suse-observability (sizing profile is set) */ -}}
-{{- $hasSizingProfile := false -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-  {{- $hasSizingProfile = true -}}
-{{- else if and .Values.global .Values.global.sizing .Values.global.sizing.profile -}}
-  {{- $hasSizingProfile = true -}}
+{{- $generated := dict -}}
+{{- if or ((.Values.global).suseObservability).sizing ((.Values.global).sizing) -}}
+  {{- $generated = include "common.sizing.opentelemetry-collector.affinityConfig" . | fromYaml -}}
 {{- end -}}
-{{- if and (not .Values.affinity) $hasSizingProfile -}}
-  {{- $sizingAffinity := include "common.sizing.opentelemetry-collector.affinityConfig" . | fromYaml -}}
-  {{- if $sizingAffinity -}}
-    {{- $finalAffinity = $sizingAffinity -}}
-  {{- end -}}
-{{- end -}}
-{{- if $finalAffinity }}
+{{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.affinity) "generated" $generated "context" $) }}
 affinity:
-  {{- toYaml $finalAffinity | nindent 2 }}
+  {{- . | nindent 2 }}
 {{- end }}
-{{- with .Values.tolerations }}
+{{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.tolerations) "context" $) }}
 tolerations:
-  {{- toYaml . | nindent 2 }}
+  {{- . | nindent 2 }}
 {{- end }}
 {{- with .Values.topologySpreadConstraints }}
 topologySpreadConstraints:

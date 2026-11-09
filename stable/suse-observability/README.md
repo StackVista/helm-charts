@@ -799,6 +799,73 @@ global:
 - `requiredDuringSchedulingIgnoredDuringExecution: true` - **Hard anti-affinity**: Pods will NOT schedule if they cannot be placed on separate nodes. Use when you have enough nodes.
 - `requiredDuringSchedulingIgnoredDuringExecution: false` - **Soft anti-affinity**: Pods will prefer separate nodes but can co-locate if necessary. Use when node count is limited.
 
+The global affinity applies with and without a sizing profile.
+
+### Scheduling Precedence (Affinity and Tolerations)
+
+Affinity and tolerations resolve through layers, from most to least specific. The most specific layer that sets a value wins:
+
+| Workload | Layers (most specific first) |
+|----------|------------------------------|
+| Application components | split type (`stackstate.components.<component>.split.<type>`), `stackstate.components.<component>`, `stackstate.components.all`, `global.suseObservability` |
+| Backup and restore jobs | `stackstate.components.backup` (`stackstate.components.configurationBackup` for configuration backups), `stackstate.components.all`, `global.suseObservability` |
+| HBase | `hbase.<component>`, `hbase.all`, `global.suseObservability` |
+| Other infrastructure subcharts | the subchart's own value (for example `kafka.affinity`, `clickhouse.backup.tolerations`, `victoria-metrics-0.server.affinity`), `global.suseObservability` |
+
+**Tolerations** are resolved as a whole list. The first layer that sets `tolerations` replaces every less specific layer; lists are not concatenated. Set `tolerations: []` to clear inherited tolerations for a component.
+
+```yaml
+global:
+  suseObservability:
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: observability
+        effect: NoSchedule
+stackstate:
+  components:
+    api:
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: observability
+          effect: NoSchedule
+        - key: api-only
+          operator: Exists
+    ui:
+      tolerations: []
+```
+
+**Affinity** is resolved per field: `nodeAffinity`, `podAffinity` and `podAntiAffinity` are picked independently from the most specific layer that sets them. A component that only sets `podAffinity` keeps the inherited `nodeAffinity` and the sizing profile's HA anti-affinity. A field is replaced as a whole, never merged with less specific layers. Set a field to `{}` to clear it:
+
+```yaml
+kafka:
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 10
+          podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: zookeeper
+clickhouse:
+  affinity:
+    podAntiAffinity: {}
+```
+
+Elasticsearch keeps its own values: `elasticsearch.nodeAffinity` overrides the global node affinity, and `elasticsearch.antiAffinity` (`hard`/`soft`) overrides the sizing profile's anti-affinity mode. Leaving them unset inherits the global and sizing values.
+
+#### Breaking changes
+
+- Tolerations are no longer concatenated. Previously `stackstate.components.all.tolerations` was appended to each component's tolerations, and `hbase.all.tolerations` to each HBase component's. A component that sets its own tolerations must now repeat any shared ones it still needs.
+- An explicit `tolerations: []` now clears. It used to be the default everywhere, so a values file copied from `helm show values` with a leftover `stackstate.components.api.tolerations: []` gave api the `stackstate.components.all` tolerations; now it gets none. Likewise a leftover `elasticsearch.nodeAffinity: {}` (the old default) now drops the global node affinity on Elasticsearch. On tainted or dedicated node pools these pods stay Pending. Remove such leftovers.
+- A local `affinity` on Kafka, ClickHouse, ZooKeeper, VictoriaMetrics, HBase and the other infrastructure subcharts no longer drops the global node affinity or the sizing profile's anti-affinity. Only the fields it sets are replaced. On HA profiles a `nodeAffinity`-only override now gets the sizing profile's required pod anti-affinity back, so pods can stay Pending on clusters with fewer nodes than replicas. Set `podAntiAffinity: {}` to keep the old behaviour.
+- `elasticsearch.nodeAffinity` and the global node affinity are combined with the anti-affinity instead of being dropped when either is set.
+- Elasticsearch follows the global anti-affinity mode. It used to be `hard` regardless; with an HA profile and `global.suseObservability.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution: false` it is now `soft`. Set `elasticsearch.antiAffinity: hard` to keep the old behaviour.
+- `global.suseObservability.affinity` now also applies without a sizing profile.
+- The ClickHouse `checksum/backup-config` annotation no longer includes backup scheduling values, so ClickHouse restarts once on upgrade.
+
 ### Backward Compatibility
 
 The traditional configuration method (without sizing profiles) is still supported for backward compatibility:
@@ -995,10 +1062,10 @@ If you encounter issues not covered here:
 | global.s3proxy.credentials.fromExternalSecret | string | `""` | Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required. |
 | global.s3proxy.credentials.secretKey | string | `"default-secret-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
-| global.suseObservability | object | `{"adminPassword":"","adminPasswordBcrypt":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"applicationDomains":["Observability"],"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). IMPORTANT: When using this section, also set global.imageRegistry to "registry.rancher.com" for SUSE Observability images. |
+| global.suseObservability | object | `{"adminPassword":"","adminPasswordBcrypt":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"applicationDomains":["Observability"],"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""},"tolerations":null}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). IMPORTANT: When using this section, also set global.imageRegistry to "registry.rancher.com" for SUSE Observability images. |
 | global.suseObservability.adminPassword | string | `""` | Admin password for the default 'admin' user (plain text). Mutually exclusive with adminPasswordBcrypt. Required (one of the two) when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. |
 | global.suseObservability.adminPasswordBcrypt | string | `""` | Admin password as bcrypt hash. Mutually exclusive with adminPassword. |
-| global.suseObservability.affinity | object | `{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}}` | Affinity configuration for all SUSE Observability components including infrastructure. |
+| global.suseObservability.affinity | object | `{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}}` | Affinity configuration for all SUSE Observability components including infrastructure. Resolved per field (nodeAffinity, podAffinity, podAntiAffinity): a component value, then `stackstate.components.all`, then this global value; set a field to `{}` to clear it. |
 | global.suseObservability.affinity.nodeAffinity | string | `nil` | Node affinity configuration applied to all components (application and infrastructure). Standard Kubernetes nodeAffinity spec. |
 | global.suseObservability.affinity.podAffinity | string | `nil` | Pod affinity configuration for application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec. |
 | global.suseObservability.affinity.podAntiAffinity | object | `{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}` | Simplified pod anti-affinity configuration for HA profiles. Applied to all infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) for HA profiles. |
@@ -1013,6 +1080,7 @@ If you encounter issues not covered here:
 | global.suseObservability.receiverApiKey | string | `""` | Optional, prefer to use Service Tokens instead for more control and better security. Will use stackstate.apiKey.key if not provided, stackstate.apiKey can also be used to provide the apiKey via an external secret. Please see the documentation on how to use Service Tokens instead. |
 | global.suseObservability.sizing | object | `{"profile":""}` | Sizing profile configuration. |
 | global.suseObservability.sizing.profile | string | `""` | Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values. |
+| global.suseObservability.tolerations | string | `nil` | Tolerations applied to every SUSE Observability workload, including subcharts, hooks, backup and restore jobs and CronJobs. A component's own tolerations (or `stackstate.components.all.tolerations`) replace this list rather than extending it; set them to `[]` to clear. |
 | global.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | global.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | global.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
@@ -1063,7 +1131,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.priorityClassName | string | `""` | Set priorityClassName |
 | kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
-| kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
+| kubernetes-rbac-agent.containers.rbacAgent.tolerations | string | `nil` | Set tolerations |
 | minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","persistence":{"enabled":false},"s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
 | minio.accessKey | string | `""` | DEPRECATED: Use global.s3proxy.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |
@@ -1093,7 +1161,7 @@ If you encounter issues not covered here:
 | pull-secret.credentials | list | `[]` | Registry and associated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
-| s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
+| s3proxy.affinity | object | `{}` | Affinity settings for the S3Proxy pod. Each field set here replaces the same field from `stackstate.components.all.affinity` and global affinity. |
 | s3proxy.extraEnv.open | object | `{}` | Extra open environment variables to inject into the S3Proxy pod. |
 | s3proxy.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into the S3Proxy pod via a `Secret` object. |
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
@@ -1120,7 +1188,7 @@ If you encounter issues not covered here:
 | s3proxy.serviceAccount.name | string | `""` | Override the service account name. Falls back to the deprecated minio.serviceAccount.name if set, otherwise "suse-observability-s3proxy". Set an explicit name to preserve existing IAM role bindings. |
 | s3proxy.sizing.baseMemoryConsumption | string | `"250Mi"` | Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc) |
 | s3proxy.sizing.javaHeapMemoryFraction | string | `"70"` | Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap |
-| s3proxy.tolerations | list | `[]` | Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations) |
+| s3proxy.tolerations | string | `nil` | Tolerations for the S3Proxy pod. Replaces `stackstate.components.all.tolerations` and global tolerations when set. |
 | scc.enabled | bool | `false` | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. Has to be enabled when installing to Openshift >= 4.12 The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment. Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed. |
 | stackstate.allowedOrigins | list | `[]` | Third-party web domains allowed to make cross-origin requests |
 | stackstate.apiKey | object | `{"fromExternalSecret":null,"key":null}` | Optional, API key configuration for StackState. prefer to use Service Tokens instead for more control and better security. |
@@ -1162,7 +1230,7 @@ If you encounter issues not covered here:
 | stackstate.components.aiAssistant.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ai-assistant` pods. |
 | stackstate.components.aiAssistant.resources | object | `{}` | Resource allocation for `ai-assistant` pods. |
 | stackstate.components.aiAssistant.serviceAccount.annotations | object | `{}` | Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`. |
-| stackstate.components.aiAssistant.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.aiAssistant.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.clickHouse.hostnames | string | `"suse-observability-clickhouse-headless"` |  |
 | stackstate.components.all.deploymentStrategy.type | string | `"RecreateSingletonsOnly"` | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. |
@@ -1191,7 +1259,7 @@ If you encounter issues not covered here:
 | stackstate.components.all.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | stackstate.components.all.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.all.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| stackstate.components.all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
+| stackstate.components.all.tolerations | string | `nil` | Toleration labels for pod assignment on all components. |
 | stackstate.components.all.zookeeperEndpoint | string | `""` | **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes. |
 | stackstate.components.api.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -1212,7 +1280,7 @@ If you encounter issues not covered here:
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"45"` |  |
 | stackstate.components.api.supportMode | string | `""` | Mode of support, either Documentation or ContactStackstate |
-| stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.api.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.api.yaml | object | `{}` |  |
 | stackstate.components.authorizationSync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.authorizationSync.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -1231,7 +1299,7 @@ If you encounter issues not covered here:
 | stackstate.components.authorizationSync.resources | object | `{}` | Resource allocation for `notification` pods. |
 | stackstate.components.authorizationSync.sizing.baseMemoryConsumption | string | `"25Mi"` |  |
 | stackstate.components.authorizationSync.sizing.javaHeapMemoryFraction | string | `"70"` |  |
-| stackstate.components.authorizationSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.authorizationSync.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.backup.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.backup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.backup.podAnnotations | object | `{}` | Extra annotations for backup pods. |
@@ -1242,7 +1310,7 @@ If you encounter issues not covered here:
 | stackstate.components.backup.resources.requests.cpu | string | `"1000m"` |  |
 | stackstate.components.backup.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | stackstate.components.backup.resources.requests.memory | string | `"4000Mi"` |  |
-| stackstate.components.backup.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.backup.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.checks.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.checks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -1263,7 +1331,7 @@ If you encounter issues not covered here:
 | stackstate.components.checks.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
 | stackstate.components.checks.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.checks.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.checks.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.clickhouseCleanup.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.clickhouseCleanup.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
 | stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy `clickhouseCleanup` containers. |
@@ -1280,7 +1348,7 @@ If you encounter issues not covered here:
 | stackstate.components.clickhouseCleanup.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
 | stackstate.components.clickhouseCleanup.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.clickhouseCleanup.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
-| stackstate.components.clickhouseCleanup.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.clickhouseCleanup.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.configurationBackup.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.configurationBackup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.configurationBackup.podAnnotations | object | `{}` | Extra annotations for configuration backup pods. |
@@ -1291,7 +1359,7 @@ If you encounter issues not covered here:
 | stackstate.components.configurationBackup.resources.requests.cpu | string | `"1000m"` |  |
 | stackstate.components.configurationBackup.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | stackstate.components.configurationBackup.resources.requests.memory | string | `"1000Mi"` |  |
-| stackstate.components.configurationBackup.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.configurationBackup.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
@@ -1313,7 +1381,7 @@ If you encounter issues not covered here:
 | stackstate.components.correlate.resources | object | `{}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.correlate.split.aggregator.affinity | object | `{}` | Additional affinity settings for pod assignment. |
+| stackstate.components.correlate.split.aggregator.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
 | stackstate.components.correlate.split.aggregator.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
 | stackstate.components.correlate.split.aggregator.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
 | stackstate.components.correlate.split.aggregator.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
@@ -1322,8 +1390,8 @@ If you encounter issues not covered here:
 | stackstate.components.correlate.split.aggregator.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
 | stackstate.components.correlate.split.aggregator.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.correlate.split.aggregator.sizing.logsMemoryConsumption | string | `nil` |  |
-| stackstate.components.correlate.split.aggregator.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
-| stackstate.components.correlate.split.connection.affinity | object | `{}` | Additional affinity settings for pod assignment. |
+| stackstate.components.correlate.split.aggregator.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
+| stackstate.components.correlate.split.connection.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
 | stackstate.components.correlate.split.connection.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
 | stackstate.components.correlate.split.connection.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
 | stackstate.components.correlate.split.connection.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
@@ -1332,9 +1400,9 @@ If you encounter issues not covered here:
 | stackstate.components.correlate.split.connection.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
 | stackstate.components.correlate.split.connection.sizing.baseMemoryConsumption | string | `nil` |  |
 | stackstate.components.correlate.split.connection.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.correlate.split.connection.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
+| stackstate.components.correlate.split.connection.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
 | stackstate.components.correlate.split.enabled | bool | `false` | Split the correlate into the connection connection correlator, http correlator and aggregator |
-| stackstate.components.correlate.split.httpTracing.affinity | object | `{}` | Additional affinity settings for pod assignment. |
+| stackstate.components.correlate.split.httpTracing.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
 | stackstate.components.correlate.split.httpTracing.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"3"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
 | stackstate.components.correlate.split.httpTracing.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
 | stackstate.components.correlate.split.httpTracing.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
@@ -1343,8 +1411,8 @@ If you encounter issues not covered here:
 | stackstate.components.correlate.split.httpTracing.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
 | stackstate.components.correlate.split.httpTracing.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.correlate.split.httpTracing.sizing.processAgentMemoryConsumption | string | `nil` |  |
-| stackstate.components.correlate.split.httpTracing.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
-| stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.correlate.split.httpTracing.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
+| stackstate.components.correlate.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.e2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.e2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.e2es.esDiskSpaceShare | string | `"10"` | How much disk space from ElasticSearch can use for k8s events ingestion |
@@ -1361,7 +1429,7 @@ If you encounter issues not covered here:
 | stackstate.components.e2es.retention | int | `30` | Number of days to keep the events data on Es |
 | stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.e2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.e2es.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.healthSync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -1382,7 +1450,7 @@ If you encounter issues not covered here:
 | stackstate.components.healthSync.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
 | stackstate.components.healthSync.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.healthSync.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.healthSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.healthSync.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -1398,7 +1466,7 @@ If you encounter issues not covered here:
 | stackstate.components.initializer.resources | object | `{}` | Resource allocation for `initializer` pods. |
 | stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.initializer.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.kafkaTopicCreate.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
@@ -1415,7 +1483,7 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
-| stackstate.components.kafkaTopicCreate.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.kafkaTopicCreate.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.mcp.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.mcp.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: secret-key - name: MY_OTHER_SECRET_ENV_VAR   secretName: my-other-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.mcp.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -1429,7 +1497,7 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `mcp` pods. |
 | stackstate.components.mcp.replicaCount | int | `1` | Number of `mcp` replicas. |
 | stackstate.components.mcp.resources | object | `{}` | Resource allocation for `mcp` pods. |
-| stackstate.components.mcp.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.mcp.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
@@ -1451,7 +1519,7 @@ If you encounter issues not covered here:
 | stackstate.components.notification.resources | object | `{}` | Resource allocation for `notification` pods. |
 | stackstate.components.notification.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
 | stackstate.components.notification.sizing.javaHeapMemoryFraction | string | `"55"` |  |
-| stackstate.components.notification.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.notification.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
@@ -1470,7 +1538,7 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.receiver.split.base.affinity | object | `{}` | Additional affinity settings for pod assignment. |
+| stackstate.components.receiver.split.base.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
 | stackstate.components.receiver.split.base.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
 | stackstate.components.receiver.split.base.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
 | stackstate.components.receiver.split.base.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
@@ -1479,9 +1547,9 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.split.base.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
 | stackstate.components.receiver.split.base.sizing.baseMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.base.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.receiver.split.base.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
+| stackstate.components.receiver.split.base.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
 | stackstate.components.receiver.split.enabled | bool | `false` | Split the receiver into functional units for logs, intake and agent |
-| stackstate.components.receiver.split.logs.affinity | object | `{}` | Additional affinity settings for pod assignment. |
+| stackstate.components.receiver.split.logs.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
 | stackstate.components.receiver.split.logs.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
 | stackstate.components.receiver.split.logs.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
 | stackstate.components.receiver.split.logs.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
@@ -1490,8 +1558,8 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.split.logs.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
 | stackstate.components.receiver.split.logs.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.logs.sizing.logsMemoryConsumption | string | `nil` |  |
-| stackstate.components.receiver.split.logs.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
-| stackstate.components.receiver.split.processAgent.affinity | object | `{}` | Additional affinity settings for pod assignment. |
+| stackstate.components.receiver.split.logs.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
+| stackstate.components.receiver.split.processAgent.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
 | stackstate.components.receiver.split.processAgent.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
 | stackstate.components.receiver.split.processAgent.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
 | stackstate.components.receiver.split.processAgent.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
@@ -1500,8 +1568,8 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.split.processAgent.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
 | stackstate.components.receiver.split.processAgent.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.processAgent.sizing.processAgentMemoryConsumption | string | `nil` |  |
-| stackstate.components.receiver.split.processAgent.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
-| stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.receiver.split.processAgent.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
+| stackstate.components.receiver.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.replicationChecker.affinity | object | `{}` | Affinity settings for replication checker Pod assignment. |
 | stackstate.components.replicationChecker.enabled | bool | `nil` | Enable the stateless replication checker. Null enables it only for built-in HA sizing profiles; true or false overrides the profile default. |
 | stackstate.components.replicationChecker.nodeSelector | object | `{}` | Node labels for replication checker Pod assignment. |
@@ -1511,7 +1579,7 @@ If you encounter issues not covered here:
 | stackstate.components.replicationChecker.resources.limits.memory | string | `"256Mi"` | Memory limit for the replication checker. |
 | stackstate.components.replicationChecker.resources.requests.cpu | string | `"10m"` | Requested CPU for the replication checker. |
 | stackstate.components.replicationChecker.resources.requests.memory | string | `"64Mi"` | Requested memory for the replication checker. |
-| stackstate.components.replicationChecker.tolerations | list | `[]` | Tolerations for replication checker Pod assignment. |
+| stackstate.components.replicationChecker.tolerations | string | `nil` | Tolerations for replication checker Pod assignment. |
 | stackstate.components.router.accesslog.enabled | bool | `false` | Enable access logging on the router |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.router.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
@@ -1539,14 +1607,14 @@ If you encounter issues not covered here:
 | stackstate.components.router.mode.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.router.mode.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | stackstate.components.router.mode.status | string | `"active"` | Determines the mode being deployed. Possible values:  "maintenance": puts the system to maintenance mode, not serving the API  "active": puts the system in active mode, serving API requests  "automatic": puts the system in maintenance during helm upgrade (use a pre-hook) and activates the system using a post-hook               if deployment.compatibleWithArgoCD is set,doest the same but using PreSync PostSync from argocd               !!! This feature is considered experimental and should not be used in mission-critical setup by end-users !!! |
-| stackstate.components.router.mode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.router.mode.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `router` pods. |
 | stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
 | stackstate.components.router.resources | object | `{}` | Resource allocation for `router` pods. |
 | stackstate.components.router.secureCookies.enabled | bool | `false` | When enabled, the router appends the `Secure` attribute to `Set-Cookie` response headers for requests that reached the edge over HTTPS (detected via the `X-Forwarded-Proto: https` header set by a TLS-terminating proxy such as Traefik or an ingress controller). Plain-HTTP deployments are left untouched. |
-| stackstate.components.router.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.router.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.server.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.server.config | string | `""` | Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -1564,7 +1632,7 @@ If you encounter issues not covered here:
 | stackstate.components.server.resources | object | `{}` | Resource allocation for `server` pods. |
 | stackstate.components.server.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.server.sizing.javaHeapMemoryFraction | string | `"45"` |  |
-| stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.server.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.slicing.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.slicing.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.slicing.config | string | `""` | Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -1581,7 +1649,7 @@ If you encounter issues not covered here:
 | stackstate.components.slicing.resources | object | `{}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.slicing.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.state.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.state.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.state.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -1602,7 +1670,7 @@ If you encounter issues not covered here:
 | stackstate.components.state.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
 | stackstate.components.state.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.state.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.state.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.sync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -1623,7 +1691,7 @@ If you encounter issues not covered here:
 | stackstate.components.sync.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
 | stackstate.components.sync.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.sync.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.sync.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.agentMetricsFilter | string | `"[\"nginx*\"]"` |  |
 | stackstate.components.ui.debug | bool | `false` |  |
@@ -1643,7 +1711,7 @@ If you encounter issues not covered here:
 | stackstate.components.ui.securityContext.runAsGroup | int | `101` | The GID (group ID) of the owning user of the process |
 | stackstate.components.ui.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.ui.securityContext.runAsUser | int | `101` | The UID (user ID) of the owning user of the process |
-| stackstate.components.ui.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.ui.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
 | stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
@@ -1665,7 +1733,7 @@ If you encounter issues not covered here:
 | stackstate.components.workloadObserver.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.workloadObserver.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | Number of `workloadObserver` replicas. |
 | stackstate.components.workloadObserver.resources | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"128Mi"},"requests":{"cpu":"20m","ephemeral-storage":"1Mi","memory":"24Mi"}}` | Resource allocation for `workloadObserver` pods. |
-| stackstate.components.workloadObserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.workloadObserver.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted' |
 | stackstate.email | object | `{"additionalProperties":{"mail.smtp.auth":"true","mail.smtp.starttls.enable":"true"},"enabled":false,"sender":"","server":{"auth":{"fromExternalSecret":null,"password":"","username":""},"host":"","port":587,"protocol":"smtp"}}` | Email configuration for StackState |

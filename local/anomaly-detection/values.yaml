@@ -65,7 +65,7 @@ manager:
     # e.g.
     # lifecycle: Ec2Spot
   # tolerations -- Toleration labels for pod assignment.
-  tolerations: []
+  tolerations: null
   # affinity -- Affinity settings for pod assignment.
   affinity: {}
 
@@ -90,7 +90,7 @@ nodeSelector: {}
   # e.g.
   # lifecycle: Ec2Spot
 # tolerations -- Toleration labels for pod assignment.
-tolerations: []
+tolerations: null
 # affinity -- Affinity settings for pod assignment.
 affinity: {}
 # threadWorkers -- The number of worker threads.

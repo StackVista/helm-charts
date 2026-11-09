@@ -144,21 +144,15 @@ spec:
 
       {{- end }}
 
-      {{- $sizingAffinity := include "common.sizing.kubernetes-rbac-agent.affinityConfig" . | fromYaml -}}
-      {{- $finalAffinity := .Values.containers.rbacAgent.affinity | default dict -}}
-      {{- if and (not .Values.containers.rbacAgent.affinity) $sizingAffinity -}}
-        {{- $finalAffinity = $sizingAffinity -}}
-      {{- end -}}
-      {{- if $finalAffinity }}
-      affinity: {{ $finalAffinity | toYaml | nindent 8 }}
+      {{- $generated := include "common.sizing.kubernetes-rbac-agent.affinityConfig" . | fromYaml -}}
+      {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.containers.rbacAgent.affinity) "generated" $generated "context" $) }}
+      affinity:
+        {{- . | nindent 8 }}
       {{- end }}
 
-      {{- if .Values.containers.rbacAgent.tolerations }}
+      {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.containers.rbacAgent.tolerations) "context" $) }}
       tolerations:
-      {{- with .Values.containers.rbacAgent.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-
+        {{- . | nindent 8 }}
       {{- end }}
       {{- if .Values.containers.rbacAgent.priorityClassName }}
       priorityClassName: "{{ .Values.containers.rbacAgent.priorityClassName }}"

@@ -221,7 +221,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | tls.quorum.truststorePath | string | `"/opt/bitnami/zookeeper/config/certs/quorum/zookeeper.truststore.jks"` |  |
 | tls.resources.limits | object | `{}` |  |
 | tls.resources.requests | object | `{}` |  |
-| tolerations | list | `[]` |  |
+| tolerations | string | `nil` |  |
 | topologySpreadConstraints | object | `{}` |  |
 | updateStrategy.rollingUpdate | object | `{}` |  |
 | updateStrategy.type | string | `"RollingUpdate"` |  |

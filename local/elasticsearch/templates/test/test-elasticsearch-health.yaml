@@ -17,3 +17,11 @@ spec:
         #!/usr/bin/env bash -e
         curl -XGET --fail '{{ include "elasticsearch.service.fullname" . }}:{{ .Values.httpPort }}/_cluster/health?{{ .Values.clusterHealthCheckParams }}'
   restartPolicy: Never
+  {{- with include "common.scheduling.infraAffinity" (dict "layers" (list (dict "nodeAffinity" .Values.nodeAffinity)) "context" $) }}
+  affinity:
+    {{- . | nindent 4 }}
+  {{- end }}
+  {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.tolerations) "context" $) }}
+  tolerations:
+    {{- . | nindent 4 }}
+  {{- end }}

@@ -60,7 +60,7 @@ changes the checksum once when global backups are enabled, triggering a pod roll
 | backup.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
 | backup.scheduled.incremental_schedule | string | `"45 3-23 * * *"` | Cron schedule for automatic incremental backups of ClickHouse. |
-| backup.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| backup.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | clusterDomain | string | `"cluster.local"` |  |
 | command[0] | string | `"/scripts/setup.sh"` |  |
 | commonAnnotations | object | `{}` |  |
@@ -286,7 +286,7 @@ changes the checksum once when global backups are enabled, triggering a pod roll
 | tls.certKeyFilename | string | `""` |  |
 | tls.certificatesSecret | string | `""` |  |
 | tls.enabled | bool | `false` |  |
-| tolerations | list | `[]` |  |
+| tolerations | string | `nil` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | updateStrategy.type | string | `"RollingUpdate"` |  |
 | usersExtraOverrides | string | `"<clickhouse>\n  <users>\n    <stackstate>\n        <no_password></no_password>\n        <grants>\n            <query>GRANT ALL ON *.*</query>\n        </grants>\n    </stackstate>\n  </users>\n</clickhouse>\n"` |  |

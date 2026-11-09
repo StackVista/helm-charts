@@ -259,13 +259,13 @@
       "type": "object"
     },
     "tolerations": {
-      "type": "array",
+      "type": ["array", "null"],
       "items": {
         "type": "object"
       }
     },
     "affinity": {
-      "type": "object"
+      "type": ["object", "null"]
     },
     "topologySpreadConstraints": {
       "type": "array",

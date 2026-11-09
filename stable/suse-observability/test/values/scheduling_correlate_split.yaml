@@ -1,0 +1,14 @@
+stackstate:
+  components:
+    correlate:
+      split:
+        enabled: true
+        connection:
+          sizing: {baseMemoryConsumption: 500Mi, javaHeapMemoryFraction: "50"}
+          resources: {requests: {memory: 1Gi, cpu: 1}, limits: {memory: 1Gi, cpu: 1}}
+        httpTracing:
+          sizing: {baseMemoryConsumption: 500Mi, javaHeapMemoryFraction: "50"}
+          resources: {requests: {memory: 1Gi, cpu: 1}, limits: {memory: 1Gi, cpu: 1}}
+        aggregator:
+          sizing: {baseMemoryConsumption: 500Mi, javaHeapMemoryFraction: "50"}
+          resources: {requests: {memory: 1Gi, cpu: 1}, limits: {memory: 1Gi, cpu: 1}}

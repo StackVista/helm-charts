@@ -564,7 +564,7 @@ nodeSelector: {}
 ## @param tolerations Tolerations for ClickHouse pods assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 ##
-tolerations: []
+tolerations: null
 ## @param updateStrategy.type ClickHouse statefulset strategy type
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
 ##
@@ -1222,7 +1222,7 @@ backup:
   # backup.podLabels -- Extra labels for ClickHouse backup pods.
   podLabels: {}
   # backup.tolerations -- Toleration labels for pod assignment.
-  tolerations: []
+  tolerations: null
   # backup.affinity -- Affinity settings for pod assignment.
   affinity: {}
   config:

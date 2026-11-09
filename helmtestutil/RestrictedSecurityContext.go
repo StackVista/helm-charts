@@ -10,11 +10,11 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-// podSpecRef pairs a pod spec with enough identity to name it in a failure message.
-type podSpecRef struct {
-	kind string
-	name string
-	spec corev1.PodSpec
+// PodSpecRef pairs a pod spec with enough identity to name it in a failure message.
+type PodSpecRef struct {
+	Kind string
+	Name string
+	Spec corev1.PodSpec
 }
 
 // AssertRestrictedSecurityContext checks that every container and init container in
@@ -38,13 +38,13 @@ func AssertRestrictedSecurityContext(t *testing.T, resources KubernetesResources
 	matched := map[string]bool{}
 	checked := 0
 
-	for _, ref := range collectPodSpecs(resources) {
+	for _, ref := range CollectPodSpecs(resources) {
 		for _, group := range []struct {
 			label      string
 			containers []corev1.Container
 		}{
-			{"initContainer", ref.spec.InitContainers},
-			{"container", ref.spec.Containers},
+			{"initContainer", ref.Spec.InitContainers},
+			{"container", ref.Spec.Containers},
 		} {
 			for _, container := range group.containers {
 				if _, exempt := exemptContainers[container.Name]; exempt {
@@ -52,8 +52,8 @@ func AssertRestrictedSecurityContext(t *testing.T, resources KubernetesResources
 					continue
 				}
 				checked++
-				where := fmt.Sprintf("%s/%s %s %s", ref.kind, ref.name, group.label, container.Name)
-				for _, violation := range restrictedViolations(ref.spec.SecurityContext, container.SecurityContext) {
+				where := fmt.Sprintf("%s/%s %s %s", ref.Kind, ref.Name, group.label, container.Name)
+				for _, violation := range restrictedViolations(ref.Spec.SecurityContext, container.SecurityContext) {
 					assert.Fail(t, "securityContext does not satisfy the restricted Pod Security Standard",
 						"%s: %s\nAdd the restricted securityContext to this container, or add %q to the exemption list and document it in the required-permissions page.",
 						where, violation, container.Name)
@@ -112,33 +112,34 @@ func containsCapability(capabilities []corev1.Capability, want corev1.Capability
 	return false
 }
 
-func collectPodSpecs(resources KubernetesResources) []podSpecRef {
-	var refs []podSpecRef
+// CollectPodSpecs returns the pod spec of every pod-bearing resource, sorted by kind and name.
+func CollectPodSpecs(resources KubernetesResources) []PodSpecRef {
+	var refs []PodSpecRef
 
 	for _, r := range resources.Deployments {
-		refs = append(refs, podSpecRef{"Deployment", r.Name, r.Spec.Template.Spec})
+		refs = append(refs, PodSpecRef{"Deployment", r.Name, r.Spec.Template.Spec})
 	}
 	for _, r := range resources.Statefulsets {
-		refs = append(refs, podSpecRef{"StatefulSet", r.Name, r.Spec.Template.Spec})
+		refs = append(refs, PodSpecRef{"StatefulSet", r.Name, r.Spec.Template.Spec})
 	}
 	for _, r := range resources.DaemonSets {
-		refs = append(refs, podSpecRef{"DaemonSet", r.Name, r.Spec.Template.Spec})
+		refs = append(refs, PodSpecRef{"DaemonSet", r.Name, r.Spec.Template.Spec})
 	}
 	for _, r := range resources.Jobs {
-		refs = append(refs, podSpecRef{"Job", r.Name, r.Spec.Template.Spec})
+		refs = append(refs, PodSpecRef{"Job", r.Name, r.Spec.Template.Spec})
 	}
 	for _, r := range resources.CronJobs {
-		refs = append(refs, podSpecRef{"CronJob", r.Name, cronJobPodSpec(r)})
+		refs = append(refs, PodSpecRef{"CronJob", r.Name, cronJobPodSpec(r)})
 	}
 	for _, r := range resources.Pods {
-		refs = append(refs, podSpecRef{"Pod", r.Name, r.Spec})
+		refs = append(refs, PodSpecRef{"Pod", r.Name, r.Spec})
 	}
 
 	sort.Slice(refs, func(i, j int) bool {
-		if refs[i].kind != refs[j].kind {
-			return refs[i].kind < refs[j].kind
+		if refs[i].Kind != refs[j].Kind {
+			return refs[i].Kind < refs[j].Kind
 		}
-		return refs[i].name < refs[j].name
+		return refs[i].Name < refs[j].Name
 	})
 
 	return refs

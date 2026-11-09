@@ -73,8 +73,7 @@ nodeSelector:
 {{- end -}}
 
 {{/*
-Merge affinity from stackstate.components.all and s3proxy.
-s3proxy.affinity takes precedence over all.affinity.
+Resolve affinity per field: s3proxy, else stackstate.components.all, else global.
 */}}
 {{- define "stackstate.s3proxy.affinity" -}}
 {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.s3proxy.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
@@ -85,16 +84,12 @@ affinity:
 {{- end -}}
 
 {{/*
-Concatenate tolerations from stackstate.components.all and s3proxy.
-Both lists are combined (s3proxy tolerations are appended after all tolerations).
+Resolve tolerations: s3proxy, else stackstate.components.all, else global.
 */}}
 {{- define "stackstate.s3proxy.tolerations" -}}
-{{- $allTolerations := .Values.stackstate.components.all.tolerations | default list -}}
-{{- $s3proxyTolerations := .Values.s3proxy.tolerations | default list -}}
-{{- $merged := concat $allTolerations $s3proxyTolerations -}}
-{{- if $merged -}}
+{{- with include "suse-observability.tolerations" (dict "layers" (list .Values.s3proxy.tolerations .Values.stackstate.components.all.tolerations) "context" .) -}}
 tolerations:
-  {{- toYaml $merged | nindent 2 }}
+  {{- . | nindent 2 }}
 {{- end -}}
 {{- end -}}
 

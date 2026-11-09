@@ -606,7 +606,7 @@ nodeSelector: {}
 ## @param tolerations Tolerations for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 ##
-tolerations: []
+tolerations: null
 ## @param topologySpreadConstraints Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
 ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
 ##
@@ -1254,7 +1254,7 @@ metrics:
     ## @param metrics.kafka.tolerations Tolerations for pod assignment
     ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
     ##
-    tolerations: []
+    tolerations: null
     ## @param metrics.kafka.schedulerName Name of the k8s scheduler (other than default) for Kafka exporter
     ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
     ##
@@ -1550,7 +1550,10 @@ provisioning:
   ## @param provisioning.tolerations Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations: []
+  tolerations: null
+  ## @param provisioning.affinity Affinity for pod assignment, resolved per field over the global affinity
+  ##
+  affinity: {}
   ## @param provisioning.extraProvisioningCommands Extra commands to run to provision cluster resources
   ## - echo "Allow user to consume from any topic"
   ## - >-

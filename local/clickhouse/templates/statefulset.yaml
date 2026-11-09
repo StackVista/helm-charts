@@ -36,7 +36,7 @@ spec:
         checksum/config-users-extra: {{ include (print $.Template.BasePath "/configmap-users-extra.yaml") $ | sha256sum }}
         {{- if $.Values.global.backup.enabled }}
         {{- include "common.annotations.checksumObject" (dict "value" $.Values.global.s3proxy.credentials "name" "checksum/s3proxy-credentials") | nindent 8 }}
-        {{- include "common.annotations.checksumObject" (dict "value" (dict "backup" (omit $.Values.backup "s3") "connection" $configuration) "name" "checksum/backup-config") | nindent 8 }}
+        {{- include "common.annotations.checksumObject" (dict "value" (dict "backup" (omit $.Values.backup "s3" "tolerations" "affinity") "connection" $configuration) "name" "checksum/backup-config") | nindent 8 }}
         {{- end }}
         {{- if $.Values.podAnnotations }}
         {{- include "common.tplvalues.render" (dict "value" $.Values.podAnnotations "context" $) | nindent 8 }}
@@ -57,24 +57,20 @@ spec:
       {{- if $.Values.hostAliases }}
       hostAliases: {{- include "common.tplvalues.render" (dict "value" $.Values.hostAliases "context" $) | nindent 8 }}
       {{- end }}
-      {{- $sizingAffinity := include "common.sizing.clickhouse.affinityConfig" $ | fromYaml -}}
-      {{- $finalAffinity := $.Values.affinity | default dict -}}
-      {{- if and (not $.Values.affinity) $sizingAffinity -}}
-        {{- $finalAffinity = $sizingAffinity -}}
+      {{- $generated := include "common.sizing.clickhouse.affinityConfig" $ | fromYaml -}}
+      {{- range $field, $preset := dict "podAffinity" (include "common.affinities.pods" (dict "type" $.Values.podAffinityPreset "component" "clickhouse" "context" $)) "podAntiAffinity" (include "common.affinities.pods" (dict "type" $.Values.podAntiAffinityPreset "component" "clickhouse" "context" $)) "nodeAffinity" (include "common.affinities.nodes" (dict "type" $.Values.nodeAffinityPreset.type "key" $.Values.nodeAffinityPreset.key "values" $.Values.nodeAffinityPreset.values)) -}}
+        {{- if and $preset (not (hasKey $generated $field)) -}}
+          {{- $_ := set $generated $field ($preset | fromYaml) -}}
+        {{- end -}}
       {{- end -}}
-      {{- if $finalAffinity }}
-      affinity: {{- include "common.tplvalues.render" ( dict "value" $finalAffinity "context" $) | nindent 8 }}
-      {{- else }}
-      affinity:
-        podAffinity: {{- include "common.affinities.pods" (dict "type" $.Values.podAffinityPreset "component" "clickhouse" "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" $.Values.podAntiAffinityPreset "component" "clickhouse" "context" $) | nindent 10 }}
-        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" $.Values.nodeAffinityPreset.type "key" $.Values.nodeAffinityPreset.key "values" $.Values.nodeAffinityPreset.values) | nindent 10 }}
+      {{- with include "common.scheduling.infraAffinity" (dict "layers" (list (include "common.tplvalues.render" (dict "value" ($.Values.affinity | default dict) "context" $) | fromYaml)) "generated" $generated "context" $) }}
+      affinity: {{- . | nindent 8 }}
       {{- end }}
       {{- if $.Values.nodeSelector }}
       nodeSelector: {{- include "common.tplvalues.render" ( dict "value" $.Values.nodeSelector "context" $) | nindent 8 }}
       {{- end }}
-      {{- if $.Values.tolerations }}
-      tolerations: {{- include "common.tplvalues.render" (dict "value" $.Values.tolerations "context" $) | nindent 8 }}
+      {{- with include "common.scheduling.tolerations" (dict "layers" (list $.Values.tolerations) "context" $) }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" (fromYamlArray .) "context" $) | nindent 8 }}
       {{- end }}
       {{- if $.Values.priorityClassName }}
       priorityClassName: {{ $.Values.priorityClassName | quote }}

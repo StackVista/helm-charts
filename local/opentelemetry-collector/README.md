@@ -345,7 +345,7 @@ Internal dependency of the suse-observability chart; not supported as a standalo
 | statefulset.persistentVolumeClaimRetentionPolicy.whenScaled | string | `"Retain"` |  |
 | statefulset.podManagementPolicy | string | `"Parallel"` |  |
 | statefulset.volumeClaimTemplates | list | `[]` |  |
-| tolerations | list | `[]` |  |
+| tolerations | string | `nil` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | useGOMEMLIMIT | bool | `true` |  |
 

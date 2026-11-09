@@ -131,27 +131,14 @@ spec:
       {{- end }}
     {{- end }}
     {{- $sizingAffinity := include "common.sizing.hbase.regionserver.affinityConfig" . | fromYaml -}}
-    {{- if or .Values.all.affinity .Values.hbase.regionserver.affinity $sizingAffinity }}
+    {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.hbase.regionserver.affinity .Values.all.affinity) "generated" $sizingAffinity "context" $) }}
       affinity:
-      {{- with $sizingAffinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.hbase.regionserver.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.hbase.regionserver.terminationGracePeriodSeconds }}
-    {{- if or .Values.all.tolerations .Values.hbase.regionserver.tolerations }}
+    {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.hbase.regionserver.tolerations .Values.all.tolerations) "context" $) }}
       tolerations:
-      {{- with .Values.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.hbase.regionserver.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
 {{- end -}}
 

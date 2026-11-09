@@ -114,7 +114,7 @@ Pod recovery or Prometheus reconciliation.
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | all.sizing | object | `{"baseMemoryConsumption":"125Mi","javaHeapMemoryFraction":"75"}` | Default memory sizing for JVMs in pods |
-| all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
+| all.tolerations | string | `nil` | Toleration labels for pod assignment on all components. |
 | commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
 | console.affinity | object | `{}` | Affinity settings for pod assignment. |
 | console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |
@@ -132,7 +132,7 @@ Pod recovery or Prometheus reconciliation.
 | console.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | console.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | console.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
-| console.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| console.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | deployment.mode | string | `"Distributed"` |  |
 | global.commonLabels | object | `{}` | Labels to add to deployments, StatefulSets, and Pods managed by the chart. |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
@@ -152,7 +152,7 @@ Pod recovery or Prometheus reconciliation.
 | hbase.master.resources | object | `{}` | Resources to allocate for HBase masters. |
 | hbase.master.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase master memory sizing for JVM |
 | hbase.master.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
-| hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hbase.master.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -164,7 +164,7 @@ Pod recovery or Prometheus reconciliation.
 | hbase.regionserver.resources | object | `{}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"70"}` | HBase region server memory sizing for JVM |
 | hbase.regionserver.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
-| hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hbase.regionserver.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | hbase.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | hbase.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | hbase.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
@@ -181,7 +181,7 @@ Pod recovery or Prometheus reconciliation.
 | hdfs.datanode.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS Datanode memory sizing for JVMs in pods |
 | hdfs.datanode.terminationGracePeriodSeconds | int | `600` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
-| hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.datanode.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
 | hdfs.image.tag | string | `nil` | Default container image tag for HDFS datanode. |
@@ -197,7 +197,7 @@ Pod recovery or Prometheus reconciliation.
 | hdfs.namenode.resources | object | `{}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS name node memory sizing for JVM |
 | hdfs.namenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
-| hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.namenode.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | hdfs.replication | string | `nil` | Sets the target amount of replication. These are the amount replicas hdfs strives for. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.) |
 | hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -212,7 +212,7 @@ Pod recovery or Prometheus reconciliation.
 | hdfs.secondarynamenode.resources | object | `{}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS secondary name node memory sizing for JVM |
 | hdfs.secondarynamenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
-| hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.secondarynamenode.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | hdfs.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | hdfs.securityContext.fsGroup | int | `65534` |  |
 | hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
@@ -237,7 +237,7 @@ Pod recovery or Prometheus reconciliation.
 | stackgraph.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | stackgraph.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | stackgraph.sizing | object | `{"javaHeapMemoryFraction":"60"}` | Stackgraph memory sizing for JVM |
-| stackgraph.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackgraph.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | stackgraph.version | string | `"8.3.25"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
@@ -258,6 +258,6 @@ Pod recovery or Prometheus reconciliation.
 | tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | tephra.sizing | object | `{"javaHeapMemoryFraction":"65"}` | Tephra memory sizing for JVM |
-| tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| tephra.tolerations | string | `nil` | Toleration labels for pod assignment. |
 | version | string | `"2.5"` | Version of hbase to use |
 | zookeeper.externalServers | string | `"suse-observability-zookeeper-headless"` | The list of external Zookeeper servers. |

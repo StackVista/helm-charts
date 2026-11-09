@@ -59,14 +59,9 @@ spec:
       affinity:
         {{- $affinity | nindent 8 }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.replicationChecker.tolerations }}
+    {{- with include "suse-observability.tolerations" (dict "layers" (list .Values.stackstate.components.replicationChecker.tolerations .Values.stackstate.components.all.tolerations) "context" .) }}
       tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.replicationChecker.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
     {{- if .Values.stackstate.components.all.securityContext.enabled }}
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}

@@ -47,23 +47,13 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
         {{- end }}
-        {{- if or .Values.all.affinity .Values.console.affinity }}
+        {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.console.affinity .Values.all.affinity) "generated" dict "context" $) }}
           affinity:
-            {{- with .Values.all.affinity }}
-              {{- toYaml . | nindent 12 }}
-            {{- end }}
-            {{- with .Values.console.affinity }}
-              {{- toYaml . | nindent 12 }}
-            {{- end }}
+            {{- . | nindent 12 }}
         {{- end }}
-        {{- if or .Values.all.tolerations .Values.console.tolerations }}
+        {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.console.tolerations .Values.all.tolerations) "context" $) }}
           tolerations:
-            {{- with .Values.all.tolerations }}
-              {{- toYaml . | nindent 12 }}
-            {{- end }}
-            {{- with .Values.console.tolerations }}
-              {{- toYaml . | nindent 12 }}
-            {{- end }}
+            {{- . | nindent 12 }}
         {{- end }}
           restartPolicy: Never
 {{- end }}

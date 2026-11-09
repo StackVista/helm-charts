@@ -1,0 +1,69 @@
+stackstate:
+  components:
+    api:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              podAffinityTerm:
+                topologyKey: local-marker
+                labelSelector: {matchLabels: {app: api}}
+kafka:
+  affinity:
+    podAffinity: &marker
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 10
+          podAffinityTerm:
+            topologyKey: local-marker
+            labelSelector: {matchLabels: {app: marker}}
+zookeeper:
+  affinity:
+    podAffinity: *marker
+victoria-metrics-0:
+  server:
+    affinity:
+      podAffinity: *marker
+victoria-metrics-1:
+  server:
+    affinity:
+      podAffinity: *marker
+opentelemetry-collector:
+  affinity:
+    podAffinity: *marker
+anomaly-detection:
+  affinity:
+    podAffinity: *marker
+  manager:
+    affinity:
+      podAffinity: *marker
+kubernetes-rbac-agent:
+  containers:
+    rbacAgent:
+      affinity:
+        podAffinity: *marker
+kafkaup-operator:
+  affinity:
+    podAffinity: *marker
+elasticsearch:
+  prometheus-elasticsearch-exporter:
+    affinity:
+      podAffinity: *marker
+clickhouse:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - {key: node-pool, operator: In, values: [clickhouse]}
+hbase:
+  all:
+    affinity:
+      podAffinity: *marker
+  hbase:
+    master:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - {key: node-pool, operator: In, values: [hbase-master]}

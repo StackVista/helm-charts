@@ -170,26 +170,13 @@ spec:
       {{- end }}
     {{- end }}
     {{- $sizingAffinity := include "common.sizing.hbase.tephra.affinityConfig" . | fromYaml -}}
-    {{- if or .Values.all.affinity .Values.tephra.affinity $sizingAffinity }}
+    {{- with include "common.scheduling.infraAffinity" (dict "layers" (list .Values.tephra.affinity .Values.all.affinity) "generated" $sizingAffinity "context" $) }}
       affinity:
-      {{- with $sizingAffinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tephra.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
-    {{- if or .Values.all.tolerations .Values.tephra.tolerations }}
+    {{- with include "common.scheduling.tolerations" (dict "layers" (list .Values.tephra.tolerations .Values.all.tolerations) "context" $) }}
       tolerations:
-      {{- with .Values.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tephra.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
     {{- if eq (include "hbase.deployment.mode" .) "Mono" }}
   volumeClaimTemplates:

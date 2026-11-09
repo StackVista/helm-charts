@@ -291,7 +291,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.statefulSet.service.labels | object | `{}` | Headless service labels |
 | server.statefulSet.service.servicePort | int | `8428` | Headless service port |
 | server.terminationGracePeriodSeconds | int | `60` | Pod's termination grace period in seconds |
-| server.tolerations | list | `[]` | Node tolerations for server scheduling to nodes with taints. Ref: [https://kubernetes.io/docs/concepts/configuration/assign-pod-node/](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) |
+| server.tolerations | string | `nil` | Node tolerations for server scheduling to nodes with taints. Ref: [https://kubernetes.io/docs/concepts/configuration/assign-pod-node/](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/) |
 | server.vmbackupmanager.destination | string | `""` | backup destination at S3, GCS or local filesystem. Release name will be included to path! |
 | server.vmbackupmanager.disableDaily | bool | `false` | disable daily backups |
 | server.vmbackupmanager.disableHourly | bool | `false` | disable hourly backups |

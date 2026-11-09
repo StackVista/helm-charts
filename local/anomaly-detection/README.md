@@ -106,7 +106,7 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 | manager.nodeSelector | object | `{}` |  |
 | manager.persistentStorage.size | string | `"10Gi"` |  |
 | manager.persistentStorage.storageClass | string | `nil` |  |
-| manager.tolerations | list | `[]` |  |
+| manager.tolerations | string | `nil` |  |
 | memory.limit | string | `"3Gi"` | Memory resource limit |
 | memory.request | string | `"3Gi"` | Memory resource request |
 | metrics.serviceMonitor.enabled | bool | `false` |  |
@@ -126,4 +126,4 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 | stackstate.username | string | `nil` | Stackstate Username that used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | threadWorkers | int | `3` | The number of worker threads. |
-| tolerations | list | `[]` | Toleration labels for pod assignment. |
+| tolerations | string | `nil` | Toleration labels for pod assignment. |

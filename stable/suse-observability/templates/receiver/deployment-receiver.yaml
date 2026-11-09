@@ -179,26 +179,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- $componentAffinity := .Values.stackstate.components.receiver.affinity }}
-    {{- if .TypeConfig.affinity }}
-      {{- $componentAffinity = .TypeConfig.affinity }}
-    {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" $componentAffinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- $typeScheduling := get (dict "base" .Values.stackstate.components.receiver.split.base "logs" .Values.stackstate.components.receiver.split.logs "process-agent" .Values.stackstate.components.receiver.split.processAgent) .ReceiverType | default dict }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "typeAffinity" $typeScheduling.affinity "componentAffinity" .Values.stackstate.components.receiver.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
     {{- if $affinity }}
       affinity:
         {{- $affinity | nindent 8 }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations (or .Values.stackstate.components.receiver.tolerations .TypeConfig.tolerations) }}
+    {{- with include "suse-observability.tolerations" (dict "layers" (list $typeScheduling.tolerations .Values.stackstate.components.receiver.tolerations .Values.stackstate.components.all.tolerations) "context" .) }}
       tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.receiver.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .TypeConfig.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- . | nindent 8 }}
     {{- end }}
     {{- if .Values.stackstate.components.all.securityContext.enabled }}
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}

@@ -1,0 +1,11 @@
+stackstate:
+  components:
+    api:
+      tolerations: []
+      affinity:
+        nodeAffinity: {}
+kafka:
+  tolerations: []
+clickhouse:
+  affinity:
+    podAntiAffinity: {}

@@ -2,7 +2,7 @@
 
 Helm Chart for rendering SUSE Observability Values
 
-Current chart version is `1.4.12`
+Current chart version is `1.4.13`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -39,6 +39,15 @@ The following values can be optionally set.
 * `imageRegistry` - If omitted, the default value of `quay.io` will be used.
 * `pullSecret.username` - If pullSecret username or password is omitted no pull secret will be configured
 * `pullSecret.password` - If pullSecret username or password is omitted no pull secret will be configured
+
+## Affinity and Tolerations
+
+The generated values set `nodeAffinity` and `podAntiAffinity` explicitly for each infrastructure chart. SUSE Observability resolves affinity per field and tolerations as a whole list, with the most specific layer winning. See the "Scheduling Precedence" section of the SUSE Observability chart README.
+
+When combining the generated values with your own overrides:
+
+* A component-level `affinity` now only replaces the fields it sets. A partial override such as `kafka.affinity.podAffinity` keeps the generated `nodeAffinity` and `podAntiAffinity`. Set a field to `{}` to remove a generated value.
+* Tolerations are no longer concatenated across `stackstate.components.all` / `hbase.all` and individual components. Prefer `global.suseObservability.tolerations` for tolerations that apply everywhere. A component that sets its own list must repeat any shared tolerations it still needs. Set `[]` to clear.
 
 ## Values
 
