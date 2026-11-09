@@ -22,6 +22,8 @@ import (
 // canonical; discovery labels, namespace selection and scrape specs stay
 // compatible, including with legacy fullname settings.
 func TestServiceMonitorNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name, release, namespace, fixture, valuesFile string
 		set                                           map[string]string
@@ -109,6 +111,8 @@ func TestServiceMonitorNamingCompatibility(t *testing.T) {
 // Explicit verification of the frozen fixtures against an exported old chart.
 // Normal tests stay independent of Git history and never rewrite fixtures.
 func TestServiceMonitorNamingBaselineReproduction(t *testing.T) {
+	t.Parallel()
+
 	chart := os.Getenv("SERVICE_MONITOR_BASELINE_CHART")
 	if chart == "" {
 		t.Skip("Set SERVICE_MONITOR_BASELINE_CHART to verify the documented pre-rename revision")

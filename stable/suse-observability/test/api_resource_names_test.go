@@ -18,6 +18,8 @@ import (
 )
 
 func TestAPIResourceNamesUseCanonicalConfigMapsAndRetainSecrets(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name, release, prefix string
 		values                map[string]string
@@ -65,6 +67,8 @@ func TestAPIResourceNamesUseCanonicalConfigMapsAndRetainSecrets(t *testing.T) {
 // Give the three helpers different outputs to prove both producers and consumers
 // use the dedicated names, rather than independently rebuilding the legacy name.
 func TestAPIConfigurationReferencesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	helperPath := filepath.Join(chart, "templates", "_names.tpl")

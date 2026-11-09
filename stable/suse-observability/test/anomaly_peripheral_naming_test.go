@@ -17,6 +17,8 @@ import (
 // Restore only the two legacy expressions in a temporary chart to compare the
 // entire platform. Frozen subchart snapshots independently protect this delta.
 func TestAnomalyPeripheralNamingPreservesPlatformResources(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(beforeChart, os.DirFS("..")))
 	require.NoError(t, os.WriteFile(filepath.Join(beforeChart, "templates", "_anomaly-peripheral-baseline.tpl"), []byte(`

@@ -14,6 +14,8 @@ import (
 )
 
 func TestCollectorEndpointsFollowDedicatedConfigMapHelper(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	path := filepath.Join(chart, "templates", "_names.tpl")
@@ -78,6 +80,8 @@ func rewriteCollectorEndpointReferences(value interface{}) {
 }
 
 func TestCollectorSavedEnvironmentEntriesAreIgnored(t *testing.T) {
+	t.Parallel()
+
 	savedValues := filepath.Join(t.TempDir(), "saved-values.yaml")
 	require.NoError(t, os.WriteFile(savedValues, []byte(`opentelemetry-collector:
   extraEnvs:

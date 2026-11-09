@@ -22,6 +22,8 @@ import (
 // Normal tests restore only the reviewed helper bodies in a disposable chart.
 // The optional Git baseline check compares against an independently built copy.
 func TestApplicationConfigMapNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	path := filepath.Join(chart, "templates/_names.tpl")
@@ -50,6 +52,8 @@ func TestApplicationConfigMapNamingCompatibility(t *testing.T) {
 }
 
 func TestApplicationConfigMapNamingGitBaselineCompatibility(t *testing.T) {
+	t.Parallel()
+
 	chart := os.Getenv("CONFIGMAP_MONITOR_BASELINE_CHART")
 	if chart == "" {
 		t.Skip("set CONFIGMAP_MONITOR_BASELINE_CHART to the pre-change chart with built local dependencies")
@@ -219,6 +223,8 @@ func checkApplicationConfigMapNamingCompatibility(t *testing.T, beforeChart, aft
 }
 
 func TestExporterMonitoringSharedNamespaceInstallations(t *testing.T) {
+	t.Parallel()
+
 	const exporter = "elasticsearch.prometheus-elasticsearch-exporter."
 	for _, monitor := range []struct{ value, kind string }{
 		{"serviceMonitor", "ServiceMonitor"}, {"podMonitor", "PodMonitor"},

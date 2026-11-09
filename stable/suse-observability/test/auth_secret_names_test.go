@@ -15,6 +15,8 @@ import (
 )
 
 func TestAuthSecretReferencesFollowDedicatedHelper(t *testing.T) {
+	t.Parallel()
+
 	chart := authSecretNameTestChart(t)
 	valuesFile, err := filepath.Abs("values/full.yaml")
 	require.NoError(t, err)

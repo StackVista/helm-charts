@@ -17,6 +17,8 @@ import (
 )
 
 func TestAPIServiceReferencesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")
@@ -166,6 +168,8 @@ func TestAPIServiceReferencesFollowDedicatedHelpers(t *testing.T) {
 }
 
 func TestSplitServiceReferencesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")
@@ -279,6 +283,8 @@ func TestSplitServiceReferencesFollowDedicatedHelpers(t *testing.T) {
 }
 
 func TestMetricsServiceNamesUseDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")

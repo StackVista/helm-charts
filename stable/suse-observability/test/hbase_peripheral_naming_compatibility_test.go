@@ -25,6 +25,8 @@ import (
 // Actual pre-change source: 225d8e44c4dca0910154c47aa20481a920cf8352.
 // Independent extraction baseline: c851a02ae1f2f7eb64c5538a148194ea36eee4b4.
 func TestHBasePeripheralNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	before, child := hbasePeripheralTestChart(t, "..")
 	path := filepath.Join(child, "templates/_names.tpl")
 	data, err := os.ReadFile(path)
@@ -40,6 +42,8 @@ func TestHBasePeripheralNamingCompatibility(t *testing.T) {
 }
 
 func TestHBasePeripheralNamingGitBaselineCompatibility(t *testing.T) {
+	t.Parallel()
+
 	before := os.Getenv("HBASE_PERIPHERAL_BASELINE_CHART")
 	if before == "" {
 		t.Skip("set HBASE_PERIPHERAL_BASELINE_CHART to the built pre-change chart")
@@ -48,6 +52,8 @@ func TestHBasePeripheralNamingGitBaselineCompatibility(t *testing.T) {
 }
 
 func TestHBasePeripheralNamingIndependentOfPreviousSteps(t *testing.T) {
+	t.Parallel()
+
 	before := os.Getenv("HBASE_PERIPHERAL_EXTRACTION_CHART")
 	if before == "" {
 		t.Skip("set HBASE_PERIPHERAL_EXTRACTION_CHART to the built extraction baseline")
@@ -99,6 +105,8 @@ func hbasePeripheralDefinition(helper string) *regexp.Regexp {
 }
 
 func TestHBasePeripheralNamingSharedNamespaceInstallations(t *testing.T) {
+	t.Parallel()
+
 	identities := map[string]bool{}
 	for _, tenant := range []string{"a", "b"} {
 		release, namespace := "installation-"+tenant, "tenant-"+tenant

@@ -15,6 +15,8 @@ import (
 )
 
 func TestHBasePDBNamingPreservesPlatformResources(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(beforeChart, os.DirFS("..")))
 	// Only the six old PDB expressions are restored; no runtime consumers

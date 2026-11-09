@@ -28,6 +28,8 @@ type routerNamingFixture struct {
 // Frozen pre-rename snapshots protect the entire Pod specification, including
 // static configuration checksums, credentials and dynamic-mode mount selection.
 func TestRouterDeploymentNamingFrozenCompatibility(t *testing.T) {
+	t.Parallel()
+
 	chart := routerNamingTestChart(t, "..", false)
 	// Isolate the earlier Deployment rename from the later ConfigMap rename.
 	// Keep the frozen snapshots intact; the latter has its own baseline tests.
@@ -38,6 +40,8 @@ func TestRouterDeploymentNamingFrozenCompatibility(t *testing.T) {
 // Optional independent reproduction; never rewrite historical snapshots from
 // the implementation under test.
 func TestRouterNamingBaselineReproduction(t *testing.T) {
+	t.Parallel()
+
 	source := os.Getenv("ROUTER_NAMING_BASELINE_CHART")
 	if source == "" {
 		t.Skip("set ROUTER_NAMING_BASELINE_CHART to a pre-rename chart with built dependencies")
@@ -82,6 +86,8 @@ func checkRouterNamingFixtures(t *testing.T, chart string, renamed bool) {
 // Restoring only the old naming expression allows complete before/after
 // comparisons for customer settings that are not covered by frozen snapshots.
 func TestRouterDeploymentNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := routerNamingTestChart(t, "..", true)
 	afterChart := routerNamingTestChart(t, "..", false)
 	for _, tc := range []struct {

@@ -20,10 +20,14 @@ const canonicalNetworkPolicy = "suse-observability-networkpolicy"
 // Frozen policies were rendered from the pre-rename Git revision documented in
 // testdata/networkpolicy-renaming/README.md. Only metadata.name may change.
 func TestNetworkPolicyNamingFrozenCompatibility(t *testing.T) {
+	t.Parallel()
+
 	checkNetworkPolicyNamingFixtures(t, "..", true)
 }
 
 func TestNetworkPolicyNamingBaselineReproduction(t *testing.T) {
+	t.Parallel()
+
 	chart := os.Getenv("NETWORK_POLICY_BASELINE_CHART")
 	if chart == "" {
 		t.Skip("set NETWORK_POLICY_BASELINE_CHART to the pre-rename chart with built dependencies")
@@ -58,6 +62,8 @@ func checkNetworkPolicyNamingFixtures(t *testing.T, chart string, renamed bool) 
 }
 
 func TestNetworkPolicyNamingPreservesPlatformResources(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(beforeChart, os.DirFS("..")))
 	policyTemplate := filepath.Join(beforeChart, "templates/global/networkpolicy.yaml")
@@ -152,6 +158,8 @@ func TestNetworkPolicyNamingPreservesPlatformResources(t *testing.T) {
 }
 
 func TestNetworkPolicyNamingUsesDedicatedHelper(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	path := filepath.Join(chart, "templates/_names.tpl")

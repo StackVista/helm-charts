@@ -25,10 +25,14 @@ type podReaderNamingFixture struct {
 // Complete pre-rename objects from c6030933f0d8971cb1b8c4ea5079d487089f0e84.
 // The Role and binding retain their complete legacy identities and subjects.
 func TestPodReaderNamingFrozenCompatibility(t *testing.T) {
+	t.Parallel()
+
 	checkPodReaderNamingFixtures(t, "..")
 }
 
 func TestPodReaderNamingBaselineReproduction(t *testing.T) {
+	t.Parallel()
+
 	chart := os.Getenv("POD_READER_BASELINE_CHART")
 	if chart == "" {
 		t.Skip("set POD_READER_BASELINE_CHART to the pre-rename chart with built dependencies")
@@ -64,6 +68,8 @@ func checkPodReaderNamingFixtures(t *testing.T, chart string) {
 }
 
 func TestPodReaderNamingPreservesPlatformResources(t *testing.T) {
+	t.Parallel()
+
 	beforeChart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(beforeChart, os.DirFS("..")))
 	path := filepath.Join(beforeChart, "templates/_names.tpl")

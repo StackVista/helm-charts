@@ -19,6 +19,8 @@ import (
 // identity. Renaming the StatefulSet here is only a wiring probe in a copied
 // chart; a real rename would require migrating its generated persistent claims.
 func TestUIAndAIResourcesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	chart := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(chart, os.DirFS("..")))
 	namesPath := filepath.Join(chart, "templates", "_names.tpl")

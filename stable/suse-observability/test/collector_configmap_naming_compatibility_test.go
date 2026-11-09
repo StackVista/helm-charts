@@ -23,6 +23,8 @@ import (
 // Pre-change source: ecb7ef9770d3685df9bc033ece48ce5577c35290.
 // Independent extraction baseline: c851a02ae1f2f7eb64c5538a148194ea36eee4b4.
 func TestCollectorConfigMapNamingCompatibility(t *testing.T) {
+	t.Parallel()
+
 	before := filepath.Join(t.TempDir(), "chart")
 	require.NoError(t, os.CopyFS(before, os.DirFS("..")))
 	path := filepath.Join(before, "templates/_names.tpl")
@@ -39,6 +41,8 @@ func TestCollectorConfigMapNamingCompatibility(t *testing.T) {
 }
 
 func TestCollectorConfigMapNamingGitBaselineCompatibility(t *testing.T) {
+	t.Parallel()
+
 	before := os.Getenv("COLLECTOR_CONFIGMAP_BASELINE_CHART")
 	if before == "" {
 		t.Skip("set COLLECTOR_CONFIGMAP_BASELINE_CHART to the built pre-change chart")
@@ -47,6 +51,8 @@ func TestCollectorConfigMapNamingGitBaselineCompatibility(t *testing.T) {
 }
 
 func TestCollectorConfigMapNamingIndependentOfPreviousSteps(t *testing.T) {
+	t.Parallel()
+
 	before := os.Getenv("COLLECTOR_CONFIGMAP_EXTRACTION_CHART")
 	if before == "" {
 		t.Skip("set COLLECTOR_CONFIGMAP_EXTRACTION_CHART to the built extraction baseline")

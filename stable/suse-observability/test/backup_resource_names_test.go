@@ -25,6 +25,8 @@ type backupNameFixture struct {
 // embedded manual manifests, allowing only the expected identities/references.
 // This does not imply that renaming the real backup PVCs is an upgrade strategy.
 func TestBackupResourceReferencesFollowDedicatedHelpers(t *testing.T) {
+	t.Parallel()
+
 	const prefix = "nightly-suse-observability-"
 	fixtures := []backupNameFixture{
 		{"log.configmap.fullname", "ConfigMap", prefix + "backup-log"},
