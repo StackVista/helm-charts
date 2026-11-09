@@ -89,6 +89,18 @@ automation selecting old metadata names and verify probe readiness and scrape
 targets afterwards. Local rendering and patch checks do not establish actual
 Pod recovery or Prometheus reconciliation.
 
-## Required Values
+## Pod metadata
+
+Pod annotations and labels can be set through `all.podAnnotations` and
+`all.podLabels`. Component values under `console`, `stackgraph`, `tephra`,
+`hbase.master`, `hbase.regionserver`, `hdfs.datanode`, `hdfs.namenode` and
+`hdfs.secondarynamenode` take precedence over the shared values.
+The integrity CronJob uses the console values. Pod labels also inherit
+`global.commonLabels`; component and shared pod labels take precedence over
+other custom labels. The chart's `app.kubernetes.io/component`,
+`app.kubernetes.io/instance` and `app.kubernetes.io/name` selector labels are
+preserved. The integrity CronJob reserves only `app.kubernetes.io/component`.
+Metrics annotations are preserved unless overridden explicitly.
+Values are rendered literally, with numbers and booleans converted to strings.
 
 {{ template "chart.valuesSection" . }}

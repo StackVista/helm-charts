@@ -296,15 +296,22 @@ Uses global.commonLabels only.
 {{- end }}
 {{- end -}}
 
-{{/*
-Return the proper HBase pod labels for Pod templates.
-Uses global.commonLabels only.
-*/}}
 {{- define "hbase.podLabels" -}}
-{{- if .Values.global.commonLabels }}
-{{- range $key, $value := .Values.global.commonLabels }}
-{{ $key }}: {{ $value | quote }}
+{{- $labels := mergeOverwrite (dict) (.context.Values.global.commonLabels | default dict) (.context.Values.all.podLabels | default dict) (.component.podLabels | default dict) -}}
+{{/* These labels are rendered by the pod template and must keep matching its selectors. */}}
+{{- $labels = omit $labels "app.kubernetes.io/component" -}}
+{{- if not .integrity -}}
+{{- $labels = omit $labels "app.kubernetes.io/instance" "app.kubernetes.io/name" -}}
+{{- end -}}
+{{- range $key, $value := $labels }}
+{{ $key | quote }}: {{ $value | quote }}
 {{- end }}
+{{- end -}}
+
+{{- define "hbase.podAnnotations" -}}
+{{- $annotations := mergeOverwrite (dict) (.metrics | default dict) (.context.Values.all.podAnnotations | default dict) (.component.podAnnotations | default dict) -}}
+{{- range $key, $value := $annotations }}
+{{ $key | quote }}: {{ $value | quote }}
 {{- end }}
 {{- end -}}
 

@@ -26,6 +26,24 @@ The bundled OTel collector uses the same default when its Deployment PDB is
 enabled. Override it through
 `opentelemetry-collector.podDisruptionBudget.unhealthyPodEvictionPolicy`.
 
+## Pod metadata
+
+Pod annotations for HBase workloads can be set through
+`hbase.all.podAnnotations` or each HBase component's `podAnnotations` value.
+The corresponding `podLabels` values configure their pod labels.
+Vmagent accepts `stackstate.components.vmagent.podAnnotations` and inherits
+`stackstate.components.all.podAnnotations`. The KafkaUp operator accepts
+`kafkaup-operator.podAnnotations` and `kafkaup-operator.podLabels`.
+Anomaly detection accepts `anomaly-detection.podAnnotations` for both its
+manager and worker pods.
+
+These settings are optional. HBase and KafkaUp preserve their pod selector
+labels when custom labels conflict. Their pod metadata and anomaly detection
+pod annotations are literal values, not Helm templates. Numeric and boolean
+annotation values are converted to strings, including vmagent annotations.
+Generated configuration checksums on KafkaUp, anomaly detection and vmagent
+pods are preserved so configuration changes still restart the pods.
+
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:

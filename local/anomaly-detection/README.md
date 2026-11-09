@@ -34,6 +34,14 @@ upgrade, rollback or pruning sync. Do not delete by shared labels or remove
 workloads, storage, configuration or credentials. No data or storage migration
 is required by this naming change.
 
+## Pod metadata
+
+`podAnnotations` applies to both the manager and worker pod templates.
+Both workloads inherit pod labels from `global.commonLabels`.
+Annotation values are rendered literally, with numbers and booleans converted
+to strings. Metrics annotations can be overridden; generated configuration
+checksums are preserved so configuration changes still restart the pods.
+
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:
@@ -112,6 +120,7 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 | metrics.serviceMonitor.enabled | bool | `false` |  |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | pdb.maxUnavailable | int | `0` | PodDisruptionBudget settings for `anomaly-detection` pods. |
+| podAnnotations | object | `{}` | Extra literal annotations for manager and worker pods. Metrics annotations can be overridden; generated configuration checksums are preserved. |
 | replicas | int | `1` |  |
 | securityContext | object | `{"enabled":true,"fsGroup":65534,"runAsGroup":65534,"runAsNonRoot":true,"runAsUser":65534}` | Pod Security Context |
 | securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |

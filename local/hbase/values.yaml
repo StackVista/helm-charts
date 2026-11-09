@@ -26,6 +26,10 @@ version: "2.5"
 deployment:
   mode: "Distributed"
 all:
+  # all.podAnnotations -- Extra annotations for all HBase pods, including the integrity CronJob. Component annotations take precedence; metrics annotations can be overridden.
+  podAnnotations: {}
+  # all.podLabels -- Extra labels for all HBase pods, including the integrity CronJob. Override global.commonLabels; component pod labels take precedence. Selector labels are preserved.
+  podLabels: {}
   image:
     # all.image.registry -- Base container image registry for all containers, except for the wait container
     registry: quay.io
@@ -61,6 +65,10 @@ all:
   # all.affinity -- Affinity settings for pod assignment on all components.
   affinity: {}
 stackgraph:
+  # stackgraph.podAnnotations -- Extra annotations for stackgraph pods. Override all.podAnnotations and metrics annotations.
+  podAnnotations: {}
+  # stackgraph.podLabels -- Extra labels for stackgraph pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+  podLabels: {}
   # stackgraph.affinity -- Affinity settings for pod assignment.
   affinity: {}
   # stackgraph.agentMetricsFilter -- Configure metrics scraped by the agent
@@ -102,6 +110,10 @@ stackgraph:
   # stackgraph.version -- Version of stackgraph to use
   version: "8.3.26"
 console:
+  # console.podAnnotations -- Extra annotations for console and integrity CronJob pods. Override all.podAnnotations and metrics annotations.
+  podAnnotations: {}
+  # console.podLabels -- Extra labels for console and integrity CronJob pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+  podLabels: {}
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
   securityContext:
@@ -152,6 +164,10 @@ hbase:
     # hbase.securityContext.runAsUser -- UID of the Linux user to use for all pod.
     runAsUser: 65534
   master:
+    # hbase.master.podAnnotations -- Extra annotations for hbase.master pods. Override all.podAnnotations and metrics annotations.
+    podAnnotations: {}
+    # hbase.master.podLabels -- Extra labels for hbase.master pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+    podLabels: {}
     experimental:
       execLivenessProbe:
         # hbase.master.experimental.execLivenessProbe.enabled -- Whether to use a new scripted livenessProbe instead of the original HTTP check.
@@ -185,6 +201,10 @@ hbase:
     # hbase.master.affinity -- Affinity settings for pod assignment.
     affinity: {}
   regionserver:
+    # hbase.regionserver.podAnnotations -- Extra annotations for hbase.regionserver pods. Override all.podAnnotations and metrics annotations.
+    podAnnotations: {}
+    # hbase.regionserver.podLabels -- Extra labels for hbase.regionserver pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+    podLabels: {}
     extraEnv:
       # hbase.regionserver.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -248,6 +268,10 @@ hdfs:
     runAsUser: 65534
     fsGroup: 65534
   datanode:
+    # hdfs.datanode.podAnnotations -- Extra annotations for hdfs.datanode pods. Override all.podAnnotations and metrics annotations.
+    podAnnotations: {}
+    # hdfs.datanode.podLabels -- Extra labels for hdfs.datanode pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+    podLabels: {}
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -278,6 +302,10 @@ hdfs:
     # hdfs.datanode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   namenode:
+    # hdfs.namenode.podAnnotations -- Extra annotations for hdfs.namenode pods. Override all.podAnnotations and metrics annotations.
+    podAnnotations: {}
+    # hdfs.namenode.podLabels -- Extra labels for hdfs.namenode pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+    podLabels: {}
     extraEnv:
       # hdfs.namenode.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -306,6 +334,10 @@ hdfs:
     # hdfs.namenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   secondarynamenode:
+    # hdfs.secondarynamenode.podAnnotations -- Extra annotations for hdfs.secondarynamenode pods. Override all.podAnnotations and metrics annotations.
+    podAnnotations: {}
+    # hdfs.secondarynamenode.podLabels -- Extra labels for hdfs.secondarynamenode pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+    podLabels: {}
     extraEnv:
       # hdfs.secondarynamenode.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -336,6 +368,10 @@ hdfs:
     # hdfs.secondarynamenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
 tephra:
+  # tephra.podAnnotations -- Extra annotations for tephra pods. Override all.podAnnotations and metrics annotations.
+  podAnnotations: {}
+  # tephra.podLabels -- Extra labels for tephra pods. Override all.podLabels and global.commonLabels; selector labels are preserved.
+  podLabels: {}
   securityContext:
     # tephra.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
     enabled: true

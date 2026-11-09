@@ -1,0 +1,32 @@
+anomaly-detection:
+  enabled: true
+  podAnnotations: &annotations
+    test-port: 8080
+    test-disabled: false
+    test-zero: 0
+    test-empty: ""
+    test-literal: '{{ fail "metadata must stay literal" }}'
+    test-multiline: |
+      first line
+      second "quoted" line
+hbase:
+  all:
+    podAnnotations: *annotations
+    podLabels: &labels
+      test-port: 8080
+      test-disabled: false
+      test-zero: 0
+      test-empty: ""
+  console:
+    integrity:
+      enabled: true
+kafkaup-operator:
+  podAnnotations: *annotations
+  podLabels: *labels
+stackstate:
+  components:
+    all:
+      podAnnotations: *annotations
+    vmagent:
+      podAnnotations:
+        test-override: false

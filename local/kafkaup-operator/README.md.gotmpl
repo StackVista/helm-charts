@@ -7,6 +7,14 @@
 
 Current chart version is `{{ template "chart.version" . }}`
 
+`podAnnotations` and `podLabels` apply to the operator's pod template.
+Pod labels take precedence over `commonLabels` and `global.commonLabels`.
+The `app` selector label and generated configuration checksums are preserved.
+Pod metadata values are rendered literally, with numbers and booleans converted
+to strings.
+`commonAnnotations` applies to resource metadata; use `podAnnotations` to
+annotate pods.
+
 {{ template "chart.homepageLine" . }}
 
 {{ template "chart.maintainersSection" . }}

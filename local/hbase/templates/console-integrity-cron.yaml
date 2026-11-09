@@ -28,6 +28,10 @@ spec:
         metadata:
           labels:
             app.kubernetes.io/component: integrity
+            {{- include "hbase.podLabels" (dict "context" . "component" .Values.console "integrity" true) | nindent 12 }}
+          {{- with (include "hbase.podAnnotations" (dict "context" . "component" .Values.console)) }}
+          annotations:{{ . | nindent 12 }}
+          {{- end }}
         spec:
           {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 10 }}
         {{- if .Values.serviceAccount.create }}
