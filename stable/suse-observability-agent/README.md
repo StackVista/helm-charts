@@ -479,7 +479,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | global.url.fromSecret | string | `""` | Name of an existing Secret containing STS_URL. Supports Helm templating. When set, takes precedence over stackstate.url. |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so44"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so45"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxy.image.tag | string | `"1.39.6-so3"` |  |
@@ -491,7 +491,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"664aeb41-1112-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"5ffb95a9-1119-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -506,7 +506,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | logsAgent.enabled | bool | `true` | Enable Promtail pod-log collection when the experimental OTel logs selector is false. |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.11-so34"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.11-so35"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | logsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |
