@@ -40,8 +40,12 @@ on:
         description: Source branch for legacy stackpacks update
         type: string
         default: master
+      stackpacks_core_source_branch:
+        description: Source branch for core stackpacks update
+        type: string
+        default: main
       stackpacks_contrib_source_branch:
-        description: Source branch for contrib stackpacks update
+        description: Legacy input retained for existing callers
         type: string
         default: main
       stackpacks_suse_source_branch:
@@ -101,7 +105,7 @@ jobs:
       TARGET_BRANCH: ${{ github.ref_type == 'branch' && github.ref_name || 'master' }}
       STACKSTATE_SOURCE_BRANCH: master
       STACKPACKS_SOURCE_BRANCH: master
-      STACKPACKS_CONTRIB_SOURCE_BRANCH: main
+      STACKPACKS_CORE_SOURCE_BRANCH: main
       STACKPACKS_SUSE_SOURCE_BRANCH: main
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -124,7 +128,7 @@ jobs:
           TARGET_BRANCH:                    ${{ inputs.target_branch }}
           STACKSTATE_SOURCE_BRANCH:         ${{ inputs.stackstate_source_branch }}
           STACKPACKS_SOURCE_BRANCH:         ${{ inputs.stackpacks_source_branch }}
-          STACKPACKS_CONTRIB_SOURCE_BRANCH: ${{ inputs.stackpacks_contrib_source_branch }}
+          STACKPACKS_CORE_SOURCE_BRANCH: ${{ inputs.stackpacks_core_source_branch }}
           STACKPACKS_SUSE_SOURCE_BRANCH:    ${{ inputs.stackpacks_suse_source_branch }}
           DRY_RUN: >-
             ${{ inputs.dry_run && 'true' || 'false' }}
@@ -142,7 +146,7 @@ jobs:
                 ;;
               stackpacks)
                 echo "| stackpacks_source_branch | \`${STACKPACKS_SOURCE_BRANCH}\` |"
-                echo "| stackpacks_contrib_source_branch | \`${STACKPACKS_CONTRIB_SOURCE_BRANCH}\` |"
+                echo "| stackpacks_core_source_branch | \`${STACKPACKS_CORE_SOURCE_BRANCH}\` |"
                 echo "| stackpacks_suse_source_branch | \`${STACKPACKS_SUSE_SOURCE_BRANCH}\` |"
                 ;;
             esac
@@ -174,7 +178,7 @@ jobs:
       TARGET_BRANCH:                    ${{ inputs.target_branch }}
       STACKSTATE_SOURCE_BRANCH:         ${{ inputs.stackstate_source_branch }}
       STACKPACKS_SOURCE_BRANCH:         ${{ inputs.stackpacks_source_branch }}
-      STACKPACKS_CONTRIB_SOURCE_BRANCH: ${{ inputs.stackpacks_contrib_source_branch }}
+      STACKPACKS_CORE_SOURCE_BRANCH: ${{ inputs.stackpacks_core_source_branch }}
       STACKPACKS_SUSE_SOURCE_BRANCH:    ${{ inputs.stackpacks_suse_source_branch }}
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5

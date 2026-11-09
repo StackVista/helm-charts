@@ -1,0 +1,27 @@
+global:
+  imagePullSecrets:
+    - stackpack-registry
+stackstate:
+  stackpacks:
+    extraImages:
+      - name: community-example
+        registry: ghcr.io
+        repository: stackvista/contrib-stackpacks/my-stackpack
+        tag: "0.0.1"
+        pullPolicy: IfNotPresent
+      - name: private-example
+        registry: registry.example.com
+        repository: integrations/private-stackpack
+        tag: "1.2.3"
+        pullPolicy: Always
+        editions: ["Prime"]
+      - name: disabled-example
+        registry: registry.example.com
+        repository: integrations/disabled-stackpack
+        tag: "1.0.0"
+        pullPolicy: IfNotPresent
+        enabled: false
+      - name: inherited-registry
+        repository: integrations/inherited-stackpack
+        tag: "2.0.0"
+        pullPolicy: IfNotPresent

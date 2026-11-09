@@ -18,7 +18,8 @@ The logs exporter reuses the clickhousests connection; its keys stay behind the 
 images reject unknown keys, and a separate instance keeps its queue settings away from traces.
 */}}
 {{- define "opentelemetry-collector.otelLogsExporter" -}}
-logs_resources_table_name: otel_logs_resources
+logs_table_name: otel_logs_v1
+logs_resources_table_name: otel_logs_resources_v1
 # StackState migrations own the replicated schema and retention for these tables.
 create_logs_table: false
 # Batching in the exporter queue; each flushed batch is one ClickHouse insert per table.
@@ -33,7 +34,6 @@ sending_queue:
 {{- define "opentelemetry-collector.otelLogsConfig" -}}
 service:
   pipelines:
-    # clickhousests drops records with an EventName; those are OTel events, not logs.
     logs/clickhouse:
       receivers:
         - forward

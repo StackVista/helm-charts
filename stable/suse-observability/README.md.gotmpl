@@ -1369,6 +1369,35 @@ After a while (these backups only have 10 days retention), the old backup PVC ca
 
 **Legacy MinIO values are deprecated and will be removed in a future release. Please migrate to the new backup storage configuration as soon as possible.**
 
+## Adding StackPack images
+
+Use `stackstate.stackpacks.extraImages` to make additional StackPacks available without replacing the built-in images. Each image must contain `.sts` packages in `/stackpacks` and provide `/bin/sh` and `cp`. The chart copies these packages into the platform after the built-in packages.
+
+```yaml
+stackstate:
+  stackpacks:
+    extraImages:
+      - name: my-stackpack
+        registry: ghcr.io
+        repository: my-organization/my-stackpack
+        tag: "0.0.1"
+        pullPolicy: IfNotPresent
+```
+
+Use a unique `name` for each image, including the built-in images. Set `registry` explicitly to pull from a registry other than `global.imageRegistry`. Choose a published image tag that supports your Kubernetes node architecture.
+
+Helm merges lists by replacement. Keep all additional images in the `extraImages` list when you update it. Leave `stackstate.stackpacks.images` unchanged to retain the built-in packages.
+
+For a private registry, create an image pull secret in the installation namespace. Add its name to `global.imagePullSecrets` alongside the secrets your installation already uses:
+
+```yaml
+global:
+  imagePullSecrets:
+    - my-stackpack-registry
+```
+
+Pass the additional values file to your existing Helm installation or upgrade command. Adding an image makes its packages available in the StackPacks catalog. Install a StackPack through the UI or CLI, or configure automatic installation below.
+
 ## Auto-installing StackPacks
 It can be useful to have some StackPacks always installed in StackState. For example the Kuberentes StackPack configured for the cluster running StackState. For that purpose the value `stackstate.stackpacks.installed` can be used to specify the StackPacks that should be installed (by name) and their (required) configuration. As an example here the Kubernetes StackPack will be pre-installed:
 ```

@@ -778,8 +778,11 @@ Init container to load stackpacks from docker image
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $firstImage := first .Values.stackstate.stackpacks.images -}}
 {{- $images := concat .Values.stackstate.stackpacks.images (.Values.stackstate.stackpacks.extraImages | default list) -}}
-{{- range $images }}
-{{- $image := . -}}
+{{- range $index, $image := $images }}
+{{- $registry := include "common.image.registry" ( dict "image" $image "context" $) -}}
+{{- if ge $index (len $.Values.stackstate.stackpacks.images) -}}
+{{- $registry = $image.registry | default $registry -}}
+{{- end -}}
 {{- $imageEnabled := true -}}
 {{- if hasKey $image "enabled" -}}
 {{- $imageEnabled = $image.enabled -}}
@@ -796,7 +799,7 @@ Init container to load stackpacks from docker image
     $deriveTag
 }}
 - name: init-stackpacks-{{ $image.name }}
-  image: "{{ include "common.image.registry" ( dict "image" $image "context" $) }}/{{ $image.repository }}:{{ $tag }}"
+  image: "{{ $registry }}/{{ $image.repository }}:{{ $tag }}"
   imagePullPolicy: {{ $image.pullPolicy | quote }}
   command:
     - /bin/sh
