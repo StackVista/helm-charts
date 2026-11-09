@@ -64,13 +64,8 @@ spec:
   template:
     metadata:
       annotations:
-        ad.stackstate.com/spotlight.check_names: '["openmetrics"]'
-        ad.stackstate.com/spotlight.init_configs: "[{}]"
-        ad.stackstate.com/spotlight.instances: '[ { "prometheus_url": "http://%%host%%:9404/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
-        {{ include "anomaly-detection.secret.checksum" . | nindent 8 }}
-        {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- $metrics := dict "ad.stackstate.com/spotlight.check_names" "[\"openmetrics\"]" "ad.stackstate.com/spotlight.init_configs" "[{}]" "ad.stackstate.com/spotlight.instances" "[ { \"prometheus_url\": \"http://%%host%%:9404/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]" }}
+        {{- include "anomaly-detection.podAnnotations" (dict "context" . "metrics" $metrics) | nindent 8 }}
       labels:
         app.kubernetes.io/component: manager
         app.kubernetes.io/instance: {{ .Release.Namespace }}

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 )
 
@@ -210,6 +212,150 @@ func TestPodMetadataWithoutGlobalLabels(t *testing.T) {
 	}
 	kafkaup := resources.Deployments["suse-observability-kafkaup-operator-kafkaup"]
 	assert.Equal(t, "kafkaup", kafkaup.Spec.Template.Labels["test-local"])
+}
+
+func TestPodMetadataScalarValues(t *testing.T) {
+	for _, profile := range []string{"10-nonha", "150-ha"} {
+		t.Run(profile, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "suse-observability", &helm.Options{
+				ValuesFiles: []string{"values/full.yaml", "values/pod_metadata_scalars.yaml"},
+				SetValues: map[string]string{
+					"global.suseObservability.adminPassword":                 "test-password",
+					"global.suseObservability.baseUrl":                       "http://localhost",
+					"global.suseObservability.license":                       "test-license",
+					"global.suseObservability.sizing.profile":                profile,
+					"hbase.all.podAnnotations.test-override":                 "true",
+					"hbase.console.podAnnotations.test-override":             "false",
+					"hbase.all.podLabels.test-zero":                          "1",
+					"hbase.console.podLabels.test-zero":                      "0",
+					"stackstate.components.all.podAnnotations.test-override": "true",
+					"kafkaup-operator.commonLabels.test-disabled":            "true",
+				},
+			}, "--skip-tests")
+			// Decode JSON directly: the usual YAML-to-struct decoder coerces numeric
+			// metadata to strings and can hide manifests rejected by the API server.
+			templates := strictPodMetadataTemplates(t, output)
+			for name, pod := range templates {
+				assert.Equal(t, "8080", pod.Annotations["test-port"], name)
+				assert.Equal(t, "false", pod.Annotations["test-disabled"], name)
+				assert.Equal(t, "0", pod.Annotations["test-zero"], name)
+				assert.Contains(t, pod.Annotations, "test-empty", name)
+				assert.Empty(t, pod.Annotations["test-empty"], name)
+				assert.Equal(t, `{{ fail "metadata must stay literal" }}`, pod.Annotations["test-literal"], name)
+				assert.Equal(t, "first line\nsecond \"quoted\" line\n", pod.Annotations["test-multiline"], name)
+				if strings.Contains(name, "-hbase-") || strings.Contains(name, "-kafkaup") {
+					assert.Equal(t, "8080", pod.Labels["test-port"], name)
+					assert.Equal(t, "false", pod.Labels["test-disabled"], name)
+					assert.Contains(t, pod.Labels, "test-empty", name)
+					assert.Empty(t, pod.Labels["test-empty"], name)
+				}
+			}
+			console := templates["Deployment/suse-observability-hbase-console"]
+			assert.Equal(t, "false", console.Annotations["test-override"])
+			assert.Equal(t, "0", console.Labels["test-zero"])
+			assert.Equal(t, "false", templates["StatefulSet/suse-observability-vmagent"].Annotations["test-override"])
+		})
+	}
+}
+
+func TestPodMetadataPreservesSelectorsAndChecksums(t *testing.T) {
+	for _, profile := range []string{"10-nonha", "150-ha"} {
+		t.Run(profile, func(t *testing.T) {
+			options := &helm.Options{
+				ValuesFiles: []string{"values/full.yaml"},
+				SetValues: map[string]string{
+					"global.suseObservability.adminPassword":  "test-password",
+					"global.suseObservability.baseUrl":        "http://localhost",
+					"global.suseObservability.license":        "test-license",
+					"global.suseObservability.sizing.profile": profile,
+					"anomaly-detection.enabled":               "true",
+					"hbase.console.integrity.enabled":         "true",
+				},
+			}
+			baseline := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "suse-observability", options, "--skip-tests")
+			baselineResources := helmtestutil.NewKubernetesResources(t, baseline)
+			baselinePods := renderedPodTemplates(&baselineResources)
+			for _, component := range []string{"all", "console", "stackgraph", "tephra", "hbase.master", "hbase.regionserver", "hdfs.datanode", "hdfs.namenode", "hdfs.secondarynamenode"} {
+				for _, key := range []string{"component", "instance", "name"} {
+					options.SetValues["hbase."+component+".podLabels.app\\.kubernetes\\.io/"+key] = "custom"
+				}
+			}
+			options.SetValues["kafkaup-operator.podLabels.app"] = "custom"
+			options.SetValues["kafkaup-operator.podAnnotations.checksum/configmap"] = "custom"
+			options.SetValues["stackstate.components.vmagent.podAnnotations.checksum/vmagent-configmap"] = "custom"
+			options.SetValues["stackstate.components.vmagent.podAnnotations.ad\\.stackstate\\.com/vmagent\\.check_names"] = "custom"
+			options.SetValues["anomaly-detection.podAnnotations.checksum/anomaly-detection-cmdline"] = "custom"
+			options.SetValues["anomaly-detection.podAnnotations.checksum/anomaly-detection-config-base"] = "custom"
+			options.SetValues["anomaly-detection.podAnnotations.ad\\.stackstate\\.com/spotlight\\.check_names"] = "custom"
+			options.SetValues["hbase.all.podAnnotations.ad\\.stackstate\\.com/stackgraph\\.check_names"] = "custom"
+			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "suse-observability", options, "--skip-tests")
+			templates := strictPodMetadataTemplates(t, output)
+			for name, pod := range templates {
+				for key, value := range baselinePods[name].Annotations {
+					if strings.HasPrefix(key, "checksum/") {
+						assert.Equal(t, value, pod.Annotations[key], name)
+					}
+				}
+			}
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			for name, workload := range resources.Deployments {
+				assert.Equal(t, baselineResources.Deployments[name].Spec.Selector, workload.Spec.Selector, name)
+				for key, value := range workload.Spec.Selector.MatchLabels {
+					assert.Equal(t, value, workload.Spec.Template.Labels[key], name)
+				}
+			}
+			for name, workload := range resources.Statefulsets {
+				assert.Equal(t, baselineResources.Statefulsets[name].Spec.Selector, workload.Spec.Selector, name)
+				for key, value := range workload.Spec.Selector.MatchLabels {
+					assert.Equal(t, value, workload.Spec.Template.Labels[key], name)
+				}
+			}
+			integrity := templates["CronJob/suse-observability-hbase-integrity"]
+			assert.Equal(t, "integrity", integrity.Labels["app.kubernetes.io/component"])
+			assert.Equal(t, "custom", integrity.Labels["app.kubernetes.io/name"])
+			assert.Equal(t, "custom", templates["Deployment/suse-observability-anomaly-detection-spotlight-manager"].Annotations["ad.stackstate.com/spotlight.check_names"])
+			assert.Equal(t, "custom", templates["StatefulSet/suse-observability-vmagent"].Annotations["ad.stackstate.com/vmagent.check_names"])
+			if profile == "10-nonha" {
+				assert.Equal(t, "custom", templates["StatefulSet/suse-observability-hbase-stackgraph"].Annotations["ad.stackstate.com/stackgraph.check_names"])
+			}
+		})
+	}
+}
+
+// Check workloads with pod metadata overrides for duplicate YAML keys and metadata
+// types, without YAML's permissive conversion of numbers and booleans to strings.
+func strictPodMetadataTemplates(t *testing.T, output string) map[string]corev1.PodTemplateSpec {
+	t.Helper()
+	templates := make(map[string]corev1.PodTemplateSpec)
+	for _, document := range strings.Split(output, "\n---\n") {
+		var identity metav1.PartialObjectMetadata
+		require.NoError(t, yaml.Unmarshal([]byte(document), &identity))
+		if identity.Kind != "Deployment" && identity.Kind != "StatefulSet" && identity.Kind != "CronJob" {
+			continue
+		}
+		if !strings.Contains(identity.Name, "-hbase-") && !strings.Contains(identity.Name, "-kafkaup") &&
+			!strings.Contains(identity.Name, "-anomaly-detection-") && identity.Name != "suse-observability-vmagent" {
+			continue
+		}
+		data, err := yaml.YAMLToJSONStrict([]byte(document))
+		require.NoError(t, err, identity.Name)
+		var workload struct {
+			Spec struct {
+				Template    corev1.PodTemplateSpec
+				JobTemplate struct {
+					Spec struct{ Template corev1.PodTemplateSpec }
+				}
+			}
+		}
+		require.NoError(t, json.Unmarshal(data, &workload), identity.Name)
+		pod := workload.Spec.Template
+		if identity.Kind == "CronJob" {
+			pod = workload.Spec.JobTemplate.Spec.Template
+		}
+		templates[identity.Kind+"/"+identity.Name] = pod
+	}
+	require.NotEmpty(t, templates)
+	return templates
 }
 
 func addPodAnnotationValues(t *testing.T, path, prefix string, values map[string]string) {

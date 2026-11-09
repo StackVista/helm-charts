@@ -6,6 +6,17 @@ checksum/anomaly-detection-cmdline: {{ print (cat (print .Values.threadWorkers))
 checksum/anomaly-detection-config-base: {{ include (print $.Template.BasePath "/anomaly-detection-config-base.yaml") . | sha256sum }}
 {{- end -}}
 
+{{/*
+Keep configuration checksums authoritative so configuration changes restart pods.
+Other annotations, including metrics annotations, can be overridden.
+*/}}
+{{- define "anomaly-detection.podAnnotations" -}}
+{{- $annotations := mergeOverwrite (dict) (.metrics | default dict) (.context.Values.podAnnotations | default dict) (include "anomaly-detection.secret.checksum" .context | fromYaml) -}}
+{{- range $key, $value := $annotations }}
+{{ $key | quote }}: {{ $value | quote }}
+{{- end }}
+{{- end -}}
+
 {{- define "anomaly-detection.spotlight.configmap-base" -}}
 apiVersion: v1
 kind: ConfigMap

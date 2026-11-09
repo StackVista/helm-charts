@@ -832,11 +832,9 @@ Init container to load stackpacks from docker image
 Returns a YAML with extra annotations for StackState service, it contains annotations for "all" and service provided within "Name" parameter
 */}}
 {{- define "stackstate.component.podExtraAnnotations" -}}
-{{- with .Values.stackstate.components.all.podAnnotations }}
-{{- toYaml . | nindent 8}}
-{{- end }}
-{{- with (index .Values.stackstate.components .Name "podAnnotations") }}
-{{- toYaml . | nindent 8}}
+{{- $annotations := mergeOverwrite (dict) (.Values.stackstate.components.all.podAnnotations | default dict) (index .Values.stackstate.components .Name "podAnnotations" | default dict) -}}
+{{- range $key, $value := $annotations }}
+        {{ $key | quote }}: {{ $value | quote }}
 {{- end }}
 {{- end -}}
 

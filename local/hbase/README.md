@@ -95,15 +95,19 @@ automation selecting old metadata names and verify probe readiness and scrape
 targets afterwards. Local rendering and patch checks do not establish actual
 Pod recovery or Prometheus reconciliation.
 
-## Required Values
+## Pod metadata
 
 Pod annotations and labels can be set through `all.podAnnotations` and
 `all.podLabels`. Component values under `console`, `stackgraph`, `tephra`,
 `hbase.master`, `hbase.regionserver`, `hdfs.datanode`, `hdfs.namenode` and
 `hdfs.secondarynamenode` take precedence over the shared values.
 The integrity CronJob uses the console values. Pod labels also inherit
-`global.commonLabels`; component and shared pod labels take precedence.
+`global.commonLabels`; component and shared pod labels take precedence over
+other custom labels. The chart's `app.kubernetes.io/component`,
+`app.kubernetes.io/instance` and `app.kubernetes.io/name` selector labels are
+preserved. The integrity CronJob reserves only `app.kubernetes.io/component`.
 Metrics annotations are preserved unless overridden explicitly.
+Values are rendered literally, with numbers and booleans converted to strings.
 
 ## Values
 
@@ -121,8 +125,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
-| all.podAnnotations | object | `{}` |  |
-| all.podLabels | object | `{}` |  |
+| all.podAnnotations | object | `{}` | Extra annotations for all HBase pods, including the integrity CronJob. Component annotations take precedence; metrics annotations can be overridden. |
+| all.podLabels | object | `{}` | Extra labels for all HBase pods, including the integrity CronJob. Override global.commonLabels; component pod labels take precedence. Selector labels are preserved. |
 | all.sizing | object | `{"baseMemoryConsumption":"125Mi","javaHeapMemoryFraction":"75"}` | Default memory sizing for JVMs in pods |
 | all.tolerations | string | `nil` | Toleration labels for pod assignment on all components. |
 | commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
@@ -136,8 +140,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | console.integrity.enabled | bool | `false` | Enable / disable periodic integrity check to run though a cronjob. |
 | console.integrity.schedule | string | `"*/30 * * * *"` | Schedule at which the integrity check runs |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| console.podAnnotations | object | `{}` |  |
-| console.podLabels | object | `{}` |  |
+| console.podAnnotations | object | `{}` | Extra annotations for console and integrity CronJob pods. Override all.podAnnotations and metrics annotations. |
+| console.podLabels | object | `{}` | Extra labels for console and integrity CronJob pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | console.replicaCount | int | `0` | Amount of console replicas to provision. Default of 0, |
 | console.resources | object | `{}` | Resources to allocate for HDFS console. |
 | console.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
@@ -160,8 +164,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `version`-`stackgraph.version` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.master.podAnnotations | object | `{}` |  |
-| hbase.master.podLabels | object | `{}` |  |
+| hbase.master.podAnnotations | object | `{}` | Extra annotations for hbase.master pods. Override all.podAnnotations and metrics annotations. |
+| hbase.master.podLabels | object | `{}` | Extra labels for hbase.master pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | hbase.master.replicaCount | string | `nil` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{}` | Resources to allocate for HBase masters. |
 | hbase.master.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase master memory sizing for JVM |
@@ -174,8 +178,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `version`-`stackgraph.version` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.regionserver.podAnnotations | object | `{}` |  |
-| hbase.regionserver.podLabels | object | `{}` |  |
+| hbase.regionserver.podAnnotations | object | `{}` | Extra annotations for hbase.regionserver pods. Override all.podAnnotations and metrics annotations. |
+| hbase.regionserver.podLabels | object | `{}` | Extra labels for hbase.regionserver pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"70"}` | HBase region server memory sizing for JVM |
@@ -193,8 +197,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `nil` | Size of volume for HDFS data nodes. |
 | hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
-| hdfs.datanode.podAnnotations | object | `{}` |  |
-| hdfs.datanode.podLabels | object | `{}` |  |
+| hdfs.datanode.podAnnotations | object | `{}` | Extra annotations for hdfs.datanode pods. Override all.podAnnotations and metrics annotations. |
+| hdfs.datanode.podLabels | object | `{}` | Extra labels for hdfs.datanode pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | hdfs.datanode.replicaCount | string | `nil` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS Datanode memory sizing for JVMs in pods |
@@ -212,8 +216,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
-| hdfs.namenode.podAnnotations | object | `{}` |  |
-| hdfs.namenode.podLabels | object | `{}` |  |
+| hdfs.namenode.podAnnotations | object | `{}` | Extra annotations for hdfs.namenode pods. Override all.podAnnotations and metrics annotations. |
+| hdfs.namenode.podLabels | object | `{}` | Extra labels for hdfs.namenode pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | hdfs.namenode.resources | object | `{}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS name node memory sizing for JVM |
 | hdfs.namenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
@@ -229,8 +233,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | hdfs.secondarynamenode.persistence.enabled | bool | `true` | Enable persistence for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
-| hdfs.secondarynamenode.podAnnotations | object | `{}` |  |
-| hdfs.secondarynamenode.podLabels | object | `{}` |  |
+| hdfs.secondarynamenode.podAnnotations | object | `{}` | Extra annotations for hdfs.secondarynamenode pods. Override all.podAnnotations and metrics annotations. |
+| hdfs.secondarynamenode.podLabels | object | `{}` | Extra labels for hdfs.secondarynamenode pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | hdfs.secondarynamenode.resources | object | `{}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS secondary name node memory sizing for JVM |
 | hdfs.secondarynamenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
@@ -253,8 +257,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | stackgraph.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | stackgraph.persistence.size | string | `nil` | Size of volume for HDFS data nodes. |
 | stackgraph.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
-| stackgraph.podAnnotations | object | `{}` |  |
-| stackgraph.podLabels | object | `{}` |  |
+| stackgraph.podAnnotations | object | `{}` | Extra annotations for stackgraph pods. Override all.podAnnotations and metrics annotations. |
+| stackgraph.podLabels | object | `{}` | Extra labels for stackgraph pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | stackgraph.resources | object | `{}` | Resources to allocate for Stackgraph mono image. |
 | stackgraph.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | stackgraph.securityContext.fsGroup | int | `65534` | UID of the Linux user to use for all pod. |
@@ -275,8 +279,8 @@ Metrics annotations are preserved unless overridden explicitly.
 | tephra.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for Tephra on Mono mode. |
 | tephra.persistence.size | string | `"1Gi"` | Size of volume for Tephra on Mono mode. |
 | tephra.persistence.storageClass | string | `nil` | Storage class of the volume for Tephra on Mono mode |
-| tephra.podAnnotations | object | `{}` |  |
-| tephra.podLabels | object | `{}` |  |
+| tephra.podAnnotations | object | `{}` | Extra annotations for tephra pods. Override all.podAnnotations and metrics annotations. |
+| tephra.podLabels | object | `{}` | Extra labels for tephra pods. Override all.podLabels and global.commonLabels; selector labels are preserved. |
 | tephra.replicaCount | string | `nil` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{}` | Resources to allocate for Tephra pods. |
 | tephra.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |

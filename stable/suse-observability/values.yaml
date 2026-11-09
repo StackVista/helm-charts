@@ -1588,6 +1588,7 @@ stackstate:
           memory: "2000Mi"
           ephemeral-storage: "1Mi"
     vmagent:
+      # stackstate.components.vmagent.podAnnotations -- Extra annotations for vmagent pods. Override stackstate.components.all.podAnnotations and metrics annotations; the generated configuration checksum is preserved.
       podAnnotations: {}
       image:
         repository: stackstate/vmagent

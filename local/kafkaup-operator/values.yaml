@@ -35,7 +35,9 @@ commonLabels: {}
 ##
 commonAnnotations: {}
 
+# podAnnotations -- Extra literal annotations for operator pods. Generated configuration checksums are preserved.
 podAnnotations: {}
+# podLabels -- Extra literal labels for operator pods. Override commonLabels and global.commonLabels; the app selector label is preserved.
 podLabels: {}
 
 resources:

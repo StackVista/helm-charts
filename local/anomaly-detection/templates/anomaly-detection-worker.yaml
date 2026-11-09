@@ -19,10 +19,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{ include "anomaly-detection.secret.checksum" . | nindent 8 }}
-        {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "anomaly-detection.podAnnotations" (dict "context" .) | nindent 8 }}
       labels:
         app.kubernetes.io/component: worker
         app.kubernetes.io/instance: {{ .Release.Namespace }}

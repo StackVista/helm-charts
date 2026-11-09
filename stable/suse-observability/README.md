@@ -44,7 +44,7 @@ The bundled OTel collector uses the same default when its Deployment PDB is
 enabled. Override it through
 `opentelemetry-collector.podDisruptionBudget.unhealthyPodEvictionPolicy`.
 
-## Required Values
+## Pod metadata
 
 Pod annotations for HBase workloads can be set through
 `hbase.all.podAnnotations` or each HBase component's `podAnnotations` value.
@@ -54,6 +54,15 @@ Vmagent accepts `stackstate.components.vmagent.podAnnotations` and inherits
 `kafkaup-operator.podAnnotations` and `kafkaup-operator.podLabels`.
 Anomaly detection accepts `anomaly-detection.podAnnotations` for both its
 manager and worker pods.
+
+These settings are optional. HBase and KafkaUp preserve their pod selector
+labels when custom labels conflict. Their pod metadata and anomaly detection
+pod annotations are literal values, not Helm templates. Numeric and boolean
+annotation values are converted to strings, including vmagent annotations.
+Generated configuration checksums on KafkaUp, anomaly detection and vmagent
+pods are preserved so configuration changes still restart the pods.
+
+## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:
 * `stackstate.license.key`
@@ -1727,7 +1736,7 @@ If you encounter issues not covered here:
 | stackstate.components.vmagent.image.tag | string | `"1.144.0-so26"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
-| stackstate.components.vmagent.podAnnotations | object | `{}` |  |
+| stackstate.components.vmagent.podAnnotations | object | `{}` | Extra annotations for vmagent pods. Override stackstate.components.all.podAnnotations and metrics annotations; the generated configuration checksum is preserved. |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `vmagent` pods. |
 | stackstate.components.vmagent.resources | object | `{}` | Resource allocation for vmagent pod. |
 | stackstate.components.workloadObserver.affinity | object | `{}` | Affinity settings for pod assignment. |
