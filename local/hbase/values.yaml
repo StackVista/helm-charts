@@ -108,7 +108,7 @@ stackgraph:
   # stackgraph.tolerations -- Toleration labels for pod assignment.
   tolerations: null
   # stackgraph.version -- Version of stackgraph to use
-  version: "8.3.26"
+  version: "8.3.27"
 console:
   # console.podAnnotations -- Extra annotations for console and integrity CronJob pods. Override all.podAnnotations and metrics annotations.
   podAnnotations: {}

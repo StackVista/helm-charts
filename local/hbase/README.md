@@ -266,7 +266,7 @@ Values are rendered literally, with numbers and booleans converted to strings.
 | stackgraph.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | stackgraph.sizing | object | `{"javaHeapMemoryFraction":"60"}` | Stackgraph memory sizing for JVM |
 | stackgraph.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackgraph.version | string | `"8.3.26"` | Version of stackgraph to use |
+| stackgraph.version | string | `"8.3.27"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
