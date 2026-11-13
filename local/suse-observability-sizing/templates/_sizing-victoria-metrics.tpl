@@ -14,60 +14,60 @@ Usage: {{ include "common.sizing.victoria-metrics-0.server.resources" . }}
 {{- end -}}
 {{- if eq $profile "trial" -}}
 requests:
-  cpu: 500m
+  cpu: 300m
   memory: 1500Mi
 limits:
   cpu: 1
   memory: 1750Mi
 {{- else if eq $profile "10-nonha" -}}
 requests:
-  cpu: "500m"
+  cpu: "300m"
   memory: 1500Mi
 limits:
   cpu: "1000m"
   memory: 1750Mi
 {{- else if eq $profile "20-nonha" -}}
 requests:
-  cpu: "500m"
+  cpu: "400m"
   memory: 2Gi
 limits:
   cpu: "1000m"
   memory: 2500Mi
 {{- else if eq $profile "50-nonha" -}}
 requests:
-  cpu: 1
+  cpu: 750m
   memory: 3500Mi
 limits:
   cpu: 2
   memory: 3500Mi
 {{- else if eq $profile "100-nonha" -}}
 requests:
-  cpu: "1500m"
+  cpu: "1100m"
   memory: 8Gi
 limits:
   cpu: "3000m"
   memory: 8Gi
 {{- else if eq $profile "150-ha" -}}
 requests:
-  cpu: 2
+  cpu: 1
   memory: 9Gi
 limits:
-  cpu: 4
+  cpu: 2
   memory: 9Gi
 {{- else if eq $profile "250-ha" -}}
 requests:
-  cpu: 3
-  memory: 10Gi
+  cpu: 1
+  memory: 12Gi
 limits:
-  cpu: 6
-  memory: 10Gi
+  cpu: 3
+  memory: 12Gi
 {{- else if eq $profile "500-ha" -}}
 requests:
-  cpu: 3
-  memory: 10Gi
+  cpu: 2
+  memory: 20Gi
 limits:
-  cpu: 6
-  memory: 10Gi
+  cpu: 5
+  memory: 20Gi
 {{- else if eq $profile "4000-ha" -}}
 requests:
   cpu: "7"
@@ -130,25 +130,25 @@ Usage: {{ include "common.sizing.victoria-metrics-1.server.resources" . }}
 {{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
-  cpu: 2
+  cpu: 1
   memory: 9Gi
 limits:
-  cpu: 4
+  cpu: 2
   memory: 9Gi
 {{- else if eq $profile "250-ha" }}
 requests:
-  cpu: 3
-  memory: 10Gi
+  cpu: 1
+  memory: 12Gi
 limits:
-  cpu: 6
-  memory: 10Gi
+  cpu: 3
+  memory: 12Gi
 {{- else if eq $profile "500-ha" }}
 requests:
-  cpu: 3
-  memory: 10Gi
+  cpu: 2
+  memory: 20Gi
 limits:
-  cpu: 6
-  memory: 10Gi
+  cpu: 5
+  memory: 20Gi
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: 7

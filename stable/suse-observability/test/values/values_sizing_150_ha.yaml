@@ -37,7 +37,7 @@ hbase:
       replicaCount: 3
       resources:
         requests:
-          cpu: "2000m"
+          cpu: "1000m"
         limits:
           cpu: "4000m"
   hdfs:
@@ -98,18 +98,24 @@ stackstate:
     api:
       resources:
         requests:
-          cpu: "1500m"
+          cpu: "750m"
           memory: "4Gi"
         limits:
           cpu: "3000m"
           memory: "4Gi"
+    authorizationSync:
+      resources:
+        requests:
+          cpu: "125m"
+        limits:
+          cpu: "1000m"
     checks:
       resources:
         requests:
-          cpu: "3000m"
+          cpu: "1500m"
           memory: 5Gi
         limits:
-          cpu: "6000m"
+          cpu: "4000m"
           memory: 5Gi
     healthSync:
       resources:
@@ -118,17 +124,19 @@ stackstate:
           cpu: "2000m"
         requests:
           memory: 5Gi
-          cpu: "1000m"
+          cpu: "500m"
       sizing:
         baseMemoryConsumption: "1200Mi"
     initializer:
       resources:
         requests:
           cpu: "50m"
+        limits:
+          cpu: "1000m"
     notification:
       resources:
         requests:
-          cpu: 500m
+          cpu: 250m
           memory: "3000Mi"
         limits:
           cpu: 1000m
@@ -142,14 +150,16 @@ stackstate:
     slicing:
       resources:
         requests:
-          cpu: "300m"
+          cpu: "150m"
+        limits:
+          cpu: "1000m"
     state:
       resources:
         limits:
-          cpu: "4"
+          cpu: "2"
           memory: "4000Mi"
         requests:
-          cpu: "2"
+          cpu: "1"
           memory: "4000Mi"
     sync:
       tmpToPVC:
@@ -172,10 +182,10 @@ stackstate:
       replicaCount: 3
       resources:
         limits:
-          cpu: 6
+          cpu: 2
           memory: 3500Mi
         requests:
-          cpu: 3
+          cpu: 1500m
           memory: 3500Mi
     receiver:
       split:
@@ -184,36 +194,36 @@ stackstate:
           resources:
             requests:
               memory: "5500Mi"
-              cpu: "4000m"
+              cpu: "1000m"
             limits:
               memory: "5500Mi"
-              cpu: "8000m"
+              cpu: "2000m"
         processAgent:
           resources:
             requests:
               memory: "2500Mi"
-              cpu: "1000m"
+              cpu: "500m"
             limits:
               memory: "2500Mi"
-              cpu: "2000m"
+              cpu: "1000m"
         logs:
           resources:
             requests:
               memory: "3Gi"
-              cpu: "1000m"
+              cpu: "500m"
             limits:
               memory: "3Gi"
-              cpu: "2000m"
+              cpu: "1000m"
       extraEnv:
         open:
           CONFIG_FORCE_pekko_http_host__connection__pool_max__open__requests: "256"
     vmagent:
       resources:
         limits:
-          cpu: 3000m
+          cpu: 1500m
           memory: "1500Mi"
         requests:
-          cpu: 1500m
+          cpu: 750m
           memory: "1500Mi"
     ui:
       replicaCount: 2
@@ -228,10 +238,10 @@ victoria-metrics-0:
   server:
     resources:
       requests:
-        cpu: 2
+        cpu: 1
         memory: 9Gi
       limits:
-        cpu: 4
+        cpu: 2
         memory: 9Gi
   backup:
     vmbackup:
@@ -245,10 +255,10 @@ victoria-metrics-1:
   server:
     resources:
       requests:
-        cpu: 2
+        cpu: 1
         memory: 9Gi
       limits:
-        cpu: 4
+        cpu: 2
         memory: 9Gi
   backup:
     vmbackup:

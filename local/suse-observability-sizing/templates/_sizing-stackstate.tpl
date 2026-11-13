@@ -48,25 +48,25 @@ Usage: {{ include "common.sizing.stackstate.server.resources" . }}
 {{- if eq $profile "trial" }}
 limits:
   ephemeral-storage: 5Gi
-  cpu: 3000m
+  cpu: 2000m
   memory: 5Gi
 requests:
-  cpu: 1500m
+  cpu: 1000m
   memory: 5Gi
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "10-nonha" }}
 limits:
   ephemeral-storage: 5Gi
-  cpu: 3000m
+  cpu: 2000m
   memory: 5Gi
 requests:
-  cpu: 1500m
+  cpu: 1000m
   memory: 5Gi
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "20-nonha" }}
 limits:
   ephemeral-storage: 5Gi
-  cpu: 4000m
+  cpu: 2000m
   memory: 6Gi
 requests:
   cpu: 2000m
@@ -75,16 +75,16 @@ requests:
 {{- else if eq $profile "50-nonha" }}
 limits:
   ephemeral-storage: 5Gi
-  cpu: 5000m
+  cpu: 3000m
   memory: 6500Mi
 requests:
-  cpu: 2500m
+  cpu: 2000m
   memory: 6500Mi
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "100-nonha" }}
 limits:
   ephemeral-storage: 5Gi
-  cpu: 8000m
+  cpu: 4000m
   memory: 8Gi
 requests:
   cpu: 4000m
@@ -113,7 +113,7 @@ Usage: {{ include "common.sizing.stackstate.api.resources" . }}
 {{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
-  cpu: "1500m"
+  cpu: "750m"
   memory: "4Gi"
   ephemeral-storage: "1Mi"
 limits:
@@ -131,11 +131,11 @@ limits:
   ephemeral-storage: "2Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
-  cpu: "3000m"
+  cpu: "1500m"
   memory: "6Gi"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "6000m"
+  cpu: "5000m"
   memory: "6Gi"
   ephemeral-storage: "2Gi"
 {{- else if eq $profile "4000-ha" }}
@@ -170,29 +170,29 @@ Usage: {{ include "common.sizing.stackstate.checks.resources" . }}
 {{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
-  cpu: "3000m"
+  cpu: "1500m"
   memory: 5Gi
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "6000m"
+  cpu: "4000m"
   memory: 5Gi
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
-  cpu: "3000m"
+  cpu: "1500m"
   memory: 5Gi
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "6000m"
+  cpu: "4000m"
   memory: 5Gi
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
-  cpu: "3000m"
+  cpu: "1500m"
   memory: 5Gi
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "6000m"
+  cpu: "4000m"
   memory: 5Gi
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
@@ -232,7 +232,7 @@ limits:
   ephemeral-storage: "1Gi"
 requests:
   memory: 5Gi
-  cpu: "1000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "250-ha" }}
 limits:
@@ -241,16 +241,16 @@ limits:
   ephemeral-storage: "1Gi"
 requests:
   memory: 6Gi
-  cpu: "1500m"
+  cpu: "750m"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "500-ha" }}
 limits:
   memory: 8Gi
-  cpu: "8000m"
+  cpu: "3000m"
   ephemeral-storage: "1Gi"
 requests:
   memory: 8Gi
-  cpu: "4000m"
+  cpu: "1000m"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "4000-ha" }}
 limits:
@@ -379,7 +379,7 @@ requests:
   memory: "512Mi"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "1500m"
+  cpu: "1000m"
   memory: "1500Mi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
@@ -412,7 +412,7 @@ Usage: {{ include "common.sizing.stackstate.notification.resources" . }}
 {{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
-  cpu: 500m
+  cpu: 250m
   memory: "3000Mi"
 limits:
   cpu: 1000m
@@ -426,10 +426,10 @@ limits:
   memory: "3000Mi"
 {{- else if eq $profile "500-ha" }}
 requests:
-  cpu: 1500m
+  cpu: 750m
   memory: "3000Mi"
 limits:
-  cpu: 3000m
+  cpu: 2000m
   memory: "3000Mi"
 {{- else if eq $profile "4000-ha" }}
 requests:
@@ -470,12 +470,12 @@ limits:
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
-  cpu: "120m"
-  memory: "128Mi"
+  cpu: "500m"
+  memory: "512Mi"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "240m"
-  memory: "128Mi"
+  cpu: "1000m"
+  memory: "512Mi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
@@ -509,19 +509,19 @@ Usage: {{ include "common.sizing.stackstate.slicing.resources" . }}
 {{- end -}}
 {{- if or (eq $profile "150-ha") (eq $profile "500-ha") }}
 requests:
-  cpu: "300m"
+  cpu: "150m"
   memory: "1800Mi"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "1500m"
+  cpu: "1000m"
   memory: "2000Mi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
-  cpu: "300m"
+  cpu: "150m"
   memory: 1500Mi
 limits:
-  cpu: "600m"
+  cpu: "1000m"
   memory: 1500Mi
 {{- else if eq $profile "4000-ha" }}
 requests:
@@ -553,20 +553,20 @@ Usage: {{ include "common.sizing.stackstate.state.resources" . }}
 {{- end -}}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") }}
 limits:
-  cpu: "4"
+  cpu: "2"
   memory: "4000Mi"
   ephemeral-storage: "1Gi"
 requests:
-  cpu: "2"
+  cpu: "1"
   memory: "4000Mi"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "500-ha" }}
 limits:
-  cpu: "4"
+  cpu: "2"
   memory: "4000Mi"
   ephemeral-storage: "1Gi"
 requests:
-  cpu: "2"
+  cpu: "1"
   memory: "4000Mi"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "4000-ha" }}
@@ -754,7 +754,7 @@ Usage: {{ include "common.sizing.stackstate.correlate.resources" . }}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 requests:
   memory: "1250Mi"
-  cpu: "500m"
+  cpu: "250m"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "1000m"
@@ -763,7 +763,7 @@ limits:
 {{- else if eq $profile "20-nonha" }}
 requests:
   memory: "1750Mi"
-  cpu: "1500m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "3000m"
@@ -772,7 +772,7 @@ limits:
 {{- else if eq $profile "50-nonha" }}
 requests:
   memory: "2000Mi"
-  cpu: "2000m"
+  cpu: "1000m"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "4000m"
@@ -781,7 +781,7 @@ limits:
 {{- else if eq $profile "100-nonha" }}
 requests:
   memory: "4000Mi"
-  cpu: "5000m"
+  cpu: "2000m"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "10000m"
@@ -789,20 +789,20 @@ limits:
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "150-ha" }}
 limits:
-  cpu: 6
+  cpu: 2
   memory: 3500Mi
   ephemeral-storage: "1Gi"
 requests:
-  cpu: 3
+  cpu: 1500m
   memory: 3500Mi
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "250-ha" }}
 limits:
-  cpu: 4000m
+  cpu: 2000m
   memory: 3Gi
   ephemeral-storage: "1Gi"
 requests:
-  cpu: 2000m
+  cpu: 1000m
   memory: 3Gi
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "500-ha" }}
@@ -811,7 +811,7 @@ limits:
   memory: 3000Mi
   ephemeral-storage: "1Gi"
 requests:
-  cpu: 2000m
+  cpu: 1000m
   memory: 3000Mi
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "4000-ha" }}
@@ -860,31 +860,31 @@ Usage: {{ include "common.sizing.stackstate.receiver.resources" . }}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 requests:
   memory: "1000Mi"
-  cpu: "1000m"
+  cpu: "500m"
 limits:
   memory: "1000Mi"
-  cpu: "2000m"
+  cpu: "1000m"
 {{- else if eq $profile "20-nonha" }}
 requests:
   memory: "1750Mi"
-  cpu: "1000m"
+  cpu: "750m"
 limits:
   memory: "1750Mi"
-  cpu: "2000m"
+  cpu: "1000m"
 {{- else if eq $profile "50-nonha" }}
 requests:
   memory: "2250Mi"
-  cpu: "2000m"
+  cpu: "1000m"
 limits:
   memory: "2250Mi"
-  cpu: "4000m"
+  cpu: "2000m"
 {{- else if eq $profile "100-nonha" }}
 requests:
   memory: "4Gi"
-  cpu: "5500m"
+  cpu: "1750m"
 limits:
   memory: "4Gi"
-  cpu: "11000m"
+  cpu: "3000m"
 {{- else if eq $profile "4000-ha" }}
 requests:
   memory: "6Gi"
@@ -928,29 +928,29 @@ Usage: {{ include "common.sizing.stackstate.receiver.split.base.resources" . }}
 {{- if eq $profile "150-ha" }}
 requests:
   memory: "5500Mi"
-  cpu: "4000m"
+  cpu: "1000m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "5500Mi"
-  cpu: "8000m"
+  cpu: "2000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
   memory: "6500Mi"
-  cpu: "4000m"
+  cpu: "1000m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "6500Mi"
-  cpu: "8000m"
+  cpu: "2000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
   memory: "7Gi"
-  cpu: "6000m"
+  cpu: "2000m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "7Gi"
-  cpu: "12000m"
+  cpu: "4000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
@@ -985,20 +985,20 @@ Usage: {{ include "common.sizing.stackstate.receiver.split.processAgent.resource
 {{- if eq $profile "150-ha" }}
 requests:
   memory: "2500Mi"
-  cpu: "1000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "2500Mi"
-  cpu: "2000m"
+  cpu: "1000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
   memory: "3Gi"
-  cpu: "1000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "3Gi"
-  cpu: "2000m"
+  cpu: "1000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
@@ -1042,29 +1042,29 @@ Usage: {{ include "common.sizing.stackstate.receiver.split.logs.resources" . }}
 {{- if eq $profile "150-ha" }}
 requests:
   memory: "3Gi"
-  cpu: "1000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "3Gi"
-  cpu: "2000m"
+  cpu: "1000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
   memory: "3Gi"
-  cpu: "1000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "3Gi"
-  cpu: "2000m"
+  cpu: "1000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
   memory: "3Gi"
-  cpu: "1000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
   memory: "3Gi"
-  cpu: "2000m"
+  cpu: "1000m"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
@@ -1092,6 +1092,20 @@ Get stackstate authorizationSync component resources
 Usage: {{ include "common.sizing.stackstate.authorizationSync.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.authorizationSync.resources" -}}
+{{- $profile := "" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
+{{- if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
+requests:
+  cpu: "125m"
+  memory: "512Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1000m"
+  memory: "1Gi"
+  ephemeral-storage: "1Gi"
+{{- else }}
 requests:
   cpu: "250m"
   memory: "512Mi"
@@ -1100,6 +1114,7 @@ limits:
   cpu: "1500m"
   memory: "1Gi"
   ephemeral-storage: "1Gi"
+{{- end }}
 {{- end }}
 
 {{/*
@@ -1117,7 +1132,7 @@ limits:
   memory: "640Mi"
   ephemeral-storage: "1Gi"
 requests:
-  cpu: "200m"
+  cpu: "150m"
   memory: "384Mi"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "20-nonha" }}
@@ -1149,11 +1164,11 @@ requests:
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "150-ha" }}
 limits:
-  cpu: 3000m
+  cpu: 1500m
   memory: "1500Mi"
   ephemeral-storage: "1Gi"
 requests:
-  cpu: 1500m
+  cpu: 750m
   memory: "1500Mi"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "250-ha" }}

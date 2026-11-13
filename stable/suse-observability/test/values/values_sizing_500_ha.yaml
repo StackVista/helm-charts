@@ -69,10 +69,10 @@ kafka:
   numRecoveryThreadsPerDataDir: 6
   resources:
     requests:
-      cpu: "3"
+      cpu: "2"
       memory: "3Gi"
     limits:
-      cpu: "6"
+      cpu: "3"
       memory: "4Gi"
   # Need more kafka due to increased partition count
   persistence:
@@ -104,58 +104,70 @@ stackstate:
     api:
       resources:
         requests:
-          cpu: "3000m"
+          cpu: "1500m"
           memory: "6Gi"
         limits:
-          cpu: "6000m"
+          cpu: "5000m"
           memory: "6Gi"
+    authorizationSync:
+      resources:
+        requests:
+          cpu: "125m"
+        limits:
+          cpu: "1000m"
     checks:
       resources:
         requests:
-          cpu: "3000m"
+          cpu: "1500m"
           memory: 5Gi
         limits:
-          cpu: "6000m"
+          cpu: "4000m"
           memory: 5Gi
     healthSync:
       resources:
         limits:
           memory: 8Gi
-          cpu: "8000m"
+          cpu: "3000m"
         requests:
           memory: 8Gi
-          cpu: "4000m"
+          cpu: "1000m"
       sizing:
         baseMemoryConsumption: "1200Mi"
     initializer:
       resources:
         requests:
           cpu: "50m"
+        limits:
+          cpu: "1000m"
     notification:
       resources:
         requests:
-          cpu: 1500m
+          cpu: 750m
           memory: "3000Mi"
         limits:
-          cpu: 3000m
+          cpu: 2000m
           memory: "3000Mi"
     router:
       resources:
         requests:
-          cpu: "120m"
+          cpu: "500m"
+          memory: "512Mi"
         limits:
-          cpu: "240m"
+          cpu: "1000m"
+          memory: "512Mi"
     slicing:
       resources:
         requests:
-          cpu: "300m"
+          cpu: "150m"
+        limits:
+          cpu: "1000m"
     state:
       resources:
         limits:
-          cpu: "4"
+          cpu: "2"
           memory: "4000Mi"
         requests:
-          cpu: "2"
+          cpu: "1"
           memory: "4000Mi"
     sync:
       tmpToPVC:
@@ -178,7 +190,7 @@ stackstate:
       replicaCount: 10
       resources:
         requests:
-          cpu: 2000m
+          cpu: 1000m
           memory: 3000Mi
         limits:
           cpu: 4000m
@@ -195,9 +207,9 @@ stackstate:
           resources:
             requests:
               memory: "7Gi"
-              cpu: "6000m"
+              cpu: "2000m"
             limits:
-              cpu: "12000m"
+              cpu: "4000m"
               memory: "7Gi"
         processAgent:
           resources:
@@ -211,10 +223,10 @@ stackstate:
           resources:
             requests:
               memory: "3Gi"
-              cpu: "1000m"
+              cpu: "500m"
             limits:
               memory: "3Gi"
-              cpu: "2000m"
+              cpu: "1000m"
       extraEnv:
         open:
           CONFIG_FORCE_pekko_http_host__connection__pool_max__open__requests: "256"
@@ -239,11 +251,11 @@ victoria-metrics-0:
   server:
     resources:
       requests:
-        cpu: 3
-        memory: 10Gi
+        cpu: 2
+        memory: 20Gi
       limits:
-        cpu: 6
-        memory: 10Gi
+        cpu: 5
+        memory: 20Gi
   backup:
     vmbackup:
       resources:
@@ -256,11 +268,11 @@ victoria-metrics-1:
   server:
     resources:
       requests:
-        cpu: 3
-        memory: 10Gi
+        cpu: 2
+        memory: 20Gi
       limits:
-        cpu: 6
-        memory: 10Gi
+        cpu: 5
+        memory: 20Gi
   backup:
     vmbackup:
       resources:

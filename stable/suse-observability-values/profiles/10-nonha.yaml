@@ -38,9 +38,9 @@ hbase:
     resources:
       requests:
         memory: "2250Mi"
-        cpu: "500m"
+        cpu: "250m"
       limits:
-        cpu: "1500m"
+        cpu: "1000m"
         memory: "2250Mi"
   tephra:
     resources:
@@ -58,11 +58,11 @@ kafka:
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
-      cpu: "800m"
+      cpu: "500m"
       memory: "2048Mi"
     limits:
       memory: "2048Mi"
-      cpu: "1600m"
+      cpu: "1000m"
   persistence:
     size: 60Gi
 stackstate:
@@ -84,10 +84,10 @@ stackstate:
       resources:
         limits:
           ephemeral-storage: 5Gi
-          cpu: 3000m
+          cpu: 2000m
           memory: 5Gi
         requests:
-          cpu: 1500m
+          cpu: 1000m
           memory: 5Gi
     e2es:
       resources:
@@ -100,7 +100,7 @@ stackstate:
       resources:
         requests:
           memory: "1250Mi"
-          cpu: "500m"
+          cpu: "250m"
         limits:
           cpu: "1000m"
           memory: "1250Mi"
@@ -113,15 +113,17 @@ stackstate:
       resources:
         requests:
           memory: "1000Mi"
-          cpu: "1000m"
+          cpu: "500m"
         limits:
           memory: "1000Mi"
-          cpu: "2000m"
+          cpu: "1000m"
     vmagent:
       resources:
         limits:
+          cpu: "200m"
           memory: "640Mi"
         requests:
+          cpu: "150m"
           memory: "384Mi"
     ui:
       replicaCount: 1
@@ -129,7 +131,7 @@ victoria-metrics-0:
   server:
     resources:
       requests:
-        cpu: "500m"
+        cpu: "300m"
         memory: 1500Mi
       limits:
         cpu: "1000m"
