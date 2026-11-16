@@ -50,46 +50,46 @@ Usage: {{ include "common.sizing.hbase.stackgraph.resources" . }}
 {{- if eq $profile "trial" }}
 requests:
   memory: "2250Mi"
-  cpu: "500m"
+  cpu: "250m"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "1500m"
+  cpu: "1000m"
   memory: "2250Mi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "10-nonha" -}}
 requests:
   memory: "2250Mi"
-  cpu: "500m"
+  cpu: "250m"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "1500m"
+  cpu: "1000m"
   memory: "2250Mi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "20-nonha" -}}
 requests:
   memory: "2500Mi"
-  cpu: "1000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "2000m"
+  cpu: "1000m"
   memory: "2500Mi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "50-nonha" -}}
 requests:
   memory: "3Gi"
-  cpu: "2000m"
+  cpu: "500m"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "4000m"
+  cpu: "2000m"
   memory: "3Gi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "100-nonha" -}}
 requests:
   memory: "4500Mi"
-  cpu: "2000m"
+  cpu: "1000m"
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "4000m"
+  cpu: "3000m"
   memory: "4500Mi"
   ephemeral-storage: "1Gi"
 {{- else }}
@@ -177,7 +177,7 @@ Usage: {{ include "common.sizing.hbase.regionserver.resources" . }}
 {{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
-  cpu: "2000m"
+  cpu: "1000m"
   memory: "3Gi"
   ephemeral-storage: "1Mi"
 limits:
@@ -186,11 +186,11 @@ limits:
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
-  cpu: "3000m"
+  cpu: "1500m"
   memory: 4Gi
   ephemeral-storage: "1Mi"
 limits:
-  cpu: "6000m"
+  cpu: "4000m"
   memory: 4Gi
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
@@ -381,7 +381,7 @@ requests:
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "20-nonha" }}
 limits:
-  cpu: "100m"
+  cpu: "500m"
   memory: "600Mi"
   ephemeral-storage: "1Gi"
 requests:
@@ -390,17 +390,17 @@ requests:
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "50-nonha" }}
 limits:
-  cpu: "100m"
+  cpu: "500m"
   memory: "750Mi"
   ephemeral-storage: "1Gi"
 requests:
   memory: "750Mi"
-  cpu: "50m"
+  cpu: "100m"
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "100-nonha" }}
 limits:
   memory: "1Gi"
-  cpu: "200m"
+  cpu: "500m"
   ephemeral-storage: "1Gi"
 requests:
   memory: "1Gi"

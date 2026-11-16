@@ -39,14 +39,14 @@ hbase:
     resources:
       requests:
         memory: "2500Mi"
-        cpu: "1000m"
+        cpu: "500m"
       limits:
         memory: "2500Mi"
-        cpu: "2000m"
+        cpu: "1000m"
   tephra:
     resources:
       limits:
-        cpu: "100m"
+        cpu: "500m"
         memory: "600Mi"
       requests:
         memory: "600Mi"
@@ -59,11 +59,11 @@ kafka:
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
-      cpu: "1000m"
+      cpu: "750m"
       memory: "2048Mi"
     limits:
       memory: "2048Mi"
-      cpu: "2000m"
+      cpu: "1000m"
 
 stackstate:
   features:
@@ -84,7 +84,7 @@ stackstate:
       resources:
         limits:
           ephemeral-storage: 5Gi
-          cpu: 4000m
+          cpu: 2000m
           memory: 6Gi
         requests:
           cpu: 2000m
@@ -100,7 +100,7 @@ stackstate:
       resources:
         requests:
           memory: "1750Mi"
-          cpu: "1500m"
+          cpu: "500m"
         limits:
           memory: "1750Mi"
           cpu: "3000m"
@@ -113,10 +113,10 @@ stackstate:
       resources:
         requests:
           memory: "1750Mi"
-          cpu: "1000m"
+          cpu: "750m"
         limits:
           memory: "1750Mi"
-          cpu: "2000m"
+          cpu: "1000m"
     vmagent:
       resources:
         limits:
@@ -131,7 +131,7 @@ victoria-metrics-0:
   server:
     resources:
       requests:
-        cpu: "500m"
+        cpu: "400m"
         memory: 2Gi
       limits:
         cpu: "1000m"

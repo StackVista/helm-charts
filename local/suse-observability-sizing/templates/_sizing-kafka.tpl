@@ -108,31 +108,31 @@ Usage: {{ include "common.sizing.kafka.resources" . }}
 {{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 requests:
-  cpu: "800m"
+  cpu: "500m"
   memory: "2048Mi"
 limits:
-  cpu: "1600m"
+  cpu: "1000m"
   memory: "2048Mi"
 {{- else if eq $profile "20-nonha" }}
+requests:
+  cpu: "750m"
+  memory: "2048Mi"
+limits:
+  cpu: "1000m"
+  memory: "2048Mi"
+{{- else if eq $profile "50-nonha" }}
 requests:
   cpu: "1000m"
   memory: "2048Mi"
 limits:
   cpu: "2000m"
   memory: "2048Mi"
-{{- else if eq $profile "50-nonha" }}
-requests:
-  cpu: "1500m"
-  memory: "2048Mi"
-limits:
-  cpu: "3000m"
-  memory: "2048Mi"
 {{- else if eq $profile "100-nonha" }}
 requests:
-  cpu: "2000m"
+  cpu: "1750m"
   memory: "3000Mi"
 limits:
-  cpu: "4000m"
+  cpu: "3000m"
   memory: "3000Mi"
 {{- else if eq $profile "150-ha" }}
 requests:
@@ -143,17 +143,17 @@ limits:
   memory: "4Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
-  cpu: "2"
+  cpu: "1500m"
   memory: "3Gi"
 limits:
-  cpu: "4"
+  cpu: "3"
   memory: "4Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
-  cpu: "3"
+  cpu: "2"
   memory: "3Gi"
 limits:
-  cpu: "6"
+  cpu: "3"
   memory: "4Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
