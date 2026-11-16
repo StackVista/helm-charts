@@ -1,0 +1,15 @@
+otel:
+  enabled: true
+  prometheusScraping:
+    enabled: false
+  integrations:
+    suseRuntimeEnforcer: false
+    suseAdmissionController: false
+    suseVirtualization: false
+    suseSbomScanner: false
+    rancherAgent: false
+  k8sResourceCollector:
+    crDiscovery:
+      discoveryMode: api_groups
+      apiGroups:
+        include: {}

@@ -22,12 +22,33 @@ if [ "${chartPath}" == "stable/suse-observability-values" ]; then
   exit 0
 fi
 
-printf "\nRunning 'kubeconform' on '%s'...\n" "${chartPath}"
-
 if [ -e "${chartPath}/linter_values.yaml" ]; then
   valuesFile=("--values" "${chartPath}/linter_values.yaml")
 else
   valuesFile=()
 fi
 
-helm template --api-versions networking.k8s.io/v1/Ingress --api-versions policy/v1/PodDisruptionBudget --api-versions "batch/v1/CronJob" "${valuesFile[@]}" "${chartPath}" | kubeconform --skip ServiceMonitor,PrometheusRule,Issuer,Certificate -
+validate() {
+  local profile="$1"
+  shift
+  printf "\nRunning 'kubeconform' on '%s', profile '%s'...\n" "${chartPath}" "${profile}"
+  helm template --api-versions networking.k8s.io/v1/Ingress --api-versions policy/v1/PodDisruptionBudget --api-versions "batch/v1/CronJob" "${valuesFile[@]}" "$@" "${chartPath}" |
+    kubeconform --schema-location default \
+      --schema-location 'scripts/ci/schemas/{{.ResourceKind}}{{.KindSuffix}}.json' \
+      --skip ServiceMonitor,PrometheusRule,Issuer,Certificate -
+}
+
+validate default
+
+if [ "${chartPath}" == "stable/suse-observability-agent" ]; then
+  collectorValues=(
+    --set otel.enabled=true
+    --set otel.prometheusScraping.enabled=false
+    --set otel.k8sResourceCollector.rbac.useWildcard=false
+  )
+  validate resource-collections "${collectorValues[@]}"
+  validate declarations-only "${collectorValues[@]}" \
+    --values "${chartPath}/test/values/resource-collections-only.yaml"
+  validate consumption-disabled "${collectorValues[@]}" \
+    --values "${chartPath}/test/values/resource-collections-disabled.yaml"
+fi

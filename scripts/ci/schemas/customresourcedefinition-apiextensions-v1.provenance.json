@@ -1,0 +1,8 @@
+{
+  "repository": "kubernetes/apiextensions-apiserver",
+  "sourceCommit": "be5a186885df79a34ef3fe89dd2c8b2aa2c3cf4d",
+  "path": "pkg/apiserver/testdata/swagger.json",
+  "blobSha": "624f7cbf7e00689fd20b4cfc902382eef820a267",
+  "sourceSha256": "f95ddd98bb829887a8ea87e3681635d4dc59301de548b9e30f268d7b25cc3685",
+  "generatedSha256": "5089205d1f22cebb1a907d7bd17cad631edd441fc2d073bf96945794296c41c2"
+}

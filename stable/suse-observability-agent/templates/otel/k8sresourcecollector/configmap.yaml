@@ -34,6 +34,10 @@ data:
       # objects can add explicit non-CR watches (for example pods used by an integration).
       k8sresource:
         auth_type: serviceAccount
+{{- if include "stackstate-k8s-agent.resourceCollections.enabled" . }}
+        resource_collections:
+          enabled: true
+{{- end }}
         cluster_name: {{ if .Values.global.clusterName.fromSecret }}"${env:K8S_CLUSTER_NAME}"{{ else }}{{ .Values.stackstate.cluster.name | quote }}{{ end }}
         snapshot_interval: {{ .Values.otel.k8sResourceCollector.crDiscovery.snapshotInterval }}
         discovery_mode: {{ .Values.otel.k8sResourceCollector.crDiscovery.discoveryMode }}
@@ -61,13 +65,17 @@ data:
 {{- if and (has "*" $includes) (gt (len $includes) 1) }}
 {{- $includes = without $includes "*" }}
 {{- end }}
-{{- if not $includes }}
+{{- if and (not $includes) (not (include "stackstate-k8s-agent.resourceCollections.enabled" .)) }}
 {{- fail "otel.k8sResourceCollector.crDiscovery.apiGroups.include must have at least one truthy entry when discoveryMode is 'api_groups' (e.g. \"*\": true)" }}
 {{- end }}
         cr_api_groups:
+{{- if not $includes }}
+          include: []
+{{- else }}
           include:
 {{- range $includes }}
             - {{ . | quote }}
+{{- end }}
 {{- end }}
 {{- $excludes := list }}
 {{- range $pattern, $enabled := $rcfg.crDiscovery.apiGroups.exclude }}

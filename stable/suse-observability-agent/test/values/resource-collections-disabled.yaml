@@ -1,0 +1,4 @@
+otel:
+  k8sResourceCollector:
+    resourceCollections:
+      enabled: false

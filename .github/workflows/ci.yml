@@ -313,6 +313,130 @@ jobs:
             echo "::notice::no tests for ${{ matrix.chart }}, skipping"
           fi
 
+  resource_collection_validation:
+    name: ResourceCollection canonical schema and agent configuration
+    needs: [detect_changes, build_stable]
+    if: |
+      github.repository == 'StackVista/helm-charts-internal' &&
+      contains(fromJson(needs.detect_changes.outputs.stable), 'suse-observability-agent')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    outputs:
+      agent_image: ${{ steps.validate.outputs.agent_image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Download the candidate chart dependencies
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-suse-observability-agent
+          path: stable/suse-observability-agent/
+      - name: Set up the chart's Go toolchain
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Validate the canonical CRD and rendered configurations with the pinned agent
+        id: validate
+        env:
+          GOPATH: ${{ runner.temp }}/resourcecollection-go
+        run: |
+          helm version --short
+          yq --version
+          python3 stable/suse-observability-agent/test/resource_collection_ci.py
+
+  resource_collection_lifecycle:
+    name: ResourceCollection Helm lifecycle and takeover (${{ matrix.profile }})
+    needs: [detect_changes, build_stable, resource_collection_validation]
+    if: |
+      github.repository == 'StackVista/helm-charts-internal' &&
+      contains(fromJson(needs.detect_changes.outputs.stable), 'suse-observability-agent')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [native, topology]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Download the candidate chart dependencies
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-suse-observability-agent
+          path: stable/suse-observability-agent/
+      - name: Resolve the pinned collector source
+        id: collector
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          provenance = json.loads(Path(
+              "stable/suse-observability-agent/files/crds/"
+              "resourcecollections.observability.suse.com.provenance.json"
+          ).read_text())
+          revision = provenance["sourceCommit"]
+          if provenance["sourceState"] != "committed" or not re.fullmatch(r"[a-f0-9]{40}", revision):
+              raise RuntimeError("Lifecycle CI requires a committed collector export")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"revision={revision}\n")
+          PY
+      - name: Checkout the matching lifecycle harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: StackVista/sts-opentelemetry-collector
+          ref: ${{ steps.collector.outputs.revision }}
+          path: .ci/collector
+          persist-credentials: false
+      - name: Install checksum-verified Kubernetes test tools
+        env:
+          K3D_VERSION: v5.8.3
+          KUBECTL_VERSION: v1.36.6
+        run: |
+          set -euo pipefail
+          tools="$RUNNER_TEMP/resourcecollection-tools"
+          mkdir -p "$tools/_dist"
+          curl -fsSL "https://github.com/k3d-io/k3d/releases/download/$K3D_VERSION/k3d-linux-amd64" \
+            -o "$tools/_dist/k3d-linux-amd64"
+          curl -fsSL "https://github.com/k3d-io/k3d/releases/download/$K3D_VERSION/checksums.txt" \
+            -o "$tools/checksums.txt"
+          (cd "$tools" && sha256sum --check --ignore-missing checksums.txt)
+          mv "$tools/_dist/k3d-linux-amd64" "$tools/k3d"
+          curl -fsSL "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" \
+            -o "$tools/kubectl"
+          curl -fsSL "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" \
+            -o "$tools/kubectl.sha256"
+          (cd "$tools" && printf '%s  kubectl\n' "$(cat kubectl.sha256)" | sha256sum --check)
+          chmod +x "$tools/k3d" "$tools/kubectl"
+          echo "$tools" >> "$GITHUB_PATH"
+      - name: Check lifecycle and two-Pod takeover with the chart's agent
+        env:
+          PROFILE: ${{ matrix.profile }}
+          AGENT_IMAGE: ${{ needs.resource_collection_validation.outputs.agent_image }}
+          NODE_IMAGE: rancher/k3s@sha256:c47f384b997da1718c009c95b5e3abb4bcb906ceeeae64c37ffa9cab1e3d9537
+        run: |
+          python3 stable/suse-observability-agent/test/resource_collection_ci.py \
+            --lifecycle-profile "$PROFILE" --collector-source .ci/collector \
+            --agent-image "$AGENT_IMAGE" \
+            --node-image "$NODE_IMAGE" --kubernetes-version 1.36 \
+            --artifacts "$RUNNER_TEMP/resourcecollection-lifecycle-evidence"
+      - name: Upload synthetic lifecycle evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: resourcecollection-lifecycle-${{ matrix.profile }}
+          path: ${{ runner.temp }}/resourcecollection-lifecycle-evidence
+          if-no-files-found: error
+          retention-days: 7
+
   # Same as `test_stable`, scoped to `./local/<chart>/test/...`.
   test_local:
     needs: [detect_changes, build_local]
@@ -413,6 +537,8 @@ jobs:
       - validate_stable_images
       - check_chart_version
       - test_stable
+      - resource_collection_validation
+      - resource_collection_lifecycle
     # `always()` lets us treat `validate_stable_images: skipped` as OK (it correctly skips when
     # neither suse-observability nor agent is in the diff). The rest must have succeeded.
     if: |
@@ -423,6 +549,9 @@ jobs:
       (needs.validate_stable_images.result == 'success' || needs.validate_stable_images.result == 'skipped') &&
       needs.check_chart_version.result == 'success' &&
       needs.test_stable.result == 'success' &&
+      (!contains(fromJson(needs.detect_changes.outputs.stable || '[]'), 'suse-observability-agent') ||
+        (needs.resource_collection_validation.result == 'success' &&
+         needs.resource_collection_lifecycle.result == 'success')) &&
       (github.event_name == 'workflow_dispatch'
         || github.ref == 'refs/heads/master'
         || startsWith(github.ref, 'refs/tags/suse-observability/')) &&

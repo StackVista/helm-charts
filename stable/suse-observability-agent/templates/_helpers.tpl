@@ -454,6 +454,12 @@ true
 {{- end }}
 {{- end -}}
 
+{{- define "stackstate-k8s-agent.resourceCollections.enabled" -}}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.otel.k8sResourceCollector.resourceCollections.enabled }}
+true
+{{- end }}
+{{- end -}}
+
 {{/*
 Send Kubernetes topology through the cluster collector's cluster-agent-compatible
 exporter instead of the cluster agent's topology check.

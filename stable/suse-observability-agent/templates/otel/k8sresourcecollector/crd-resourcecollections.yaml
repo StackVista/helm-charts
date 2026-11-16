@@ -1,0 +1,3 @@
+{{- if include "stackstate-k8s-agent.resourceCollections.enabled" . }}
+{{ required "The canonical ResourceCollection CRD artifact is missing" (.Files.Get "files/crds/resourcecollections.observability.suse.com.yaml") }}
+{{- end }}

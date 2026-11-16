@@ -1,0 +1,713 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinition",
+  "definitions": {
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceColumnDefinition": {
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "jsonPath"
+      ],
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "jsonPath": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceConversion": {
+      "type": "object",
+      "required": [
+        "strategy"
+      ],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "default": ""
+        },
+        "webhook": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.WebhookConversion"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinition": {
+      "type": "object",
+      "required": [
+        "spec"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "metadata": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
+        },
+        "spec": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionSpec"
+        },
+        "status": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionStatus"
+        }
+      },
+      "x-kubernetes-group-version-kind": [
+        {
+          "group": "apiextensions.k8s.io",
+          "kind": "CustomResourceDefinition",
+          "version": "v1"
+        }
+      ]
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "status"
+      ],
+      "properties": {
+        "lastTransitionTime": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+        },
+        "message": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "default": ""
+        },
+        "type": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionNames": {
+      "type": "object",
+      "required": [
+        "plural",
+        "kind"
+      ],
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "kind": {
+          "type": "string",
+          "default": ""
+        },
+        "listKind": {
+          "type": "string"
+        },
+        "plural": {
+          "type": "string",
+          "default": ""
+        },
+        "shortNames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "singular": {
+          "type": "string"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionSpec": {
+      "type": "object",
+      "required": [
+        "group",
+        "names",
+        "scope",
+        "versions"
+      ],
+      "properties": {
+        "conversion": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceConversion"
+        },
+        "group": {
+          "type": "string",
+          "default": ""
+        },
+        "names": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionNames"
+        },
+        "preserveUnknownFields": {
+          "type": "boolean"
+        },
+        "scope": {
+          "type": "string",
+          "default": ""
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionVersion"
+          }
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionStatus": {
+      "type": "object",
+      "properties": {
+        "acceptedNames": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionNames"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionCondition"
+          },
+          "x-kubernetes-list-map-keys": [
+            "type"
+          ],
+          "x-kubernetes-list-type": "map"
+        },
+        "storedVersions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceDefinitionVersion": {
+      "type": "object",
+      "required": [
+        "name",
+        "served",
+        "storage"
+      ],
+      "properties": {
+        "additionalPrinterColumns": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceColumnDefinition"
+          }
+        },
+        "deprecated": {
+          "type": "boolean"
+        },
+        "deprecationWarning": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "schema": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceValidation"
+        },
+        "served": {
+          "type": "boolean",
+          "default": false
+        },
+        "storage": {
+          "type": "boolean",
+          "default": false
+        },
+        "subresources": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceSubresources"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceSubresourceScale": {
+      "type": "object",
+      "required": [
+        "specReplicasPath",
+        "statusReplicasPath"
+      ],
+      "properties": {
+        "labelSelectorPath": {
+          "type": "string"
+        },
+        "specReplicasPath": {
+          "type": "string",
+          "default": ""
+        },
+        "statusReplicasPath": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceSubresourceStatus": {
+      "type": "object"
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceSubresources": {
+      "type": "object",
+      "properties": {
+        "scale": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceSubresourceScale"
+        },
+        "status": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceSubresourceStatus"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.CustomResourceValidation": {
+      "type": "object",
+      "properties": {
+        "openAPIV3Schema": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.ExternalDocumentation": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSON": {},
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps": {
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        },
+        "additionalItems": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaPropsOrBool"
+        },
+        "additionalProperties": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaPropsOrBool"
+        },
+        "allOf": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+          }
+        },
+        "anyOf": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+          }
+        },
+        "default": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSON"
+        },
+        "definitions": {
+          "type": "object",
+          "additionalProperties": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+          }
+        },
+        "dependencies": {
+          "type": "object",
+          "additionalProperties": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaPropsOrStringArray"
+          }
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSON"
+          }
+        },
+        "example": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSON"
+        },
+        "exclusiveMaximum": {
+          "type": "boolean"
+        },
+        "exclusiveMinimum": {
+          "type": "boolean"
+        },
+        "externalDocs": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.ExternalDocumentation"
+        },
+        "format": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "items": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaPropsOrArray"
+        },
+        "maxItems": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "maxLength": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "maxProperties": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "maximum": {
+          "type": "number",
+          "format": "double"
+        },
+        "minItems": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "minLength": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "minProperties": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "minimum": {
+          "type": "number",
+          "format": "double"
+        },
+        "multipleOf": {
+          "type": "number",
+          "format": "double"
+        },
+        "not": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "oneOf": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+          }
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "patternProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaProps"
+          }
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "uniqueItems": {
+          "type": "boolean"
+        },
+        "x-kubernetes-embedded-resource": {
+          "type": "boolean"
+        },
+        "x-kubernetes-int-or-string": {
+          "type": "boolean"
+        },
+        "x-kubernetes-list-map-keys": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "x-kubernetes-list-type": {
+          "type": "string"
+        },
+        "x-kubernetes-map-type": {
+          "type": "string"
+        },
+        "x-kubernetes-preserve-unknown-fields": {
+          "type": "boolean"
+        },
+        "x-kubernetes-validations": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.ValidationRule"
+          },
+          "x-kubernetes-list-map-keys": [
+            "rule"
+          ],
+          "x-kubernetes-list-type": "map",
+          "x-kubernetes-patch-merge-key": "rule",
+          "x-kubernetes-patch-strategy": "merge"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaPropsOrArray": {},
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaPropsOrBool": {},
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.JSONSchemaPropsOrStringArray": {},
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.ServiceReference": {
+      "type": "object",
+      "required": [
+        "namespace",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "namespace": {
+          "type": "string",
+          "default": ""
+        },
+        "path": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.ValidationRule": {
+      "type": "object",
+      "required": [
+        "rule"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "rule": {
+          "type": "string",
+          "default": ""
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.WebhookClientConfig": {
+      "type": "object",
+      "properties": {
+        "caBundle": {
+          "type": "string",
+          "format": "byte"
+        },
+        "service": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.ServiceReference"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.WebhookConversion": {
+      "type": "object",
+      "required": [
+        "conversionReviewVersions"
+      ],
+      "properties": {
+        "clientConfig": {
+          "$ref": "#/definitions/io.k8s.apiextensions-apiserver.pkg.apis.apiextensions.v1.WebhookClientConfig"
+        },
+        "conversionReviewVersions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    },
+    "io.k8s.apimachinery.pkg.apis.meta.v1.FieldsV1": {
+      "type": "object"
+    },
+    "io.k8s.apimachinery.pkg.apis.meta.v1.ManagedFieldsEntry": {
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "type": "string"
+        },
+        "fieldsType": {
+          "type": "string"
+        },
+        "fieldsV1": {
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.FieldsV1"
+        },
+        "manager": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "subresource": {
+          "type": "string"
+        },
+        "time": {
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+        }
+      }
+    },
+    "io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "creationTimestamp": {
+          "default": {},
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+        },
+        "deletionGracePeriodSeconds": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "deletionTimestamp": {
+          "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+        },
+        "finalizers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "default": ""
+          },
+          "x-kubernetes-patch-strategy": "merge"
+        },
+        "generateName": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "managedFields": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ManagedFieldsEntry"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "ownerReferences": {
+          "type": "array",
+          "items": {
+            "default": {},
+            "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.OwnerReference"
+          },
+          "x-kubernetes-patch-merge-key": "uid",
+          "x-kubernetes-patch-strategy": "merge"
+        },
+        "resourceVersion": {
+          "type": "string"
+        },
+        "selfLink": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        }
+      }
+    },
+    "io.k8s.apimachinery.pkg.apis.meta.v1.OwnerReference": {
+      "type": "object",
+      "required": [
+        "apiVersion",
+        "kind",
+        "name",
+        "uid"
+      ],
+      "properties": {
+        "apiVersion": {
+          "type": "string",
+          "default": ""
+        },
+        "blockOwnerDeletion": {
+          "type": "boolean"
+        },
+        "controller": {
+          "type": "boolean"
+        },
+        "kind": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "uid": {
+          "type": "string",
+          "default": ""
+        }
+      },
+      "x-kubernetes-map-type": "atomic"
+    },
+    "io.k8s.apimachinery.pkg.apis.meta.v1.Time": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

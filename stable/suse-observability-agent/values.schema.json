@@ -242,6 +242,20 @@
     "otel": {
       "type": "object",
       "properties": {
+        "k8sResourceCollector": {
+          "type": "object",
+          "properties": {
+            "resourceCollections": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Consume cluster-scoped ResourceCollection declarations, install their retained CRD, and grant declaration/status permissions when the OTel resource collector is enabled."
+                }
+              }
+            }
+          }
+        },
         "telemetryGateway": {
           "type": "object",
           "properties": {
