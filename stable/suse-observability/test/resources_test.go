@@ -20,6 +20,8 @@ type expectedResources struct {
 
 // TestGlobalSizingUserResourceOverrides tests that user-specified resource overrides take precedence over sizing profile defaults
 func TestResources(t *testing.T) {
+	t.Parallel()
+
 	expectedDeployments := map[string]map[string]expectedResources{
 		"10-nonha": {
 			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},

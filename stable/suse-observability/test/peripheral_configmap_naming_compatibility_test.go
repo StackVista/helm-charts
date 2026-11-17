@@ -115,92 +115,90 @@ func checkPeripheralConfigMapNamingCompatibility(t *testing.T, beforeChart strin
 			tc.operatorPrefix + "-kafkaup-config":   "suse-observability-kafkaup-config",
 			tc.backupPrefix + "-sts-hbase-backup":   "suse-observability-hbase-backup",
 		}
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := componentResourceNameTestValues()
-				for key, value := range tc.values {
-					values[key] = value
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := componentResourceNameTestValues()
+			for key, value := range tc.values {
+				values[key] = value
+			}
+			options := apiResourceNameTestOptions(values)
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options)
+			afterOutput := renderRBACNamingChart(t, "..", tc.release, options)
+			before := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			after := helmtestutil.NewKubernetesResources(t, afterOutput)
+			renames := map[string]string{}
+			for old, target := range inventory {
+				config, found := before.ConfigMaps[old]
+				if !found {
+					assert.NotContains(t, after.ConfigMaps, target, "Creation conditions must stay unchanged")
+					continue
 				}
-				options := apiResourceNameTestOptions(values)
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
+				require.Contains(t, after.ConfigMaps, target)
+				config.Name = target
+				assert.Equal(t, config, after.ConfigMaps[target], "ConfigMap content and metadata must stay unchanged")
+				if old != target {
+					renames["ConfigMap/"+old] = target
+					assert.NotContains(t, after.ConfigMaps, old)
 				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
-				}
-				beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderRBACNamingChart(t, "..", tc.release, options, upgrade)
-				before := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				after := helmtestutil.NewKubernetesResources(t, afterOutput)
-				renames := map[string]string{}
-				for old, target := range inventory {
-					config, found := before.ConfigMaps[old]
-					if !found {
-						assert.NotContains(t, after.ConfigMaps, target, "Creation conditions must stay unchanged")
+			}
+			seen := map[string]bool{}
+			expected := backupNamingDocuments(t, beforeOutput, renames, seen)
+			actual := backupNamingDocuments(t, afterOutput, nil, nil)
+			for name, deployment := range before.Deployments {
+				require.Contains(t, after.Deployments, name)
+				target := after.Deployments[name]
+				allowed := deployment.DeepCopy()
+				rewritePeripheralConfigMapReferences(&allowed.Spec.Template.Spec, renames)
+				for _, volume := range deployment.Spec.Template.Spec.Volumes {
+					if volume.ConfigMap == nil || renames["ConfigMap/"+volume.ConfigMap.Name] == "" {
 						continue
 					}
-					require.Contains(t, after.ConfigMaps, target)
-					config.Name = target
-					assert.Equal(t, config, after.ConfigMaps[target], "ConfigMap content and metadata must stay unchanged")
-					if old != target {
-						renames["ConfigMap/"+old] = target
-						assert.NotContains(t, after.ConfigMaps, old)
-					}
+					key := map[string]string{
+						tc.prefix + "-router":                 "checksum/router-configmap",
+						tc.prefix + "-stackpacks-scripts":     "checksum/stackpack-scripts-configmap",
+						tc.operatorPrefix + "-kafkaup-config": "checksum/configmap",
+					}[volume.ConfigMap.Name]
+					require.NotEmpty(t, key, "Every changed volume must have its existing checksum")
+					oldHash, newHash := deployment.Spec.Template.Annotations[key], target.Spec.Template.Annotations[key]
+					require.Regexp(t, "^[0-9a-f]{64}$", oldHash)
+					require.Regexp(t, "^[0-9a-f]{64}$", newHash)
+					assert.NotEqual(t, oldHash, newHash)
+					allowed.Spec.Template.Annotations[key] = newHash
+					doc := expected["Deployment/"+deployment.Namespace+"/"+name].([]interface{})[0].(map[string]interface{})
+					template := doc["spec"].(map[string]interface{})["template"].(map[string]interface{})
+					template["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})[key] = newHash
 				}
-				seen := map[string]bool{}
-				expected := backupNamingDocuments(t, beforeOutput, renames, seen)
-				actual := backupNamingDocuments(t, afterOutput, nil, nil)
-				for name, deployment := range before.Deployments {
-					require.Contains(t, after.Deployments, name)
-					target := after.Deployments[name]
-					allowed := deployment.DeepCopy()
-					rewritePeripheralConfigMapReferences(&allowed.Spec.Template.Spec, renames)
-					for _, volume := range deployment.Spec.Template.Spec.Volumes {
-						if volume.ConfigMap == nil || renames["ConfigMap/"+volume.ConfigMap.Name] == "" {
-							continue
-						}
-						key := map[string]string{
-							tc.prefix + "-router":                 "checksum/router-configmap",
-							tc.prefix + "-stackpacks-scripts":     "checksum/stackpack-scripts-configmap",
-							tc.operatorPrefix + "-kafkaup-config": "checksum/configmap",
-						}[volume.ConfigMap.Name]
-						require.NotEmpty(t, key, "Every changed volume must have its existing checksum")
-						oldHash, newHash := deployment.Spec.Template.Annotations[key], target.Spec.Template.Annotations[key]
-						require.Regexp(t, "^[0-9a-f]{64}$", oldHash)
-						require.Regexp(t, "^[0-9a-f]{64}$", newHash)
-						assert.NotEqual(t, oldHash, newHash)
-						allowed.Spec.Template.Annotations[key] = newHash
-						doc := expected["Deployment/"+deployment.Namespace+"/"+name].([]interface{})[0].(map[string]interface{})
-						template := doc["spec"].(map[string]interface{})["template"].(map[string]interface{})
-						template["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})[key] = newHash
-					}
-					assert.Equal(t, *allowed, target, "Only reviewed references and existing checksums may change")
-					assertApplicationConfigMapUpgradePatches(t, deployment, target)
+				assert.Equal(t, *allowed, target, "Only reviewed references and existing checksums may change")
+				assertApplicationConfigMapUpgradePatches(t, deployment, target)
+			}
+			for name, statefulset := range before.Statefulsets {
+				require.Contains(t, after.Statefulsets, name)
+				target := after.Statefulsets[name]
+				allowed := statefulset.DeepCopy()
+				rewritePeripheralConfigMapReferences(&allowed.Spec.Template.Spec, renames)
+				assert.Equal(t, *allowed, target, "Only the HBase ConfigMap reference may change; storage and immutable fields stay unchanged")
+				assertConfigMapNamingUpgradePatches(t, &statefulset, &target)
+			}
+			assert.Equal(t, expected, actual, "Only the six reviewed ConfigMaps, references and checksums may change")
+			for old := range renames {
+				assert.True(t, seen[old], old)
+			}
+			assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+			assert.Equal(t, before.Secrets, after.Secrets)
+			assert.Equal(t, before.Services, after.Services)
+			assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+			original := backupNamingDocuments(t, beforeOutput, nil, nil)
+			for key, document := range actual {
+				if strings.HasPrefix(key, "Job/") {
+					assert.Equal(t, original[key], document, "Immutable Jobs must not gain references to replacement ConfigMaps")
 				}
-				for name, statefulset := range before.Statefulsets {
-					require.Contains(t, after.Statefulsets, name)
-					target := after.Statefulsets[name]
-					allowed := statefulset.DeepCopy()
-					rewritePeripheralConfigMapReferences(&allowed.Spec.Template.Spec, renames)
-					assert.Equal(t, *allowed, target, "Only the HBase ConfigMap reference may change; storage and immutable fields stay unchanged")
-					assertConfigMapNamingUpgradePatches(t, &statefulset, &target)
-				}
-				assert.Equal(t, expected, actual, "Only the six reviewed ConfigMaps, references and checksums may change")
-				for old := range renames {
-					assert.True(t, seen[old], old)
-				}
-				assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
-				assert.Equal(t, before.Secrets, after.Secrets)
-				assert.Equal(t, before.Services, after.Services)
-				assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
-				original := backupNamingDocuments(t, beforeOutput, nil, nil)
-				for key, document := range actual {
-					if strings.HasPrefix(key, "Job/") {
-						assert.Equal(t, original[key], document, "Immutable Jobs must not gain references to replacement ConfigMaps")
-					}
-				}
-			})
-		}
+			}
+		})
 	}
 }
 

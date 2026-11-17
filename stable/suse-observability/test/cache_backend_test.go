@@ -10,6 +10,8 @@ import (
 )
 
 func TestSyncCacheBackendIsMapDb(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -27,6 +29,8 @@ func TestSyncCacheBackendIsMapDb(t *testing.T) {
 }
 
 func TestHealthSyncCacheBackendIsMapDb(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)

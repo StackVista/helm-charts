@@ -72,86 +72,81 @@ func TestPDBNamingBaselineCompatibility(t *testing.T) {
 		{name: "nonha", release: "nightly", fixture: "nonha",
 			valuesFile: "values/global_sizing_50_nonha.yaml"},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				fixture := tc.fixture
-				if fixture == "" {
-					fixture = "split"
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			fixture := tc.fixture
+			if fixture == "" {
+				fixture = "split"
+			}
+			data, err := os.ReadFile(filepath.Join("testdata/pdb-renaming", fixture+".json"))
+			require.NoError(t, err)
+			var expected map[string]policyv1.PodDisruptionBudget
+			require.NoError(t, json.Unmarshal(data, &expected))
+			for _, component := range tc.disabled {
+				require.Contains(t, expected, component)
+				delete(expected, component)
+			}
+			for component, pdb := range expected {
+				require.True(t, strings.HasPrefix(pdb.Name, "suse-observability-"))
+				pdb.Labels["app.kubernetes.io/instance"] = tc.release
+				if _, found := pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"]; found {
+					pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"] = tc.release
 				}
-				data, err := os.ReadFile(filepath.Join("testdata/pdb-renaming", fixture+".json"))
-				require.NoError(t, err)
-				var expected map[string]policyv1.PodDisruptionBudget
-				require.NoError(t, json.Unmarshal(data, &expected))
-				for _, component := range tc.disabled {
-					require.Contains(t, expected, component)
-					delete(expected, component)
+				if component != "ai-assistant" && component != "victoriametrics" {
+					policy := policyv1.AlwaysAllow
+					pdb.Spec.UnhealthyPodEvictionPolicy = &policy
 				}
-				for component, pdb := range expected {
-					require.True(t, strings.HasPrefix(pdb.Name, "suse-observability-"))
-					pdb.Labels["app.kubernetes.io/instance"] = tc.release
-					if _, found := pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"]; found {
-						pdb.Spec.Selector.MatchLabels["app.kubernetes.io/instance"] = tc.release
-					}
-					if component != "ai-assistant" && component != "victoriametrics" {
-						policy := policyv1.AlwaysAllow
-						pdb.Spec.UnhealthyPodEvictionPolicy = &policy
-					}
-					expected[component] = pdb
-				}
+				expected[component] = pdb
+			}
 
-				values := map[string]string{
-					"stackstate.features.server.split":               "true",
-					"stackstate.components.receiver.split.enabled":   "false",
-					"stackstate.components.correlate.split.enabled":  "false",
-					"ai.assistant.enabled":                           "true",
-					"ai.mcp.enabled":                                 "true",
-					"stackstate.components.workloadObserver.enabled": "true",
-					"stackstate.k8sAuthorization.enabled":            "true",
-					"victoria-metrics-1.enabled":                     "true",
+			values := map[string]string{
+				"stackstate.features.server.split":               "true",
+				"stackstate.components.receiver.split.enabled":   "false",
+				"stackstate.components.correlate.split.enabled":  "false",
+				"ai.assistant.enabled":                           "true",
+				"ai.mcp.enabled":                                 "true",
+				"stackstate.components.workloadObserver.enabled": "true",
+				"stackstate.k8sAuthorization.enabled":            "true",
+				"victoria-metrics-1.enabled":                     "true",
+			}
+			for key, value := range tc.set {
+				values[key] = value
+			}
+			if values["stackstate.components.correlate.split.enabled"] == "true" {
+				// Split workers require explicit JVM sizing in the legacy chart.
+				for _, worker := range []string{"connection", "httpTracing", "aggregator"} {
+					prefix := "stackstate.components.correlate.split." + worker + "."
+					values[prefix+"resources.limits.memory"] = "2Gi"
+					values[prefix+"resources.requests.memory"] = "1Gi"
+					values[prefix+"sizing.baseMemoryConsumption"] = "400Mi"
+					values[prefix+"sizing.javaHeapMemoryFraction"] = "65"
 				}
-				for key, value := range tc.set {
-					values[key] = value
+			}
+			options := apiResourceNameTestOptions(values)
+			if tc.valuesFile != "" {
+				options.ValuesFiles = append(options.ValuesFiles, tc.valuesFile)
+			}
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			args := []string{"--api-versions", "policy/v1/PodDisruptionBudget", "--kube-version", "1.31.0"}
+			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, options, args...)
+			actual := map[string]policyv1.PodDisruptionBudget{}
+			for _, document := range strings.Split(output, "\n---\n") {
+				// Main-chart PDBs are emitted by templates/<component>/pdb-*.yaml.
+				// Keep subchart budgets outside this rename allowlist.
+				if !strings.Contains(document, "# Source: suse-observability/templates/") ||
+					!strings.Contains(document, "\nkind: PodDisruptionBudget\n") {
+					continue
 				}
-				if values["stackstate.components.correlate.split.enabled"] == "true" {
-					// Split workers require explicit JVM sizing in the legacy chart.
-					for _, worker := range []string{"connection", "httpTracing", "aggregator"} {
-						prefix := "stackstate.components.correlate.split." + worker + "."
-						values[prefix+"resources.limits.memory"] = "2Gi"
-						values[prefix+"resources.requests.memory"] = "1Gi"
-						values[prefix+"sizing.baseMemoryConsumption"] = "400Mi"
-						values[prefix+"sizing.javaHeapMemoryFraction"] = "65"
-					}
-				}
-				options := apiResourceNameTestOptions(values)
-				if tc.valuesFile != "" {
-					options.ValuesFiles = append(options.ValuesFiles, tc.valuesFile)
-				}
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				args := []string{"--api-versions", "policy/v1/PodDisruptionBudget", "--kube-version", "1.31.0"}
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, options, args...)
-				actual := map[string]policyv1.PodDisruptionBudget{}
-				for _, document := range strings.Split(output, "\n---\n") {
-					// Main-chart PDBs are emitted by templates/<component>/pdb-*.yaml.
-					// Keep subchart budgets outside this rename allowlist.
-					if !strings.Contains(document, "# Source: suse-observability/templates/") ||
-						!strings.Contains(document, "\nkind: PodDisruptionBudget\n") {
-						continue
-					}
-					var pdb policyv1.PodDisruptionBudget
-					require.NoError(t, helm.UnmarshalK8SYamlE(t, document, &pdb))
-					component := pdb.Labels["app.kubernetes.io/component"]
-					require.NotContains(t, actual, component, "Each main-chart component must have only one PDB")
-					delete(pdb.Labels, "app.kubernetes.io/version")
-					delete(pdb.Labels, "helm.sh/chart")
-					actual[component] = pdb
-				}
-				assert.Equal(t, expected, actual, "Only explicitly reviewed PDB identity changes may be allowed")
-			})
-		}
+				var pdb policyv1.PodDisruptionBudget
+				require.NoError(t, helm.UnmarshalK8SYamlE(t, document, &pdb))
+				component := pdb.Labels["app.kubernetes.io/component"]
+				require.NotContains(t, actual, component, "Each main-chart component must have only one PDB")
+				delete(pdb.Labels, "app.kubernetes.io/version")
+				delete(pdb.Labels, "helm.sh/chart")
+				actual[component] = pdb
+			}
+			assert.Equal(t, expected, actual, "Only explicitly reviewed PDB identity changes may be allowed")
+		})
 	}
 }

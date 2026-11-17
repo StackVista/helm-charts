@@ -16,6 +16,8 @@ import (
 // binding name is a replacement; a retained name must never patch roleRef.
 // This verifies the immutable-field contract, not API/controller reconciliation.
 func TestBindingNamingOverrideUpgradeRollback(t *testing.T) {
+	t.Parallel()
+
 	for _, split := range []bool{false, true} {
 		for _, namespace := range []string{"suse-observability", "tenant-a"} {
 			for _, affixes := range []bool{false, true} {
@@ -34,7 +36,7 @@ func TestBindingNamingOverrideUpgradeRollback(t *testing.T) {
 							options.SetValues["global.fullnameSuffix"] = "-end"
 							prefix = "pre-" + override + "-end"
 						}
-						output := renderRBACNamingChart(t, "..", "nightly", options, revision > 0)
+						output := renderRBACNamingChart(t, "..", "nightly", options)
 						current := helmtestutil.NewKubernetesResources(t, output)
 						podName := prefix + "-get-pods"
 						authorizationName := prefix + "-authorization"

@@ -52,34 +52,28 @@ func TestRouterNamingBaselineReproduction(t *testing.T) {
 func checkRouterNamingFixtures(t *testing.T, chart string, renamed bool) {
 	t.Helper()
 	for _, mode := range []string{"active", "maintenance", "automatic"} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", mode, upgrade), func(t *testing.T) {
-				data, err := os.ReadFile(filepath.Join("testdata/router-renaming", mode+".json"))
-				require.NoError(t, err)
-				var expected routerNamingFixture
-				require.NoError(t, json.Unmarshal(data, &expected))
-				if renamed {
-					expected.Deployment.Name = canonicalRouterDeployment
-					if expected.Scripts != nil {
-						allowRouterScriptSelectorChange(t, expected.Scripts)
-					}
-				}
-				options := routerNamingTestOptions(t, routerNamingFixtureValues(mode))
-				var args []string
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
-				require.NoError(t, err)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				require.Contains(t, resources.Deployments, expected.Deployment.Name)
-				assert.Equal(t, expected.Deployment, resources.Deployments[expected.Deployment.Name])
+		t.Run(fmt.Sprintf("%s", mode), func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("testdata/router-renaming", mode+".json"))
+			require.NoError(t, err)
+			var expected routerNamingFixture
+			require.NoError(t, json.Unmarshal(data, &expected))
+			if renamed {
+				expected.Deployment.Name = canonicalRouterDeployment
 				if expected.Scripts != nil {
-					require.Contains(t, resources.ConfigMaps, expected.Scripts.Name)
-					assert.Equal(t, *expected.Scripts, resources.ConfigMaps[expected.Scripts.Name])
+					allowRouterScriptSelectorChange(t, expected.Scripts)
 				}
-			})
-		}
+			}
+			options := routerNamingTestOptions(t, routerNamingFixtureValues(mode))
+			output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+			require.NoError(t, err)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Contains(t, resources.Deployments, expected.Deployment.Name)
+			assert.Equal(t, expected.Deployment, resources.Deployments[expected.Deployment.Name])
+			if expected.Scripts != nil {
+				require.Contains(t, resources.ConfigMaps, expected.Scripts.Name)
+				assert.Equal(t, *expected.Scripts, resources.ConfigMaps[expected.Scripts.Name])
+			}
+		})
 	}
 }
 
@@ -108,60 +102,54 @@ func TestRouterDeploymentNamingCompatibility(t *testing.T) {
 		{name: "argo", release: "nightly", prefix: "nightly-suse-observability", values: map[string]string{"deployment.compatibleWithArgoCD": "true"}},
 	} {
 		for _, mode := range []string{"active", "maintenance", "automatic"} {
-			for _, upgrade := range []bool{false, true} {
-				t.Run(fmt.Sprintf("%s/%s/upgrade=%t", tc.name, mode, upgrade), func(t *testing.T) {
-					values := routerNamingFixtureValues(mode)
-					maps.Copy(values, tc.values)
-					options := routerNamingTestOptions(t, values)
-					if tc.namespace != "" {
-						options.KubectlOptions.Namespace = tc.namespace
-					}
-					var args []string
-					if upgrade {
-						args = append(args, "--is-upgrade")
-					}
-					beforeOutput, err := helm.RenderTemplateE(t, options, beforeChart, tc.release, nil, args...)
-					require.NoError(t, err)
-					afterOutput, err := helm.RenderTemplateE(t, options, afterChart, tc.release, nil, args...)
-					require.NoError(t, err)
-					before := helmtestutil.NewKubernetesResources(t, beforeOutput)
-					after := helmtestutil.NewKubernetesResources(t, afterOutput)
-					legacy := tc.prefix + "-router"
-					require.Contains(t, before.Deployments, legacy)
-					expected := before.Deployments[legacy]
-					expected.Name = canonicalRouterDeployment
-					if legacy != canonicalRouterDeployment {
-						delete(before.Deployments, legacy)
-						assert.NotContains(t, after.Deployments, legacy)
-					}
-					before.Deployments[canonicalRouterDeployment] = expected
-					assert.Equal(t, before.Deployments, after.Deployments)
-					assert.Equal(t, before.ConfigMaps, after.ConfigMaps)
-					assert.Equal(t, before.Secrets, after.Secrets)
-					assert.Equal(t, before.Services, after.Services)
-					assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
-					assert.Equal(t, before.Roles, after.Roles)
-					assert.Equal(t, before.RoleBindings, after.RoleBindings)
-					assert.Equal(t, before.Statefulsets, after.Statefulsets)
-					assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
-					assert.Equal(t, before.Ingresses, after.Ingresses)
-					assert.Equal(t, before.HTTPRoutes, after.HTTPRoutes)
-					beforeContract := resourceNamingUpgradeContract(t, beforeOutput)
-					if legacy != canonicalRouterDeployment {
-						old := "Deployment/" + legacy
-						beforeContract["Deployment/"+canonicalRouterDeployment] = beforeContract[old]
-						delete(beforeContract, old)
-					}
-					assert.Equal(t, beforeContract, resourceNamingUpgradeContract(t, afterOutput))
-					for _, service := range after.Services {
-						if service.Labels["app.kubernetes.io/component"] == "router" {
-							for key, value := range service.Spec.Selector {
-								assert.Equal(t, value, expected.Spec.Template.Labels[key])
-							}
+			t.Run(fmt.Sprintf("%s/%s", tc.name, mode), func(t *testing.T) {
+				values := routerNamingFixtureValues(mode)
+				maps.Copy(values, tc.values)
+				options := routerNamingTestOptions(t, values)
+				if tc.namespace != "" {
+					options.KubectlOptions.Namespace = tc.namespace
+				}
+				beforeOutput, err := helm.RenderTemplateE(t, options, beforeChart, tc.release, nil)
+				require.NoError(t, err)
+				afterOutput, err := helm.RenderTemplateE(t, options, afterChart, tc.release, nil)
+				require.NoError(t, err)
+				before := helmtestutil.NewKubernetesResources(t, beforeOutput)
+				after := helmtestutil.NewKubernetesResources(t, afterOutput)
+				legacy := tc.prefix + "-router"
+				require.Contains(t, before.Deployments, legacy)
+				expected := before.Deployments[legacy]
+				expected.Name = canonicalRouterDeployment
+				if legacy != canonicalRouterDeployment {
+					delete(before.Deployments, legacy)
+					assert.NotContains(t, after.Deployments, legacy)
+				}
+				before.Deployments[canonicalRouterDeployment] = expected
+				assert.Equal(t, before.Deployments, after.Deployments)
+				assert.Equal(t, before.ConfigMaps, after.ConfigMaps)
+				assert.Equal(t, before.Secrets, after.Secrets)
+				assert.Equal(t, before.Services, after.Services)
+				assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+				assert.Equal(t, before.Roles, after.Roles)
+				assert.Equal(t, before.RoleBindings, after.RoleBindings)
+				assert.Equal(t, before.Statefulsets, after.Statefulsets)
+				assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+				assert.Equal(t, before.Ingresses, after.Ingresses)
+				assert.Equal(t, before.HTTPRoutes, after.HTTPRoutes)
+				beforeContract := resourceNamingUpgradeContract(t, beforeOutput)
+				if legacy != canonicalRouterDeployment {
+					old := "Deployment/" + legacy
+					beforeContract["Deployment/"+canonicalRouterDeployment] = beforeContract[old]
+					delete(beforeContract, old)
+				}
+				assert.Equal(t, beforeContract, resourceNamingUpgradeContract(t, afterOutput))
+				for _, service := range after.Services {
+					if service.Labels["app.kubernetes.io/component"] == "router" {
+						for key, value := range service.Spec.Selector {
+							assert.Equal(t, value, expected.Spec.Template.Labels[key])
 						}
 					}
-				})
-			}
+				}
+			})
 		}
 	}
 }

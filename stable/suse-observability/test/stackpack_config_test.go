@@ -51,17 +51,25 @@ stackstate.stackPacks {
 }`
 
 func TestStackPackConfigRenderingApi(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/stackpack_config.yaml"}, expectedStackPackConfig)
 }
 
 func TestStackPackConfigRenderingServer(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/stackpack_config.yaml", "values/split_disabled.yaml"}, expectedStackPackConfig)
 }
 
 func TestStackPackConfigRenderingApiWithMonoHbase(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/stackpack_config.yaml", "values/mono_hbase.yaml"}, expectedStackPackConfigMonoHbase)
 }
 
 func TestStackPackConfigRenderingServerWithMonoHbase(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/stackpack_config.yaml", "values/mono_hbase.yaml", "values/split_disabled.yaml"}, expectedStackPackConfigMonoHbase)
 }

@@ -11,6 +11,8 @@ import (
 )
 
 func TestMcpServerEnabledByDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -46,6 +48,8 @@ func TestMcpServerEnabledByDefault(t *testing.T) {
 }
 
 func TestMcpServerDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -75,6 +79,8 @@ func TestMcpServerDisabled(t *testing.T) {
 // external code assistants via ai.mcp.enabled without enabling the AI Assistant and
 // without configuring an LLM provider (STAC-25055).
 func TestMcpServerEnabledWithoutAssistant(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -112,6 +118,8 @@ func TestMcpServerEnabledWithoutAssistant(t *testing.T) {
 }
 
 func TestMcpServerPublicExposureUsesIngressWhenEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{

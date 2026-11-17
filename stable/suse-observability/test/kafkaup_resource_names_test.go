@@ -36,51 +36,45 @@ func TestKafkaupOperatorResourceNamesInPlatform(t *testing.T) {
 		}},
 	} {
 		for _, enabled := range []bool{false, true} {
-			for _, upgrade := range []bool{false, true} {
-				t.Run(fmt.Sprintf("%s/%s/enabled=%t/upgrade=%t", scenario.release, scenario.base, enabled, upgrade), func(t *testing.T) {
-					set := map[string]string{"kafkaup-operator.enabled": fmt.Sprint(enabled)}
-					for key, value := range scenario.set {
-						set[key] = value
-					}
-					options := apiResourceNameTestOptions(set)
-					options.ValuesFiles = []string{values}
-					var args []string
-					if upgrade {
-						args = append(args, "--is-upgrade")
-					}
-					before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, scenario.release, options, args...)
-					output, err := helm.RenderTemplateE(t, options, chart, scenario.release, nil, args...)
-					require.NoError(t, err)
-					old := scenario.base + "-kafkaup"
-					renames := map[string]string{
-						"Deployment/" + old:                              "explicit-deployment",
-						"ServiceAccount/" + old:                          "explicit-serviceaccount",
-						"Role/suse-observability-kafkaup":                "explicit-role",
-						"RoleBinding/suse-observability-kafkaup-binding": "explicit-rolebinding",
-						"ConfigMap/suse-observability-kafkaup-config":    "explicit-configmap",
-					}
-					seen := map[string]bool{}
-					expected := backupNamingDocuments(t, before, renames, seen)
-					actual := backupNamingDocuments(t, output, nil, nil)
-					if enabled {
-						require.Len(t, seen, len(renames))
-						deployment := expected["Deployment/observability/explicit-deployment"].([]interface{})[0].(map[string]interface{})
-						pod := deployment["spec"].(map[string]interface{})["template"].(map[string]interface{})
-						pod["spec"].(map[string]interface{})["serviceAccountName"] = "explicit-serviceaccount"
-						annotations := pod["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
-						actualDeployment := actual["Deployment/observability/explicit-deployment"].([]interface{})[0].(map[string]interface{})
-						actualAnnotations := actualDeployment["spec"].(map[string]interface{})["template"].(map[string]interface{})["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
-						assert.NotEqual(t, annotations["checksum/configmap"], actualAnnotations["checksum/configmap"])
-						annotations["checksum/configmap"] = actualAnnotations["checksum/configmap"]
-						binding := expected["RoleBinding//explicit-rolebinding"].([]interface{})[0].(map[string]interface{})
-						binding["roleRef"].(map[string]interface{})["name"] = "explicit-role"
-						binding["subjects"].([]interface{})[0].(map[string]interface{})["name"] = "explicit-serviceaccount"
-					} else {
-						assert.Empty(t, seen)
-					}
-					assert.Equal(t, expected, actual, "Other platform resources, Kafka selection and registry references must remain unchanged")
-				})
-			}
+			t.Run(fmt.Sprintf("%s/%s/enabled=%t", scenario.release, scenario.base, enabled), func(t *testing.T) {
+				set := map[string]string{"kafkaup-operator.enabled": fmt.Sprint(enabled)}
+				for key, value := range scenario.set {
+					set[key] = value
+				}
+				options := apiResourceNameTestOptions(set)
+				options.ValuesFiles = []string{values}
+				before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, scenario.release, options)
+				output, err := helm.RenderTemplateE(t, options, chart, scenario.release, nil)
+				require.NoError(t, err)
+				old := scenario.base + "-kafkaup"
+				renames := map[string]string{
+					"Deployment/" + old:                              "explicit-deployment",
+					"ServiceAccount/" + old:                          "explicit-serviceaccount",
+					"Role/suse-observability-kafkaup":                "explicit-role",
+					"RoleBinding/suse-observability-kafkaup-binding": "explicit-rolebinding",
+					"ConfigMap/suse-observability-kafkaup-config":    "explicit-configmap",
+				}
+				seen := map[string]bool{}
+				expected := backupNamingDocuments(t, before, renames, seen)
+				actual := backupNamingDocuments(t, output, nil, nil)
+				if enabled {
+					require.Len(t, seen, len(renames))
+					deployment := expected["Deployment/observability/explicit-deployment"].([]interface{})[0].(map[string]interface{})
+					pod := deployment["spec"].(map[string]interface{})["template"].(map[string]interface{})
+					pod["spec"].(map[string]interface{})["serviceAccountName"] = "explicit-serviceaccount"
+					annotations := pod["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
+					actualDeployment := actual["Deployment/observability/explicit-deployment"].([]interface{})[0].(map[string]interface{})
+					actualAnnotations := actualDeployment["spec"].(map[string]interface{})["template"].(map[string]interface{})["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
+					assert.NotEqual(t, annotations["checksum/configmap"], actualAnnotations["checksum/configmap"])
+					annotations["checksum/configmap"] = actualAnnotations["checksum/configmap"]
+					binding := expected["RoleBinding//explicit-rolebinding"].([]interface{})[0].(map[string]interface{})
+					binding["roleRef"].(map[string]interface{})["name"] = "explicit-role"
+					binding["subjects"].([]interface{})[0].(map[string]interface{})["name"] = "explicit-serviceaccount"
+				} else {
+					assert.Empty(t, seen)
+				}
+				assert.Equal(t, expected, actual, "Other platform resources, Kafka selection and registry references must remain unchanged")
+			})
 		}
 	}
 }

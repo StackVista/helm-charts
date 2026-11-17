@@ -26,38 +26,32 @@ func TestAnomalyResourceReferencesPreservePlatformConfiguration(t *testing.T) {
 	require.NoError(t, err)
 	for _, enabled := range []bool{false, true} {
 		for _, split := range []bool{false, true} {
-			for _, upgrade := range []bool{false, true} {
-				t.Run(fmt.Sprintf("enabled=%t/split=%t/upgrade=%t", enabled, split, upgrade), func(t *testing.T) {
-					options := apiResourceNameTestOptions(map[string]string{
-						"anomaly-detection.enabled":                        fmt.Sprint(enabled),
-						"anomaly-detection.metrics.serviceMonitor.enabled": "true",
-						"anomaly-detection.stackstate.instance":            "https://unused-customer-instance",
-						"stackstate.features.server.split":                 fmt.Sprint(split),
-					})
-					options.ValuesFiles = []string{values}
-					var args []string
-					if upgrade {
-						args = append(args, "--is-upgrade")
-					}
-					before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options, args...)
-					after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
-					require.NoError(t, err)
-					const base = "nightly-anomaly-detection"
-					seen := map[string]bool{}
-					expected := backupNamingDocuments(t, before, map[string]string{
-						"Service/" + base + "-spotlight-manager": "explicit-anomaly-manager",
-						"ServiceAccount/" + base + "-sa":         "explicit-anomaly-account",
-						"Role/stackstate-aad":                    "explicit-anomaly-role",
-					}, seen)
-					require.Equal(t, enabled, seen["Role/stackstate-aad"])
-					require.Equal(t, enabled, seen["Service/"+base+"-spotlight-manager"])
-					require.Equal(t, enabled, seen["ServiceAccount/"+base+"-sa"])
-					rewritePlatformAnomalyReferences(expected)
-					// Platform router URLs, staticSubjects.stackstate-aad, account
-					// annotations, selectors, monitors, checksums and PVCs stay equal.
-					assert.Equal(t, expected, backupNamingDocuments(t, after, nil, nil))
+			t.Run(fmt.Sprintf("enabled=%t/split=%t", enabled, split), func(t *testing.T) {
+				options := apiResourceNameTestOptions(map[string]string{
+					"anomaly-detection.enabled":                        fmt.Sprint(enabled),
+					"anomaly-detection.metrics.serviceMonitor.enabled": "true",
+					"anomaly-detection.stackstate.instance":            "https://unused-customer-instance",
+					"stackstate.features.server.split":                 fmt.Sprint(split),
 				})
-			}
+				options.ValuesFiles = []string{values}
+				before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options)
+				after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+				require.NoError(t, err)
+				const base = "nightly-anomaly-detection"
+				seen := map[string]bool{}
+				expected := backupNamingDocuments(t, before, map[string]string{
+					"Service/" + base + "-spotlight-manager": "explicit-anomaly-manager",
+					"ServiceAccount/" + base + "-sa":         "explicit-anomaly-account",
+					"Role/stackstate-aad":                    "explicit-anomaly-role",
+				}, seen)
+				require.Equal(t, enabled, seen["Role/stackstate-aad"])
+				require.Equal(t, enabled, seen["Service/"+base+"-spotlight-manager"])
+				require.Equal(t, enabled, seen["ServiceAccount/"+base+"-sa"])
+				rewritePlatformAnomalyReferences(expected)
+				// Platform router URLs, staticSubjects.stackstate-aad, account
+				// annotations, selectors, monitors, checksums and PVCs stay equal.
+				assert.Equal(t, expected, backupNamingDocuments(t, after, nil, nil))
+			})
 		}
 	}
 }

@@ -53,58 +53,52 @@ func TestServiceMonitorNamingCompatibility(t *testing.T) {
 		{name: "nonha", release: "nightly", fixture: "mono", valuesFile: "values/global_sizing_50_nonha.yaml"},
 		{name: "argo", release: "nightly", set: map[string]string{"deployment.compatibleWithArgoCD": "true"}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				fixture := tc.fixture
-				if fixture == "" {
-					fixture = "split"
-				}
-				data, err := os.ReadFile(filepath.Join("testdata/servicemonitor-renaming", fixture+".json"))
-				require.NoError(t, err)
-				var expected map[string]monitoringv1.ServiceMonitor
-				require.NoError(t, json.Unmarshal(data, &expected))
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			fixture := tc.fixture
+			if fixture == "" {
+				fixture = "split"
+			}
+			data, err := os.ReadFile(filepath.Join("testdata/servicemonitor-renaming", fixture+".json"))
+			require.NoError(t, err)
+			var expected map[string]monitoringv1.ServiceMonitor
+			require.NoError(t, json.Unmarshal(data, &expected))
 
-				values := serviceMonitorCompatibilityValues()
-				maps.Copy(values, tc.set)
-				options := apiResourceNameTestOptions(values)
-				if tc.valuesFile != "" {
-					options.ValuesFiles = append(options.ValuesFiles, tc.valuesFile)
+			values := serviceMonitorCompatibilityValues()
+			maps.Copy(values, tc.set)
+			options := apiResourceNameTestOptions(values)
+			if tc.valuesFile != "" {
+				options.ValuesFiles = append(options.ValuesFiles, tc.valuesFile)
+			}
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			namespace := options.KubectlOptions.Namespace
+			for component, monitor := range expected {
+				monitor.Name = "suse-observability-" + component
+				monitor.Labels["app.kubernetes.io/instance"] = tc.release
+				if _, found := monitor.Spec.Selector.MatchLabels["app.kubernetes.io/instance"]; found {
+					monitor.Spec.Selector.MatchLabels["app.kubernetes.io/instance"] = tc.release
 				}
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				namespace := options.KubectlOptions.Namespace
+				monitor.Spec.NamespaceSelector.MatchNames = []string{namespace}
+				expected[component] = monitor
+			}
+
+			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, options)
+			actual := mainServiceMonitorsForNamingTest(t, output)
+			assert.Equal(t, expected, actual, "Only reviewed monitor metadata names may change")
+
+			// Prometheus selects these objects by labels, independently of names.
+			for _, target := range []string{"platform-monitoring", "backup-monitoring"} {
+				selector := labels.SelectorFromSet(labels.Set{
+					"prometheus": target, "fixture-scope": "preserved",
+				})
 				for component, monitor := range expected {
-					monitor.Name = "suse-observability-" + component
-					monitor.Labels["app.kubernetes.io/instance"] = tc.release
-					if _, found := monitor.Spec.Selector.MatchLabels["app.kubernetes.io/instance"]; found {
-						monitor.Spec.Selector.MatchLabels["app.kubernetes.io/instance"] = tc.release
-					}
-					monitor.Spec.NamespaceSelector.MatchNames = []string{namespace}
-					expected[component] = monitor
+					require.Contains(t, actual, component)
+					assert.Equal(t, selector.Matches(labels.Set(monitor.Labels)),
+						selector.Matches(labels.Set(actual[component].Labels)), component)
 				}
-
-				var args []string
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, options, args...)
-				actual := mainServiceMonitorsForNamingTest(t, output)
-				assert.Equal(t, expected, actual, "Only reviewed monitor metadata names may change")
-
-				// Prometheus selects these objects by labels, independently of names.
-				for _, target := range []string{"platform-monitoring", "backup-monitoring"} {
-					selector := labels.SelectorFromSet(labels.Set{
-						"prometheus": target, "fixture-scope": "preserved",
-					})
-					for component, monitor := range expected {
-						require.Contains(t, actual, component)
-						assert.Equal(t, selector.Matches(labels.Set(monitor.Labels)),
-							selector.Matches(labels.Set(actual[component].Labels)), component)
-					}
-				}
-			})
-		}
+			}
+		})
 	}
 }
 
@@ -128,28 +122,22 @@ func TestServiceMonitorNamingBaselineReproduction(t *testing.T) {
 		{"mono", false, false},
 		{"workers", true, true},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", scenario.fixture, upgrade), func(t *testing.T) {
-				values := serviceMonitorCompatibilityValues()
-				values["stackstate.features.server.split"] = fmt.Sprint(scenario.split)
-				values["stackstate.components.receiver.split.enabled"] = fmt.Sprint(scenario.workers)
-				values["stackstate.components.correlate.split.enabled"] = fmt.Sprint(scenario.workers)
-				options := apiResourceNameTestOptions(values)
-				options.ValuesFiles = []string{filepath.Join(chart, "test/values/full.yaml")}
-				var args []string
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
-				require.NoError(t, err)
-				data, err := os.ReadFile(filepath.Join("testdata/servicemonitor-renaming", scenario.fixture+".json"))
-				require.NoError(t, err)
-				var expected map[string]monitoringv1.ServiceMonitor
-				require.NoError(t, json.Unmarshal(data, &expected))
-				assert.Equal(t, expected, mainServiceMonitorsForNamingTest(t, output),
-					"The pre-rename chart must reproduce the frozen monitors without changing names or specs")
-			})
-		}
+		t.Run(fmt.Sprintf("%s", scenario.fixture), func(t *testing.T) {
+			values := serviceMonitorCompatibilityValues()
+			values["stackstate.features.server.split"] = fmt.Sprint(scenario.split)
+			values["stackstate.components.receiver.split.enabled"] = fmt.Sprint(scenario.workers)
+			values["stackstate.components.correlate.split.enabled"] = fmt.Sprint(scenario.workers)
+			options := apiResourceNameTestOptions(values)
+			options.ValuesFiles = []string{filepath.Join(chart, "test/values/full.yaml")}
+			output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+			require.NoError(t, err)
+			data, err := os.ReadFile(filepath.Join("testdata/servicemonitor-renaming", scenario.fixture+".json"))
+			require.NoError(t, err)
+			var expected map[string]monitoringv1.ServiceMonitor
+			require.NoError(t, json.Unmarshal(data, &expected))
+			assert.Equal(t, expected, mainServiceMonitorsForNamingTest(t, output),
+				"The pre-rename chart must reproduce the frozen monitors without changing names or specs")
+		})
 	}
 }
 

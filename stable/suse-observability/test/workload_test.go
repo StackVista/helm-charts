@@ -110,6 +110,8 @@ var expectedWorkloadsNonHA = []string{
 }
 
 func TestWorkloadHARendering(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_ha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -118,6 +120,8 @@ func TestWorkloadHARendering(t *testing.T) {
 }
 
 func TestWorkloadNonHARendering(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_nonha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -126,6 +130,8 @@ func TestWorkloadNonHARendering(t *testing.T) {
 }
 
 func TestWorkloadGlobalHARendering(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_global_ha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -135,6 +141,8 @@ func TestWorkloadGlobalHARendering(t *testing.T) {
 }
 
 func TestWorkloadGlobalNonHARendering(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_global_nonha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

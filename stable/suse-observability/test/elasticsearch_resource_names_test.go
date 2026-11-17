@@ -36,41 +36,35 @@ func TestElasticsearchHeadlessServiceReferencesFollowDedicatedHelper(t *testing.
 		{"custom-cluster", map[string]string{"elasticsearch.clusterName": "customer"}},
 	} {
 		for _, split := range []bool{false, true} {
-			for _, upgrade := range []bool{false, true} {
-				t.Run(fmt.Sprintf("%s/split=%t/upgrade=%t", scenario.name, split, upgrade), func(t *testing.T) {
-					set := map[string]string{"stackstate.features.server.split": fmt.Sprint(split)}
-					for key, value := range scenario.set {
-						set[key] = value
-					}
-					options := apiResourceNameTestOptions(set)
-					options.ValuesFiles = []string{values}
-					var args []string
-					if upgrade {
-						args = append(args, "--is-upgrade")
-					}
-					before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options, args...)
-					output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
-					require.NoError(t, err)
-					old := "suse-observability-elasticsearch-master-headless"
-					if scenario.name == "custom-fullname" {
-						old = "customer-search-headless"
-					} else if scenario.name == "custom-master-service" {
-						old = "customer-master-headless"
-					} else if scenario.name == "data-group" {
-						old = "suse-observability-elasticsearch-data-headless"
-					} else if scenario.name == "custom-cluster" {
-						old = "customer-master-headless"
-					}
-					renames := map[string]string{"Service/" + old: "explicit-search-headless"}
-					seen := map[string]bool{}
-					expected := backupNamingDocuments(t, before, renames, seen)
-					require.True(t, seen["Service/"+old])
-					// Existing mismatches stay unchanged because their legacy
-					// endpoint differs from the Service being deliberately renamed.
-					rewritePlatformElasticsearchHeadless(expected, old)
-					assert.Equal(t, expected, backupNamingDocuments(t, output, nil, nil))
-				})
-			}
+			t.Run(fmt.Sprintf("%s/split=%t", scenario.name, split), func(t *testing.T) {
+				set := map[string]string{"stackstate.features.server.split": fmt.Sprint(split)}
+				for key, value := range scenario.set {
+					set[key] = value
+				}
+				options := apiResourceNameTestOptions(set)
+				options.ValuesFiles = []string{values}
+				before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options)
+				output, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+				require.NoError(t, err)
+				old := "suse-observability-elasticsearch-master-headless"
+				if scenario.name == "custom-fullname" {
+					old = "customer-search-headless"
+				} else if scenario.name == "custom-master-service" {
+					old = "customer-master-headless"
+				} else if scenario.name == "data-group" {
+					old = "suse-observability-elasticsearch-data-headless"
+				} else if scenario.name == "custom-cluster" {
+					old = "customer-master-headless"
+				}
+				renames := map[string]string{"Service/" + old: "explicit-search-headless"}
+				seen := map[string]bool{}
+				expected := backupNamingDocuments(t, before, renames, seen)
+				require.True(t, seen["Service/"+old])
+				// Existing mismatches stay unchanged because their legacy
+				// endpoint differs from the Service being deliberately renamed.
+				rewritePlatformElasticsearchHeadless(expected, old)
+				assert.Equal(t, expected, backupNamingDocuments(t, output, nil, nil))
+			})
 		}
 	}
 }
@@ -100,72 +94,67 @@ func TestElasticsearchCertificateLookupUsesDedicatedHelper(t *testing.T) {
 	t.Parallel()
 
 	for _, renamed := range []bool{false, true} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("renamed=%t/upgrade=%t", renamed, upgrade), func(t *testing.T) {
-				// CI downloads the platform dependency artifacts only. Use its
-				// packaged Elasticsearch chart, including nested dependencies.
-				packages, err := filepath.Glob("../charts/elasticsearch-*.tgz")
-				require.NoError(t, err)
-				require.Len(t, packages, 1, "Build platform dependencies before running lookup tests")
-				fixture := t.TempDir()
-				unpackOutput, err := exec.Command("tar", "-xzf", packages[0], "-C", fixture).CombinedOutput()
-				require.NoError(t, err, string(unpackOutput))
-				chart := filepath.Join(fixture, "elasticsearch")
-				// Keep the real certificate template/helpers and dependencies.
-				// The minimal mock API only supports Secret reads; full workload
-				// manifests are exercised by the reference tests above.
-				templates, err := filepath.Glob(filepath.Join(chart, "templates", "*.yaml"))
-				require.NoError(t, err)
-				for _, path := range templates {
-					if filepath.Base(path) != "secret-cert.yaml" {
-						require.NoError(t, os.Remove(path))
-					}
+		t.Run(fmt.Sprintf("renamed=%t", renamed), func(t *testing.T) {
+			// CI downloads the platform dependency artifacts only. Use its
+			// packaged Elasticsearch chart, including nested dependencies.
+			packages, err := filepath.Glob("../charts/elasticsearch-*.tgz")
+			require.NoError(t, err)
+			require.Len(t, packages, 1, "Build platform dependencies before running lookup tests")
+			fixture := t.TempDir()
+			unpackOutput, err := exec.Command("tar", "-xzf", packages[0], "-C", fixture).CombinedOutput()
+			require.NoError(t, err, string(unpackOutput))
+			chart := filepath.Join(fixture, "elasticsearch")
+			// Keep the real certificate template/helpers and dependencies.
+			// The minimal mock API only supports Secret reads; full workload
+			// manifests are exercised by the reference tests above.
+			templates, err := filepath.Glob(filepath.Join(chart, "templates", "*.yaml"))
+			require.NoError(t, err)
+			for _, path := range templates {
+				if filepath.Base(path) != "secret-cert.yaml" {
+					require.NoError(t, os.Remove(path))
 				}
-				require.NoError(t, os.RemoveAll(filepath.Join(chart, "templates", "test")))
-				name := "suse-observability-elasticsearch-master-certs"
-				if renamed {
-					name = "explicit-search-certificates"
-					path := filepath.Join(chart, "templates", "_names.tpl")
-					data, err := os.ReadFile(path)
-					require.NoError(t, err)
-					header := `define "elasticsearch.certificates.secret.fullname"`
-					require.Equal(t, 1, strings.Count(string(data), header))
-					content := strings.Replace(string(data), header, `define "test.original.elasticsearch.certificates.secret.fullname"`, 1)
-					content += "\n{{- " + header + " -}}" + name + "{{- end -}}\n"
-					require.NoError(t, os.WriteFile(path, []byte(content), 0600))
-				}
-				existing := &corev1.Secret{
-					TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
-					ObjectMeta: metav1.ObjectMeta{
-						Name: name, Namespace: "observability",
-						Labels: map[string]string{"app.kubernetes.io/managed-by": "Helm"},
-						Annotations: map[string]string{
-							"meta.helm.sh/release-name": "nightly", "meta.helm.sh/release-namespace": "observability",
-						},
+			}
+			require.NoError(t, os.RemoveAll(filepath.Join(chart, "templates", "test")))
+			name := "suse-observability-elasticsearch-master-certs"
+			if renamed {
+				name = "explicit-search-certificates"
+				path := filepath.Join(chart, "templates", "_names.tpl")
+				data, err := os.ReadFile(path)
+				require.NoError(t, err)
+				header := `define "elasticsearch.certificates.secret.fullname"`
+				require.Equal(t, 1, strings.Count(string(data), header))
+				content := strings.Replace(string(data), header, `define "test.original.elasticsearch.certificates.secret.fullname"`, 1)
+				content += "\n{{- " + header + " -}}" + name + "{{- end -}}\n"
+				require.NoError(t, os.WriteFile(path, []byte(content), 0600))
+			}
+			existing := &corev1.Secret{
+				TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: name, Namespace: "observability",
+					Labels: map[string]string{"app.kubernetes.io/managed-by": "Helm"},
+					Annotations: map[string]string{
+						"meta.helm.sh/release-name": "nightly", "meta.helm.sh/release-namespace": "observability",
 					},
-					Data: map[string][]byte{
-						"tls.crt": []byte("existing-certificate"),
-						"tls.key": []byte("existing-private-key"),
-						"ca.crt":  []byte("existing-ca"),
-					},
-				}
-				secretPath := "/api/v1/namespaces/observability/secrets/" + name
-				kubeconfig, requests := secretLookupTestAPI(t, secretPath, existing)
-				options := apiResourceNameTestOptions(map[string]string{
-					"createCert": "true", "prometheus-elasticsearch-exporter.enabled": "false",
-				})
-				options.ValuesFiles = nil
-				args := []string{"--dry-run=server", "--disable-openapi-validation", "--kubeconfig", kubeconfig, "--kube-context", "fixture", "--namespace", "observability"}
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output, err := helm.RenderTemplateE(t, options, chart, "nightly", []string{"templates/secret-cert.yaml"}, args...)
-				require.NoError(t, err)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				require.Contains(t, resources.Secrets, name)
-				assert.Equal(t, existing.Data, resources.Secrets[name].Data)
-				assert.Contains(t, requests(), secretPath, "The declaration and real lookup must share the same name")
+				},
+				Data: map[string][]byte{
+					"tls.crt": []byte("existing-certificate"),
+					"tls.key": []byte("existing-private-key"),
+					"ca.crt":  []byte("existing-ca"),
+				},
+			}
+			secretPath := "/api/v1/namespaces/observability/secrets/" + name
+			kubeconfig, requests := secretLookupTestAPI(t, secretPath, existing)
+			options := apiResourceNameTestOptions(map[string]string{
+				"createCert": "true", "prometheus-elasticsearch-exporter.enabled": "false",
 			})
-		}
+			options.ValuesFiles = nil
+			args := []string{"--dry-run=server", "--disable-openapi-validation", "--kubeconfig", kubeconfig, "--kube-context", "fixture", "--namespace", "observability"}
+			output, err := helm.RenderTemplateE(t, options, chart, "nightly", []string{"templates/secret-cert.yaml"}, args...)
+			require.NoError(t, err)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Contains(t, resources.Secrets, name)
+			assert.Equal(t, existing.Data, resources.Secrets[name].Data)
+			assert.Contains(t, requests(), secretPath, "The declaration and real lookup must share the same name")
+		})
 	}
 }

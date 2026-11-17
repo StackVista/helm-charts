@@ -12,6 +12,8 @@ import (
 )
 
 func TestPullSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -19,6 +21,8 @@ func TestPullSecret(t *testing.T) {
 }
 
 func TestPullSecretGlobal(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pull_secret_global.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -26,6 +30,8 @@ func TestPullSecretGlobal(t *testing.T) {
 }
 
 func TestPullSecretGlobalNamed(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pull_secret_global_named.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es", "replication-checker"}

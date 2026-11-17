@@ -10,6 +10,8 @@ import (
 )
 
 func TestK2ESDiskSpaceRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -42,11 +44,15 @@ func TestK2ESDiskSpaceRender(t *testing.T) {
 }
 
 func TestK2ESDiskSpaceBudgetFail(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/e2es_diskWeight_fail.yaml")
 	require.Contains(t, err.Error(), "The share of ElasticSearch disk on receiver.esDiskSpaceShare, e2es.esDiskSpaceShare should be 100.")
 }
 
 func TestUnknownK2ESDiskSpaceRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/unknown_disk_unit.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)

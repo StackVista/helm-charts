@@ -10,6 +10,8 @@ import (
 )
 
 func TestParentHdfsNamenodeStartupProtectsSlowInitialization(t *testing.T) {
+	t.Parallel()
+
 	for _, valuesFile := range []string{"values/full.yaml", "values/global_sizing_150_ha.yaml"} {
 		t.Run(valuesFile, func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{

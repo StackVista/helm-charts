@@ -10,6 +10,8 @@ import (
 )
 
 func TestRegularImageNonSplit(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -33,6 +35,8 @@ func TestRegularImageNonSplit(t *testing.T) {
 }
 
 func TestRegularImageSplit(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -62,6 +66,8 @@ func TestRegularImageSplit(t *testing.T) {
 }
 
 func TestHbaseHdfsUsesFullImageTag(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml", "values/hbase12_enabled.yaml"},
 		SetValues: map[string]string{

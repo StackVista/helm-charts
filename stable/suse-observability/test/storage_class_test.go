@@ -12,6 +12,8 @@ import (
 const globalStorageClass = "global"
 
 func TestStorageClassOverrides(t *testing.T) {
+	t.Parallel()
+
 	distributed := map[string]string{
 		"pvc/spotlight-artifacts-volume-claim":                            "anomaly-detection",
 		"pvc/suse-observability-api-txlog":                                "transaction-logs",

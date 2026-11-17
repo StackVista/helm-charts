@@ -124,101 +124,99 @@ func checkApplicationConfigMapNamingCompatibility(t *testing.T, beforeChart, aft
 			exporter + "serviceMonitor.enabled": "false", exporter + "prometheusRule.enabled": "false",
 		}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := componentResourceNameTestValues()
-				values[exporter+"serviceMonitor.enabled"] = "true"
-				values[exporter+"prometheusRule.enabled"] = "true"
-				values[exporter+"prometheusRule.rules[0].alert"] = "FixtureAlert"
-				values[exporter+"prometheusRule.rules[0].expr"] = "vector(1)"
-				for key, value := range tc.values {
-					values[key] = value
-				}
-				options := apiResourceNameTestOptions(values)
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
-				}
-				beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderRBACNamingChart(t, afterChart, tc.release, options, upgrade)
-				before := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				after := helmtestutil.NewKubernetesResources(t, afterOutput)
-				renames := map[string]string{}
-				for _, component := range applicationConfigMapNamingComponents() {
-					for _, suffix := range []string{"", "-log"} {
-						old, target := tc.prefix+"-"+component.suffix+suffix, "suse-observability-"+component.suffix+suffix
-						if config, found := before.ConfigMaps[old]; found {
-							require.Contains(t, after.ConfigMaps, target)
-							config.Name = target
-							assert.Equal(t, config, after.ConfigMaps[target], "Configuration content and metadata must stay unchanged")
-							if old != target {
-								renames["ConfigMap/"+old] = target
-								assert.NotContains(t, after.ConfigMaps, old)
-							}
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := componentResourceNameTestValues()
+			values[exporter+"serviceMonitor.enabled"] = "true"
+			values[exporter+"prometheusRule.enabled"] = "true"
+			values[exporter+"prometheusRule.rules[0].alert"] = "FixtureAlert"
+			values[exporter+"prometheusRule.rules[0].expr"] = "vector(1)"
+			for key, value := range tc.values {
+				values[key] = value
+			}
+			options := apiResourceNameTestOptions(values)
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options)
+			afterOutput := renderRBACNamingChart(t, afterChart, tc.release, options)
+			before := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			after := helmtestutil.NewKubernetesResources(t, afterOutput)
+			renames := map[string]string{}
+			for _, component := range applicationConfigMapNamingComponents() {
+				for _, suffix := range []string{"", "-log"} {
+					old, target := tc.prefix+"-"+component.suffix+suffix, "suse-observability-"+component.suffix+suffix
+					if config, found := before.ConfigMaps[old]; found {
+						require.Contains(t, after.ConfigMaps, target)
+						config.Name = target
+						assert.Equal(t, config, after.ConfigMaps[target], "Configuration content and metadata must stay unchanged")
+						if old != target {
+							renames["ConfigMap/"+old] = target
+							assert.NotContains(t, after.ConfigMaps, old)
 						}
 					}
 				}
-				exporterName := tc.exporterName
-				if exporterName == "" {
-					exporterName = tc.release + "-prometheus-elasticsearch-exporter"
+			}
+			exporterName := tc.exporterName
+			if exporterName == "" {
+				exporterName = tc.release + "-prometheus-elasticsearch-exporter"
+			}
+			for _, resource := range []struct{ kind, value string }{
+				{"ServiceMonitor", "serviceMonitor"}, {"PodMonitor", "podMonitor"}, {"PrometheusRule", "prometheusRule"},
+			} {
+				target := "suse-observability-prometheus-elasticsearch-exporter"
+				if namespace := values[exporter+resource.value+".namespace"]; namespace != "" && namespace != options.KubectlOptions.Namespace {
+					target = exporterName
 				}
-				for _, resource := range []struct{ kind, value string }{
-					{"ServiceMonitor", "serviceMonitor"}, {"PodMonitor", "podMonitor"}, {"PrometheusRule", "prometheusRule"},
-				} {
-					target := "suse-observability-prometheus-elasticsearch-exporter"
-					if namespace := values[exporter+resource.value+".namespace"]; namespace != "" && namespace != options.KubectlOptions.Namespace {
-						target = exporterName
-					}
-					if exporterName != target {
-						renames[resource.kind+"/"+exporterName] = target
-					}
+				if exporterName != target {
+					renames[resource.kind+"/"+exporterName] = target
 				}
-				seen := map[string]bool{}
-				expected := backupNamingDocuments(t, beforeOutput, renames, seen)
-				actual := backupNamingDocuments(t, afterOutput, nil, nil)
-				for name, deployment := range before.Deployments {
-					require.Contains(t, after.Deployments, name)
-					target := after.Deployments[name]
-					allowed := deployment.DeepCopy()
-					for i, volume := range allowed.Spec.Template.Spec.Volumes {
-						if volume.ConfigMap != nil {
-							oldName := volume.ConfigMap.Name
-							if replacement, found := renames["ConfigMap/"+oldName]; found {
-								allowed.Spec.Template.Spec.Volumes[i].ConfigMap.Name = replacement
-								for _, component := range applicationConfigMapNamingComponents() {
-									if oldName == tc.prefix+"-"+component.suffix {
-										key := "checksum/" + component.key + "-configmap"
-										oldHash, newHash := deployment.Spec.Template.Annotations[key], target.Spec.Template.Annotations[key]
-										require.Regexp(t, "^[0-9a-f]{64}$", oldHash)
-										require.Regexp(t, "^[0-9a-f]{64}$", newHash)
-										assert.NotEqual(t, oldHash, newHash, "Renaming application configuration must update its checksum")
-										allowed.Spec.Template.Annotations[key] = newHash
-										doc := expected["Deployment/"+deployment.Namespace+"/"+name].([]interface{})[0].(map[string]interface{})
-										template := doc["spec"].(map[string]interface{})["template"].(map[string]interface{})
-										template["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})[key] = newHash
-									}
+			}
+			seen := map[string]bool{}
+			expected := backupNamingDocuments(t, beforeOutput, renames, seen)
+			actual := backupNamingDocuments(t, afterOutput, nil, nil)
+			for name, deployment := range before.Deployments {
+				require.Contains(t, after.Deployments, name)
+				target := after.Deployments[name]
+				allowed := deployment.DeepCopy()
+				for i, volume := range allowed.Spec.Template.Spec.Volumes {
+					if volume.ConfigMap != nil {
+						oldName := volume.ConfigMap.Name
+						if replacement, found := renames["ConfigMap/"+oldName]; found {
+							allowed.Spec.Template.Spec.Volumes[i].ConfigMap.Name = replacement
+							for _, component := range applicationConfigMapNamingComponents() {
+								if oldName == tc.prefix+"-"+component.suffix {
+									key := "checksum/" + component.key + "-configmap"
+									oldHash, newHash := deployment.Spec.Template.Annotations[key], target.Spec.Template.Annotations[key]
+									require.Regexp(t, "^[0-9a-f]{64}$", oldHash)
+									require.Regexp(t, "^[0-9a-f]{64}$", newHash)
+									assert.NotEqual(t, oldHash, newHash, "Renaming application configuration must update its checksum")
+									allowed.Spec.Template.Annotations[key] = newHash
+									doc := expected["Deployment/"+deployment.Namespace+"/"+name].([]interface{})[0].(map[string]interface{})
+									template := doc["spec"].(map[string]interface{})["template"].(map[string]interface{})
+									template["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})[key] = newHash
 								}
 							}
 						}
 					}
-					assert.Equal(t, *allowed, target, "Only ConfigMap volume names and their checksum may change")
-					assertApplicationConfigMapUpgradePatches(t, deployment, target)
 				}
-				assert.Equal(t, expected, actual, "Only the reviewed ConfigMaps, volume references, checksums and exporter monitor names may change")
-				for old := range renames {
-					if strings.HasPrefix(old, "ConfigMap/") {
-						assert.True(t, seen[old], old)
-					}
+				assert.Equal(t, *allowed, target, "Only ConfigMap volume names and their checksum may change")
+				assertApplicationConfigMapUpgradePatches(t, deployment, target)
+			}
+			assert.Equal(t, expected, actual, "Only the reviewed ConfigMaps, volume references, checksums and exporter monitor names may change")
+			for old := range renames {
+				if strings.HasPrefix(old, "ConfigMap/") {
+					assert.True(t, seen[old], old)
 				}
-				assert.Equal(t, before.Statefulsets, after.Statefulsets)
-				assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
-				assert.Equal(t, before.Secrets, after.Secrets)
-				assert.Equal(t, before.Services, after.Services)
-				assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
-			})
-		}
+			}
+			assert.Equal(t, before.Statefulsets, after.Statefulsets)
+			assert.Equal(t, before.PersistentVolumeClaims, after.PersistentVolumeClaims)
+			assert.Equal(t, before.Secrets, after.Secrets)
+			assert.Equal(t, before.Services, after.Services)
+			assert.Equal(t, before.ServiceAccounts, after.ServiceAccounts)
+		})
 	}
 }
 
@@ -229,42 +227,40 @@ func TestExporterMonitoringSharedNamespaceInstallations(t *testing.T) {
 	for _, monitor := range []struct{ value, kind string }{
 		{"serviceMonitor", "ServiceMonitor"}, {"podMonitor", "PodMonitor"},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", monitor.kind, upgrade), func(t *testing.T) {
-				identities := map[string]bool{}
-				for _, tenant := range []string{"a", "b"} {
-					release, namespace := "installation-"+tenant, "tenant-"+tenant
-					options := apiResourceNameTestOptions(map[string]string{
-						exporter + "serviceMonitor.enabled": "false", exporter + "podMonitor.enabled": "false",
-						exporter + monitor.value + ".enabled": "true", exporter + monitor.value + ".namespace": "monitoring",
-						exporter + "prometheusRule.enabled": "true", exporter + "prometheusRule.namespace": "monitoring",
-						exporter + "prometheusRule.rules[0].alert": "FixtureAlert", exporter + "prometheusRule.rules[0].expr": "vector(1)",
-					})
-					options.KubectlOptions.Namespace = namespace
-					output := renderRBACNamingChart(t, "..", release, options, upgrade)
-					documents := backupNamingDocuments(t, output, nil, nil)
-					name := release + "-prometheus-elasticsearch-exporter"
-					for _, kind := range []string{monitor.kind, "PrometheusRule"} {
-						key := kind + "/monitoring/" + name
-						require.Contains(t, documents, key)
-						require.False(t, identities[key], "Installations must not compete for the same monitoring object")
-						identities[key] = true
-						objects := documents[key].([]interface{})
-						require.Len(t, objects, 1)
-						object := objects[0].(map[string]interface{})
-						metadata := object["metadata"].(map[string]interface{})
-						assert.Equal(t, release, metadata["labels"].(map[string]interface{})["release"])
-						if kind != "PrometheusRule" {
-							spec := object["spec"].(map[string]interface{})
-							assert.Equal(t, []interface{}{namespace}, spec["namespaceSelector"].(map[string]interface{})["matchNames"])
-							assert.Equal(t, release, spec["selector"].(map[string]interface{})["matchLabels"].(map[string]interface{})["release"])
-						}
-						assert.NotContains(t, documents, kind+"/monitoring/suse-observability-prometheus-elasticsearch-exporter")
+		t.Run(fmt.Sprintf("%s", monitor.kind), func(t *testing.T) {
+			identities := map[string]bool{}
+			for _, tenant := range []string{"a", "b"} {
+				release, namespace := "installation-"+tenant, "tenant-"+tenant
+				options := apiResourceNameTestOptions(map[string]string{
+					exporter + "serviceMonitor.enabled": "false", exporter + "podMonitor.enabled": "false",
+					exporter + monitor.value + ".enabled": "true", exporter + monitor.value + ".namespace": "monitoring",
+					exporter + "prometheusRule.enabled": "true", exporter + "prometheusRule.namespace": "monitoring",
+					exporter + "prometheusRule.rules[0].alert": "FixtureAlert", exporter + "prometheusRule.rules[0].expr": "vector(1)",
+				})
+				options.KubectlOptions.Namespace = namespace
+				output := renderRBACNamingChart(t, "..", release, options)
+				documents := backupNamingDocuments(t, output, nil, nil)
+				name := release + "-prometheus-elasticsearch-exporter"
+				for _, kind := range []string{monitor.kind, "PrometheusRule"} {
+					key := kind + "/monitoring/" + name
+					require.Contains(t, documents, key)
+					require.False(t, identities[key], "Installations must not compete for the same monitoring object")
+					identities[key] = true
+					objects := documents[key].([]interface{})
+					require.Len(t, objects, 1)
+					object := objects[0].(map[string]interface{})
+					metadata := object["metadata"].(map[string]interface{})
+					assert.Equal(t, release, metadata["labels"].(map[string]interface{})["release"])
+					if kind != "PrometheusRule" {
+						spec := object["spec"].(map[string]interface{})
+						assert.Equal(t, []interface{}{namespace}, spec["namespaceSelector"].(map[string]interface{})["matchNames"])
+						assert.Equal(t, release, spec["selector"].(map[string]interface{})["matchLabels"].(map[string]interface{})["release"])
 					}
+					assert.NotContains(t, documents, kind+"/monitoring/suse-observability-prometheus-elasticsearch-exporter")
 				}
-				require.Len(t, identities, 4)
-			})
-		}
+			}
+			require.Len(t, identities, 4)
+		})
 	}
 }
 

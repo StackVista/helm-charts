@@ -12,6 +12,8 @@ import (
 )
 
 func TestPDBUnhealthyEvictionDefaults(t *testing.T) {
+	t.Parallel()
+
 	for _, version := range []string{"1.26.0", "1.34.0", "1.35.0", "1.36.0"} {
 		for _, split := range []string{"true", "false"} {
 			t.Run(version+"/split="+split, func(t *testing.T) {
@@ -73,6 +75,8 @@ func TestPDBUnhealthyEvictionDefaults(t *testing.T) {
 }
 
 func TestPDBUnhealthyEvictionOverrides(t *testing.T) {
+	t.Parallel()
+
 	for _, version := range []string{"1.26.0", "1.34.0", "1.35.0", "1.36.0"} {
 		t.Run(version, func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "suse-observability", &helm.Options{

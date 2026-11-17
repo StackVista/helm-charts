@@ -16,6 +16,8 @@ import (
 // matches the key against the container name, so an instance annotated for another instance's
 // container is never scraped and reports no metrics at all.
 func TestVictoriaMetricsScrapeAnnotationsMatchContainer(t *testing.T) {
+	t.Parallel()
+
 	for _, valuesFile := range []string{"values/global_sizing_150_ha.yaml", "values/global_sizing_50_nonha.yaml"} {
 		t.Run(valuesFile, func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplate(t, "suse-observability", valuesFile)
@@ -66,6 +68,8 @@ func TestVictoriaMetricsScrapeAnnotationsMatchContainer(t *testing.T) {
 // values and stackstate.vmagent.agentMetricsFilter — so they drift silently, and a family
 // missing from one of them leaves gaps in dashboards built for both.
 func TestVictoriaMetricsScrapeFilters(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_sizing_150_ha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

@@ -22,6 +22,8 @@ func findVolume(t *testing.T, volumes []corev1.Volume, name string) corev1.Volum
 }
 
 func TestJavaTrustStoreFromExternalSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/java_trust_store_external_secret.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -57,6 +59,8 @@ func TestJavaTrustStoreFromExternalSecret(t *testing.T) {
 }
 
 func TestJavaTrustStoreFromExternalSecretWithInlinePassword(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -88,6 +92,8 @@ func TestJavaTrustStoreFromExternalSecretWithInlinePassword(t *testing.T) {
 // Guards the migration path: a user who adds the external secret but leaves the old inline value in
 // place must not end up with the trust store still counted against the release secret size limit.
 func TestJavaTrustStoreExternalSecretTakesPrecedenceOverInlineValue(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml", "values/java_trust_store_external_secret.yaml"},
 		SetValues: map[string]string{
@@ -120,6 +126,8 @@ func TestJavaTrustStoreExternalSecretTakesPrecedenceOverInlineValue(t *testing.T
 // The two LDAP blobs are configured independently, so one may come from an external secret while the
 // other stays inline.
 func TestLdapTrustCertificatesFromExternalSecretWithInlineTrustStore(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml", "values/ldap_authentication.yaml"},
 		SetValues: map[string]string{
@@ -146,6 +154,8 @@ func TestLdapTrustCertificatesFromExternalSecretWithInlineTrustStore(t *testing.
 
 // The LDAP mirror of TestJavaTrustStoreExternalSecretTakesPrecedenceOverInlineValue.
 func TestLdapTrustStoreExternalSecretTakesPrecedenceOverInlineValues(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml", "values/ldap_authentication_external_secret.yaml"},
 		SetValues: map[string]string{
@@ -167,6 +177,8 @@ func TestLdapTrustStoreExternalSecretTakesPrecedenceOverInlineValues(t *testing.
 }
 
 func TestNoTrustStoreConfigured(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -186,6 +198,8 @@ func TestNoTrustStoreConfigured(t *testing.T) {
 }
 
 func TestLdapTrustStoreFromExternalSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/ldap_authentication_external_secret.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -208,6 +222,8 @@ func TestLdapTrustStoreFromExternalSecret(t *testing.T) {
 }
 
 func TestTrustStoresMixExternalAndInlineSecrets(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/ldap_authentication.yaml", "values/java_trust_store_external_secret.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -229,6 +245,8 @@ func TestTrustStoresMixExternalAndInlineSecrets(t *testing.T) {
 }
 
 func TestS3ProxyJavaTrustStoreFromExternalSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml", "values/java_trust_store_external_secret.yaml"},
 		SetValues:   map[string]string{"global.backup.enabled": "true"},

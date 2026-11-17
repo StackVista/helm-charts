@@ -43,33 +43,31 @@ func TestClusterBindingNamingBaselineReproduction(t *testing.T) {
 func checkClusterBindingNamingFixtures(t *testing.T, chart string, renamed bool) {
 	t.Helper()
 	for _, mode := range []string{"split", "monolithic"} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", mode, upgrade), func(t *testing.T) {
-				data, err := os.ReadFile(filepath.Join("testdata/cluster-binding-renaming", mode+".json"))
-				require.NoError(t, err)
-				var expected clusterBindingNamingFixture
-				require.NoError(t, json.Unmarshal(data, &expected))
-				options := apiResourceNameTestOptions(map[string]string{"stackstate.features.server.split": fmt.Sprint(mode == "split")})
-				output := renderRBACNamingChart(t, chart, "nightly", options, upgrade)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				require.Contains(t, resources.ClusterRoles, expected.Role.Name)
-				actual := clusterBindingNamingFixture{Role: resources.ClusterRoles[expected.Role.Name], Bindings: map[string]rbacv1.ClusterRoleBinding{}}
-				for _, purpose := range []string{"authentication", "authorization"} {
-					binding := expected.Bindings[purpose]
-					if renamed && purpose == "authentication" {
-						binding.Name = "suse-observability-observability-" + purpose
-						expected.Bindings[purpose] = binding
-					}
-					require.Contains(t, resources.ClusterRoleBindings, binding.Name)
-					actual.Bindings[purpose] = resources.ClusterRoleBindings[binding.Name]
+		t.Run(fmt.Sprintf("%s", mode), func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("testdata/cluster-binding-renaming", mode+".json"))
+			require.NoError(t, err)
+			var expected clusterBindingNamingFixture
+			require.NoError(t, json.Unmarshal(data, &expected))
+			options := apiResourceNameTestOptions(map[string]string{"stackstate.features.server.split": fmt.Sprint(mode == "split")})
+			output := renderRBACNamingChart(t, chart, "nightly", options)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Contains(t, resources.ClusterRoles, expected.Role.Name)
+			actual := clusterBindingNamingFixture{Role: resources.ClusterRoles[expected.Role.Name], Bindings: map[string]rbacv1.ClusterRoleBinding{}}
+			for _, purpose := range []string{"authentication", "authorization"} {
+				binding := expected.Bindings[purpose]
+				if renamed && purpose == "authentication" {
+					binding.Name = "suse-observability-observability-" + purpose
+					expected.Bindings[purpose] = binding
 				}
-				for _, labels := range []map[string]string{actual.Role.Labels, actual.Bindings["authentication"].Labels, actual.Bindings["authorization"].Labels} {
-					delete(labels, "helm.sh/chart")
-					delete(labels, "app.kubernetes.io/version")
-				}
-				assert.Equal(t, expected, actual)
-			})
-		}
+				require.Contains(t, resources.ClusterRoleBindings, binding.Name)
+				actual.Bindings[purpose] = resources.ClusterRoleBindings[binding.Name]
+			}
+			for _, labels := range []map[string]string{actual.Role.Labels, actual.Bindings["authentication"].Labels, actual.Bindings["authorization"].Labels} {
+				delete(labels, "helm.sh/chart")
+				delete(labels, "app.kubernetes.io/version")
+			}
+			assert.Equal(t, expected, actual)
+		})
 	}
 }
 
@@ -120,72 +118,70 @@ func TestClusterBindingNamingPreservesPlatformResources(t *testing.T) {
 			"clusterrolebinding.annotations.fixture-note": "preserved", "commonLabels.fixture-scope": "preserved",
 		}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				options := apiResourceNameTestOptions(componentResourceNameTestValues())
-				for key, value := range tc.values {
-					options.SetValues[key] = value
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			options := apiResourceNameTestOptions(componentResourceNameTestValues())
+			for key, value := range tc.values {
+				options.SetValues[key] = value
+			}
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options)
+			afterOutput := renderRBACNamingChart(t, "..", tc.release, options)
+			beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
+			renames := map[string]string{}
+			for _, purpose := range []string{"authentication", "authorization"} {
+				old, target := tc.legacyPrefix+"-"+purpose, tc.targetPrefix+"-"+purpose
+				if purpose == "authorization" {
+					target = old
 				}
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
+				if tc.disabled {
+					assert.NotContains(t, beforeResources.ClusterRoleBindings, old)
+					assert.NotContains(t, afterResources.ClusterRoleBindings, target)
+					continue
 				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+				require.Contains(t, beforeResources.ClusterRoleBindings, old)
+				require.Contains(t, afterResources.ClusterRoleBindings, target)
+				expected := beforeResources.ClusterRoleBindings[old]
+				expected.Name = target
+				actual := afterResources.ClusterRoleBindings[target]
+				assert.Equal(t, expected, actual, "Role reference, subjects and all other fields must stay unchanged")
+				assert.Empty(t, validation.IsDNS1123Subdomain(target))
+				require.Len(t, actual.Subjects, 1)
+				assert.Equal(t, options.KubectlOptions.Namespace, actual.Subjects[0].Namespace)
+				require.Contains(t, afterResources.ServiceAccounts, actual.Subjects[0].Name)
+				if purpose == "authentication" {
+					assert.Equal(t, "system:auth-delegator", actual.RoleRef.Name)
+				} else {
+					require.Contains(t, afterResources.ClusterRoles, actual.RoleRef.Name)
 				}
-				beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderRBACNamingChart(t, "..", tc.release, options, upgrade)
-				beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
-				renames := map[string]string{}
-				for _, purpose := range []string{"authentication", "authorization"} {
-					old, target := tc.legacyPrefix+"-"+purpose, tc.targetPrefix+"-"+purpose
-					if purpose == "authorization" {
-						target = old
-					}
-					if tc.disabled {
-						assert.NotContains(t, beforeResources.ClusterRoleBindings, old)
-						assert.NotContains(t, afterResources.ClusterRoleBindings, target)
-						continue
-					}
-					require.Contains(t, beforeResources.ClusterRoleBindings, old)
-					require.Contains(t, afterResources.ClusterRoleBindings, target)
-					expected := beforeResources.ClusterRoleBindings[old]
-					expected.Name = target
-					actual := afterResources.ClusterRoleBindings[target]
-					assert.Equal(t, expected, actual, "Role reference, subjects and all other fields must stay unchanged")
-					assert.Empty(t, validation.IsDNS1123Subdomain(target))
-					require.Len(t, actual.Subjects, 1)
-					assert.Equal(t, options.KubectlOptions.Namespace, actual.Subjects[0].Namespace)
-					require.Contains(t, afterResources.ServiceAccounts, actual.Subjects[0].Name)
-					if purpose == "authentication" {
-						assert.Equal(t, "system:auth-delegator", actual.RoleRef.Name)
-					} else {
-						require.Contains(t, afterResources.ClusterRoles, actual.RoleRef.Name)
-					}
-					if old != target {
-						assert.NotContains(t, afterResources.ClusterRoleBindings, old)
-					}
-					renames["ClusterRoleBinding/"+old] = target
+				if old != target {
+					assert.NotContains(t, afterResources.ClusterRoleBindings, old)
 				}
-				for name, binding := range beforeResources.ClusterRoleBindings {
-					if after, found := afterResources.ClusterRoleBindings[name]; found {
-						assertClusterBindingUpgradePatchUnchanged(t, binding, after)
-					}
+				renames["ClusterRoleBinding/"+old] = target
+			}
+			for name, binding := range beforeResources.ClusterRoleBindings {
+				if after, found := afterResources.ClusterRoleBindings[name]; found {
+					assertClusterBindingUpgradePatchUnchanged(t, binding, after)
 				}
-				seen := map[string]bool{}
-				before := backupNamingDocuments(t, beforeOutput, renames, seen)
-				assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "Only the authentication ClusterRoleBinding metadata name may change")
-				for name := range renames {
-					require.True(t, seen[name], name)
-				}
-				assert.Equal(t, beforeResources.ClusterRoles, afterResources.ClusterRoles)
-				assert.Equal(t, beforeResources.ServiceAccounts, afterResources.ServiceAccounts)
-				assert.Equal(t, beforeResources.Deployments, afterResources.Deployments)
-				assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
-				assert.Equal(t, beforeResources.ConfigMaps, afterResources.ConfigMaps)
-				assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
-			})
-		}
+			}
+			seen := map[string]bool{}
+			before := backupNamingDocuments(t, beforeOutput, renames, seen)
+			assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "Only the authentication ClusterRoleBinding metadata name may change")
+			for name := range renames {
+				require.True(t, seen[name], name)
+			}
+			assert.Equal(t, beforeResources.ClusterRoles, afterResources.ClusterRoles)
+			assert.Equal(t, beforeResources.ServiceAccounts, afterResources.ServiceAccounts)
+			assert.Equal(t, beforeResources.Deployments, afterResources.Deployments)
+			assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
+			assert.Equal(t, beforeResources.ConfigMaps, afterResources.ConfigMaps)
+			assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
+		})
 	}
 }
 
@@ -196,7 +192,7 @@ func TestClusterBindingNamingKeepsNamespacesDistinct(t *testing.T) {
 	for _, namespace := range []string{"suse-observability", "tenant-a", "tenant-b", strings.Repeat("n", 62) + "a", strings.Repeat("n", 62) + "b"} {
 		options := apiResourceNameTestOptions(nil)
 		options.KubectlOptions.Namespace = namespace
-		output := renderRBACNamingChart(t, "..", "suse-observability", options, false)
+		output := renderRBACNamingChart(t, "..", "suse-observability", options)
 		resources := helmtestutil.NewKubernetesResources(t, output)
 		prefix := "suse-observability-" + namespace
 		if namespace == "suse-observability" {

@@ -16,6 +16,8 @@ import (
 var expectedImageRegistry = "global.image.registry.test"
 
 func TestGlobalImageRegistryHAMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_image_registry_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -23,6 +25,8 @@ func TestGlobalImageRegistryHAMode(t *testing.T) {
 }
 
 func TestGlobalImageRegistryNonHAMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_image_registry_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

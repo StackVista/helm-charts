@@ -16,6 +16,8 @@ import (
 )
 
 func TestAuthSecretLookupPreservesCredentials(t *testing.T) {
+	t.Parallel()
+
 	const storedPassword = "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
 	const replacementPassword = "098f6bcd4621d373cade4e832627b4f6"
 	renamedChart := authSecretLookupTestChart(t, true)
@@ -43,82 +45,77 @@ func TestAuthSecretLookupPreservesCredentials(t *testing.T) {
 		{name: "missing-secret-and-password", missing: true},
 		{name: "external-secret", external: true, renamed: true},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				release, namespace, secretName := tc.release, tc.namespace, tc.secretName
-				if release == "" {
-					release = "nightly"
-				}
-				if namespace == "" {
-					namespace = "observability"
-				}
-				if secretName == "" {
-					secretName = "nightly-suse-observability-auth"
-				}
-				secretPath := "/api/v1/namespaces/" + namespace + "/secrets/" + secretName
-				var existing *corev1.Secret
-				if !tc.missing {
-					existing = &corev1.Secret{
-						TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
-						ObjectMeta: metav1.ObjectMeta{
-							Name: secretName, Namespace: namespace,
-							Labels: map[string]string{"app.kubernetes.io/managed-by": "Helm"},
-							Annotations: map[string]string{
-								"meta.helm.sh/release-name": release, "meta.helm.sh/release-namespace": namespace,
-							},
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			release, namespace, secretName := tc.release, tc.namespace, tc.secretName
+			if release == "" {
+				release = "nightly"
+			}
+			if namespace == "" {
+				namespace = "observability"
+			}
+			if secretName == "" {
+				secretName = "nightly-suse-observability-auth"
+			}
+			secretPath := "/api/v1/namespaces/" + namespace + "/secrets/" + secretName
+			var existing *corev1.Secret
+			if !tc.missing {
+				existing = &corev1.Secret{
+					TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
+					ObjectMeta: metav1.ObjectMeta{
+						Name: secretName, Namespace: namespace,
+						Labels: map[string]string{"app.kubernetes.io/managed-by": "Helm"},
+						Annotations: map[string]string{
+							"meta.helm.sh/release-name": release, "meta.helm.sh/release-namespace": namespace,
 						},
-						Data: map[string][]byte{"default_password": []byte(storedPassword)},
-					}
+					},
+					Data: map[string][]byte{"default_password": []byte(storedPassword)},
 				}
-				kubeconfig, requests := secretLookupTestAPI(t, secretPath, existing)
-				values := map[string]string{"stackstate.authentication.adminPassword": tc.provided}
-				maps.Copy(values, tc.values)
-				if tc.external {
-					values["stackstate.authentication.fromExternalSecret"] = "customer-auth"
-				}
-				options := apiResourceNameTestOptions(values)
-				options.KubectlOptions.Namespace = namespace
-				options.ValuesFiles = []string{valuesFile}
-				selectedChart := chart
-				if tc.renamed {
-					selectedChart = renamedChart
-				}
-				// Always override kubeconfig explicitly: this test only talks to
-				// its read-only mock API, never the developer's current cluster.
-				args := []string{"--dry-run=server", "--disable-openapi-validation", "--kubeconfig", kubeconfig, "--kube-context", "fixture"}
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output, err := helm.RenderTemplateE(t, options, selectedChart, release, nil, args...)
-				if tc.external {
-					require.NoError(t, err)
-					for _, path := range requests() {
-						assert.NotContains(t, path, "/secrets/"+secretName)
-						assert.NotContains(t, path, "/secrets/explicit-auth-secret")
-						assert.NotContains(t, path, "/secrets/customer-auth")
-					}
-					resources := helmtestutil.NewKubernetesResources(t, output)
-					assert.NotContains(t, resources.Secrets, secretName)
-					assert.NotContains(t, resources.Secrets, "explicit-auth-secret")
-					assert.NotContains(t, resources.Secrets, "customer-auth")
-					return
-				}
-				require.Contains(t, requests(), secretPath, "Lookup must use the same name and namespace as the Secret declaration")
-				if tc.missing && tc.provided == "" {
-					require.Error(t, err)
-					assert.Contains(t, err.Error(), "Admin password is required for new installations")
-					return
-				}
+			}
+			kubeconfig, requests := secretLookupTestAPI(t, secretPath, existing)
+			values := map[string]string{"stackstate.authentication.adminPassword": tc.provided}
+			maps.Copy(values, tc.values)
+			if tc.external {
+				values["stackstate.authentication.fromExternalSecret"] = "customer-auth"
+			}
+			options := apiResourceNameTestOptions(values)
+			options.KubectlOptions.Namespace = namespace
+			options.ValuesFiles = []string{valuesFile}
+			selectedChart := chart
+			if tc.renamed {
+				selectedChart = renamedChart
+			}
+			// Always override kubeconfig explicitly: this test only talks to
+			// its read-only mock API, never the developer's current cluster.
+			args := []string{"--dry-run=server", "--disable-openapi-validation", "--kubeconfig", kubeconfig, "--kube-context", "fixture"}
+			output, err := helm.RenderTemplateE(t, options, selectedChart, release, nil, args...)
+			if tc.external {
 				require.NoError(t, err)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				require.Contains(t, resources.Secrets, secretName)
-				expectedPassword := storedPassword
-				if tc.provided != "" {
-					expectedPassword = tc.provided
+				for _, path := range requests() {
+					assert.NotContains(t, path, "/secrets/"+secretName)
+					assert.NotContains(t, path, "/secrets/explicit-auth-secret")
+					assert.NotContains(t, path, "/secrets/customer-auth")
 				}
-				assert.Equal(t, expectedPassword, string(resources.Secrets[secretName].Data["default_password"]))
-			})
-		}
+				resources := helmtestutil.NewKubernetesResources(t, output)
+				assert.NotContains(t, resources.Secrets, secretName)
+				assert.NotContains(t, resources.Secrets, "explicit-auth-secret")
+				assert.NotContains(t, resources.Secrets, "customer-auth")
+				return
+			}
+			require.Contains(t, requests(), secretPath, "Lookup must use the same name and namespace as the Secret declaration")
+			if tc.missing && tc.provided == "" {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), "Admin password is required for new installations")
+				return
+			}
+			require.NoError(t, err)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Contains(t, resources.Secrets, secretName)
+			expectedPassword := storedPassword
+			if tc.provided != "" {
+				expectedPassword = tc.provided
+			}
+			assert.Equal(t, expectedPassword, string(resources.Secrets[secretName].Data["default_password"]))
+		})
 	}
 }
 

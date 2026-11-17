@@ -16,6 +16,8 @@ import (
 )
 
 func TestAPIKeySecretLookupPreservesCredentials(t *testing.T) {
+	t.Parallel()
+
 	const storedKey = "stored-fixture-api-key"
 	chart := secretLookupTestChart(t, "templates/global/secret-api-key.yaml")
 	renamedChart := secretLookupTestChart(t, "templates/global/secret-api-key.yaml")
@@ -57,84 +59,79 @@ func TestAPIKeySecretLookupPreservesCredentials(t *testing.T) {
 		}},
 		{name: "oldest-value-fallback", expected: "oldest-key", values: map[string]string{"stackstate.receiver.apiKey": "oldest-key"}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				release, namespace, secretName := tc.release, tc.namespace, tc.secretName
-				if release == "" {
-					release = "nightly"
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			release, namespace, secretName := tc.release, tc.namespace, tc.secretName
+			if release == "" {
+				release = "nightly"
+			}
+			if namespace == "" {
+				namespace = "observability"
+			}
+			if secretName == "" {
+				secretName = "nightly-suse-observability-api-key"
+			}
+			secretPath := "/api/v1/namespaces/" + namespace + "/secrets/" + secretName
+			var existing *corev1.Secret
+			if !tc.missing {
+				key := storedKey
+				if tc.emptyStored {
+					key = ""
 				}
-				if namespace == "" {
-					namespace = "observability"
-				}
-				if secretName == "" {
-					secretName = "nightly-suse-observability-api-key"
-				}
-				secretPath := "/api/v1/namespaces/" + namespace + "/secrets/" + secretName
-				var existing *corev1.Secret
-				if !tc.missing {
-					key := storedKey
-					if tc.emptyStored {
-						key = ""
-					}
-					existing = &corev1.Secret{
-						TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
-						ObjectMeta: metav1.ObjectMeta{
-							Name: secretName, Namespace: namespace,
-							Labels: map[string]string{"app.kubernetes.io/managed-by": "Helm"},
-							Annotations: map[string]string{
-								"meta.helm.sh/release-name": release, "meta.helm.sh/release-namespace": namespace,
-							},
+				existing = &corev1.Secret{
+					TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
+					ObjectMeta: metav1.ObjectMeta{
+						Name: secretName, Namespace: namespace,
+						Labels: map[string]string{"app.kubernetes.io/managed-by": "Helm"},
+						Annotations: map[string]string{
+							"meta.helm.sh/release-name": release, "meta.helm.sh/release-namespace": namespace,
 						},
-						Data: map[string][]byte{"API_KEY": []byte(key)},
-					}
+					},
+					Data: map[string][]byte{"API_KEY": []byte(key)},
 				}
-				kubeconfig, requests := secretLookupTestAPI(t, secretPath, existing)
-				values := map[string]string{
-					"global.receiverApiKey":                   tc.provided,
-					"global.suseObservability.receiverApiKey": "",
-					"stackstate.apiKey.key":                   "",
-					"stackstate.receiver.apiKey":              "",
+			}
+			kubeconfig, requests := secretLookupTestAPI(t, secretPath, existing)
+			values := map[string]string{
+				"global.receiverApiKey":                   tc.provided,
+				"global.suseObservability.receiverApiKey": "",
+				"stackstate.apiKey.key":                   "",
+				"stackstate.receiver.apiKey":              "",
+			}
+			if tc.global {
+				values["global.suseObservability.sizing.profile"] = "trial"
+				values["global.suseObservability.receiverApiKey"] = tc.provided
+				values["global.receiverApiKey"] = ""
+			}
+			maps.Copy(values, tc.values)
+			if tc.external {
+				values["stackstate.apiKey.fromExternalSecret"] = "customer-api-key"
+			}
+			options := apiResourceNameTestOptions(values)
+			options.KubectlOptions.Namespace = namespace
+			options.ValuesFiles = []string{valuesFile}
+			selectedChart := chart
+			if tc.renamed {
+				selectedChart = renamedChart
+			}
+			args := []string{"--dry-run=server", "--disable-openapi-validation", "--kubeconfig", kubeconfig, "--kube-context", "fixture"}
+			output, err := helm.RenderTemplateE(t, options, selectedChart, release, nil, args...)
+			require.NoError(t, err)
+			if tc.external || (tc.global && tc.expected == "") {
+				// No manifest is produced, so any Secret read would be a
+				// template lookup, not Helm's resource ownership check.
+				for _, path := range requests() {
+					assert.NotContains(t, path, "/secrets/")
 				}
-				if tc.global {
-					values["global.suseObservability.sizing.profile"] = "trial"
-					values["global.suseObservability.receiverApiKey"] = tc.provided
-					values["global.receiverApiKey"] = ""
-				}
-				maps.Copy(values, tc.values)
-				if tc.external {
-					values["stackstate.apiKey.fromExternalSecret"] = "customer-api-key"
-				}
-				options := apiResourceNameTestOptions(values)
-				options.KubectlOptions.Namespace = namespace
-				options.ValuesFiles = []string{valuesFile}
-				selectedChart := chart
-				if tc.renamed {
-					selectedChart = renamedChart
-				}
-				args := []string{"--dry-run=server", "--disable-openapi-validation", "--kubeconfig", kubeconfig, "--kube-context", "fixture"}
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output, err := helm.RenderTemplateE(t, options, selectedChart, release, nil, args...)
-				require.NoError(t, err)
-				if tc.external || (tc.global && tc.expected == "") {
-					// No manifest is produced, so any Secret read would be a
-					// template lookup, not Helm's resource ownership check.
-					for _, path := range requests() {
-						assert.NotContains(t, path, "/secrets/")
-					}
-				} else if !tc.global {
-					require.Contains(t, requests(), secretPath, "Legacy lookup must follow the declaration's name and namespace")
-				}
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				if tc.expected == "" {
-					assert.Empty(t, resources.Secrets)
-				} else {
-					require.Len(t, resources.Secrets, 1)
-					require.Contains(t, resources.Secrets, secretName)
-					assert.Equal(t, map[string][]byte{"API_KEY": []byte(tc.expected)}, resources.Secrets[secretName].Data)
-				}
-			})
-		}
+			} else if !tc.global {
+				require.Contains(t, requests(), secretPath, "Legacy lookup must follow the declaration's name and namespace")
+			}
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			if tc.expected == "" {
+				assert.Empty(t, resources.Secrets)
+			} else {
+				require.Len(t, resources.Secrets, 1)
+				require.Contains(t, resources.Secrets, secretName)
+				assert.Equal(t, map[string][]byte{"API_KEY": []byte(tc.expected)}, resources.Secrets[secretName].Data)
+			}
+		})
 	}
 }

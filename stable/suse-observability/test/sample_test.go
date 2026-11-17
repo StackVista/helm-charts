@@ -7,6 +7,8 @@ import (
 )
 
 func TestHelmBasicRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	// Parse all resources into their corresponding types for validation and further inspection

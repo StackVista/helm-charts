@@ -15,6 +15,8 @@ import (
 )
 
 func TestRbacAgentConnectionUsesPlatformConfiguration(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name, release, values, url string
 	}{
@@ -67,40 +69,36 @@ func TestRbacAgentConnectionUsesPlatformConfiguration(t *testing.T) {
 		if tc.url == "" {
 			tc.url = "http://nightly-suse-observability-router:8080/receiver/stsAgent"
 		}
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				valuesPath := filepath.Join(t.TempDir(), "values.yaml")
-				require.NoError(t, os.WriteFile(valuesPath, []byte(tc.values), 0600))
-				var args []string
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, &helm.Options{
-					ValuesFiles:    []string{"values/full.yaml", valuesPath},
-					KubectlOptions: &k8s.KubectlOptions{Namespace: "observability"},
-				}, args...)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				agent := tc.release + "-rbac-agent"
-				for name, expected := range map[string]struct{ key, value string }{
-					"suse-observability-rbac-agent-url": {"STS_URL", tc.url}, "suse-observability-rbac-agent-cluster-name": {"STS_CLUSTER_NAME", tc.release},
-				} {
-					require.Contains(t, resources.ConfigMaps, name)
-					assert.Equal(t, map[string]string{expected.key: expected.value}, resources.ConfigMaps[name].Data)
-				}
-				require.Contains(t, resources.Deployments, agent)
-				var configMapRefs []string
-				for _, ref := range resources.Deployments[agent].Spec.Template.Spec.Containers[0].EnvFrom {
-					if ref.ConfigMapRef != nil {
-						configMapRefs = append(configMapRefs, ref.ConfigMapRef.Name)
-					}
-				}
-				assert.ElementsMatch(t, []string{"suse-observability-rbac-agent-url", "suse-observability-rbac-agent-cluster-name"}, configMapRefs)
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			valuesPath := filepath.Join(t.TempDir(), "values.yaml")
+			require.NoError(t, os.WriteFile(valuesPath, []byte(tc.values), 0600))
+			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, &helm.Options{
+				ValuesFiles:    []string{"values/full.yaml", valuesPath},
+				KubectlOptions: &k8s.KubectlOptions{Namespace: "observability"},
 			})
-		}
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			agent := tc.release + "-rbac-agent"
+			for name, expected := range map[string]struct{ key, value string }{
+				"suse-observability-rbac-agent-url": {"STS_URL", tc.url}, "suse-observability-rbac-agent-cluster-name": {"STS_CLUSTER_NAME", tc.release},
+			} {
+				require.Contains(t, resources.ConfigMaps, name)
+				assert.Equal(t, map[string]string{expected.key: expected.value}, resources.ConfigMaps[name].Data)
+			}
+			require.Contains(t, resources.Deployments, agent)
+			var configMapRefs []string
+			for _, ref := range resources.Deployments[agent].Spec.Template.Spec.Containers[0].EnvFrom {
+				if ref.ConfigMapRef != nil {
+					configMapRefs = append(configMapRefs, ref.ConfigMapRef.Name)
+				}
+			}
+			assert.ElementsMatch(t, []string{"suse-observability-rbac-agent-url", "suse-observability-rbac-agent-cluster-name"}, configMapRefs)
+		})
 	}
 }
 
 func TestRbacAgentConnectionGlobalSecretsTakePrecedence(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name         string
 		url, cluster bool

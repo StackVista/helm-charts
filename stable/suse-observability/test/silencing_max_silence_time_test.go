@@ -29,6 +29,8 @@ func envNames(env []v1.EnvVar) []string {
 }
 
 func TestSilencingMaxSilenceTimeDefaultsToTwentyFourHoursOnApi(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -37,6 +39,8 @@ func TestSilencingMaxSilenceTimeDefaultsToTwentyFourHoursOnApi(t *testing.T) {
 }
 
 func TestSilencingMaxSilenceTimeDefaultsToTwentyFourHoursOnServer(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -45,6 +49,8 @@ func TestSilencingMaxSilenceTimeDefaultsToTwentyFourHoursOnServer(t *testing.T) 
 }
 
 func TestSilencingMaxSilenceTimeOverrideOnApi(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/silencing_max_silence_time.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -53,6 +59,8 @@ func TestSilencingMaxSilenceTimeOverrideOnApi(t *testing.T) {
 }
 
 func TestSilencingMaxSilenceTimeOverrideOnServer(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/silencing_max_silence_time.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -61,6 +69,8 @@ func TestSilencingMaxSilenceTimeOverrideOnServer(t *testing.T) {
 }
 
 func TestSilencingMaxSilenceTimeOmittedWhenUnset(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/silencing_max_silence_time_unset.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -69,6 +79,8 @@ func TestSilencingMaxSilenceTimeOmittedWhenUnset(t *testing.T) {
 }
 
 func TestSilencingMaxSilenceTimeIsNotSetOnOtherServices(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

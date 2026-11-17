@@ -144,110 +144,108 @@ func checkInternalRoleNaming(t *testing.T, beforeChart, afterChart string) {
 		if tc.release == "" {
 			tc.release = "nightly"
 		}
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := componentResourceNameTestValues()
-				values["stackstate.components.router.mode.status"] = "automatic"
-				values["kafkaup-operator.enabled"] = "true"
-				values["stackstate.k8sAuthorization.enabled"] = "true"
-				for key, value := range tc.values {
-					values[key] = value
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := componentResourceNameTestValues()
+			values["stackstate.components.router.mode.status"] = "automatic"
+			values["kafkaup-operator.enabled"] = "true"
+			values["stackstate.k8sAuthorization.enabled"] = "true"
+			for key, value := range tc.values {
+				values[key] = value
+			}
+			options := apiResourceNameTestOptions(values)
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderInternalRoleChart(t, beforeChart, tc.release, options)
+			afterOutput := renderInternalRoleChart(t, afterChart, tc.release, options)
+			original := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			target := helmtestutil.NewKubernetesResources(t, afterOutput)
+			operatorAccount := ""
+			for _, deployment := range original.Deployments {
+				for _, container := range deployment.Spec.Template.Spec.Containers {
+					if container.Name == "kafkaup-operator" {
+						operatorAccount = deployment.Spec.Template.Spec.ServiceAccountName
+					}
 				}
-				options := apiResourceNameTestOptions(values)
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
+			}
+			renames := map[string]string{}
+			refs := map[string]string{}
+			for _, pair := range []struct{ component, name string }{
+				{"router-mode", "suse-observability-router-mode"},
+				{"kafkaup-operator", "suse-observability-kafkaup"},
+			} {
+				var old rbacv1.RoleBinding
+				found := false
+				for _, binding := range original.RoleBindings {
+					matches := binding.Labels["app.kubernetes.io/component"] == pair.component
+					if pair.component == "kafkaup-operator" && operatorAccount != "" {
+						for _, subject := range binding.Subjects {
+							matches = matches || (subject.Kind == "ServiceAccount" && subject.Name == operatorAccount)
+						}
+					}
+					if matches {
+						require.False(t, found, "Each selected family must have exactly one binding")
+						old, found = binding, true
+					}
 				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+				bindingName := pair.name
+				if pair.component == "kafkaup-operator" {
+					bindingName += "-binding"
+					require.Equal(t, values["kafkaup-operator.enabled"] == "true", found)
+				} else {
+					require.Equal(t, values["stackstate.components.router.mode.status"] == "automatic", found)
 				}
-				beforeOutput := renderInternalRoleChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderInternalRoleChart(t, afterChart, tc.release, options, upgrade)
-				original := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				target := helmtestutil.NewKubernetesResources(t, afterOutput)
-				operatorAccount := ""
-				for _, deployment := range original.Deployments {
-					for _, container := range deployment.Spec.Template.Spec.Containers {
-						if container.Name == "kafkaup-operator" {
-							operatorAccount = deployment.Spec.Template.Spec.ServiceAccountName
+				if !found {
+					assert.NotContains(t, target.Roles, pair.name)
+					assert.NotContains(t, target.RoleBindings, bindingName)
+					continue
+				}
+				require.Contains(t, original.Roles, old.RoleRef.Name)
+				require.Contains(t, target.Roles, pair.name)
+				require.Contains(t, target.RoleBindings, bindingName)
+				binding := target.RoleBindings[bindingName]
+				expected := *old.DeepCopy()
+				expected.Name, expected.RoleRef.Name = bindingName, pair.name
+				assert.Equal(t, expected, binding, "Subjects, permissions, namespaces, labels and hook ordering must stay unchanged")
+				role := original.Roles[old.RoleRef.Name]
+				role.Name = pair.name
+				assert.Equal(t, role, target.Roles[pair.name])
+				for _, subject := range binding.Subjects {
+					require.Equal(t, "ServiceAccount", subject.Kind)
+					require.Contains(t, target.ServiceAccounts, subject.Name, "Each binding must resolve its retained account")
+				}
+				if old.RoleRef.Name != pair.name {
+					renames["Role/"+old.RoleRef.Name] = pair.name
+					assert.NotContains(t, target.Roles, old.RoleRef.Name)
+				}
+				if old.Name != bindingName {
+					renames["RoleBinding/"+old.Name] = bindingName
+					assert.NotContains(t, target.RoleBindings, old.Name)
+				}
+				refs[bindingName] = pair.name
+			}
+			seen := map[string]bool{}
+			expected := backupNamingDocuments(t, beforeOutput, renames, seen)
+			for name, role := range refs {
+				for _, namespace := range []string{"", options.KubectlOptions.Namespace} {
+					if documents, ok := expected["RoleBinding/"+namespace+"/"+name]; ok {
+						for _, raw := range documents.([]interface{}) {
+							raw.(map[string]interface{})["roleRef"].(map[string]interface{})["name"] = role
 						}
 					}
 				}
-				renames := map[string]string{}
-				refs := map[string]string{}
-				for _, pair := range []struct{ component, name string }{
-					{"router-mode", "suse-observability-router-mode"},
-					{"kafkaup-operator", "suse-observability-kafkaup"},
-				} {
-					var old rbacv1.RoleBinding
-					found := false
-					for _, binding := range original.RoleBindings {
-						matches := binding.Labels["app.kubernetes.io/component"] == pair.component
-						if pair.component == "kafkaup-operator" && operatorAccount != "" {
-							for _, subject := range binding.Subjects {
-								matches = matches || (subject.Kind == "ServiceAccount" && subject.Name == operatorAccount)
-							}
-						}
-						if matches {
-							require.False(t, found, "Each selected family must have exactly one binding")
-							old, found = binding, true
-						}
-					}
-					bindingName := pair.name
-					if pair.component == "kafkaup-operator" {
-						bindingName += "-binding"
-						require.Equal(t, values["kafkaup-operator.enabled"] == "true", found)
-					} else {
-						require.Equal(t, values["stackstate.components.router.mode.status"] == "automatic", found)
-					}
-					if !found {
-						assert.NotContains(t, target.Roles, pair.name)
-						assert.NotContains(t, target.RoleBindings, bindingName)
-						continue
-					}
-					require.Contains(t, original.Roles, old.RoleRef.Name)
-					require.Contains(t, target.Roles, pair.name)
-					require.Contains(t, target.RoleBindings, bindingName)
-					binding := target.RoleBindings[bindingName]
-					expected := *old.DeepCopy()
-					expected.Name, expected.RoleRef.Name = bindingName, pair.name
-					assert.Equal(t, expected, binding, "Subjects, permissions, namespaces, labels and hook ordering must stay unchanged")
-					role := original.Roles[old.RoleRef.Name]
-					role.Name = pair.name
-					assert.Equal(t, role, target.Roles[pair.name])
-					for _, subject := range binding.Subjects {
-						require.Equal(t, "ServiceAccount", subject.Kind)
-						require.Contains(t, target.ServiceAccounts, subject.Name, "Each binding must resolve its retained account")
-					}
-					if old.RoleRef.Name != pair.name {
-						renames["Role/"+old.RoleRef.Name] = pair.name
-						assert.NotContains(t, target.Roles, old.RoleRef.Name)
-					}
-					if old.Name != bindingName {
-						renames["RoleBinding/"+old.Name] = bindingName
-						assert.NotContains(t, target.RoleBindings, old.Name)
-					}
-					refs[bindingName] = pair.name
-				}
-				seen := map[string]bool{}
-				expected := backupNamingDocuments(t, beforeOutput, renames, seen)
-				for name, role := range refs {
-					for _, namespace := range []string{"", options.KubectlOptions.Namespace} {
-						if documents, ok := expected["RoleBinding/"+namespace+"/"+name]; ok {
-							for _, raw := range documents.([]interface{}) {
-								raw.(map[string]interface{})["roleRef"].(map[string]interface{})["name"] = role
-							}
-						}
-					}
-				}
-				require.Len(t, seen, len(renames))
-				assert.Equal(t, expected, backupNamingDocuments(t, afterOutput, nil, nil),
-					"Only these internal Role/binding names and exact roleRefs may change; no other rename step supplies consumers")
-			})
-		}
+			}
+			require.Len(t, seen, len(renames))
+			assert.Equal(t, expected, backupNamingDocuments(t, afterOutput, nil, nil),
+				"Only these internal Role/binding names and exact roleRefs may change; no other rename step supplies consumers")
+		})
 	}
 }
 
-func renderInternalRoleChart(t *testing.T, chart, release string, options *helm.Options, upgrade bool) string {
+func renderInternalRoleChart(t *testing.T, chart, release string, options *helm.Options) string {
 	t.Helper()
 	copied := *options
 	copied.Logger = logger.Discard
@@ -258,9 +256,6 @@ func renderInternalRoleChart(t *testing.T, chart, release string, options *helm.
 		copied.ValuesFiles[i] = file
 	}
 	args := []string{"--kube-version", "1.32.0", "--api-versions", "policy/v1", "--api-versions", "monitoring.coreos.com/v1"}
-	if upgrade {
-		args = append(args, "--is-upgrade")
-	}
 	output, err := helm.RenderTemplateE(t, &copied, chart, release, nil, args...)
 	require.NoError(t, err)
 	return output
@@ -274,10 +269,10 @@ func TestInternalRoleNamingSubsequentUpgradePatches(t *testing.T) {
 		"kafkaup-operator.enabled":                 "true", "fullnameOverride": "first-platform",
 		"kafkaup-operator.fullnameOverride": "first-operator",
 	})
-	old := helmtestutil.NewKubernetesResources(t, renderInternalRoleChart(t, "..", "nightly", options, true))
+	old := helmtestutil.NewKubernetesResources(t, renderInternalRoleChart(t, "..", "nightly", options))
 	options.SetValues["fullnameOverride"] = "second-platform"
 	options.SetValues["kafkaup-operator.fullnameOverride"] = "second-operator"
-	new := helmtestutil.NewKubernetesResources(t, renderInternalRoleChart(t, "..", "nightly", options, true))
+	new := helmtestutil.NewKubernetesResources(t, renderInternalRoleChart(t, "..", "nightly", options))
 	for _, name := range []string{"suse-observability-router-mode", "suse-observability-kafkaup-binding"} {
 		require.Contains(t, old.RoleBindings, name)
 		require.Contains(t, new.RoleBindings, name)

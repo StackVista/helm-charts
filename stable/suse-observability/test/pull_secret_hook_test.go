@@ -19,6 +19,8 @@ const (
 // render as two separate resources with different names. They previously shared a name, which made GitOps
 // tooling (ArgoCD/Flux) and `helm template | kubectl apply` see two resources with the same identity.
 func TestPullSecretHookHasDistinctName(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_pull_secret_nonha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -40,6 +42,8 @@ func TestPullSecretHookHasDistinctName(t *testing.T) {
 // set-maintenance job references the hook-managed pull secret (the normal one does not exist yet at that
 // phase), while the post-install set-active job references the normal pull secret.
 func TestPullSecretHookUsedByRouterModeJobs(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/global_suse_observability_pull_secret_nonha.yaml"},
 		SetValues: map[string]string{
@@ -61,6 +65,8 @@ func TestPullSecretHookUsedByRouterModeJobs(t *testing.T) {
 // secret becomes an ArgoCD PreSync hook (not a Helm hook) and keeps its distinct name, so ArgoCD does not
 // report a duplicate Secret/suse-observability-pull-secret.
 func TestPullSecretHookArgoCDCompatibility(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/global_suse_observability_pull_secret_nonha.yaml"},
 		SetValues: map[string]string{

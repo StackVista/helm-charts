@@ -14,6 +14,8 @@ import (
 )
 
 func TestBackupJobSettingsSharedOverrides(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/pod_scheduling_labels.yaml"},
 		SetValues: map[string]string{
@@ -95,6 +97,8 @@ func TestBackupJobSettingsSharedOverrides(t *testing.T) {
 }
 
 func TestBackupJobSettingsSecurityContext(t *testing.T) {
+	t.Parallel()
+
 	for _, enabled := range []bool{true, false} {
 		t.Run("enabled="+strconv.FormatBool(enabled), func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
@@ -143,6 +147,8 @@ func TestBackupJobSettingsSecurityContext(t *testing.T) {
 }
 
 func TestBackupJobSettingsEmptyOverridesStayIndependent(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -184,6 +190,8 @@ func TestBackupJobSettingsEmptyOverridesStayIndependent(t *testing.T) {
 }
 
 func TestBackupJobSettingsDefaults(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	cronJob, ok := resources.CronJobs["suse-observability-backup-conf"]
@@ -213,6 +221,8 @@ func TestBackupJobSettingsDefaults(t *testing.T) {
 }
 
 func TestBackupJobSettingsExplicitEmptyStrings(t *testing.T) {
+	t.Parallel()
+
 	for _, emptyComponent := range []string{"backup", "configurationBackup"} {
 		t.Run(emptyComponent, func(t *testing.T) {
 			overrides := map[string]string{
@@ -272,6 +282,8 @@ func TestBackupJobSettingsExplicitEmptyStrings(t *testing.T) {
 }
 
 func TestBackupConfigurationTemporaryStorage(t *testing.T) {
+	t.Parallel()
+
 	for _, readOnly := range []bool{true, false} {
 		t.Run("readOnlyRootFilesystem="+strconv.FormatBool(readOnly), func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
@@ -316,6 +328,8 @@ func TestBackupConfigurationTemporaryStorage(t *testing.T) {
 }
 
 func TestBackupConfigurationUploadStorage(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -356,6 +370,8 @@ func TestBackupConfigurationUploadStorage(t *testing.T) {
 }
 
 func TestBackupManualJobContainerSecurityOverrides(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -413,6 +429,8 @@ func TestBackupManualJobContainerSecurityOverrides(t *testing.T) {
 }
 
 func TestBackupSettingsInitializerWithoutContainerToolsResources(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/backup_container_tools_resources_null.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	job := findJob(&resources, "init-pvc")

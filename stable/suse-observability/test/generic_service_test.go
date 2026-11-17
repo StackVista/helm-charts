@@ -9,6 +9,8 @@ import (
 )
 
 func TestAllServicesRenderedSplit(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/dummy_trust_store.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	podsToCheck := append([]string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"})
@@ -17,6 +19,8 @@ func TestAllServicesRenderedSplit(t *testing.T) {
 }
 
 func TestAllServicesRenderedServer(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/dummy_trust_store.yaml", "values/split_disabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	podsToCheck := append([]string{"server", "correlate", "receiver", "e2es"})

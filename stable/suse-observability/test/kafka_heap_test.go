@@ -12,6 +12,8 @@ import (
 )
 
 func TestKafkaHeapBySizingProfile(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		profile       string
 		memoryRequest string
@@ -47,6 +49,8 @@ func TestKafkaHeapBySizingProfile(t *testing.T) {
 }
 
 func TestKafkaHeapOverrides(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		values   map[string]string

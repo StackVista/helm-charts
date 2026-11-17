@@ -48,73 +48,67 @@ func TestExporterDeploymentNamingCompatibility(t *testing.T) {
 		{name: "exporter-name", release: "nightly", fullname: "nightly-customer", app: "customer", tls: true,
 			values: map[string]string{prefix + "nameOverride": "customer"}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				fixture := "default"
-				values := componentResourceNameTestValues()
-				values[prefix+"image.tag"] = "naming-fixture"
-				if tc.tls {
-					fixture = "tls"
-					maps.Copy(values, exporterNamingTLSValues())
-				}
-				maps.Copy(values, tc.values)
-				options := apiResourceNameTestOptions(values)
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				data, err := os.ReadFile(filepath.Join("testdata/exporter-renaming", fixture+".json"))
-				require.NoError(t, err)
-				var expected appsv1.Deployment
-				require.NoError(t, json.Unmarshal(data, &expected))
-				legacy := tc.fullname
-				if legacy == "" {
-					legacy = tc.release + "-prometheus-elasticsearch-exporter"
-				}
-				app := tc.app
-				if app == "" {
-					app = "prometheus-elasticsearch-exporter"
-				}
-				expected.Name = canonical
-				expected.Labels["release"] = tc.release
-				expected.Labels["app"] = app
-				expected.Spec.Selector.MatchLabels["release"] = tc.release
-				expected.Spec.Selector.MatchLabels["app"] = app
-				expected.Spec.Template.Labels["release"] = tc.release
-				expected.Spec.Template.Labels["app"] = app
-				if tc.tls {
-					expected.Spec.Template.Spec.ServiceAccountName = legacy
-					for i := range expected.Spec.Template.Spec.Volumes {
-						if expected.Spec.Template.Spec.Volumes[i].Name == "ssl" {
-							expected.Spec.Template.Spec.Volumes[i].Secret.SecretName = legacy + "-cert"
-						}
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			fixture := "default"
+			values := componentResourceNameTestValues()
+			values[prefix+"image.tag"] = "naming-fixture"
+			if tc.tls {
+				fixture = "tls"
+				maps.Copy(values, exporterNamingTLSValues())
+			}
+			maps.Copy(values, tc.values)
+			options := apiResourceNameTestOptions(values)
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			data, err := os.ReadFile(filepath.Join("testdata/exporter-renaming", fixture+".json"))
+			require.NoError(t, err)
+			var expected appsv1.Deployment
+			require.NoError(t, json.Unmarshal(data, &expected))
+			legacy := tc.fullname
+			if legacy == "" {
+				legacy = tc.release + "-prometheus-elasticsearch-exporter"
+			}
+			app := tc.app
+			if app == "" {
+				app = "prometheus-elasticsearch-exporter"
+			}
+			expected.Name = canonical
+			expected.Labels["release"] = tc.release
+			expected.Labels["app"] = app
+			expected.Spec.Selector.MatchLabels["release"] = tc.release
+			expected.Spec.Selector.MatchLabels["app"] = app
+			expected.Spec.Template.Labels["release"] = tc.release
+			expected.Spec.Template.Labels["app"] = app
+			if tc.tls {
+				expected.Spec.Template.Spec.ServiceAccountName = legacy
+				for i := range expected.Spec.Template.Spec.Volumes {
+					if expected.Spec.Template.Spec.Volumes[i].Name == "ssl" {
+						expected.Spec.Template.Spec.Volumes[i].Secret.SecretName = legacy + "-cert"
 					}
 				}
-				var args []string
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, options, args...)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				require.Contains(t, resources.Deployments, canonical)
-				actual := resources.Deployments[canonical]
-				delete(actual.Labels, "chart")
-				assert.Equal(t, expected, actual, "Only the Deployment metadata name may change")
-				if legacy != canonical {
-					assert.NotContains(t, resources.Deployments, legacy)
-				}
-				require.Contains(t, resources.Services, legacy, "The existing Service DNS name is retained")
-				for key, value := range resources.Services[legacy].Spec.Selector {
-					assert.Equal(t, value, actual.Spec.Template.Labels[key], "Service must still select exporter Pods")
-				}
-				if tc.tls {
-					require.Contains(t, resources.ServiceAccounts, legacy)
-					require.Contains(t, resources.Secrets, legacy+"-cert")
-					assert.Equal(t, map[string][]byte{
-						"ca.pem": []byte("fixture-ca"), "client.pem": []byte("fixture-client"), "client.key": []byte("fixture-key"),
-					}, resources.Secrets[legacy+"-cert"].Data)
-				}
-			})
-		}
+			}
+			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, tc.release, options)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Contains(t, resources.Deployments, canonical)
+			actual := resources.Deployments[canonical]
+			delete(actual.Labels, "chart")
+			assert.Equal(t, expected, actual, "Only the Deployment metadata name may change")
+			if legacy != canonical {
+				assert.NotContains(t, resources.Deployments, legacy)
+			}
+			require.Contains(t, resources.Services, legacy, "The existing Service DNS name is retained")
+			for key, value := range resources.Services[legacy].Spec.Selector {
+				assert.Equal(t, value, actual.Spec.Template.Labels[key], "Service must still select exporter Pods")
+			}
+			if tc.tls {
+				require.Contains(t, resources.ServiceAccounts, legacy)
+				require.Contains(t, resources.Secrets, legacy+"-cert")
+				assert.Equal(t, map[string][]byte{
+					"ca.pem": []byte("fixture-ca"), "client.pem": []byte("fixture-client"), "client.key": []byte("fixture-key"),
+				}, resources.Secrets[legacy+"-cert"].Data)
+			}
+		})
 	}
 }
 

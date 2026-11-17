@@ -31,6 +31,8 @@ var tmpPvcComponents = []string{
 }
 
 func TestTmpToPVCDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -49,6 +51,8 @@ func TestTmpToPVCDefault(t *testing.T) {
 }
 
 func TestTmpToPVCDefaultSplit(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -70,6 +74,8 @@ func TestTmpToPVCDefaultSplit(t *testing.T) {
 }
 
 func TestTmpToPVCDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -95,6 +101,8 @@ func TestTmpToPVCDisabled(t *testing.T) {
 }
 
 func TestTmpToPVCMonolith(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -115,6 +123,8 @@ func TestTmpToPVCMonolith(t *testing.T) {
 }
 
 func TestTmpToPVCCustomSettings(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",

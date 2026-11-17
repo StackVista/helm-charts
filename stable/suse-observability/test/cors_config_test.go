@@ -9,9 +9,13 @@ const expectedCorsConfig = `stackstate.web.origins = [
   ]`
 
 func TestCorsConfigRenderingApi(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/full.yaml"}, expectedCorsConfig)
 }
 
 func TestCorsConfigRenderingServer(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/full.yaml", "values/split_disabled.yaml"}, expectedCorsConfig)
 }

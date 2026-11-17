@@ -14,6 +14,8 @@ var expectedESRestoreScaleDownLabels = map[string]string{
 }
 
 func TestElasticsearchRestoreScaleDownLabels(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -34,6 +36,8 @@ func TestElasticsearchRestoreScaleDownLabels(t *testing.T) {
 }
 
 func TestElasticsearchRestoreScaleDownLabelsSplitMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/receiver_split_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

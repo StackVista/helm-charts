@@ -15,6 +15,8 @@ import (
 )
 
 func TestReplicationCheckerProfiles(t *testing.T) {
+	t.Parallel()
+
 	for _, profile := range []string{"trial", "10-nonha", "20-nonha", "50-nonha", "100-nonha", "150-ha", "250-ha", "500-ha", "4000-ha"} {
 		for _, source := range []string{"builtin", "legacy", "generated"} {
 			t.Run(fmt.Sprintf("%s/%s", profile, source), func(t *testing.T) {
@@ -41,6 +43,8 @@ func TestReplicationCheckerProfiles(t *testing.T) {
 }
 
 func TestReplicationChecker(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name     string
 		values   map[string]string
@@ -145,6 +149,8 @@ func TestReplicationChecker(t *testing.T) {
 }
 
 func TestReplicationCheckerOverrides(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{

@@ -43,27 +43,25 @@ func TestPodReaderNamingBaselineReproduction(t *testing.T) {
 func checkPodReaderNamingFixtures(t *testing.T, chart string) {
 	t.Helper()
 	for _, mode := range []string{"split", "monolithic"} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", mode, upgrade), func(t *testing.T) {
-				data, err := os.ReadFile(filepath.Join("testdata/pod-reader-renaming", mode+".json"))
-				require.NoError(t, err)
-				var expected podReaderNamingFixture
-				require.NoError(t, json.Unmarshal(data, &expected))
-				options := apiResourceNameTestOptions(map[string]string{"stackstate.features.server.split": fmt.Sprint(mode == "split")})
-				output := renderRBACNamingChart(t, chart, "nightly", options, upgrade)
-				resources := helmtestutil.NewKubernetesResources(t, output)
-				require.Contains(t, resources.Roles, expected.Role.Name)
-				require.Contains(t, resources.RoleBindings, expected.Binding.Name)
-				actual := podReaderNamingFixture{
-					Role: resources.Roles[expected.Role.Name], Binding: resources.RoleBindings[expected.Binding.Name],
-				}
-				for _, labels := range []map[string]string{actual.Role.Labels, actual.Binding.Labels} {
-					delete(labels, "helm.sh/chart")
-					delete(labels, "app.kubernetes.io/version")
-				}
-				assert.Equal(t, expected, actual)
-			})
-		}
+		t.Run(fmt.Sprintf("%s", mode), func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("testdata/pod-reader-renaming", mode+".json"))
+			require.NoError(t, err)
+			var expected podReaderNamingFixture
+			require.NoError(t, json.Unmarshal(data, &expected))
+			options := apiResourceNameTestOptions(map[string]string{"stackstate.features.server.split": fmt.Sprint(mode == "split")})
+			output := renderRBACNamingChart(t, chart, "nightly", options)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+			require.Contains(t, resources.Roles, expected.Role.Name)
+			require.Contains(t, resources.RoleBindings, expected.Binding.Name)
+			actual := podReaderNamingFixture{
+				Role: resources.Roles[expected.Role.Name], Binding: resources.RoleBindings[expected.Binding.Name],
+			}
+			for _, labels := range []map[string]string{actual.Role.Labels, actual.Binding.Labels} {
+				delete(labels, "helm.sh/chart")
+				delete(labels, "app.kubernetes.io/version")
+			}
+			assert.Equal(t, expected, actual)
+		})
 	}
 }
 
@@ -112,49 +110,47 @@ func TestPodReaderNamingPreservesPlatformResources(t *testing.T) {
 			"stackstate.components.receiver.split.enabled": "true", "stackstate.components.correlate.split.enabled": "true",
 		}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				options := apiResourceNameTestOptions(componentResourceNameTestValues())
-				for key, value := range tc.values {
-					options.SetValues[key] = value
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			options := apiResourceNameTestOptions(componentResourceNameTestValues())
+			for key, value := range tc.values {
+				options.SetValues[key] = value
+			}
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options)
+			afterOutput := renderRBACNamingChart(t, "..", tc.release, options)
+			beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
+			legacy := tc.legacyPrefix + "-get-pods"
+			require.Contains(t, beforeResources.Roles, legacy)
+			require.Contains(t, beforeResources.RoleBindings, legacy)
+			require.Contains(t, afterResources.Roles, legacy)
+			require.Contains(t, afterResources.RoleBindings, legacy)
+			assert.Equal(t, beforeResources.Roles, afterResources.Roles, "All Role identities and rules must stay unchanged")
+			expectedBinding := beforeResources.RoleBindings[legacy]
+			assert.Equal(t, legacy, expectedBinding.RoleRef.Name)
+			assert.Equal(t, expectedBinding, afterResources.RoleBindings[legacy])
+			for name, binding := range beforeResources.RoleBindings {
+				if after, found := afterResources.RoleBindings[name]; found {
+					assertPodReaderBindingUpgradePatchUnchanged(t, binding, after)
 				}
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
-				}
-				beforeOutput := renderRBACNamingChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderRBACNamingChart(t, "..", tc.release, options, upgrade)
-				beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
-				legacy := tc.legacyPrefix + "-get-pods"
-				require.Contains(t, beforeResources.Roles, legacy)
-				require.Contains(t, beforeResources.RoleBindings, legacy)
-				require.Contains(t, afterResources.Roles, legacy)
-				require.Contains(t, afterResources.RoleBindings, legacy)
-				assert.Equal(t, beforeResources.Roles, afterResources.Roles, "All Role identities and rules must stay unchanged")
-				expectedBinding := beforeResources.RoleBindings[legacy]
-				assert.Equal(t, legacy, expectedBinding.RoleRef.Name)
-				assert.Equal(t, expectedBinding, afterResources.RoleBindings[legacy])
-				for name, binding := range beforeResources.RoleBindings {
-					if after, found := afterResources.RoleBindings[name]; found {
-						assertPodReaderBindingUpgradePatchUnchanged(t, binding, after)
-					}
-				}
+			}
 
-				renames := map[string]string{"RoleBinding/" + legacy: legacy}
-				seen := map[string]bool{}
-				before := backupNamingDocuments(t, beforeOutput, renames, seen)
-				assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "All platform resources must remain unchanged")
-				require.True(t, seen["RoleBinding/"+legacy])
-				assert.Equal(t, beforeResources.ServiceAccounts, afterResources.ServiceAccounts)
-				assert.Equal(t, beforeResources.Deployments, afterResources.Deployments)
-				assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
-				assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
-				assert.Equal(t, beforeResources.ConfigMaps, afterResources.ConfigMaps, "Application authorization subjects and configuration checksums must stay unchanged")
-			})
-		}
+			renames := map[string]string{"RoleBinding/" + legacy: legacy}
+			seen := map[string]bool{}
+			before := backupNamingDocuments(t, beforeOutput, renames, seen)
+			assert.Equal(t, before, backupNamingDocuments(t, afterOutput, nil, nil), "All platform resources must remain unchanged")
+			require.True(t, seen["RoleBinding/"+legacy])
+			assert.Equal(t, beforeResources.ServiceAccounts, afterResources.ServiceAccounts)
+			assert.Equal(t, beforeResources.Deployments, afterResources.Deployments)
+			assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
+			assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
+			assert.Equal(t, beforeResources.ConfigMaps, afterResources.ConfigMaps, "Application authorization subjects and configuration checksums must stay unchanged")
+		})
 	}
 }
 
@@ -182,7 +178,7 @@ func assertPodReaderBindingUpgradePatchUnchanged(t *testing.T, before, after rba
 	assert.JSONEq(t, "{}", string(patch), before.Name)
 }
 
-func renderRBACNamingChart(t *testing.T, chart, release string, options *helm.Options, upgrade bool) string {
+func renderRBACNamingChart(t *testing.T, chart, release string, options *helm.Options) string {
 	t.Helper()
 	copied := *options
 	copied.ValuesFiles = make([]string, len(options.ValuesFiles))
@@ -192,9 +188,6 @@ func renderRBACNamingChart(t *testing.T, chart, release string, options *helm.Op
 		copied.ValuesFiles[i] = path
 	}
 	args := []string{"--api-versions", "policy/v1/PodDisruptionBudget", "--api-versions", "monitoring.coreos.com/v1"}
-	if upgrade {
-		args = append(args, "--is-upgrade")
-	}
 	output, err := helm.RenderTemplateE(t, &copied, chart, release, nil, args...)
 	require.NoError(t, err)
 	return output

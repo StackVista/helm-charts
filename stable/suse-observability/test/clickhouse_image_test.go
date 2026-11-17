@@ -9,6 +9,8 @@ import (
 
 // The cleanup client and server must advance together when consuming a new release.
 func TestClickhouseCleanupUsesServerImage(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	var serverImage string

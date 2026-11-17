@@ -12,6 +12,8 @@ import (
 )
 
 func TestRoleGetPodsExists(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		KubectlOptions: &k8s.KubectlOptions{
@@ -32,6 +34,8 @@ func TestRoleGetPodsExists(t *testing.T) {
 }
 
 func TestRoleRbacAgentEnabledByDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		KubectlOptions: &k8s.KubectlOptions{
@@ -49,6 +53,8 @@ func TestRoleRbacAgentEnabledByDefault(t *testing.T) {
 }
 
 func TestRoleRbacAgentDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -68,6 +74,8 @@ func TestRoleRbacAgentDisabled(t *testing.T) {
 }
 
 func TestRoleRbacAgentRules(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -99,6 +107,8 @@ func TestRoleRbacAgentRules(t *testing.T) {
 }
 
 func TestRoleWorkloadObserverEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		KubectlOptions: &k8s.KubectlOptions{
@@ -131,6 +141,8 @@ func TestRoleWorkloadObserverEnabled(t *testing.T) {
 }
 
 func TestRoleWorkloadObserverDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{

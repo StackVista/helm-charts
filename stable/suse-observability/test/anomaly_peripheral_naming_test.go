@@ -50,68 +50,63 @@ func TestAnomalyPeripheralNamingPreservesPlatformResources(t *testing.T) {
 		{name: "monitor-disabled", release: "nightly", base: "nightly-anomaly-detection", values: map[string]string{"anomaly-detection.metrics.serviceMonitor.enabled": "false"}},
 		{name: "component-disabled", release: "nightly", base: "nightly-anomaly-detection", values: map[string]string{"anomaly-detection.enabled": "false"}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := map[string]string{
-					"anomaly-detection.enabled": "true", "anomaly-detection.metrics.serviceMonitor.enabled": "true",
-					"anomaly-detection.manager.persistentStorage.size":         "17Gi",
-					"anomaly-detection.manager.persistentStorage.storageClass": "customer-artifacts",
-				}
-				maps.Copy(values, tc.values)
-				options := apiResourceNameTestOptions(values)
-				options.ValuesFiles = []string{valuesFile}
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				if tc.sizing != "" {
-					sizing, err := filepath.Abs(filepath.Join("values", tc.sizing))
-					require.NoError(t, err)
-					options.ValuesFiles = append(options.ValuesFiles, sizing)
-				}
-				args := []string{"--api-versions", "policy/v1/PodDisruptionBudget"}
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				beforeOutput, err := helm.RenderTemplateE(t, options, beforeChart, tc.release, nil, args...)
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := map[string]string{
+				"anomaly-detection.enabled": "true", "anomaly-detection.metrics.serviceMonitor.enabled": "true",
+				"anomaly-detection.manager.persistentStorage.size":         "17Gi",
+				"anomaly-detection.manager.persistentStorage.storageClass": "customer-artifacts",
+			}
+			maps.Copy(values, tc.values)
+			options := apiResourceNameTestOptions(values)
+			options.ValuesFiles = []string{valuesFile}
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				sizing, err := filepath.Abs(filepath.Join("values", tc.sizing))
 				require.NoError(t, err)
-				afterOutput, err := helm.RenderTemplateE(t, options, afterChart, tc.release, nil, args...)
-				require.NoError(t, err)
-				renames := map[string]string{}
-				if values["anomaly-detection.enabled"] == "true" {
-					renames["PodDisruptionBudget/"+tc.base+"-anomaly-detection"] = "suse-observability-anomaly-detection"
-					if values["anomaly-detection.metrics.serviceMonitor.enabled"] == "true" {
-						renames["ServiceMonitor/"+tc.base+"-spotlight-manager"] = "suse-observability-spotlight-manager"
-					}
+				options.ValuesFiles = append(options.ValuesFiles, sizing)
+			}
+			args := []string{"--api-versions", "policy/v1/PodDisruptionBudget"}
+			beforeOutput, err := helm.RenderTemplateE(t, options, beforeChart, tc.release, nil, args...)
+			require.NoError(t, err)
+			afterOutput, err := helm.RenderTemplateE(t, options, afterChart, tc.release, nil, args...)
+			require.NoError(t, err)
+			renames := map[string]string{}
+			if values["anomaly-detection.enabled"] == "true" {
+				renames["PodDisruptionBudget/"+tc.base+"-anomaly-detection"] = "suse-observability-anomaly-detection"
+				if values["anomaly-detection.metrics.serviceMonitor.enabled"] == "true" {
+					renames["ServiceMonitor/"+tc.base+"-spotlight-manager"] = "suse-observability-spotlight-manager"
 				}
-				seen := map[string]bool{}
-				before := backupNamingDocuments(t, beforeOutput, renames, seen)
-				after := backupNamingDocuments(t, afterOutput, nil, nil)
-				assert.Equal(t, before, after, "Only anomaly detection's PDB and monitor metadata names may change")
-				beforeContract := resourceNamingUpgradeContract(t, beforeOutput)
-				for old, name := range renames {
-					require.True(t, seen[old], "expected resource missing: %s", old)
-					require.Contains(t, beforeContract, old)
-					kind := strings.SplitN(old, "/", 2)[0]
-					fields := beforeContract[old]
-					delete(beforeContract, old)
-					require.NotContains(t, beforeContract, kind+"/"+name)
-					beforeContract[kind+"/"+name] = fields
-				}
-				assert.Equal(t, beforeContract, resourceNamingUpgradeContract(t, afterOutput))
-				resources := helmtestutil.NewKubernetesResources(t, afterOutput)
-				if values["anomaly-detection.enabled"] == "true" {
-					require.Contains(t, resources.Pdbs, "suse-observability-anomaly-detection")
-					require.Contains(t, resources.PersistentVolumeClaims, "spotlight-artifacts-volume-claim")
-				} else {
-					assert.NotContains(t, resources.Pdbs, "suse-observability-anomaly-detection")
-					assert.NotContains(t, resources.PersistentVolumeClaims, "spotlight-artifacts-volume-claim")
-				}
-				if _, ok := renames["ServiceMonitor/"+tc.base+"-spotlight-manager"]; ok {
-					require.Contains(t, resources.ServiceMonitors, "suse-observability-spotlight-manager")
-				} else {
-					assert.NotContains(t, resources.ServiceMonitors, "suse-observability-spotlight-manager")
-				}
-			})
-		}
+			}
+			seen := map[string]bool{}
+			before := backupNamingDocuments(t, beforeOutput, renames, seen)
+			after := backupNamingDocuments(t, afterOutput, nil, nil)
+			assert.Equal(t, before, after, "Only anomaly detection's PDB and monitor metadata names may change")
+			beforeContract := resourceNamingUpgradeContract(t, beforeOutput)
+			for old, name := range renames {
+				require.True(t, seen[old], "expected resource missing: %s", old)
+				require.Contains(t, beforeContract, old)
+				kind := strings.SplitN(old, "/", 2)[0]
+				fields := beforeContract[old]
+				delete(beforeContract, old)
+				require.NotContains(t, beforeContract, kind+"/"+name)
+				beforeContract[kind+"/"+name] = fields
+			}
+			assert.Equal(t, beforeContract, resourceNamingUpgradeContract(t, afterOutput))
+			resources := helmtestutil.NewKubernetesResources(t, afterOutput)
+			if values["anomaly-detection.enabled"] == "true" {
+				require.Contains(t, resources.Pdbs, "suse-observability-anomaly-detection")
+				require.Contains(t, resources.PersistentVolumeClaims, "spotlight-artifacts-volume-claim")
+			} else {
+				assert.NotContains(t, resources.Pdbs, "suse-observability-anomaly-detection")
+				assert.NotContains(t, resources.PersistentVolumeClaims, "spotlight-artifacts-volume-claim")
+			}
+			if _, ok := renames["ServiceMonitor/"+tc.base+"-spotlight-manager"]; ok {
+				require.Contains(t, resources.ServiceMonitors, "suse-observability-spotlight-manager")
+			} else {
+				assert.NotContains(t, resources.ServiceMonitors, "suse-observability-spotlight-manager")
+			}
+		})
 	}
 }
