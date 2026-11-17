@@ -323,8 +323,6 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-    env:
-      GOPATH: ${{ runner.temp }}/resourcecollection-go
     outputs:
       agent_image: ${{ steps.validate.outputs.agent_image }}
     steps:
@@ -339,11 +337,15 @@ jobs:
           path: stable/suse-observability-agent/
       - name: Set up the chart's Go toolchain
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        env:
+          GOPATH: ${{ runner.temp }}/resourcecollection-go
         with:
           go-version-file: go.mod
           cache: false
       - name: Validate the canonical CRD and rendered configurations with the pinned agent
         id: validate
+        env:
+          GOPATH: ${{ runner.temp }}/resourcecollection-go
         run: |
           helm version --short
           yq --version
