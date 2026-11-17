@@ -323,6 +323,8 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
+    env:
+      GOPATH: ${{ runner.temp }}/resourcecollection-go
     outputs:
       agent_image: ${{ steps.validate.outputs.agent_image }}
     steps:
@@ -342,8 +344,6 @@ jobs:
           cache: false
       - name: Validate the canonical CRD and rendered configurations with the pinned agent
         id: validate
-        env:
-          GOPATH: ${{ runner.temp }}/resourcecollection-go
         run: |
           helm version --short
           yq --version
