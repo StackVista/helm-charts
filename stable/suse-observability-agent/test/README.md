@@ -30,36 +30,9 @@ python3 stable/suse-observability-agent/test/resource_collection_ci.py \
 The local overrides validate the candidate; CI uses the committed source and
 chart image without overrides.
 
-Lifecycle CI runs the collector's matching pinned harness on owned Kubernetes
-clusters for native collection and topology compatibility. Both profiles check
-declaration edits without rollout, two-Pod takeover and access recovery. The
-native profile also checks upgrade, disable/re-enable, retained definitions and
-reinstall. The topology profile checks native snapshots, deletion and sanitization
-while custom collection is pending or blocked.
-
-Both profiles use the immutable image digest that passed configuration validation.
-The matrix gates internal publication in CI and uploads synthetic evidence.
-Cluster tools use the collector harness's checksum-verified versions and
-specialized Rancher K3s node image.
-
-Run a local unpublished lifecycle candidate with:
-
-```sh
-python3 stable/suse-observability-agent/test/resource_collection_ci.py \
-  --canonical-crd /absolute/path/to/collector/resourcecollection-crd.yaml \
-  --collector-source /absolute/path/to/collector \
-  --agent-image candidate-agent:local \
-  --lifecycle-profile native \
-  --node-image 'rancher/k3s@sha256:QUALIFIED_NODE_DIGEST' \
-  --kubernetes-version EXPECTED_MINOR \
-  --artifacts /tmp/resourcecollection-lifecycle-evidence
-```
-
-Use `--lifecycle-profile topology` for the compatibility profile and a separate
-empty artifact directory. The binary comes from that image; an optional local
-`--agent-binary` must match it. CI checks the harness revision against schema
-provenance. These profiles do not establish the support floor, older chart/image
-rollback qualification, other architectures or backend persistence/UI.
+ResourceCollection Helm lifecycle, two-Pod takeover and backend acceptance
+are deferred to BEEST qualification. This chart suite covers rendering,
+canonical CRD provenance and generated collector configuration.
 
 The container tests require a locally available image and Linux Docker host networking. They use synthetic log
 files and ephemeral TLS servers, replacing Kubernetes metadata lookup. They
