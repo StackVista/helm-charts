@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.67`
+Current chart version is `1.7.68`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -611,7 +611,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"v0.0.77-agent"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"test-sts-828-20261117-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.kubernetesTopology.clusterType | string | `nil` | Cluster type for topology tags and event identifiers when global.features.experimentalOtelKubernetesClusterAgent is true: kubernetes or openshift. Empty detects OpenShift from the quota.openshift.io API group, as the cluster agent does. |
 | otel.k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | otel.k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
