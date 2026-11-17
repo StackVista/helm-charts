@@ -58,7 +58,7 @@ func TestResourceCollectionGates(t *testing.T) {
 		enabled   bool
 	}{
 		{"enabled-default", nil, true, true},
-		{"feature-disabled", map[string]string{"otel.k8sResourceCollector.resourceCollections.enabled": "false"}, true, false},
+		{"crd-install-disabled", map[string]string{"otel.k8sResourceCollector.resourceCollections.enabled": "false"}, true, false},
 		{"collector-disabled", map[string]string{"otel.k8sResourceCollector.enabled": "false"}, false, false},
 		{"otel-disabled", map[string]string{"otel.enabled": "false"}, false, false},
 	} {
@@ -70,11 +70,7 @@ func TestResourceCollectionGates(t *testing.T) {
 			assert.Equal(t, tc.collector, exists)
 			if tc.collector {
 				receiver := resourceCollectionReceiver(t, resources)
-				if tc.enabled {
-					assert.Equal(t, map[string]any{"enabled": true}, receiver["resource_collections"])
-				} else {
-					assert.NotContains(t, receiver, "resource_collections")
-				}
+				assert.NotContains(t, receiver, "resource_collections")
 				role := resources.ClusterRoles[resourceCollectionCollectorName]
 				for _, rule := range role.Rules {
 					if slices.Contains(rule.APIGroups, "observability.suse.com") {
@@ -84,6 +80,22 @@ func TestResourceCollectionGates(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestResourceCollectionKeepCanBeDisabled(t *testing.T) {
+	resources := renderResourceCollections(t, map[string]string{"otel.k8sResourceCollector.resourceCollections.keep": "false"})
+	var definition struct {
+		Metadata struct{ Annotations map[string]string }
+	}
+	require.NoError(t, yaml.Unmarshal([]byte(resources.Unmapped[resourceCollectionCRDName]), &definition))
+	assert.NotContains(t, definition.Metadata.Annotations, "helm.sh/resource-policy")
+}
+
+func TestResourceCollectionInstallFlagPreservesBaselineConfiguration(t *testing.T) {
+	enabled := resourceCollectionReceiver(t, renderResourceCollections(t, nil))
+	disabled := resourceCollectionReceiver(t, renderResourceCollections(t,
+		map[string]string{"otel.k8sResourceCollector.resourceCollections.enabled": "false"}))
+	assert.Equal(t, enabled, disabled)
 }
 
 func TestResourceCollectionDefinition(t *testing.T) {
@@ -184,10 +196,14 @@ func TestResourceCollectionDeclarationsOnly(t *testing.T) {
 		assert.NotContains(t, rule.APIGroups, "*")
 	}
 
-	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/resource-collections-only.yaml",
-		"values/resource-collections-disabled.yaml")
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "must have at least one truthy entry")
+	disabled := renderResourceCollections(t,
+		map[string]string{
+			"otel.k8sResourceCollector.resourceCollections.enabled": "false",
+			"otel.k8sResourceCollector.rbac.useWildcard": "false",
+		},
+		"values/resource-collections-only.yaml")
+	assert.Equal(t, receiver, resourceCollectionReceiver(t, disabled))
+	assert.Len(t, disabled.ClusterRoles[resourceCollectionCollectorName].Rules, 1)
 }
 
 func TestResourceCollectionPreservesIntegrationBaseline(t *testing.T) {

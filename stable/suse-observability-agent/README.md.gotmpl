@@ -235,6 +235,41 @@ stackstate/suse-observability-agent
 
 Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
 
+## ResourceCollection declarations
+
+`otel.k8sResourceCollector.resourceCollections.enabled` controls installation of
+the CRD and explicit declaration/status permissions. It does not select a different
+collector runtime or disable consumption of an existing CRD.
+
+With `rbac.useWildcard: false`, declarations do not grant access to their selected
+types. An administrator must grant the collector's ServiceAccount `get`, `list`
+and `watch` on those types. Separate Roles or ClusterRoles and bindings can be
+managed as GitOps manifests; no additional chart is required. The
+[upcoming customer guide](https://github.com/rancher/stackstate-product-docs/pull/496)
+includes exact KubeVirt grants, namespace bindings and authorization checks.
+API group includes also select baseline resources, so they are not a
+permissions-only setting.
+
+The CRD survives uninstall when `resourceCollections.keep: true`. For an
+externally managed CRD or another agent release, set `resourceCollections.enabled: false`
+and manage the declaration/status grants separately. One release should
+own the cluster-wide CRD.
+
+To move ownership of a retained or manually installed CRD, first verify that its
+schema is compatible and that the previous owning release no longer manages it.
+Then assign the intended release name and namespace before installing:
+
+```shell
+kubectl label crd resourcecollections.observability.suse.com \
+  app.kubernetes.io/managed-by=Helm --overwrite
+kubectl annotate crd resourcecollections.observability.suse.com \
+  meta.helm.sh/release-name=<release-name> \
+  meta.helm.sh/release-namespace=<release-namespace> --overwrite
+```
+
+Setting `resourceCollections.keep: false` allows uninstall to delete the CRD and
+all its declarations.
+
 ## OTel Prometheus scraping
 
 When `otel.enabled=true` (default=false) and `otel.prometheusScraping.enabled=true` (default=true), the chart deploys an OpenTelemetry Collector based metrics scraper plus a Target Allocator that discovers `ServiceMonitor`, `PodMonitor` and `Probe` resources and distributes their scrape targets across collector pods. `Probe` resources need a separately deployed blackbox exporter; the chart does not ship one.

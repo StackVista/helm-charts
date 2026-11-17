@@ -1,7 +1,7 @@
 {
   "repository": "StackVista/sts-opentelemetry-collector",
   "path": "receiver/k8sresourcereceiver/resourcecollection/resourcecollection-crd.yaml",
-  "sourceCommit": "6e72f25cc472fb2c5d9f27683d221fdf8f362004",
+  "sourceCommit": "70ff5c26d8d12a9381106d172a5db97ab16e6b6d",
   "sourceState": "committed",
   "sha256": "052fadf34955e975596adb31f448f6e90773b7b8ebdf6efea8b0a535299fae4d"
 }
