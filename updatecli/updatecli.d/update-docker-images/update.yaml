@@ -558,6 +558,18 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.otel.k8sResourceCollector.image.tag"
+  resourceCollectionCRD:
+    name: "ResourceCollection CRD from the agent release"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#stsOpentelemetryCollectorSuseObservabilityAgent"
+    spec:
+      # Console mode preserves download failures; checksum mode can hide them.
+      command: |
+        bash updatecli/resource-collection-release.sh '{{ source "stsOpentelemetryAgentCollector" }}' \
+          stable/suse-observability-agent/files/crds/resourcecollections.observability.suse.com.yaml
   stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping:
     name: "sts-opentelemetry-collector (suse-observability-agent OTel Prometheus scraping)"
     kind: yaml
@@ -723,6 +735,7 @@ targets:
       - "target#nodeAgentTag"
       - "target#clusterAgentTag"
       - "target#checksAgentTag"
+      - "target#resourceCollectionCRD"
       - "target#stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping"
       - "target#stsOpentelemetryCollectorSuseObservabilityAgentTelemetryGateway"
       - "target#stsOpentelemetryCollectorSuseObservabilityAgentLogs"
@@ -786,10 +799,8 @@ targets:
         CHART_YAML="stable/suse-observability-agent/Chart.yaml"
         BASE_REF="origin/{{ requiredEnv .scm.branchEnv }}"
 
-        # If neither the agent values file nor Chart.yaml changed compared to
-        # the base ref updatecli started from, skip the chart bump.
-        if git diff --quiet "$BASE_REF" -- "$VALUES_FILE" "$CHART_YAML"; then
-          echo "Agent values and Chart.yaml unchanged vs $BASE_REF; skipping chart bump"
+        if git diff --quiet "$BASE_REF" -- "$VALUES_FILE" "$CHART_YAML" stable/suse-observability-agent/files/crds; then
+          echo "Agent values, chart version and CRDs unchanged vs $BASE_REF; skipping chart bump"
           exit 0
         fi
 

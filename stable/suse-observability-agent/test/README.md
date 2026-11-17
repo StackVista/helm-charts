@@ -9,10 +9,11 @@ KUBECONFIG=/dev/null OTEL_AGENT_BINARY=/absolute/path/to/collector \
 Extract `OTEL_AGENT_BINARY` from the same image. Without these variables, binary
 validation and container transport tests skip.
 
-ResourceCollection CI always checks the chart's pinned canonical collector
-export and validates disabled, enabled, and declarations-only configurations
-with the agent binary extracted from the chart's image. It fails if provenance
-still names a working-tree export or the matching agent has not been adopted.
+ResourceCollection CI reads the source commit from the chart's collector image
+and compares the bundled CRD with that commit's canonical export. It also
+validates disabled, enabled, and declarations-only configurations with the
+binary extracted from that image. Missing source labels or a different CRD fail
+the check. Updatecli fetches the CRD and image tag from the same collector release.
 The check gates the agent chart's internal publication in CI.
 
 The existing Kubeconform validation also renders the collection-enabled,
@@ -32,7 +33,7 @@ chart image without overrides.
 
 ResourceCollection Helm lifecycle, two-Pod takeover and backend acceptance
 are deferred to BEEST qualification. This chart suite covers rendering,
-canonical CRD provenance and generated collector configuration.
+canonical CRD equality and generated collector configuration.
 
 The container tests require a locally available image and Linux Docker host networking. They use synthetic log
 files and ephemeral TLS servers, replacing Kubernetes metadata lookup. They

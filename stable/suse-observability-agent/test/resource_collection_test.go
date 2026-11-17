@@ -2,9 +2,6 @@ package test
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -199,7 +196,7 @@ func TestResourceCollectionDeclarationsOnly(t *testing.T) {
 	disabled := renderResourceCollections(t,
 		map[string]string{
 			"otel.k8sResourceCollector.resourceCollections.enabled": "false",
-			"otel.k8sResourceCollector.rbac.useWildcard": "false",
+			"otel.k8sResourceCollector.rbac.useWildcard":            "false",
 		},
 		"values/resource-collections-only.yaml")
 	assert.Equal(t, receiver, resourceCollectionReceiver(t, disabled))
@@ -223,27 +220,15 @@ func TestResourceCollectionPreservesIntegrationBaseline(t *testing.T) {
 }
 
 func TestResourceCollectionCanonicalArtifact(t *testing.T) {
+	canonical := os.Getenv("RESOURCE_COLLECTION_CANONICAL_CRD")
+	if canonical == "" {
+		t.Skip("set RESOURCE_COLLECTION_CANONICAL_CRD to the collector's canonical export")
+	}
 	schema, err := os.ReadFile("../files/crds/" + resourceCollectionCRDName + ".yaml")
 	require.NoError(t, err)
-	provenanceBytes, err := os.ReadFile("../files/crds/" + resourceCollectionCRDName + ".provenance.json")
+	upstream, err := os.ReadFile(canonical)
 	require.NoError(t, err)
-	var provenance struct {
-		Repository string `json:"repository"`
-		Path       string `json:"path"`
-		SHA256     string `json:"sha256"`
-	}
-	require.NoError(t, json.Unmarshal(provenanceBytes, &provenance))
-	assert.Equal(t, "StackVista/sts-opentelemetry-collector", provenance.Repository)
-	assert.Equal(t, "receiver/k8sresourcereceiver/resourcecollection/resourcecollection-crd.yaml", provenance.Path)
-	sum := sha256.Sum256(schema)
-	assert.Equal(t, hex.EncodeToString(sum[:]), provenance.SHA256)
-	assert.NotContains(t, string(schema), "\n#")
-
-	if canonical := os.Getenv("RESOURCE_COLLECTION_CANONICAL_CRD"); canonical != "" {
-		upstream, err := os.ReadFile(canonical)
-		require.NoError(t, err)
-		assert.Equal(t, upstream, schema, "chart schema must be the unchanged canonical artifact")
-	}
+	assert.Equal(t, upstream, schema, "chart schema must be the unchanged canonical artifact")
 }
 
 func TestResourceCollectionBinaryValidation(t *testing.T) {
