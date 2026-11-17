@@ -2246,7 +2246,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: "v0.0.77"
+    tag: "v0.0.78"
   resources:
     requests:
       cpu: 250m
