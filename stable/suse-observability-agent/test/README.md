@@ -9,7 +9,7 @@ KUBECONFIG=/dev/null OTEL_AGENT_BINARY=/absolute/path/to/collector \
 Extract `OTEL_AGENT_BINARY` from the same image. Without these variables, binary
 validation and container transport tests skip.
 
-ResourceCollection CI reads the source commit from the chart's collector image
+CollectionDeclaration CI reads the source commit from the chart's collector image
 and compares the bundled CRD with that commit's canonical export. It also
 validates disabled, enabled, and declarations-only configurations with the
 binary extracted from that image. Missing source labels or a different CRD fail
@@ -23,15 +23,15 @@ permissions, in addition to the default chart values.
 For local validation before those artifacts are published:
 
 ```sh
-python3 stable/suse-observability-agent/test/resource_collection_ci.py \
-  --canonical-crd /absolute/path/to/collector/resourcecollection-crd.yaml \
+python3 stable/suse-observability-agent/test/collection_declaration_ci.py \
+  --canonical-crd /absolute/path/to/collector/collectiondeclaration-crd.yaml \
   --agent-binary /absolute/path/to/candidate-agent
 ```
 
 The local overrides validate the candidate; CI uses the committed source and
 chart image without overrides.
 
-ResourceCollection Helm lifecycle, two-Pod takeover and backend acceptance
+CollectionDeclaration Helm lifecycle, two-Pod takeover and backend acceptance
 are deferred to BEEST qualification. This chart suite covers rendering,
 canonical CRD equality and generated collector configuration.
 

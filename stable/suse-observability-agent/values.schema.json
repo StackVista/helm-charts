@@ -250,12 +250,12 @@
               "minimum": 0,
               "description": "Maximum distinct declaration watches beyond YAML baseline collection. Zero uses the collector default."
             },
-            "resourceCollections": {
+            "collectionDeclarations": {
               "type": "object",
               "properties": {
                 "enabled": {
                   "type": "boolean",
-                  "description": "Install the ResourceCollection CRD and grant declaration/status permissions when the OTel resource collector is enabled."
+                  "description": "Install the CollectionDeclaration CRD and grant declaration/status permissions when the OTel resource collector is enabled."
                 }
               }
             }

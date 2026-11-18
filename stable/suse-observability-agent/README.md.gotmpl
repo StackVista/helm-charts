@@ -235,9 +235,9 @@ stackstate/suse-observability-agent
 
 Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
 
-## ResourceCollection declarations
+## CollectionDeclaration declarations
 
-`otel.k8sResourceCollector.resourceCollections.enabled` controls installation of
+`otel.k8sResourceCollector.collectionDeclarations.enabled` controls installation of
 the CRD and explicit declaration/status permissions. It does not select a different
 collector runtime or disable consumption of an existing CRD.
 
@@ -250,8 +250,8 @@ includes exact KubeVirt grants, namespace bindings and authorization checks.
 API group includes also select baseline resources, so they are not a
 permissions-only setting.
 
-The CRD survives uninstall when `resourceCollections.keep: true`. For an
-externally managed CRD or another agent release, set `resourceCollections.enabled: false`
+The CRD survives uninstall when `collectionDeclarations.keep: true`. For an
+externally managed CRD or another agent release, set `collectionDeclarations.enabled: false`
 and manage the declaration/status grants separately. One release should
 own the cluster-wide CRD.
 
@@ -260,14 +260,14 @@ schema is compatible and that the previous owning release no longer manages it.
 Then assign the intended release name and namespace before installing:
 
 ```shell
-kubectl label crd resourcecollections.observability.suse.com \
+kubectl label crd collectiondeclarations.observability.suse.com \
   app.kubernetes.io/managed-by=Helm --overwrite
-kubectl annotate crd resourcecollections.observability.suse.com \
+kubectl annotate crd collectiondeclarations.observability.suse.com \
   meta.helm.sh/release-name=<release-name> \
   meta.helm.sh/release-namespace=<release-namespace> --overwrite
 ```
 
-Setting `resourceCollections.keep: false` allows uninstall to delete the CRD and
+Setting `collectionDeclarations.keep: false` allows uninstall to delete the CRD and
 all its declarations.
 
 ## OTel Prometheus scraping

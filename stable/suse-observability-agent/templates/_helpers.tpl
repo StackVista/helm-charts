@@ -454,8 +454,8 @@ true
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate-k8s-agent.resourceCollections.enabled" -}}
-{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.otel.k8sResourceCollector.resourceCollections.enabled }}
+{{- define "stackstate-k8s-agent.collectionDeclarations.enabled" -}}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.otel.k8sResourceCollector.collectionDeclarations.enabled }}
 true
 {{- end }}
 {{- end -}}

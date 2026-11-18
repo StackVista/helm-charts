@@ -1,7 +1,0 @@
-{{- if include "stackstate-k8s-agent.resourceCollections.enabled" . }}
-{{- $crd := required "The canonical ResourceCollection CRD artifact is missing" (.Files.Get "files/crds/resourcecollections.observability.suse.com.yaml") | fromYaml }}
-{{- if not .Values.otel.k8sResourceCollector.resourceCollections.keep }}
-{{- $_ := unset $crd.metadata.annotations "helm.sh/resource-policy" }}
-{{- end }}
-{{ $crd | toYaml }}
-{{- end }}

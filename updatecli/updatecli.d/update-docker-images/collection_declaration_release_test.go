@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestResourceCollectionReleaseAdoption(t *testing.T) {
-	script := filepath.Join(repoRoot(t), "updatecli/resource-collection-release.sh")
+func TestCollectionDeclarationReleaseAdoption(t *testing.T) {
+	script := filepath.Join(repoRoot(t), "updatecli/collection-declaration-release.sh")
 	for _, tc := range []struct {
 		name, tag string
 		status    int
@@ -34,14 +34,14 @@ func TestResourceCollectionReleaseAdoption(t *testing.T) {
 			var requests atomic.Uint32
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				requests.Add(1)
-				assert.Equal(t, "/v0.0.100/receiver/k8sresourcereceiver/resourcecollection/resourcecollection-crd.yaml", r.URL.Path)
+				assert.Equal(t, "/v0.0.100/receiver/k8sresourcereceiver/collectiondeclaration/collectiondeclaration-crd.yaml", r.URL.Path)
 				w.WriteHeader(tc.status)
 				_, _ = w.Write([]byte(canonical))
 			}))
 			defer server.Close()
 
 			dir := t.TempDir()
-			output := filepath.Join(dir, "resourcecollection.yaml")
+			output := filepath.Join(dir, "collectiondeclaration.yaml")
 			previous := "previous canonical export\n"
 			if tc.unchanged {
 				previous = canonical

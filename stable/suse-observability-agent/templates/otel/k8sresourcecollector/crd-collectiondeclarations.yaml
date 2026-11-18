@@ -1,0 +1,7 @@
+{{- if include "stackstate-k8s-agent.collectionDeclarations.enabled" . }}
+{{- $crd := required "The canonical CollectionDeclaration CRD artifact is missing" (.Files.Get "files/crds/collectiondeclarations.observability.suse.com.yaml") | fromYaml }}
+{{- if not .Values.otel.k8sResourceCollector.collectionDeclarations.keep }}
+{{- $_ := unset $crd.metadata.annotations "helm.sh/resource-policy" }}
+{{- end }}
+{{ $crd | toYaml }}
+{{- end }}

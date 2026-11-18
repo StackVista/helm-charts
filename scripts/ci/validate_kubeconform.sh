@@ -46,9 +46,9 @@ if [ "${chartPath}" == "stable/suse-observability-agent" ]; then
     --set otel.prometheusScraping.enabled=false
     --set otel.k8sResourceCollector.rbac.useWildcard=false
   )
-  validate resource-collections "${collectorValues[@]}"
+  validate collection-declarations "${collectorValues[@]}"
   validate declarations-only "${collectorValues[@]}" \
-    --values "${chartPath}/test/values/resource-collections-only.yaml"
+    --values "${chartPath}/test/values/collection-declarations-only.yaml"
   validate consumption-disabled "${collectorValues[@]}" \
-    --values "${chartPath}/test/values/resource-collections-disabled.yaml"
+    --values "${chartPath}/test/values/collection-declarations-disabled.yaml"
 fi

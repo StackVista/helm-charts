@@ -1,4 +1,4 @@
 otel:
   k8sResourceCollector:
-    resourceCollections:
+    collectionDeclarations:
       enabled: false

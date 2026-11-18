@@ -67,10 +67,10 @@ def main():
         parser.error("--canonical-crd and --agent-binary must be supplied together")
     repo = Path(__file__).resolve().parents[3]
     chart = repo / "stable" / "suse-observability-agent"
-    imported = chart / "files/crds/resourcecollections.observability.suse.com.yaml"
-    source_path = "receiver/k8sresourcereceiver/resourcecollection/resourcecollection-crd.yaml"
+    imported = chart / "files/crds/collectiondeclarations.observability.suse.com.yaml"
+    source_path = "receiver/k8sresourcereceiver/collectiondeclaration/collectiondeclaration-crd.yaml"
 
-    with tempfile.TemporaryDirectory(prefix="resourcecollection-chart-ci-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="collectiondeclaration-chart-ci-") as temporary:
         root = Path(temporary)
         canonical = root / "canonical.yaml"
         if args.canonical_crd:
@@ -91,13 +91,13 @@ def main():
 
         env = os.environ | {
             "KUBECONFIG": "/dev/null",
-            "RESOURCE_COLLECTION_REQUIRE_BINARY": "true",
-            "RESOURCE_COLLECTION_CANONICAL_CRD": str(canonical),
+            "COLLECTION_DECLARATION_REQUIRE_BINARY": "true",
+            "COLLECTION_DECLARATION_CANONICAL_CRD": str(canonical),
             "OTEL_AGENT_BINARY": str(binary),
         }
         run(
             args.go, "test", "-count=1", "-timeout=10m", "-v",
-            "-run", "^TestResourceCollection", "./stable/suse-observability-agent/test/...",
+            "-run", "^TestCollectionDeclaration", "./stable/suse-observability-agent/test/...",
             "./updatecli/updatecli.d/update-docker-images/...",
             cwd=repo, env=env,
         )

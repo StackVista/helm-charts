@@ -241,9 +241,9 @@ stackstate/suse-observability-agent
 
 Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
 
-## ResourceCollection declarations
+## CollectionDeclaration declarations
 
-`otel.k8sResourceCollector.resourceCollections.enabled` controls installation of
+`otel.k8sResourceCollector.collectionDeclarations.enabled` controls installation of
 the CRD and explicit declaration/status permissions. It does not select a different
 collector runtime or disable consumption of an existing CRD.
 
@@ -256,8 +256,8 @@ includes exact KubeVirt grants, namespace bindings and authorization checks.
 API group includes also select baseline resources, so they are not a
 permissions-only setting.
 
-The CRD survives uninstall when `resourceCollections.keep: true`. For an
-externally managed CRD or another agent release, set `resourceCollections.enabled: false`
+The CRD survives uninstall when `collectionDeclarations.keep: true`. For an
+externally managed CRD or another agent release, set `collectionDeclarations.enabled: false`
 and manage the declaration/status grants separately. One release should
 own the cluster-wide CRD.
 
@@ -266,14 +266,14 @@ schema is compatible and that the previous owning release no longer manages it.
 Then assign the intended release name and namespace before installing:
 
 ```shell
-kubectl label crd resourcecollections.observability.suse.com \
+kubectl label crd collectiondeclarations.observability.suse.com \
   app.kubernetes.io/managed-by=Helm --overwrite
-kubectl annotate crd resourcecollections.observability.suse.com \
+kubectl annotate crd collectiondeclarations.observability.suse.com \
   meta.helm.sh/release-name=<release-name> \
   meta.helm.sh/release-namespace=<release-namespace> --overwrite
 ```
 
-Setting `resourceCollections.keep: false` allows uninstall to delete the CRD and
+Setting `collectionDeclarations.keep: false` allows uninstall to delete the CRD and
 all its declarations.
 
 ## OTel Prometheus scraping
@@ -632,6 +632,8 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |
 | otel.integrations.suseVirtualization | bool | `true` | Enable pre-configured API group filters for the SUSE Virtualization (KubeVirt) stackpack. |
 | otel.k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
+| otel.k8sResourceCollector.collectionDeclarations.enabled | bool | `true` | Install the CollectionDeclaration CRD and explicit declaration/status RBAC. The collector always uses the same runtime and can consume an existing CRD when permitted. Requires a compatible collector image and otel.k8sResourceCollector.enabled=true. |
+| otel.k8sResourceCollector.collectionDeclarations.keep | bool | `true` | Retain the installed CRD and declarations on uninstall. Only applies when collectionDeclarations.enabled=true. Setting false allows uninstall to delete the CRD and all declarations. |
 | otel.k8sResourceCollector.crDiscovery.apiGroups.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
 | otel.k8sResourceCollector.crDiscovery.apiGroups.include | object | `{}` | Map of API group patterns (key) -> bool (enabled). Used for both CR filtering and restricted RBAC. Supports wildcards like "*.suse.com" for filtering, but restricted RBAC (rbac.useWildcard=false) can only render exact API groups or "*". Set a key to false in an override values file to disable a default. An empty include disables group-based baseline CR collection. Common SUSE integration API groups are added by the enabled integrations. |
 | otel.k8sResourceCollector.crDiscovery.discoveryMode | string | `"api_groups"` | CR discovery mode: "api_groups" (filtered custom resources) or "all" (watch all custom resources). CRDs are always watched and forwarded. |
@@ -642,11 +644,11 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.debug.enabled | bool | `false` | Enable the debug exporter for this collector. |
 | otel.k8sResourceCollector.debug.pipelines | list | `["logs"]` | Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}. |
 | otel.k8sResourceCollector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
-| otel.k8sResourceCollector.deniedObjects | object | `{}` | Map of exact plural resource name -> API `group` to block collection across namespaces and versions, including automatic CR discovery and ResourceCollection declarations. Matching explicit `objects` entries fail validation. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are sanitized; with global.features.experimentalOtelKubernetesClusterAgent, use their clusterAgent.collection.kubernetesResources switches to disable them. |
+| otel.k8sResourceCollector.deniedObjects | object | `{}` | Map of exact plural resource name -> API `group` to block collection across namespaces and versions, including automatic CR discovery and CollectionDeclaration declarations. Matching explicit `objects` entries fail validation. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are sanitized; with global.features.experimentalOtelKubernetesClusterAgent, use their clusterAgent.collection.kubernetesResources switches to disable them. |
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| otel.k8sResourceCollector.image.tag | string | `"test-sts-828-20261118-watch-budget-2-agent"` | Container image tag for 'opentelemetry-collector' containers. |
+| otel.k8sResourceCollector.image.tag | string | `"test-sts-828-20261118-collection-declaration-agent"` | Container image tag for 'opentelemetry-collector' containers. |
 | otel.k8sResourceCollector.kubernetesTopology.clusterType | string | `nil` | Cluster type for topology tags and event identifiers when global.features.experimentalOtelKubernetesClusterAgent is true: kubernetes or openshift. Empty detects OpenShift from the quota.openshift.io API group, as the cluster agent does. |
 | otel.k8sResourceCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | otel.k8sResourceCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
@@ -660,7 +662,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | otel.k8sResourceCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | otel.k8sResourceCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
-| otel.k8sResourceCollector.maxDeclarationWatches | int | `256` | Maximum distinct watches added by ResourceCollection declarations beyond YAML baseline collection. Exact shared watches count once. Excess resolved types report Blocked/WatchBudgetExceeded. Zero uses the collector default. This limits watch count, not cache bytes. |
+| otel.k8sResourceCollector.maxDeclarationWatches | int | `256` | Maximum distinct watches added by CollectionDeclaration declarations beyond YAML baseline collection. Exact shared watches count once. Excess resolved types report Blocked/WatchBudgetExceeded. Zero uses the collector default. This limits watch count, not cache bytes. |
 | otel.k8sResourceCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Overlapping CRD discovery and object selections combine by union. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
 | otel.k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
@@ -677,8 +679,6 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | otel.k8sResourceCollector.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
 | otel.k8sResourceCollector.replicaCount | int | `2` | Number of cluster collector pods to schedule. Use 2+ with leaderElection for HA. |
-| otel.k8sResourceCollector.resourceCollections.enabled | bool | `true` | Install the ResourceCollection CRD and explicit declaration/status RBAC. The collector always uses the same runtime and can consume an existing CRD when permitted. Requires a compatible collector image and otel.k8sResourceCollector.enabled=true. |
-| otel.k8sResourceCollector.resourceCollections.keep | bool | `true` | Retain the installed CRD and declarations on uninstall. Only applies when resourceCollections.enabled=true. Setting false allows uninstall to delete the CRD and all declarations. |
 | otel.k8sResourceCollector.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
 | otel.k8sResourceCollector.resources.limits.memory | string | `"512Mi"` | Memory resource limits. The collector's Go runtime gets a soft heap budget (GOMEMLIMIT) of 90% of the effective limit. |
 | otel.k8sResourceCollector.resources.requests.cpu | string | `"100m"` | CPU resource requests. |

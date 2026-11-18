@@ -558,8 +558,8 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.otel.k8sResourceCollector.image.tag"
-  resourceCollectionCRD:
-    name: "ResourceCollection CRD from the agent release"
+  collectionDeclarationCRD:
+    name: "CollectionDeclaration CRD from the agent release"
     kind: shell
     scmid: "default"
     disablesourceinput: true
@@ -568,8 +568,8 @@ targets:
     spec:
       # Console mode preserves download failures; checksum mode can hide them.
       command: |
-        bash updatecli/resource-collection-release.sh '{{ source "stsOpentelemetryAgentCollector" }}' \
-          stable/suse-observability-agent/files/crds/resourcecollections.observability.suse.com.yaml
+        bash updatecli/collection-declaration-release.sh '{{ source "stsOpentelemetryAgentCollector" }}' \
+          stable/suse-observability-agent/files/crds/collectiondeclarations.observability.suse.com.yaml
   stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping:
     name: "sts-opentelemetry-collector (suse-observability-agent OTel Prometheus scraping)"
     kind: yaml
@@ -735,7 +735,7 @@ targets:
       - "target#nodeAgentTag"
       - "target#clusterAgentTag"
       - "target#checksAgentTag"
-      - "target#resourceCollectionCRD"
+      - "target#collectionDeclarationCRD"
       - "target#stsOpentelemetryCollectorSuseObservabilityAgentOtelPrometheusScraping"
       - "target#stsOpentelemetryCollectorSuseObservabilityAgentTelemetryGateway"
       - "target#stsOpentelemetryCollectorSuseObservabilityAgentLogs"
