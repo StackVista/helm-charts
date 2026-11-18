@@ -1,6 +1,6 @@
 # keycloak
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![AppVersion: 26.7.0](https://img.shields.io/badge/AppVersion-26.7.0-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 26.7.0](https://img.shields.io/badge/AppVersion-26.7.0-informational?style=flat-square)
 
 Keycloak is a high performance Java-based identity and access management solution, packaged for SUSE Observability on top of the upstream Keycloak image.
 
@@ -134,6 +134,7 @@ Keycloak is a high performance Java-based identity and access management solutio
 | ingress.servicePort | string | `"http"` | Backend service port name to use (http) |
 | ingress.tls | bool | `false` | Enable TLS for ingress.hostname (TLS terminates at the ingress) |
 | initContainers | list | `[]` | Additional init containers for the Keycloak pods |
+| javaOptsAppend | string | `""` | Extra JVM options appended to JAVA_OPTS_APPEND |
 | kubeVersion | string | `""` | Force target Kubernetes version (using Helm capabilities if not set) |
 | lifecycleHooks | object | `{}` | Container lifecycle hooks |
 | livenessProbe.enabled | bool | `true` | Enable the liveness probe (GET /health/live on the management port) |
