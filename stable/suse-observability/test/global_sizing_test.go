@@ -732,7 +732,7 @@ func TestGlobalSizingUserStorageOverrides(t *testing.T) {
 					found := false
 					for _, env := range containers[0].Env {
 						if env.Name == "ES_JAVA_OPTS" {
-							assert.Equal(t, tc.expectedEsJavaOpts, env.Value, "ES_JAVA_OPTS should match user override")
+							assert.Equal(t, tc.expectedEsJavaOpts+" -XX:-UseBASE64Intrinsics", env.Value, "ES_JAVA_OPTS should match user override")
 							found = true
 							break
 						}
