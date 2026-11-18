@@ -1,6 +1,6 @@
 # tenantmanagement
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 Manages all SaaS tenants
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -43,6 +43,7 @@ Manages all SaaS tenants
 | ingress.host | string | `nil` | HTTP host for the ingress. |
 | ingress.tls.enabled | bool | `false` | Whether to enable TLS for ingress. |
 | ingress.tls.secretName | string | `nil` | The name of K8s secrets containing SSL certificate for ingress. |
+| javaOpts | string | `""` | Extra JVM options, passed to the application launcher as `JAVA_OPTS`. |
 | livenessProbe.httpGet.path | string | `"/status/live"` |  |
 | livenessProbe.httpGet.port | string | `"http"` |  |
 | livenessProbe.initialDelaySeconds | int | `20` |  |

@@ -144,6 +144,9 @@ tolerations: []
 
 affinity: {}
 
+# javaOpts -- Extra JVM options, passed to the application launcher as `JAVA_OPTS`.
+javaOpts: ""
+
 app:
   db:
     # JDBC url to MySQL database to store all tenants
