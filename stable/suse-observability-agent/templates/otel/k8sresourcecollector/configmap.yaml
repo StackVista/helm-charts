@@ -38,6 +38,7 @@ data:
         snapshot_interval: {{ .Values.otel.k8sResourceCollector.crDiscovery.snapshotInterval }}
         discovery_mode: {{ .Values.otel.k8sResourceCollector.crDiscovery.discoveryMode }}
         max_cr_total_data_size_bytes: {{ .Values.otel.k8sResourceCollector.dataLimits.maxCrTotalDataSizeBytes | int }}
+        max_declaration_watches: {{ .Values.otel.k8sResourceCollector.maxDeclarationWatches | int }}
 {{- if $topologyCompat }}
         # Objects dropped by the payload budget would be deleted from the legacy topology.
         max_object_total_data_size_bytes: 0

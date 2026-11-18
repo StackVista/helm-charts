@@ -245,12 +245,17 @@
         "k8sResourceCollector": {
           "type": "object",
           "properties": {
+            "maxDeclarationWatches": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum distinct declaration watches beyond YAML baseline collection. Zero uses the collector default."
+            },
             "resourceCollections": {
               "type": "object",
               "properties": {
                 "enabled": {
                   "type": "boolean",
-                  "description": "Consume cluster-scoped ResourceCollection declarations, install their retained CRD, and grant declaration/status permissions when the OTel resource collector is enabled."
+                  "description": "Install the ResourceCollection CRD and grant declaration/status permissions when the OTel resource collector is enabled."
                 }
               }
             }

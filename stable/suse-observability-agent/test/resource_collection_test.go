@@ -95,6 +95,17 @@ func TestResourceCollectionInstallFlagPreservesBaselineConfiguration(t *testing.
 	assert.Equal(t, enabled, disabled)
 }
 
+func TestResourceCollectionWatchBudget(t *testing.T) {
+	receiver := resourceCollectionReceiver(t, renderResourceCollections(t, nil))
+	assert.Equal(t, float64(256), receiver["max_declaration_watches"])
+	receiver = resourceCollectionReceiver(t, renderResourceCollections(t, map[string]string{
+		"otel.k8sResourceCollector.maxDeclarationWatches":       "8",
+		"otel.k8sResourceCollector.resourceCollections.enabled": "false",
+	}))
+	assert.Equal(t, float64(8), receiver["max_declaration_watches"],
+		"the budget also applies when the API is installed externally")
+}
+
 func TestResourceCollectionDefinition(t *testing.T) {
 	resources := renderResourceCollections(t, nil)
 	definition, exists := resources.Unmapped[resourceCollectionCRDName]
