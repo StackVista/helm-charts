@@ -70,7 +70,7 @@ func TestOtelMarkerCrdRenderedWhenTelemetryGatewayEnabled(t *testing.T) {
 func TestOtelMarkerCrdInstallCanBeDisabledWithoutDisablingGateway(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
 		ValuesFiles: []string{"values/minimal.yaml", "values/otel-telemetry-gateway-enabled.yaml"},
-		SetValues:   map[string]string{"installObservabilityCrds": "false"},
+		SetValues:   map[string]string{"installCrds": "false"},
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	_, exists := resources.Unmapped["suseobservabilityagents.observability.suse.com"]

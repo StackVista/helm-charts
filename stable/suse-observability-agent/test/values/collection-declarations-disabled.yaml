@@ -1,1 +1,1 @@
-installObservabilityCrds: false
+installCrds: false

@@ -237,13 +237,13 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 
 ## CollectionDeclaration declarations
 
-Top-level `installObservabilityCrds` controls installation of SUSE Observability CRDs when OTel
+Top-level `installCrds` controls installation of SUSE Observability CRDs when OTel
 is enabled. It defaults to `true` and covers CollectionDeclaration and the agent's
 capability marker, SUSEObservabilityAgent. The marker is installed only when
 Prometheus scraping or the telemetry gateway is enabled; it has no keep flag.
 Prometheus Operator CRDs keep their separate
 `otel.prometheusScraping.monitorCrds.enabled` opt-in. The collector retains
-permission to read declarations and write status when `installObservabilityCrds: false`, so
+permission to read declarations and write status when `installCrds: false`, so
 it can use an externally installed CRD.
 
 With `rbac.useWildcard: false`, declarations do not grant access to their selected
@@ -258,7 +258,7 @@ permissions-only setting.
 The default lifecycle settings are:
 
 ```yaml
-installObservabilityCrds: true
+installCrds: true
 otel:
   k8sResourceCollector:
     collectionDeclarations:
@@ -272,7 +272,7 @@ then disable installation in a second upgrade. Helm uses the previous release's
 keep annotation when removing the CRD.
 Helm's `--skip-crds` does not skip this CRD because it is installed as a template.
 For an externally managed CRD or another agent release, set top-level
-`installObservabilityCrds: false`.
+`installCrds: false`.
 Declaration reads and status writes remain granted. One release should own the
 cluster-wide CRD.
 
@@ -302,7 +302,7 @@ customresourcedefinitions.apiextensions.k8s.io "collectiondeclarations.observabi
 ```
 
 Ask a cluster administrator to grant the installer CRD permissions, or upgrade
-with `--set installObservabilityCrds=false` and have the administrator manage the CRD separately.
+with `--set installCrds=false` and have the administrator manage the CRD separately.
 The collector retains declaration read/status permissions and existing YAML
 collection. Prometheus Operator CRDs remain a separate opt-in.
 

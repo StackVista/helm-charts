@@ -68,7 +68,7 @@
     }
   ],
   "properties": {
-    "installObservabilityCrds": {
+    "installCrds": {
       "type": "boolean"
     },
     "stackstate": {

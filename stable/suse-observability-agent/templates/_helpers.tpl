@@ -455,7 +455,7 @@ true
 {{- end -}}
 
 {{- define "stackstate-k8s-agent.observabilityCrds.install" -}}
-{{- if and (include "stackstate-k8s-agent.otel.enabled" .) .Values.installObservabilityCrds }}
+{{- if and (include "stackstate-k8s-agent.otel.enabled" .) .Values.installCrds }}
 true
 {{- end }}
 {{- end -}}
