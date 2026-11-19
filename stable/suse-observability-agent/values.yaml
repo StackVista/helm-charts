@@ -306,10 +306,6 @@ processAgent:
   podCorrelation:
     # processAgent.podCorrelation.enabled -- [Experimental] Enable / disable pod correlation.
     enabled: false
-    # processAgent.podCorrelation.remoteCache -- When true, the chart will deploy a remote kube cache service and
-    # populate the process-agent environment with the service address (serviceName.namespace:grpcPort).
-    # Set to `false` to use a local informer inside the process-agent and avoid deploying the remote cache.
-    remoteCache: false
     # processAgent.podCorrelation.protocolMetrics -- Enable / disable exporting protocol metrics. If false the agent will export only metrics for network connections.
     protocolMetrics: false
     # processAgent.podCorrelation.partialCorrelation -- Enable / disable partial pod correlation. if false the agent will export only pod<->pod metrics. Both extremities of the connection must be pods.
@@ -327,38 +323,6 @@ processAgent:
 
   # processAgent.disabledProtocols -- List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled.
   disabledProtocols: []
-
-remoteKubeCache:
-  containerSecurityContext:
-    # remoteKubeCache.containerSecurityContext.runAsUser -- UID for the remote kube cache container. Its image declares no USER, so a UID is required to satisfy runAsNonRoot on plain Kubernetes. Set to null on OpenShift, where the restricted-v2 SCC assigns a UID from the namespace range and rejects an explicit one outside it.
-    runAsUser: 65534
-
-  # remoteKubeCache.podAnnotations -- Additional annotations on the remote kube cache pods.
-  podAnnotations: {}
-
-  # remoteKubeCache.podLabels -- Additional labels on the remote kube cache pods.
-  podLabels: {}
-
-  # remoteKubeCache.nodeSelector -- Node labels for pod assignment.
-  nodeSelector: {}
-
-  # remoteKubeCache.tolerations -- Toleration labels for pod assignment.
-  tolerations: []
-
-  # remoteKubeCache.affinity -- Affinity settings for pod assignment.
-  affinity: {}
-
-  resources:
-    limits:
-      # remoteKubeCache.resources.limits.cpu -- CPU resource limits.
-      cpu: "200m"
-      # remoteKubeCache.resources.limits.memory -- Memory resource limits.
-      memory: "400Mi"
-    requests:
-      # remoteKubeCache.resources.requests.cpu -- CPU resource requests.
-      cpu: "100m"
-      # remoteKubeCache.resources.requests.memory -- Memory resource requests.
-      memory: "200Mi"
 
 clusterAgent:
   podDisruptionBudget:

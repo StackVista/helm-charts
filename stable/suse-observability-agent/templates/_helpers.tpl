@@ -424,27 +424,6 @@ Custom certificates validation - fail if both configMapName and pemData are prov
 {{- end -}}
 
 {{/*
-Helpers for remote kube cache service (used by process-agent pod-correlation)
-*/}}
-{{- define "stackstate-k8s-agent.remoteKubeCache.serviceName" -}}
-{{- printf "%s-remote-kube-cache" .Release.Name -}}
-{{- end -}}
-
-{{- define "stackstate-k8s-agent.remoteKubeCache.grpcPort" -}}
-50055
-{{- end -}}
-
-{{- define "stackstate-k8s-agent.remoteKubeCache.address" -}}
-{{- printf "%s:%s" (include "stackstate-k8s-agent.remoteKubeCache.serviceName" .) (include "stackstate-k8s-agent.remoteKubeCache.grpcPort" .) -}}
-{{- end -}}
-
-{{- define "stackstate-k8s-agent.processAgent.podCorrelation.remoteCache.enabled" -}}
-{{- if and .Values.nodeAgent.enabled .Values.nodeAgent.containers.processAgent.enabled .Values.processAgent.podCorrelation.enabled .Values.processAgent.podCorrelation.remoteCache }}
-true
-{{- end }}
-{{- end -}}
-
-{{/*
 Determine whether the cluster collector should be deployed.
 True when OTel is enabled and the collector is explicitly enabled.
 */}}

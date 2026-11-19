@@ -60,10 +60,6 @@
       value: {{ .Values.nodeAgent.httpTracing.enabled | quote }}
     - name: STS_POD_CORRELATION_ENABLED
       value: {{ .Values.processAgent.podCorrelation.enabled | quote }}
-    {{- if include "stackstate-k8s-agent.processAgent.podCorrelation.remoteCache.enabled" . }}
-    - name: STS_POD_CORRELATION_REMOTE_CACHE_ADDR
-      value: {{ include "stackstate-k8s-agent.remoteKubeCache.address" $ }}
-    {{- end }}
     - name: STS_POD_CORRELATION_PROTOCOL_METRICS
       value: {{ .Values.processAgent.podCorrelation.protocolMetrics | quote }}
     - name: STS_POD_CORRELATION_PARTIAL_CORRELATION

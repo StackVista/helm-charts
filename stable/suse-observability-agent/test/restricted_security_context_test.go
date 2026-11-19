@@ -87,14 +87,13 @@ func TestRestrictedSecurityContextFullPrivilegesMode(t *testing.T) {
 	helmtestutil.AssertRestrictedSecurityContext(t, resources, privileged)
 }
 
-// remote-kube-cache and the header injector run images that declare no USER, so they carry an
+// The header injector runs images that declare no USER, so they carry an
 // explicit runAsUser to satisfy runAsNonRoot on plain Kubernetes. OpenShift's restricted-v2 SCC
 // assigns a UID from the namespace range instead and rejects an explicit one outside it, and
 // these service accounts are not covered by the node-agent SCC. The UID must therefore be
 // removable without losing the rest of the profile.
 func TestRestrictedSecurityContextUidOverridableForOpenShift(t *testing.T) {
 	uidBearing := map[string]string{
-		"remote-kube-cache":    "remoteKubeCache.containerSecurityContext.runAsUser",
 		"http-header-injector": "httpHeaderInjectorWebhook.containerSecurityContext.runAsUser",
 		"webhook-cert-setup":   "httpHeaderInjectorWebhook.containerSecurityContext.runAsUser",
 		"webhook-cert-delete":  "httpHeaderInjectorWebhook.containerSecurityContext.runAsUser",
@@ -116,7 +115,6 @@ func TestRestrictedSecurityContextUidOverridableForOpenShift(t *testing.T) {
 		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
 			ValuesFiles: []string{"values/restricted_security_context.yaml"},
 			SetValues: map[string]string{
-				"remoteKubeCache.containerSecurityContext.runAsUser":           "null",
 				"httpHeaderInjectorWebhook.containerSecurityContext.runAsUser": "null",
 			},
 		})

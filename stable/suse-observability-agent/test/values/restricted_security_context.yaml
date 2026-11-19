@@ -17,7 +17,6 @@ kubernetes-rbac-agent:
 processAgent:
   podCorrelation:
     enabled: true
-    remoteCache: true
 
 otel:
   enabled: true

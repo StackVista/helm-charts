@@ -11,15 +11,12 @@ import (
 )
 
 const (
-	releaseName                = "suse-observability-agent"
-	nodeAgentName              = "node-agent"
-	processAgentName           = "process-agent"
-	remoteCacheName            = "remote-kube-cache"
-	remoteCacheServiceGRPCPort = "50055"
-	processAgentEnabledKey     = "nodeAgent.containers.processAgent.enabled"
+	releaseName            = "suse-observability-agent"
+	nodeAgentName          = "node-agent"
+	processAgentName       = "process-agent"
+	processAgentEnabledKey = "nodeAgent.containers.processAgent.enabled"
 
 	POD_CORRELATION_ENABLED                = "STS_POD_CORRELATION_ENABLED"
-	POD_CORRELATION_REMOTE_CACHE_ADDR      = "STS_POD_CORRELATION_REMOTE_CACHE_ADDR"
 	POD_CORRELATION_PROTOCOL_METRICS       = "STS_POD_CORRELATION_PROTOCOL_METRICS"
 	POD_CORRELATION_PARTIAL_CORRELATION    = "STS_POD_CORRELATION_PARTIAL_CORRELATION"
 	POD_CORRELATION_ATTRIBUTES_KEYS        = "STS_POD_CORRELATION_ATTRIBUTES_KEYS"
@@ -31,8 +28,7 @@ const (
 )
 
 var (
-	fullNodeAgentName   = fmt.Sprintf("%s-%s", releaseName, nodeAgentName)
-	fullRemoteCacheName = fmt.Sprintf("%s-%s", releaseName, remoteCacheName)
+	fullNodeAgentName = fmt.Sprintf("%s-%s", releaseName, nodeAgentName)
 )
 
 func TestProcessAgentEnvVars(t *testing.T) {
@@ -59,10 +55,9 @@ func TestProcessAgentEnvVars(t *testing.T) {
 		},
 		{
 			// env vars should have default values
-			name: "pod correlation enabled no remote cache",
+			name: "pod correlation enabled",
 			setValues: map[string]string{
 				"processAgent.podCorrelation.enabled":       "true",
-				"processAgent.podCorrelation.remoteCache":   "false",
 				"processAgent.podCorrelation.attributes[0]": "example0",
 				"processAgent.podCorrelation.attributes[1]": "example1",
 			},
@@ -75,9 +70,8 @@ func TestProcessAgentEnvVars(t *testing.T) {
 			},
 		},
 		{
-			name: "pod correlation enabled remote cache",
+			name: "pod correlation enabled with otlp exporter",
 			setValues: map[string]string{
-				"processAgent.podCorrelation.remoteCache":       "true",
 				"processAgent.podCorrelation.enabled":           "true",
 				"processAgent.podCorrelation.exporter.type":     "otlp",
 				"processAgent.podCorrelation.exporter.endpoint": "otel-collector:4317",
@@ -87,7 +81,6 @@ func TestProcessAgentEnvVars(t *testing.T) {
 				POD_CORRELATION_ENABLED:                "true",
 				POD_CORRELATION_PROTOCOL_METRICS:       "false",
 				POD_CORRELATION_PARTIAL_CORRELATION:    "false",
-				POD_CORRELATION_REMOTE_CACHE_ADDR:      fmt.Sprintf("%s-%s:%s", releaseName, remoteCacheName, remoteCacheServiceGRPCPort),
 				POD_CORRELATION_EXPORTER_TYPE:          "otlp",
 				POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "otel-collector:4317",
 				POD_CORRELATION_EXPORTER_INTERVAL:      "30",
@@ -154,6 +147,7 @@ func TestProcessAgentEnvVars(t *testing.T) {
 				assert.Contains(t, envMap, k)
 				assert.Equal(t, v, envMap[k], "Wrong value for env var %s", k)
 			}
+			assert.NotContains(t, envMap, "STS_POD_CORRELATION_REMOTE_CACHE_ADDR")
 		})
 	}
 
@@ -180,20 +174,10 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			},
 		},
 		{
-			// env vars should have default values
-			name: "pod correlation enabled no remote cache",
+			name: "pod correlation enabled",
 			setValues: map[string]string{
-				processAgentEnabledKey:                    "true",
-				"processAgent.podCorrelation.enabled":     "true",
-				"processAgent.podCorrelation.remoteCache": "false",
-			},
-		},
-		{
-			name: "pod correlation enabled remote cache",
-			setValues: map[string]string{
-				processAgentEnabledKey:                    "true",
-				"processAgent.podCorrelation.enabled":     "true",
-				"processAgent.podCorrelation.remoteCache": "true",
+				processAgentEnabledKey:                "true",
+				"processAgent.podCorrelation.enabled": "true",
 			},
 		},
 	}
@@ -212,36 +196,10 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", helmOpts)
 			resources := helmtestutil.NewKubernetesResources(t, output)
 
-			///////////////////
-			// Check k8s remote cache presence
-			///////////////////
-
-			_, cacheDeploymentOk := resources.Deployments[fullRemoteCacheName]
-			_, cacheServiceOk := resources.Services[fullRemoteCacheName]
-			_, cacheClusterRoleBindingOk := resources.ClusterRoleBindings[fullRemoteCacheName]
-			_, cacheClusterRoleOk := resources.ClusterRoles[fullRemoteCacheName]
-			_, cacheServiceAccountOk := resources.ServiceAccounts[fullRemoteCacheName]
-
-			// we should have the remote kubernetes cache
-			if tt.setValues[processAgentEnabledKey] == "true" &&
-				tt.setValues["processAgent.podCorrelation.enabled"] == "true" &&
-				tt.setValues["processAgent.podCorrelation.remoteCache"] == "true" {
-				assert.True(t, cacheDeploymentOk)
-				assert.True(t, cacheServiceOk)
-				assert.True(t, cacheClusterRoleBindingOk)
-				assert.True(t, cacheClusterRoleOk)
-				assert.True(t, cacheServiceAccountOk)
-			} else {
-				// in all other cases we shouldn't have the cache
-				assert.False(t, cacheDeploymentOk)
-				assert.False(t, cacheServiceOk)
-				assert.False(t, cacheClusterRoleBindingOk)
-				assert.False(t, cacheClusterRoleOk)
-				assert.False(t, cacheServiceAccountOk)
-			}
+			assert.NotContains(t, output, "remote-kube-cache")
 
 			///////////////////
-			// Check node-agent Clusterrole permissions without the remote cache
+			// Check node-agent Clusterrole permissions
 			///////////////////
 
 			assert.Greater(t, len(resources.ClusterRoles), 0)
@@ -253,8 +211,7 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			containsWatch := slices.Contains(nodeAgentClusterRole.Rules[0].Verbs, "watch")
 
 			if tt.setValues[processAgentEnabledKey] == "true" &&
-				tt.setValues["processAgent.podCorrelation.enabled"] == "true" &&
-				tt.setValues["processAgent.podCorrelation.remoteCache"] == "false" {
+				tt.setValues["processAgent.podCorrelation.enabled"] == "true" {
 				assert.True(t, containsWatch)
 				assert.True(t, containsPods)
 			} else {
