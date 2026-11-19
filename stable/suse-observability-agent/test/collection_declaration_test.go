@@ -55,8 +55,8 @@ func TestCollectionDeclarationGates(t *testing.T) {
 		enabled   bool
 	}{
 		{"enabled-default", nil, true, true},
-		{"crd-install-disabled", map[string]string{"otel.k8sResourceCollector.collectionDeclarations.enabled": "false"}, true, false},
-		{"collector-disabled", map[string]string{"otel.k8sResourceCollector.enabled": "false"}, false, false},
+		{"crd-install-disabled", map[string]string{"installObservabilityCrds": "false"}, true, false},
+		{"collector-disabled", map[string]string{"otel.k8sResourceCollector.enabled": "false"}, false, true},
 		{"otel-disabled", map[string]string{"otel.enabled": "false"}, false, false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -69,11 +69,13 @@ func TestCollectionDeclarationGates(t *testing.T) {
 				receiver := collectionDeclarationReceiver(t, resources)
 				assert.NotContains(t, receiver, "collection_declarations")
 				role := resources.ClusterRoles[collectionDeclarationCollectorName]
+				var declarationRules int
 				for _, rule := range role.Rules {
 					if slices.Contains(rule.APIGroups, "observability.suse.com") {
-						assert.True(t, tc.enabled, "disabled feature must not retain explicit declaration/status permissions")
+						declarationRules++
 					}
 				}
+				assert.Equal(t, 2, declarationRules, "externally installed APIs still need declaration reads and status writes")
 			}
 		})
 	}
@@ -91,7 +93,7 @@ func TestCollectionDeclarationKeepCanBeDisabled(t *testing.T) {
 func TestCollectionDeclarationInstallFlagPreservesBaselineConfiguration(t *testing.T) {
 	enabled := collectionDeclarationReceiver(t, renderCollectionDeclarations(t, nil))
 	disabled := collectionDeclarationReceiver(t, renderCollectionDeclarations(t,
-		map[string]string{"otel.k8sResourceCollector.collectionDeclarations.enabled": "false"}))
+		map[string]string{"installObservabilityCrds": "false"}))
 	assert.Equal(t, enabled, disabled)
 }
 
@@ -99,8 +101,8 @@ func TestCollectionDeclarationWatchBudget(t *testing.T) {
 	receiver := collectionDeclarationReceiver(t, renderCollectionDeclarations(t, nil))
 	assert.Equal(t, float64(256), receiver["max_declaration_watches"])
 	receiver = collectionDeclarationReceiver(t, renderCollectionDeclarations(t, map[string]string{
-		"otel.k8sResourceCollector.maxDeclarationWatches":          "8",
-		"otel.k8sResourceCollector.collectionDeclarations.enabled": "false",
+		"otel.k8sResourceCollector.maxDeclarationWatches": "8",
+		"installObservabilityCrds":                        "false",
 	}))
 	assert.Equal(t, float64(8), receiver["max_declaration_watches"],
 		"the budget also applies when the API is installed externally")
@@ -206,18 +208,40 @@ func TestCollectionDeclarationDeclarationsOnly(t *testing.T) {
 
 	disabled := renderCollectionDeclarations(t,
 		map[string]string{
-			"otel.k8sResourceCollector.collectionDeclarations.enabled": "false",
-			"otel.k8sResourceCollector.rbac.useWildcard":               "false",
+			"installObservabilityCrds":                   "false",
+			"otel.k8sResourceCollector.rbac.useWildcard": "false",
 		},
 		"values/collection-declarations-only.yaml")
 	assert.Equal(t, receiver, collectionDeclarationReceiver(t, disabled))
-	assert.Len(t, disabled.ClusterRoles[collectionDeclarationCollectorName].Rules, 1)
+	assert.Equal(t, role.Rules, disabled.ClusterRoles[collectionDeclarationCollectorName].Rules)
+}
+
+func TestCollectionDeclarationInstallFlagPreservesMonitorOptIn(t *testing.T) {
+	for _, install := range []string{"true", "false"} {
+		for _, monitors := range []string{"true", "false"} {
+			t.Run(install+"/"+monitors, func(t *testing.T) {
+				resources := renderCollectionDeclarations(t, map[string]string{
+					"installObservabilityCrds":                    install,
+					"otel.prometheusScraping.enabled":             "true",
+					"otel.prometheusScraping.monitorCrds.enabled": monitors,
+				})
+				for _, name := range []string{"servicemonitors", "podmonitors", "probes"} {
+					_, exists := resources.Unmapped[name+".monitoring.coreos.com"]
+					assert.Equal(t, monitors == "true", exists, "%s uses the separate monitor opt-in", name)
+				}
+				_, exists := resources.Unmapped[collectionDeclarationCRDName]
+				assert.Equal(t, install == "true", exists)
+				_, exists = resources.Unmapped["suseobservabilityagents.observability.suse.com"]
+				assert.Equal(t, install == "true", exists, "the Observability install flag also controls the agent capability marker")
+			})
+		}
+	}
 }
 
 func TestCollectionDeclarationPreservesIntegrationBaseline(t *testing.T) {
 	for _, enabled := range []string{"true", "false"} {
 		t.Run(enabled, func(t *testing.T) {
-			resources := renderCollectionDeclarations(t, map[string]string{"otel.k8sResourceCollector.collectionDeclarations.enabled": enabled})
+			resources := renderCollectionDeclarations(t, map[string]string{"installObservabilityCrds": enabled})
 			receiver := collectionDeclarationReceiver(t, resources)
 			groups := receiver["cr_api_groups"].(map[string]any)
 			assert.Contains(t, groups["include"], "kubevirt.io")
@@ -260,7 +284,7 @@ func TestCollectionDeclarationBinaryValidation(t *testing.T) {
 		overrides map[string]string
 		fixtures  []string
 	}{
-		{"disabled", map[string]string{"otel.k8sResourceCollector.collectionDeclarations.enabled": "false"}, nil},
+		{"disabled", map[string]string{"installObservabilityCrds": "false"}, nil},
 		{"enabled", nil, nil},
 		{"declarations-only", nil, []string{"values/collection-declarations-only.yaml"}},
 	} {

@@ -243,9 +243,14 @@ Overlays use map-shaped values, so combining multiple overlays (or layering them
 
 ## CollectionDeclaration declarations
 
-`otel.k8sResourceCollector.collectionDeclarations.enabled` controls installation of
-the CRD and explicit declaration/status permissions. It does not select a different
-collector runtime or disable consumption of an existing CRD.
+Top-level `installObservabilityCrds` controls installation of SUSE Observability CRDs when OTel
+is enabled. It defaults to `true` and covers CollectionDeclaration and the agent's
+capability marker, SUSEObservabilityAgent. The marker is installed only when
+Prometheus scraping or the telemetry gateway is enabled; it has no keep flag.
+Prometheus Operator CRDs keep their separate
+`otel.prometheusScraping.monitorCrds.enabled` opt-in. The collector retains
+permission to read declarations and write status when `installObservabilityCrds: false`, so
+it can use an externally installed CRD.
 
 With `rbac.useWildcard: false`, declarations do not grant access to their selected
 types. An administrator must grant the collector's ServiceAccount `get`, `list`
@@ -256,10 +261,26 @@ includes exact KubeVirt grants, namespace bindings and authorization checks.
 API group includes also select baseline resources, so they are not a
 permissions-only setting.
 
-The CRD survives uninstall when `collectionDeclarations.keep: true`. For an
-externally managed CRD or another agent release, set `collectionDeclarations.enabled: false`
-and manage the declaration/status grants separately. One release should
-own the cluster-wide CRD.
+The default lifecycle settings are:
+
+```yaml
+installObservabilityCrds: true
+otel:
+  k8sResourceCollector:
+    collectionDeclarations:
+      keep: true
+```
+
+`otel.k8sResourceCollector.collectionDeclarations.keep: true` preserves the CRD
+on uninstall or when disabling installation. It does not prevent schema upgrades.
+If an existing release used `keep: false`, first upgrade it with `keep: true`,
+then disable installation in a second upgrade. Helm uses the previous release's
+keep annotation when removing the CRD.
+Helm's `--skip-crds` does not skip this CRD because it is installed as a template.
+For an externally managed CRD or another agent release, set top-level
+`installObservabilityCrds: false`.
+Declaration reads and status writes remain granted. One release should own the
+cluster-wide CRD.
 
 To move ownership of a retained or manually installed CRD, first verify that its
 schema is compatible and that the previous owning release no longer manages it.
@@ -273,8 +294,23 @@ kubectl annotate crd collectiondeclarations.observability.suse.com \
   meta.helm.sh/release-namespace=<release-namespace> --overwrite
 ```
 
-Setting `collectionDeclarations.keep: false` allows uninstall to delete the CRD and
-all its declarations.
+Setting `otel.k8sResourceCollector.collectionDeclarations.keep: false` allows Helm to delete the CRD and
+all its declarations, including those created by integration charts.
+
+### Upgrade permissions
+
+Upgrading with OTel enabled now installs the CollectionDeclaration CRD by default.
+The installer needs cluster-scoped CRD permissions. Helm checks whether the CRD
+already exists, so an installer without read permissions receives:
+
+```text
+customresourcedefinitions.apiextensions.k8s.io "collectiondeclarations.observability.suse.com" is forbidden: User "<installer>" cannot get resource "customresourcedefinitions" in API group "apiextensions.k8s.io" at the cluster scope
+```
+
+Ask a cluster administrator to grant the installer CRD permissions, or upgrade
+with `--set installObservabilityCrds=false` and have the administrator manage the CRD separately.
+The collector retains declaration read/status permissions and existing YAML
+collection. Prometheus Operator CRDs remain a separate opt-in.
 
 ## OTel Prometheus scraping
 
@@ -522,6 +558,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"1.0.0-so15"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ffae2276-1130-release"` |  |
+| installObservabilityCrds | bool | `true` | Install SUSE Observability CRDs when OTel is enabled. Prometheus Operator CRDs remain controlled separately by otel.prometheusScraping.monitorCrds.enabled. |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
@@ -632,8 +669,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |
 | otel.integrations.suseVirtualization | bool | `true` | Enable pre-configured API group filters for the SUSE Virtualization (KubeVirt) stackpack. |
 | otel.k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
-| otel.k8sResourceCollector.collectionDeclarations.enabled | bool | `true` | Install the CollectionDeclaration CRD and explicit declaration/status RBAC. The collector always uses the same runtime and can consume an existing CRD when permitted. Requires a compatible collector image and otel.k8sResourceCollector.enabled=true. |
-| otel.k8sResourceCollector.collectionDeclarations.keep | bool | `true` | Retain the installed CRD and declarations on uninstall. Only applies when collectionDeclarations.enabled=true. Setting false allows uninstall to delete the CRD and all declarations. |
+| otel.k8sResourceCollector.collectionDeclarations.keep | bool | `true` | Retain the installed CRD and declarations on uninstall or when disabling CRD installation. Only applies when installObservabilityCrds=true. Setting false allows Helm to delete the CRD and all declarations, including those created by integration charts. |
 | otel.k8sResourceCollector.crDiscovery.apiGroups.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
 | otel.k8sResourceCollector.crDiscovery.apiGroups.include | object | `{}` | Map of API group patterns (key) -> bool (enabled). Used for both CR filtering and restricted RBAC. Supports wildcards like "*.suse.com" for filtering, but restricted RBAC (rbac.useWildcard=false) can only render exact API groups or "*". Set a key to false in an override values file to disable a default. An empty include disables group-based baseline CR collection. Common SUSE integration API groups are added by the enabled integrations. |
 | otel.k8sResourceCollector.crDiscovery.discoveryMode | string | `"api_groups"` | CR discovery mode: "api_groups" (filtered custom resources) or "all" (watch all custom resources). CRDs are always watched and forwarded. |

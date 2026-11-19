@@ -1,3 +1,6 @@
+# installObservabilityCrds -- Install SUSE Observability CRDs when OTel is enabled. Prometheus Operator CRDs remain controlled separately by otel.prometheusScraping.monitorCrds.enabled.
+installObservabilityCrds: true
+
 #####################
 # General variables #
 #####################
@@ -819,9 +822,7 @@ otel:
     maxDeclarationWatches: 256
 
     collectionDeclarations:
-      # otel.k8sResourceCollector.collectionDeclarations.enabled -- Install the CollectionDeclaration CRD and explicit declaration/status RBAC. The collector always uses the same runtime and can consume an existing CRD when permitted. Requires a compatible collector image and otel.k8sResourceCollector.enabled=true.
-      enabled: true
-      # otel.k8sResourceCollector.collectionDeclarations.keep -- Retain the installed CRD and declarations on uninstall. Only applies when collectionDeclarations.enabled=true. Setting false allows uninstall to delete the CRD and all declarations.
+      # otel.k8sResourceCollector.collectionDeclarations.keep -- Retain the installed CRD and declarations on uninstall or when disabling CRD installation. Only applies when installObservabilityCrds=true. Setting false allows Helm to delete the CRD and all declarations, including those created by integration charts.
       keep: true
 
     # otel.k8sResourceCollector.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.

@@ -23,3 +23,32 @@ To fix this, choose one of:
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{- if include "stackstate-k8s-agent.otel.enabled" . }}
+{{- if .Values.installObservabilityCrds }}
+=============================================================================
+UPGRADE NOTE: This chart installs SUSE Observability CRDs by default.
+=============================================================================
+
+The installer needs cluster-scoped permissions to manage CustomResourceDefinitions.
+If your installer cannot manage CRDs, set installObservabilityCrds=false and ask a cluster
+administrator to install the CollectionDeclaration CRD separately.
+Prometheus Operator CRDs keep their separate opt-in:
+otel.prometheusScraping.monitorCrds.enabled.
+
+=============================================================================
+{{- end }}
+{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) (not .Values.installObservabilityCrds) (not (.Capabilities.APIVersions.Has "observability.suse.com/v1alpha1/CollectionDeclaration")) }}
+=============================================================================
+WARNING: The CollectionDeclaration API is missing from the cluster.
+=============================================================================
+
+Collection declarations will not be collected until
+observability.suse.com/v1alpha1/CollectionDeclaration is available.
+Ask a cluster administrator to install the CRD, or set installObservabilityCrds=true
+to have this chart install and manage it.
+Existing YAML collection continues.
+
+=============================================================================
+{{- end }}
+{{- end }}

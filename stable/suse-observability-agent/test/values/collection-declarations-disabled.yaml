@@ -1,4 +1,1 @@
-otel:
-  k8sResourceCollector:
-    collectionDeclarations:
-      enabled: false
+installObservabilityCrds: false

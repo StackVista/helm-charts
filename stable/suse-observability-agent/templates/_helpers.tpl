@@ -454,8 +454,8 @@ true
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate-k8s-agent.collectionDeclarations.enabled" -}}
-{{- if and (include "stackstate-k8s-agent.k8sResourceCollector.enabled" .) .Values.otel.k8sResourceCollector.collectionDeclarations.enabled }}
+{{- define "stackstate-k8s-agent.observabilityCrds.install" -}}
+{{- if and (include "stackstate-k8s-agent.otel.enabled" .) .Values.installObservabilityCrds }}
 true
 {{- end }}
 {{- end -}}
@@ -779,7 +779,7 @@ The marker should only exist when at least one product-facing OTel integration
 path is active; otel.enabled=true with all subcomponents disabled is not enough.
 */}}
 {{- define "stackstate-k8s-agent.otelMarkerCrd.enabled" -}}
-{{- if or (include "stackstate-k8s-agent.otelTelemetryGateway.enabled" .) (include "stackstate-k8s-agent.otelPrometheusScraping.enabled" .) }}
+{{- if and (include "stackstate-k8s-agent.observabilityCrds.install" .) (or (include "stackstate-k8s-agent.otelTelemetryGateway.enabled" .) (include "stackstate-k8s-agent.otelPrometheusScraping.enabled" .)) }}
 true
 {{- end }}
 {{- end -}}
