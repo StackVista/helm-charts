@@ -17,6 +17,8 @@ import (
 )
 
 func TestDeprecatedBackupEnableShouldFail(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/deprecated_backup_enabled.yaml")
 	require.Contains(t, err.Error(), "Please use `global.backup.enabled=true` instead of `backup.enabled=true`")
 }
@@ -78,6 +80,8 @@ var backupManuallyEnabledPVCs = []string{
 }
 
 func TestGlobalBackupEnabledEnsureResources(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -146,6 +150,8 @@ func TestGlobalBackupEnabledEnsureResources(t *testing.T) {
 }
 
 func TestGlobalBackupDisabledEnsureResources(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -223,6 +229,8 @@ func TestGlobalBackupDisabledEnsureResources(t *testing.T) {
 }
 
 func TestBackupConfigmapFull(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/backup_config_full.yaml",
@@ -247,6 +255,8 @@ func TestBackupConfigmapFull(t *testing.T) {
 }
 
 func TestBackupConfigmapDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/backup_config_default.yaml",
@@ -271,6 +281,8 @@ func TestBackupConfigmapDefault(t *testing.T) {
 }
 
 func TestBackupStackpacksServiceSplitEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -291,6 +303,8 @@ func TestBackupStackpacksServiceSplitEnabled(t *testing.T) {
 }
 
 func TestBackupStackpacksServiceSplitDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -308,6 +322,8 @@ func TestBackupStackpacksServiceSplitDisabled(t *testing.T) {
 }
 
 func TestBackupStackpacksEnvVars(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -341,6 +357,8 @@ func TestBackupStackpacksEnvVars(t *testing.T) {
 }
 
 func TestBackupStackpacksVolumeMounts(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -378,6 +396,8 @@ func TestBackupStackpacksVolumeMounts(t *testing.T) {
 }
 
 func TestBackupConfigmapMonoMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/backup_config_default.yaml",
@@ -408,6 +428,8 @@ func TestBackupConfigmapMonoMode(t *testing.T) {
 }
 
 func TestBackupConfigmapDistributedModeNoPvc(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles:    []string{"values/backup_config_default.yaml"},
 		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
@@ -437,6 +459,8 @@ func TestBackupConfigmapDistributedModeNoPvc(t *testing.T) {
 // backup.configuration.enabled (settings backup) are false, no backup component
 // is enabled and s3proxy (with all its dependent resources) does not render at all.
 func TestAllBackupsDisabledNoS3Proxy(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -480,6 +504,8 @@ func TestAllBackupsDisabledNoS3Proxy(t *testing.T) {
 // (global.backup.enabled=false, backup.configuration.enabled=true) is enough to
 // keep s3proxy and the settings backup CronJob rendering, while remote-only backups stay off.
 func TestSettingsOnlyBackupRendersS3Proxy(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -514,6 +540,8 @@ func TestSettingsOnlyBackupRendersS3Proxy(t *testing.T) {
 // TestStackGraphBackupDisabled verifies that disabling backup.stackGraph.enabled
 // removes only the stackgraph backup CronJob, leaving settings backup and s3proxy intact.
 func TestStackGraphBackupDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -537,6 +565,8 @@ func TestStackGraphBackupDisabled(t *testing.T) {
 // TestClickHouseBackupDisabled verifies that disabling clickhouse.backup.enabled removes
 // only the ClickHouse backup CronJobs, leaving other backup components and s3proxy intact.
 func TestClickHouseBackupDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -566,6 +596,8 @@ func TestClickHouseBackupDisabled(t *testing.T) {
 // victoria-metrics-0.backup.enabled removes only that instance's vmbackup sidecar container
 // from its StatefulSet, leaving victoria-metrics-1's vmbackup sidecar in place.
 func TestVictoriaMetricsBackupDisabledPerInstance(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -598,6 +630,8 @@ func TestVictoriaMetricsBackupDisabledPerInstance(t *testing.T) {
 // minimum-history threshold that stops a freshly rebuilt instance from overwriting the
 // backup it has not restored from yet.
 func TestVictoriaMetricsBackupFreshInstanceGuard(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -705,6 +739,8 @@ func suspendValue(cj batchv1beta1.CronJob) bool {
 // TestStackGraphBackupImplementationV1 verifies that with the default/"v1" implementation both
 // StackGraph backup CronJobs are rendered, the v1 job is active and the v2 job is suspended.
 func TestStackGraphBackupImplementationV1(t *testing.T) {
+	t.Parallel()
+
 	for _, implementation := range []string{"v1"} {
 		t.Run("implementation="+implementation, func(t *testing.T) {
 			resources := renderStackGraphBackupImplementation(t, implementation)
@@ -724,6 +760,8 @@ func TestStackGraphBackupImplementationV1(t *testing.T) {
 // and the v1 job is suspended (both CronJobs are always rendered so the mode can be flipped
 // without re-provisioning resources).
 func TestStackGraphBackupImplementationV2(t *testing.T) {
+	t.Parallel()
+
 	resources := renderStackGraphBackupImplementation(t, "v2")
 
 	v1, ok := resources.CronJobs["suse-observability-backup-sg"]
@@ -738,6 +776,8 @@ func TestStackGraphBackupImplementationV2(t *testing.T) {
 // TestStackGraphBackupImplementationAll verifies that implementation=all keeps both StackGraph
 // backup CronJobs active simultaneously.
 func TestStackGraphBackupImplementationAll(t *testing.T) {
+	t.Parallel()
+
 	for _, implementation := range []string{"", "all"} {
 		t.Run("implementation="+implementation, func(t *testing.T) {
 			resources := renderStackGraphBackupImplementation(t, implementation)
@@ -756,6 +796,8 @@ func TestStackGraphBackupImplementationAll(t *testing.T) {
 // TestStackGraphBackupV2UsesV2Script verifies the v2 CronJob runs the dedicated v2 backup script
 // and mounts its own scratch PVC (a small upload buffer, distinct from the v1 tmp-data PVC).
 func TestStackGraphBackupV2UsesV2Script(t *testing.T) {
+	t.Parallel()
+
 	resources := renderStackGraphBackupImplementation(t, "v2")
 
 	v2, ok := resources.CronJobs["suse-observability-backup-sg-v2"]
@@ -782,6 +824,8 @@ func TestStackGraphBackupV2UsesV2Script(t *testing.T) {
 // TestStackGraphBackupHBaseEnvResources verifies the HBase S3A env ConfigMap and Secret used by
 // the v2 backup are rendered when backup is enabled, carrying the bucket-scoped S3Proxy settings.
 func TestStackGraphBackupHBaseEnvResources(t *testing.T) {
+	t.Parallel()
+
 	resources := renderStackGraphBackupImplementation(t, "v2")
 
 	const hbaseSecretName = "suse-observability-backup-sts-hbase-backup"
@@ -831,6 +875,8 @@ func assertHBaseEnvConsumedBy(t *testing.T, resources *helmtestutil.KubernetesRe
 // (distributed mode, used by full.yaml) loads the HBase backup env ConfigMap and Secret via
 // envFrom, so HBase can write backups directly to the S3Proxy-backed bucket.
 func TestStackGraphBackupHBaseRegionServerConsumesEnv(t *testing.T) {
+	t.Parallel()
+
 	resources := renderStackGraphBackupImplementation(t, "v2")
 	assertHBaseEnvConsumedBy(t, resources, "suse-observability-hbase-hbase-rs")
 }
@@ -849,6 +895,8 @@ func renderBackupEnabled(t *testing.T) helmtestutil.KubernetesResources {
 // Admission policies in customer clusters (for example Kyverno) commonly reject any CronJob
 // that leaves concurrencyPolicy unset, so an omission blocks the whole chart from installing.
 func TestAllCronJobsSetConcurrencyPolicy(t *testing.T) {
+	t.Parallel()
+
 	resources := renderBackupEnabled(t)
 	require.NotEmpty(t, resources.CronJobs, "expected CronJobs to be rendered")
 
@@ -864,6 +912,8 @@ func TestAllCronJobsSetConcurrencyPolicy(t *testing.T) {
 // succeeds after a few attempts accumulates up to backoffLimit+1 Pods for an operator to delete
 // by hand. OnFailure restarts the container in place instead.
 func TestBackupInitRestartsInPlaceOnFailure(t *testing.T) {
+	t.Parallel()
+
 	resources := renderBackupEnabled(t)
 
 	job := findJob(&resources, "backup-init")

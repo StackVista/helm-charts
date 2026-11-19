@@ -14,6 +14,8 @@ import (
 )
 
 func TestJobSchedulingAndLabels(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pod_scheduling_labels.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -355,6 +357,8 @@ func testTolerations(t *testing.T, tolerations []corev1.Toleration, resourceType
 // TestJobSchedulingAllComponentLabels tests that components.all settings are applied to all Jobs and CronJobs
 // when no component-specific overrides are provided
 func TestJobSchedulingAllComponentLabels(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pod_scheduling_all_labels.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -447,6 +451,8 @@ func testTolerationsAll(t *testing.T, tolerations []corev1.Toleration, resourceT
 // scheduling and labels from global.* and clickhouse.backup.* values rather than legacy
 // stackstate.components.* values.
 func TestClickHouseBackupCronJobScheduling(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pod_scheduling_labels.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

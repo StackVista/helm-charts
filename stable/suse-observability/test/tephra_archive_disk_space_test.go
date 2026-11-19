@@ -10,6 +10,8 @@ import (
 )
 
 func TestTephraArchiveDiskSpaceRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -28,6 +30,8 @@ func TestTephraArchiveDiskSpaceRender(t *testing.T) {
 }
 
 func TestTephraMonoHbaseArchiveDiskSpaceRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/mono_hbase.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)

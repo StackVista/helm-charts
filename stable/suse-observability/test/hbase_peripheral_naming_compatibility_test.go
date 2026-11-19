@@ -115,7 +115,7 @@ func TestHBasePeripheralNamingSharedNamespaceInstallations(t *testing.T) {
 			"hbase.common.servicemonitor.namespace": "shared-monitoring",
 		})
 		options.KubectlOptions.Namespace = namespace
-		resources := helmtestutil.NewKubernetesResources(t, renderHBasePeripheralChart(t, "..", release, options, true))
+		resources := helmtestutil.NewKubernetesResources(t, renderHBasePeripheralChart(t, "..", release, options))
 		count := 0
 		for name, monitor := range resources.ServiceMonitors {
 			if monitor.Labels["app.kubernetes.io/name"] != "hbase" {
@@ -218,103 +218,101 @@ func checkHBasePeripheralNaming(t *testing.T, beforeChart, afterChart string) {
 		if tc.release == "" {
 			tc.release = "nightly"
 		}
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := componentResourceNameTestValues()
-				values["hbase.deployment.mode"] = "Distributed"
-				values["hbase.all.metrics.enabled"] = "true"
-				values["hbase.all.metrics.servicemonitor.enabled"] = "true"
-				for key, value := range tc.values {
-					values[key] = value
-				}
-				options := apiResourceNameTestOptions(values)
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
-				}
-				beforeOutput := renderHBasePeripheralChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderHBasePeripheralChart(t, afterChart, tc.release, options, upgrade)
-				before := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				after := helmtestutil.NewKubernetesResources(t, afterOutput)
-				renames := map[string]string{}
-				for _, resource := range hbasePeripheralInventory() {
-					if resource.kind == "ServiceMonitor" {
-						for name, monitor := range before.ServiceMonitors {
-							if monitor.Labels["app.kubernetes.io/name"] != "hbase" || monitor.Labels["app.kubernetes.io/component"] != resource.component {
-								continue
-							}
-							target := "suse-observability-" + resource.suffix
-							if monitor.Namespace != options.KubectlOptions.Namespace {
-								target = name
-							}
-							require.Contains(t, after.ServiceMonitors, target)
-							monitor.Name = target
-							assert.Equal(t, monitor, after.ServiceMonitors[target])
-							matched := 0
-							for _, service := range after.Services {
-								if service.Namespace == monitor.Spec.NamespaceSelector.MatchNames[0] || service.Namespace == "" {
-									if labels.SelectorFromSet(monitor.Spec.Selector.MatchLabels).Matches(labels.Set(service.Labels)) {
-										matched++
-									}
-								}
-							}
-							assert.Greater(t, matched, 0, "Monitor must retain its Service targets")
-							if name != target {
-								renames["ServiceMonitor/"+name] = target
-								assert.NotContains(t, after.ServiceMonitors, name)
-							}
-						}
-						continue
-					}
-					target := "suse-observability-" + resource.suffix
-					found := false
-					for name, sts := range before.Statefulsets {
-						if sts.Labels["app.kubernetes.io/name"] != "hbase" || sts.Labels["app.kubernetes.io/component"] != resource.component {
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := componentResourceNameTestValues()
+			values["hbase.deployment.mode"] = "Distributed"
+			values["hbase.all.metrics.enabled"] = "true"
+			values["hbase.all.metrics.servicemonitor.enabled"] = "true"
+			for key, value := range tc.values {
+				values[key] = value
+			}
+			options := apiResourceNameTestOptions(values)
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderHBasePeripheralChart(t, beforeChart, tc.release, options)
+			afterOutput := renderHBasePeripheralChart(t, afterChart, tc.release, options)
+			before := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			after := helmtestutil.NewKubernetesResources(t, afterOutput)
+			renames := map[string]string{}
+			for _, resource := range hbasePeripheralInventory() {
+				if resource.kind == "ServiceMonitor" {
+					for name, monitor := range before.ServiceMonitors {
+						if monitor.Labels["app.kubernetes.io/name"] != "hbase" || monitor.Labels["app.kubernetes.io/component"] != resource.component {
 							continue
 						}
-						found = true
-						expected := sts.DeepCopy()
-						references := 0
-						for i := range expected.Spec.Template.Spec.Volumes {
-							ref := expected.Spec.Template.Spec.Volumes[i].ConfigMap
-							if ref != nil && strings.HasSuffix(ref.Name, "-"+resource.suffix) {
-								old := ref.Name
-								require.Contains(t, before.ConfigMaps, old)
-								require.Contains(t, after.ConfigMaps, target)
-								config := before.ConfigMaps[old]
-								config.Name = target
-								assert.Equal(t, config, after.ConfigMaps[target], "Probe scripts and other ConfigMap fields stay equal")
-								if old != target {
-									renames["ConfigMap/"+old] = target
-									assert.NotContains(t, after.ConfigMaps, old)
+						target := "suse-observability-" + resource.suffix
+						if monitor.Namespace != options.KubectlOptions.Namespace {
+							target = name
+						}
+						require.Contains(t, after.ServiceMonitors, target)
+						monitor.Name = target
+						assert.Equal(t, monitor, after.ServiceMonitors[target])
+						matched := 0
+						for _, service := range after.Services {
+							if service.Namespace == monitor.Spec.NamespaceSelector.MatchNames[0] || service.Namespace == "" {
+								if labels.SelectorFromSet(monitor.Spec.Selector.MatchLabels).Matches(labels.Set(service.Labels)) {
+									matched++
 								}
-								ref.Name = target
-								references++
 							}
 						}
-						require.Equal(t, 1, references)
-						require.Contains(t, after.Statefulsets, name)
-						assert.Equal(t, *expected, after.Statefulsets[name], "Only the probe-script volume reference changes in this StatefulSet")
-						assertHBasePeripheralPatches(t, sts, after.Statefulsets[name])
+						assert.Greater(t, matched, 0, "Monitor must retain its Service targets")
+						if name != target {
+							renames["ServiceMonitor/"+name] = target
+							assert.NotContains(t, after.ServiceMonitors, name)
+						}
 					}
-					require.Equal(t, !tc.mono, found, "Sizing profiles take precedence over the explicit HBase mode")
-					if !found {
-						assert.NotContains(t, after.ConfigMaps, target)
-					}
+					continue
 				}
-				seen := map[string]bool{}
-				expected := backupNamingDocuments(t, beforeOutput, renames, seen)
-				require.Len(t, seen, len(renames))
-				assert.Equal(t, expected, backupNamingDocuments(t, afterOutput, nil, nil),
-					"Only eight reviewed names and two probe-script volume references may change; no later step repairs consumers")
-			})
-		}
+				target := "suse-observability-" + resource.suffix
+				found := false
+				for name, sts := range before.Statefulsets {
+					if sts.Labels["app.kubernetes.io/name"] != "hbase" || sts.Labels["app.kubernetes.io/component"] != resource.component {
+						continue
+					}
+					found = true
+					expected := sts.DeepCopy()
+					references := 0
+					for i := range expected.Spec.Template.Spec.Volumes {
+						ref := expected.Spec.Template.Spec.Volumes[i].ConfigMap
+						if ref != nil && strings.HasSuffix(ref.Name, "-"+resource.suffix) {
+							old := ref.Name
+							require.Contains(t, before.ConfigMaps, old)
+							require.Contains(t, after.ConfigMaps, target)
+							config := before.ConfigMaps[old]
+							config.Name = target
+							assert.Equal(t, config, after.ConfigMaps[target], "Probe scripts and other ConfigMap fields stay equal")
+							if old != target {
+								renames["ConfigMap/"+old] = target
+								assert.NotContains(t, after.ConfigMaps, old)
+							}
+							ref.Name = target
+							references++
+						}
+					}
+					require.Equal(t, 1, references)
+					require.Contains(t, after.Statefulsets, name)
+					assert.Equal(t, *expected, after.Statefulsets[name], "Only the probe-script volume reference changes in this StatefulSet")
+					assertHBasePeripheralPatches(t, sts, after.Statefulsets[name])
+				}
+				require.Equal(t, !tc.mono, found, "Sizing profiles take precedence over the explicit HBase mode")
+				if !found {
+					assert.NotContains(t, after.ConfigMaps, target)
+				}
+			}
+			seen := map[string]bool{}
+			expected := backupNamingDocuments(t, beforeOutput, renames, seen)
+			require.Len(t, seen, len(renames))
+			assert.Equal(t, expected, backupNamingDocuments(t, afterOutput, nil, nil),
+				"Only eight reviewed names and two probe-script volume references may change; no later step repairs consumers")
+		})
 	}
 }
 
-func renderHBasePeripheralChart(t *testing.T, chart, release string, options *helm.Options, upgrade bool) string {
+func renderHBasePeripheralChart(t *testing.T, chart, release string, options *helm.Options) string {
 	t.Helper()
 	copied := *options
 	copied.Logger = logger.Discard
@@ -325,9 +323,6 @@ func renderHBasePeripheralChart(t *testing.T, chart, release string, options *he
 		copied.ValuesFiles[i] = path
 	}
 	args := []string{"--kube-version", "1.32.0", "--api-versions", "policy/v1", "--api-versions", "monitoring.coreos.com/v1"}
-	if upgrade {
-		args = append(args, "--is-upgrade")
-	}
 	output, err := helm.RenderTemplateE(t, &copied, chart, release, nil, args...)
 	require.NoError(t, err)
 	return output

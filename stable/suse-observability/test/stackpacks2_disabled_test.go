@@ -11,6 +11,8 @@ import (
 )
 
 func TestStackpacks2NonSplit(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -33,6 +35,8 @@ func TestStackpacks2NonSplit(t *testing.T) {
 }
 
 func TestStackpacks2Split(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -52,6 +56,8 @@ func TestStackpacks2Split(t *testing.T) {
 }
 
 func TestStackpacks2NonSplitCommunity(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/community.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -76,6 +82,8 @@ func TestStackpacks2NonSplitCommunity(t *testing.T) {
 }
 
 func TestStackpacks2NonSplitPrimeWithInternalStackpacks(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/internal_stackpacks_enabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -99,6 +107,8 @@ func TestStackpacks2NonSplitPrimeWithInternalStackpacks(t *testing.T) {
 }
 
 func TestStackpacksInitContainersUseChartScript(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)

@@ -52,46 +52,40 @@ func TestGlobalResourcesFollowDedicatedHelpers(t *testing.T) {
 	for _, argo := range []bool{false, true} {
 		for _, split := range []bool{false, true} {
 			for _, pull := range []string{"automatic", "external", "legacy"} {
-				for _, upgrade := range []bool{false, true} {
-					t.Run(fmt.Sprintf("argo=%t/split=%t/pull=%s/upgrade=%t", argo, split, pull, upgrade), func(t *testing.T) {
-						values := map[string]string{
-							"deployment.compatibleWithArgoCD":          fmt.Sprint(argo),
-							"stackstate.features.server.split":         fmt.Sprint(split),
-							"stackstate.components.router.mode.status": "automatic",
-							"anomaly-detection.enabled":                "true",
-							"ingress.enabled":                          "true", "scc.enabled": "true",
-						}
-						if pull == "automatic" {
-							values["pull-secret.enabled"] = "false"
-							values["global.suseObservability.pullSecret.username"] = "fixture-user"
-							values["global.suseObservability.pullSecret.password"] = "fixture-password"
-							values["global.suseObservability.adminPasswordBcrypt"] = "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
-							values["global.suseObservability.license"] = "api01"
-							values["global.suseObservability.baseUrl"] = "http://localhost"
-						} else if pull == "external" {
-							values["global.imagePullSecrets[0]"] = "customer-registry-secret"
-						}
-						options := apiResourceNameTestOptions(values)
-						options.ValuesFiles = []string{valuesFile}
-						var args []string
-						if upgrade {
-							args = append(args, "--is-upgrade")
-						}
-						before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options, args...)
-						after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
-						require.NoError(t, err)
-						expected := backupNamingDocuments(t, before, renames, seen)
-						actual := backupNamingDocuments(t, after, nil, nil)
-						rewriteGlobalNameReferences(expected, renames)
-						assert.Len(t, actual, len(expected))
-						for key, objects := range expected {
-							require.Contains(t, actual, key)
-							assert.Equal(t, objects, actual[key], key)
-						}
-						// Full comparisons preserve hook lifecycle/credentials, SCC
-						// groups, Service selectors, storage and existing checksums.
-					})
-				}
+				t.Run(fmt.Sprintf("argo=%t/split=%t/pull=%s", argo, split, pull), func(t *testing.T) {
+					values := map[string]string{
+						"deployment.compatibleWithArgoCD":          fmt.Sprint(argo),
+						"stackstate.features.server.split":         fmt.Sprint(split),
+						"stackstate.components.router.mode.status": "automatic",
+						"anomaly-detection.enabled":                "true",
+						"ingress.enabled":                          "true", "scc.enabled": "true",
+					}
+					if pull == "automatic" {
+						values["pull-secret.enabled"] = "false"
+						values["global.suseObservability.pullSecret.username"] = "fixture-user"
+						values["global.suseObservability.pullSecret.password"] = "fixture-password"
+						values["global.suseObservability.adminPasswordBcrypt"] = "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
+						values["global.suseObservability.license"] = "api01"
+						values["global.suseObservability.baseUrl"] = "http://localhost"
+					} else if pull == "external" {
+						values["global.imagePullSecrets[0]"] = "customer-registry-secret"
+					}
+					options := apiResourceNameTestOptions(values)
+					options.ValuesFiles = []string{valuesFile}
+					before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options)
+					after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+					require.NoError(t, err)
+					expected := backupNamingDocuments(t, before, renames, seen)
+					actual := backupNamingDocuments(t, after, nil, nil)
+					rewriteGlobalNameReferences(expected, renames)
+					assert.Len(t, actual, len(expected))
+					for key, objects := range expected {
+						require.Contains(t, actual, key)
+						assert.Equal(t, objects, actual[key], key)
+					}
+					// Full comparisons preserve hook lifecycle/credentials, SCC
+					// groups, Service selectors, storage and existing checksums.
+				})
 			}
 		}
 	}

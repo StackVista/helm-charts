@@ -17,13 +17,6 @@ nodeAgent:
 processAgent:
   podCorrelation:
     enabled: true
-    remoteCache: true
-
-remoteKubeCache:
-  podAnnotations:
-    example.com/owner: "remote-kube-cache"
-  podLabels:
-    example.com/workload: "remote-kube-cache"
 
 clusterAgent:
   podAnnotations:

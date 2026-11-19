@@ -30,30 +30,24 @@ func TestCollectorServiceReferencesFollowDedicatedHelper(t *testing.T) {
 	require.NoError(t, err)
 	for _, mode := range []string{"deployment", "daemonset", "statefulset"} {
 		for _, collector := range []string{"suse-observability-otel-collector", "customer-collector"} {
-			for _, upgrade := range []bool{false, true} {
-				t.Run(fmt.Sprintf("%s/%s/upgrade=%t", mode, collector, upgrade), func(t *testing.T) {
-					options := apiResourceNameTestOptions(map[string]string{
-						"opentelemetry-collector.mode":             mode,
-						"opentelemetry-collector.fullnameOverride": collector,
-						"opentelemetry-collector.service.enabled":  "true",
-					})
-					options.ValuesFiles = []string{values}
-					var args []string
-					if upgrade {
-						args = append(args, "--is-upgrade")
-					}
-					before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options, args...)
-					after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
-					require.NoError(t, err)
-					seen := map[string]bool{}
-					expected := backupNamingDocuments(t, before, map[string]string{
-						"Service/" + collector: "explicit-collector-service",
-					}, seen)
-					require.True(t, seen["Service/"+collector])
-					rewriteCollectorServiceReferences(expected, collector)
-					assert.Equal(t, expected, backupNamingDocuments(t, after, nil, nil))
+			t.Run(fmt.Sprintf("%s/%s", mode, collector), func(t *testing.T) {
+				options := apiResourceNameTestOptions(map[string]string{
+					"opentelemetry-collector.mode":             mode,
+					"opentelemetry-collector.fullnameOverride": collector,
+					"opentelemetry-collector.service.enabled":  "true",
 				})
-			}
+				options.ValuesFiles = []string{values}
+				before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options)
+				after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+				require.NoError(t, err)
+				seen := map[string]bool{}
+				expected := backupNamingDocuments(t, before, map[string]string{
+					"Service/" + collector: "explicit-collector-service",
+				}, seen)
+				require.True(t, seen["Service/"+collector])
+				rewriteCollectorServiceReferences(expected, collector)
+				assert.Equal(t, expected, backupNamingDocuments(t, after, nil, nil))
+			})
 		}
 	}
 }

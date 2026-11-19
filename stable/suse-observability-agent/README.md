@@ -841,20 +841,9 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | processAgent.podCorrelation.exporter.type | string | `""` | The type of the exporter to use for metrics. Possible values ("otlp", "stdout") |
 | processAgent.podCorrelation.partialCorrelation | bool | `false` | Enable / disable partial pod correlation. if false the agent will export only pod<->pod metrics. Both extremities of the connection must be pods. |
 | processAgent.podCorrelation.protocolMetrics | bool | `false` | Enable / disable exporting protocol metrics. If false the agent will export only metrics for network connections. |
-| processAgent.podCorrelation.remoteCache | bool | `false` | When true, the chart will deploy a remote kube cache service and populate the process-agent environment with the service address (serviceName.namespace:grpcPort). Set to `false` to use a local informer inside the process-agent and avoid deploying the remote cache. |
 | processAgent.softMemoryLimit.goMemLimit | string | `"340MiB"` | Soft-limit for golang heap allocation, for sanity, must be around 85% of nodeAgent.containers.processAgent.resources.limits.cpu. |
 | processAgent.softMemoryLimit.httpObservationsBufferSize | int | `40000` | Sets a maximum for the number of http observations to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | processAgent.softMemoryLimit.httpStatsBufferSize | int | `40000` | Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
-| remoteKubeCache.affinity | object | `{}` | Affinity settings for pod assignment. |
-| remoteKubeCache.containerSecurityContext.runAsUser | int | `65534` | UID for the remote kube cache container. Its image declares no USER, so a UID is required to satisfy runAsNonRoot on plain Kubernetes. Set to null on OpenShift, where the restricted-v2 SCC assigns a UID from the namespace range and rejects an explicit one outside it. |
-| remoteKubeCache.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| remoteKubeCache.podAnnotations | object | `{}` | Additional annotations on the remote kube cache pods. |
-| remoteKubeCache.podLabels | object | `{}` | Additional labels on the remote kube cache pods. |
-| remoteKubeCache.resources.limits.cpu | string | `"200m"` | CPU resource limits. |
-| remoteKubeCache.resources.limits.memory | string | `"400Mi"` | Memory resource limits. |
-| remoteKubeCache.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
-| remoteKubeCache.resources.requests.memory | string | `"200Mi"` | Memory resource requests. |
-| remoteKubeCache.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by the agent. |
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |
 | stackstate.cluster.name | string | `nil` | **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed. |

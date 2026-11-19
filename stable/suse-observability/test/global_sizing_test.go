@@ -14,6 +14,8 @@ import (
 
 // TestGlobalSizingProfilesRender tests that all 9 sizing profiles render successfully
 func TestGlobalSizingProfilesRender(t *testing.T) {
+	t.Parallel()
+
 	profiles := []struct {
 		name       string
 		valuesFile string
@@ -61,6 +63,8 @@ func TestGlobalSizingProfilesRender(t *testing.T) {
 
 // TestGlobalSizingReceiverSplitMode tests that receiver split mode is controlled by sizing profile
 func TestGlobalSizingReceiverSplitMode(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name                string
 		valuesFile          string
@@ -177,6 +181,8 @@ func TestGlobalSizingReceiverSplitMode(t *testing.T) {
 
 // TestGlobalSizingVictoriaMetrics1Enablement tests victoria-metrics-1 conditional enablement
 func TestGlobalSizingVictoriaMetrics1Enablement(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name             string
 		valuesFile       string
@@ -258,6 +264,8 @@ func TestGlobalSizingVictoriaMetrics1Enablement(t *testing.T) {
 
 // TestGlobalSizingHbaseDeploymentMode tests hbase deployment mode (Mono vs Distributed)
 func TestGlobalSizingHbaseDeploymentMode(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name                   string
 		valuesFile             string
@@ -412,6 +420,8 @@ func TestGlobalSizingHbaseDeploymentMode(t *testing.T) {
 
 // TestGlobalSizingResourcesAreSet tests that resources are properly set from sizing profiles
 func TestGlobalSizingResourcesAreSet(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name          string
 		valuesFile    string
@@ -491,6 +501,8 @@ func TestGlobalSizingResourcesAreSet(t *testing.T) {
 
 // TestGlobalSizingReplicaCounts tests that replica counts are set correctly by sizing profiles
 func TestGlobalSizingReplicaCounts(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name                string
 		valuesFile          string
@@ -566,6 +578,8 @@ func TestGlobalSizingReplicaCounts(t *testing.T) {
 // TestGlobalSizingProfileWinsOverDefaults verifies that when a sizing profile is active,
 // profile resources are used directly (not merged with/overridden by values.yaml defaults).
 func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
+	t.Parallel()
+
 	profiles := []struct {
 		name       string
 		valuesFile string
@@ -627,6 +641,8 @@ func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
 
 // TestGlobalSizingUserStorageOverrides tests that user-specified storage overrides take precedence over sizing profile defaults
 func TestGlobalSizingUserStorageOverrides(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name                    string
 		valuesFile              string
@@ -732,7 +748,7 @@ func TestGlobalSizingUserStorageOverrides(t *testing.T) {
 					found := false
 					for _, env := range containers[0].Env {
 						if env.Name == "ES_JAVA_OPTS" {
-							assert.Equal(t, tc.expectedEsJavaOpts, env.Value, "ES_JAVA_OPTS should match user override")
+							assert.Equal(t, tc.expectedEsJavaOpts+" -XX:-UseBASE64Intrinsics", env.Value, "ES_JAVA_OPTS should match user override")
 							found = true
 							break
 						}
@@ -766,6 +782,8 @@ func TestGlobalSizingUserStorageOverrides(t *testing.T) {
 
 // TestGlobalSizingStorageDefaultsWithoutOverrides tests that sizing profile storage defaults are applied when no user overrides
 func TestGlobalSizingStorageDefaultsWithoutOverrides(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name            string
 		valuesFile      string
@@ -838,6 +856,8 @@ func TestGlobalSizingStorageDefaultsWithoutOverrides(t *testing.T) {
 
 // TestBackupPVCStorageWithSizingProfile tests that backup-stackgraph-tmp-data PVC gets a non-empty storage size from sizing profiles
 func TestBackupPVCStorageWithSizingProfile(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name            string
 		valuesFile      string

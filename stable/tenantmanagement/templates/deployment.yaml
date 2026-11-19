@@ -59,6 +59,10 @@ spec:
                 secretKeyRef:
                   name: {{ include "tenantmanagement.fullname" . }}-scaling
                   key: api_key
+            {{- with .Values.javaOpts }}
+            - name: JAVA_OPTS
+              value: {{ . | quote }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}

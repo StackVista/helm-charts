@@ -38,26 +38,24 @@ func TestNetworkPolicyNamingBaselineReproduction(t *testing.T) {
 func checkNetworkPolicyNamingFixtures(t *testing.T, chart string, renamed bool) {
 	t.Helper()
 	for _, fixture := range []string{"default", "custom"} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", fixture, upgrade), func(t *testing.T) {
-				data, err := os.ReadFile(filepath.Join("testdata/networkpolicy-renaming", fixture+".json"))
-				require.NoError(t, err)
-				var expected networkingv1.NetworkPolicy
-				require.NoError(t, json.Unmarshal(data, &expected))
-				if renamed {
-					expected.Name = canonicalNetworkPolicy
-				}
-				options := apiResourceNameTestOptions(map[string]string{"networkPolicy.enabled": "true"})
-				if fixture == "custom" {
-					options.ValuesFiles = append(options.ValuesFiles, "values/networkpolicy-custom.yaml")
-				}
-				output := renderNetworkPolicyNamingChart(t, chart, "nightly", options, upgrade)
-				actual := networkPolicyNamingResource(t, output, expected.Name)
-				delete(actual.Labels, "helm.sh/chart")
-				delete(actual.Labels, "app.kubernetes.io/version")
-				assert.Equal(t, expected, actual)
-			})
-		}
+		t.Run(fmt.Sprintf("%s", fixture), func(t *testing.T) {
+			data, err := os.ReadFile(filepath.Join("testdata/networkpolicy-renaming", fixture+".json"))
+			require.NoError(t, err)
+			var expected networkingv1.NetworkPolicy
+			require.NoError(t, json.Unmarshal(data, &expected))
+			if renamed {
+				expected.Name = canonicalNetworkPolicy
+			}
+			options := apiResourceNameTestOptions(map[string]string{"networkPolicy.enabled": "true"})
+			if fixture == "custom" {
+				options.ValuesFiles = append(options.ValuesFiles, "values/networkpolicy-custom.yaml")
+			}
+			output := renderNetworkPolicyNamingChart(t, chart, "nightly", options)
+			actual := networkPolicyNamingResource(t, output, expected.Name)
+			delete(actual.Labels, "helm.sh/chart")
+			delete(actual.Labels, "app.kubernetes.io/version")
+			assert.Equal(t, expected, actual)
+		})
 	}
 }
 
@@ -105,55 +103,53 @@ func TestNetworkPolicyNamingPreservesPlatformResources(t *testing.T) {
 		}},
 		{name: "disabled", release: "nightly", legacy: "nightly-suse-observability", disabled: true},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := componentResourceNameTestValues()
-				values["networkPolicy.enabled"] = fmt.Sprint(!tc.disabled)
-				options := apiResourceNameTestOptions(values)
-				for key, value := range tc.values {
-					options.SetValues[key] = value
-				}
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				if tc.custom {
-					options.ValuesFiles = append(options.ValuesFiles, "values/networkpolicy-custom.yaml")
-				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
-				}
-				beforeOutput := renderNetworkPolicyNamingChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderNetworkPolicyNamingChart(t, "..", tc.release, options, upgrade)
-				renames := map[string]string{}
-				if !tc.disabled {
-					renames["NetworkPolicy/"+tc.legacy] = canonicalNetworkPolicy
-					beforePolicy := networkPolicyNamingResource(t, beforeOutput, tc.legacy)
-					afterPolicy := networkPolicyNamingResource(t, afterOutput, canonicalNetworkPolicy)
-					beforePolicy.Name = canonicalNetworkPolicy
-					assert.Equal(t, beforePolicy, afterPolicy, "Rules, selectors and all remaining metadata must be unchanged")
-					assert.Equal(t, tc.release, afterPolicy.Labels["app.kubernetes.io/instance"])
-				}
-				seen := map[string]bool{}
-				before := backupNamingDocuments(t, beforeOutput, renames, seen)
-				after := backupNamingDocuments(t, afterOutput, nil, nil)
-				assert.Equal(t, before, after, "Only the main NetworkPolicy metadata name may change")
-				if !tc.disabled {
-					require.True(t, seen["NetworkPolicy/"+tc.legacy])
-				} else {
-					assert.NotContains(t, after, "NetworkPolicy//"+canonicalNetworkPolicy)
-					assert.NotContains(t, before, "NetworkPolicy//"+tc.legacy)
-				}
-				// Preserve explicit Pod/controller/storage checks alongside the raw
-				// comparison, including configuration checksum and credential refs.
-				beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
-				assert.Equal(t, beforeResources.Deployments, afterResources.Deployments)
-				assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
-				assert.Equal(t, beforeResources.DaemonSets, afterResources.DaemonSets)
-				assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
-				assert.Equal(t, beforeResources.Services, afterResources.Services)
-			})
-		}
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := componentResourceNameTestValues()
+			values["networkPolicy.enabled"] = fmt.Sprint(!tc.disabled)
+			options := apiResourceNameTestOptions(values)
+			for key, value := range tc.values {
+				options.SetValues[key] = value
+			}
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.custom {
+				options.ValuesFiles = append(options.ValuesFiles, "values/networkpolicy-custom.yaml")
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderNetworkPolicyNamingChart(t, beforeChart, tc.release, options)
+			afterOutput := renderNetworkPolicyNamingChart(t, "..", tc.release, options)
+			renames := map[string]string{}
+			if !tc.disabled {
+				renames["NetworkPolicy/"+tc.legacy] = canonicalNetworkPolicy
+				beforePolicy := networkPolicyNamingResource(t, beforeOutput, tc.legacy)
+				afterPolicy := networkPolicyNamingResource(t, afterOutput, canonicalNetworkPolicy)
+				beforePolicy.Name = canonicalNetworkPolicy
+				assert.Equal(t, beforePolicy, afterPolicy, "Rules, selectors and all remaining metadata must be unchanged")
+				assert.Equal(t, tc.release, afterPolicy.Labels["app.kubernetes.io/instance"])
+			}
+			seen := map[string]bool{}
+			before := backupNamingDocuments(t, beforeOutput, renames, seen)
+			after := backupNamingDocuments(t, afterOutput, nil, nil)
+			assert.Equal(t, before, after, "Only the main NetworkPolicy metadata name may change")
+			if !tc.disabled {
+				require.True(t, seen["NetworkPolicy/"+tc.legacy])
+			} else {
+				assert.NotContains(t, after, "NetworkPolicy//"+canonicalNetworkPolicy)
+				assert.NotContains(t, before, "NetworkPolicy//"+tc.legacy)
+			}
+			// Preserve explicit Pod/controller/storage checks alongside the raw
+			// comparison, including configuration checksum and credential refs.
+			beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
+			assert.Equal(t, beforeResources.Deployments, afterResources.Deployments)
+			assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
+			assert.Equal(t, beforeResources.DaemonSets, afterResources.DaemonSets)
+			assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
+			assert.Equal(t, beforeResources.Services, afterResources.Services)
+		})
 	}
 }
 
@@ -171,12 +167,12 @@ func TestNetworkPolicyNamingUsesDedicatedHelper(t *testing.T) {
 	definitions += "\n{{- " + header + " -}}fixture-policy{{- end -}}\n"
 	require.NoError(t, os.WriteFile(path, []byte(definitions), 0600))
 	options := apiResourceNameTestOptions(map[string]string{"networkPolicy.enabled": "true"})
-	output := renderNetworkPolicyNamingChart(t, chart, "nightly", options, false)
+	output := renderNetworkPolicyNamingChart(t, chart, "nightly", options)
 	policy := networkPolicyNamingResource(t, output, "fixture-policy")
 	assert.Equal(t, "fixture-policy", policy.Name)
 }
 
-func renderNetworkPolicyNamingChart(t *testing.T, chart, release string, options *helm.Options, upgrade bool) string {
+func renderNetworkPolicyNamingChart(t *testing.T, chart, release string, options *helm.Options) string {
 	t.Helper()
 	copied := *options
 	copied.ValuesFiles = make([]string, len(options.ValuesFiles))
@@ -186,9 +182,6 @@ func renderNetworkPolicyNamingChart(t *testing.T, chart, release string, options
 		copied.ValuesFiles[i] = path
 	}
 	args := []string{"--api-versions", "policy/v1/PodDisruptionBudget", "--api-versions", "monitoring.coreos.com/v1"}
-	if upgrade {
-		args = append(args, "--is-upgrade")
-	}
 	output, err := helm.RenderTemplateE(t, &copied, chart, release, nil, args...)
 	require.NoError(t, err)
 	return output

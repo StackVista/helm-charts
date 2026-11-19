@@ -12,6 +12,8 @@ import (
 // TestGlobalSuseObservabilityValidConfiguration tests that valid global.suseObservability configuration renders correctly
 // This tests the auto-detection behavior - when any global.suseObservability value is set, the global mode is enabled
 func TestGlobalSuseObservabilityValidConfiguration(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_valid.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -42,6 +44,8 @@ func TestGlobalSuseObservabilityValidConfiguration(t *testing.T) {
 // TestGlobalSuseObservabilityMissingLicense tests that setting global values without license fails
 // Auto-detection will enable global mode, but validation will fail
 func TestGlobalSuseObservabilityMissingLicense(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/global_suse_observability_missing_license.yaml")
 	require.Error(t, err, "Should fail when license is missing")
 	require.Contains(t, err.Error(), "global.suseObservability.license is required", "Error should mention license is required")
@@ -50,6 +54,8 @@ func TestGlobalSuseObservabilityMissingLicense(t *testing.T) {
 // TestGlobalSuseObservabilityMissingBaseUrl tests that setting global values without baseUrl fails
 // Auto-detection will enable global mode, but validation will fail
 func TestGlobalSuseObservabilityMissingBaseUrl(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/global_suse_observability_missing_baseurl.yaml")
 	require.Error(t, err, "Should fail when baseUrl is missing")
 	require.Contains(t, err.Error(), "global.suseObservability.baseUrl is required", "Error should mention baseUrl is required")
@@ -58,6 +64,8 @@ func TestGlobalSuseObservabilityMissingBaseUrl(t *testing.T) {
 // TestLegacyStackstateConfigBackwardsCompatibility tests that legacy stackstate.* configuration still works
 // Uses the existing full.yaml which uses stackstate.* values without any global.suseObservability values
 func TestLegacyStackstateConfigBackwardsCompatibility(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -79,6 +87,8 @@ func TestLegacyStackstateConfigBackwardsCompatibility(t *testing.T) {
 
 // TestGlobalSuseObservabilityHelperFallback tests that helpers fall back to stackstate.* values when no global.suseObservability values are set
 func TestGlobalSuseObservabilityHelperFallback(t *testing.T) {
+	t.Parallel()
+
 	// This test uses the full.yaml which has no global.suseObservability values set
 	// so it should use stackstate.* values (legacy mode)
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
@@ -98,6 +108,8 @@ func TestGlobalSuseObservabilityHelperFallback(t *testing.T) {
 
 // TestGlobalSuseObservabilityPrecedence tests that global.suseObservability values take precedence when any global value is set
 func TestGlobalSuseObservabilityPrecedence(t *testing.T) {
+	t.Parallel()
+
 	// Create a values file that has both global.suseObservability and stackstate.* values
 	// global.suseObservability should take precedence when auto-detected
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_valid.yaml")
@@ -113,6 +125,8 @@ func TestGlobalSuseObservabilityPrecedence(t *testing.T) {
 
 // TestGlobalSuseObservabilityAutoDetectionWithProfile tests that auto-detection works when only sizing profile is set
 func TestGlobalSuseObservabilityAutoDetectionWithProfile(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_profile_only.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -134,6 +148,8 @@ func TestGlobalSuseObservabilityAutoDetectionWithProfile(t *testing.T) {
 
 // TestGlobalSuseObservabilityAutoDetectionMinimal tests that auto-detection works with minimal config (license + baseUrl)
 func TestGlobalSuseObservabilityAutoDetectionMinimal(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_minimal_license.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -154,6 +170,8 @@ func TestGlobalSuseObservabilityAutoDetectionMinimal(t *testing.T) {
 
 // TestGlobalSuseObservabilityBcryptPassword tests that bcrypt hashed passwords are accepted via adminPasswordBcrypt
 func TestGlobalSuseObservabilityBcryptPassword(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_bcrypt_password.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -172,6 +190,8 @@ func TestGlobalSuseObservabilityBcryptPassword(t *testing.T) {
 
 // TestGlobalSuseObservabilityPlaintextPassword tests that plain text passwords are stored with $plain$ prefix
 func TestGlobalSuseObservabilityPlaintextPassword(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_plaintext_password.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -190,6 +210,8 @@ func TestGlobalSuseObservabilityPlaintextPassword(t *testing.T) {
 
 // TestGlobalSuseObservabilityBothPasswords tests that specifying both password options fails
 func TestGlobalSuseObservabilityBothPasswords(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/global_suse_observability_both_passwords.yaml")
 	require.Error(t, err, "Should fail when both adminPassword and adminPasswordBcrypt are specified")
 	require.Contains(t, err.Error(), "Cannot specify both", "Error should mention both options cannot be specified")
@@ -197,6 +219,8 @@ func TestGlobalSuseObservabilityBothPasswords(t *testing.T) {
 
 // TestGlobalSuseObservabilityMissingAdminPassword tests that adminPassword is required in global mode when no other auth is configured
 func TestGlobalSuseObservabilityMissingAdminPassword(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/global_suse_observability_missing_adminpassword.yaml")
 	require.Error(t, err, "Should fail when adminPassword is missing in global mode")
 	require.Contains(t, err.Error(), "global.suseObservability.adminPassword or global.suseObservability.adminPasswordBcrypt is required", "Error should mention password options are required")
@@ -204,6 +228,8 @@ func TestGlobalSuseObservabilityMissingAdminPassword(t *testing.T) {
 
 // TestGlobalSuseObservabilityWithOIDCNoPassword tests that adminPassword is optional when OIDC is configured
 func TestGlobalSuseObservabilityWithOIDCNoPassword(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_with_oidc.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -222,6 +248,8 @@ func TestGlobalSuseObservabilityWithOIDCNoPassword(t *testing.T) {
 
 // TestGlobalSuseObservabilityWithExternalSecretLicense tests that chart renders without global.suseObservability.license when fromExternalSecret is set
 func TestGlobalSuseObservabilityWithExternalSecretLicense(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_external_secrets.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -236,6 +264,8 @@ func TestGlobalSuseObservabilityWithExternalSecretLicense(t *testing.T) {
 
 // TestGlobalSuseObservabilityWithExternalSecretNoLicenseSecret tests that license secret is NOT created when fromExternalSecret is set
 func TestGlobalSuseObservabilityWithExternalSecretNoLicenseSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_external_secrets.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

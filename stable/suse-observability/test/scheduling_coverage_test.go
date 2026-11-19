@@ -192,6 +192,8 @@ func merged(maps ...map[string]any) map[string]any {
 var schedulingProfiles = map[string][]string{"ha": schedulingHA, "nonha": schedulingNonHA}
 
 func TestSchedulingCoverageIsComplete(t *testing.T) {
+	t.Parallel()
+
 	used := map[string]bool{}
 	for name, values := range schedulingProfiles {
 		t.Run(name, func(t *testing.T) {
@@ -215,6 +217,8 @@ func TestSchedulingCoverageIsComplete(t *testing.T) {
 }
 
 func TestSchedulingOwnLayerOverridesEveryWorkload(t *testing.T) {
+	t.Parallel()
+
 	layers := layerValuesFile(t, func(w schedulingWorkload) map[string]any {
 		return merged(
 			map[string]any{"tolerations": toleration(w.layer)},
@@ -233,6 +237,8 @@ func TestSchedulingOwnLayerOverridesEveryWorkload(t *testing.T) {
 }
 
 func TestSchedulingOwnLayerPartialOverrideKeepsEveryOtherField(t *testing.T) {
+	t.Parallel()
+
 	layers := layerValuesFile(t, func(w schedulingWorkload) map[string]any {
 		if w.elasticsearch {
 			return nodeAffinityValues(w, nodePool(w.layer))
@@ -260,6 +266,8 @@ func TestSchedulingOwnLayerPartialOverrideKeepsEveryOtherField(t *testing.T) {
 }
 
 func TestSchedulingOwnLayerClearsEveryWorkload(t *testing.T) {
+	t.Parallel()
+
 	layers := layerValuesFile(t, func(w schedulingWorkload) map[string]any {
 		return merged(
 			map[string]any{"tolerations": []any{}},
@@ -292,6 +300,8 @@ var templatedLayers = map[string]struct {
 }
 
 func TestSchedulingTemplatedValuesAreRendered(t *testing.T) {
+	t.Parallel()
+
 	values := map[string]any{}
 	for layer, l := range templatedLayers {
 		if l.tolerations {

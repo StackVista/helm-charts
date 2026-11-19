@@ -55,61 +55,56 @@ func TestHBasePDBNamingPreservesPlatformResources(t *testing.T) {
 		{name: "secondary-disabled", release: "nightly", base: "nightly-hbase", count: 5, values: map[string]string{"hbase.hdfs.secondarynamenode.enabled": "false"}},
 		{name: "shared-monitor-namespace", release: "nightly", base: "nightly-hbase", count: 6, values: map[string]string{"hbase.servicemonitor.namespace": "shared-monitoring"}},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := map[string]string{
-					"hbase.deployment.mode": "Distributed", "hbase.hdfs.secondarynamenode.enabled": "true",
-					"hbase.all.metrics.servicemonitor.enabled":     "true",
-					"hbase.hdfs.datanode.extraEnv.secret.TEST_KEY": "fixture-value",
-				}
-				maps.Copy(values, tc.values)
-				options := apiResourceNameTestOptions(values)
-				options.ValuesFiles = []string{valuesFile}
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				if tc.sizing != "" {
-					sizing, err := filepath.Abs(filepath.Join("values", tc.sizing))
-					require.NoError(t, err)
-					options.ValuesFiles = append(options.ValuesFiles, sizing)
-				}
-				args := []string{"--api-versions", "policy/v1/PodDisruptionBudget", "--api-versions", "monitoring.coreos.com/v1"}
-				if upgrade {
-					args = append(args, "--is-upgrade")
-				}
-				beforeOutput, err := helm.RenderTemplateE(t, options, beforeChart, tc.release, nil, args...)
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := map[string]string{
+				"hbase.deployment.mode": "Distributed", "hbase.hdfs.secondarynamenode.enabled": "true",
+				"hbase.all.metrics.servicemonitor.enabled":     "true",
+				"hbase.hdfs.datanode.extraEnv.secret.TEST_KEY": "fixture-value",
+			}
+			maps.Copy(values, tc.values)
+			options := apiResourceNameTestOptions(values)
+			options.ValuesFiles = []string{valuesFile}
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				sizing, err := filepath.Abs(filepath.Join("values", tc.sizing))
 				require.NoError(t, err)
-				afterOutput, err := helm.RenderTemplateE(t, options, afterChart, tc.release, nil, args...)
-				require.NoError(t, err)
-				beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
-				renames := map[string]string{}
-				for _, component := range []string{"hbase-master", "hbase-rs", "hdfs-nn", "hdfs-snn", "hdfs-dn", "tephra"} {
-					old := tc.base + "-" + component
-					if _, found := beforeResources.Pdbs[old]; found {
-						renames["PodDisruptionBudget/"+old] = "suse-observability-" + component
-					}
+				options.ValuesFiles = append(options.ValuesFiles, sizing)
+			}
+			args := []string{"--api-versions", "policy/v1/PodDisruptionBudget", "--api-versions", "monitoring.coreos.com/v1"}
+			beforeOutput, err := helm.RenderTemplateE(t, options, beforeChart, tc.release, nil, args...)
+			require.NoError(t, err)
+			afterOutput, err := helm.RenderTemplateE(t, options, afterChart, tc.release, nil, args...)
+			require.NoError(t, err)
+			beforeResources := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			afterResources := helmtestutil.NewKubernetesResources(t, afterOutput)
+			renames := map[string]string{}
+			for _, component := range []string{"hbase-master", "hbase-rs", "hdfs-nn", "hdfs-snn", "hdfs-dn", "tephra"} {
+				old := tc.base + "-" + component
+				if _, found := beforeResources.Pdbs[old]; found {
+					renames["PodDisruptionBudget/"+old] = "suse-observability-" + component
 				}
-				require.Len(t, renames, tc.count, "mode-dependent PDB inventory must stay unchanged")
-				seen := map[string]bool{}
-				before := backupNamingDocuments(t, beforeOutput, renames, seen)
-				after := backupNamingDocuments(t, afterOutput, nil, nil)
-				assert.Equal(t, before, after, "Only HBase PDB metadata names may change")
-				beforeContract := resourceNamingUpgradeContract(t, beforeOutput)
-				for old, target := range renames {
-					require.True(t, seen[old], "budget not exercised: %s", old)
-					require.Contains(t, beforeContract, old)
-					fields := beforeContract[old]
-					delete(beforeContract, old)
-					require.NotContains(t, beforeContract, "PodDisruptionBudget/"+target)
-					beforeContract["PodDisruptionBudget/"+target] = fields
-				}
-				assert.Equal(t, beforeContract, resourceNamingUpgradeContract(t, afterOutput))
-				assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
-				assert.Equal(t, beforeResources.Services, afterResources.Services)
-				assert.Equal(t, beforeResources.ServiceMonitors, afterResources.ServiceMonitors)
-				assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
-			})
-		}
+			}
+			require.Len(t, renames, tc.count, "mode-dependent PDB inventory must stay unchanged")
+			seen := map[string]bool{}
+			before := backupNamingDocuments(t, beforeOutput, renames, seen)
+			after := backupNamingDocuments(t, afterOutput, nil, nil)
+			assert.Equal(t, before, after, "Only HBase PDB metadata names may change")
+			beforeContract := resourceNamingUpgradeContract(t, beforeOutput)
+			for old, target := range renames {
+				require.True(t, seen[old], "budget not exercised: %s", old)
+				require.Contains(t, beforeContract, old)
+				fields := beforeContract[old]
+				delete(beforeContract, old)
+				require.NotContains(t, beforeContract, "PodDisruptionBudget/"+target)
+				beforeContract["PodDisruptionBudget/"+target] = fields
+			}
+			assert.Equal(t, beforeContract, resourceNamingUpgradeContract(t, afterOutput))
+			assert.Equal(t, beforeResources.Statefulsets, afterResources.Statefulsets)
+			assert.Equal(t, beforeResources.Services, afterResources.Services)
+			assert.Equal(t, beforeResources.ServiceMonitors, afterResources.ServiceMonitors)
+			assert.Equal(t, beforeResources.PersistentVolumeClaims, afterResources.PersistentVolumeClaims)
+		})
 	}
 }

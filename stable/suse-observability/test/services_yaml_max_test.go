@@ -10,6 +10,8 @@ import (
 )
 
 func TestYamlMaxRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/yaml_max.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -33,6 +35,8 @@ func TestYamlMaxRender(t *testing.T) {
 }
 
 func TestYamlMaxNoUnitRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/yaml_max_no_units.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -56,6 +60,8 @@ func TestYamlMaxNoUnitRender(t *testing.T) {
 }
 
 func TestSplitYamlMaxRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/yaml_max.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -79,6 +85,8 @@ func TestSplitYamlMaxRender(t *testing.T) {
 }
 
 func TestSplitYamlMaxNoUnitRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/yaml_max_no_units.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)

@@ -42,14 +42,20 @@ const expectedLdapAuthEnabled = `stackstate.api.authentication.authServer.authSe
 var expectedLdapSecretContent = map[string]string{"ldap_password": "foobar"}
 
 func TestAuthenticationLdapSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/ldap_authentication.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
 }
 
 func TestAuthenticationLdap(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/ldap_authentication.yaml", "values/split_disabled.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
 }
 
 func TestAuthenticationLdapSecret(t *testing.T) {
+	t.Parallel()
+
 	RunSecretTest(t, "suse-observability-auth", []string{"values/ldap_authentication.yaml"}, expectedLdapSecretContent)
 }
 
@@ -59,16 +65,22 @@ const expectedLdapSkipCertificateValidation = `    ssl {
     }`
 
 func TestAuthenticationLdapSkipCertificateValidation(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/ldap_authentication_skip_certificate_validation.yaml"}, expectedLdapSkipCertificateValidation)
 }
 
 func TestAuthenticationLdapCertificateValidationByDefault(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-api", []string{"values/ldap_authentication.yaml"}, func(stringData string) {
 		require.NotContains(t, stringData, "skipCertificateValidation")
 	})
 }
 
 func TestAuthenticationLdapSkipCertificateValidationFalse(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml", "values/ldap_authentication_skip_certificate_validation.yaml"},
 		SetValues:   map[string]string{"stackstate.authentication.ldap.ssl.skipCertificateValidation": "false"},
@@ -80,6 +92,8 @@ func TestAuthenticationLdapSkipCertificateValidationFalse(t *testing.T) {
 }
 
 func TestAuthenticationLdapSkipCertificateValidationRejectsString(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/ldap_authentication_skip_certificate_validation_string.yaml")
 	require.Contains(t, err.Error(), "skipCertificateValidation must be a boolean")
 
@@ -92,6 +106,8 @@ func TestAuthenticationLdapSkipCertificateValidationRejectsString(t *testing.T) 
 }
 
 func TestAuthenticationLdapMissingValues(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/ldap_authentication_missing_userQuery_parameters.yaml")
 	require.Contains(t, err.Error(), "userQuery parameters")
 	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/ldap_authentication_missing_userQuery_usernameKey.yaml")
@@ -120,18 +136,26 @@ var expectedOidcAuthSecret = map[string]string{
 const expectedOidcEnabled = `stackstate.api.authentication.authServer.authServerType = [oidcAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationOidcSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
 }
 
 func TestAuthenticationOidcSecret(t *testing.T) {
+	t.Parallel()
+
 	RunSecretTest(t, "suse-observability-auth", []string{"values/oidc_authentication.yaml"}, expectedOidcAuthSecret)
 }
 
 func TestAuthenticationOidc(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/oidc_authentication.yaml", "values/split_disabled.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
 }
 
 func TestAuthenticationOidcInvalid(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/oidc_authentication_invalid_scope.yaml")
 	require.Contains(t, err.Error(), "stackstate.authentication.oidc.scope must be an array of scopes")
 
@@ -153,33 +177,45 @@ const expectedSkipLoginPageEnabled = `stackstate.api.authentication.skipLoginPag
 // to false, so unless a provider opts in, logging out of SUSE Observability does not log the user
 // out at the provider and the login page is shown.
 func TestAuthenticationOidcLogoutFlagsDefaultDisabled(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
 }
 
 // When enabled inside the oidc provider block, both options render as true in the backend config.
 func TestAuthenticationOidcLogoutFlagsEnabled(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml", "values/oidc_logout_flags.yaml"}, expectedOidcLogoutEnabled, expectedSkipLoginPageEnabled)
 }
 
 // When enabled inside the keycloak provider block, both options render as true in the backend config.
 func TestAuthenticationKeycloakLogoutFlagsEnabled(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/keycloak_authentication.yaml", "values/keycloak_logout_flags.yaml"}, expectedOidcLogoutEnabled, expectedSkipLoginPageEnabled)
 }
 
 // When enabled inside the rancher provider block, both options render as true in the backend config.
 func TestAuthenticationRancherLogoutFlagsEnabled(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml", "values/rancher_logout_flags.yaml"}, expectedOidcLogoutEnabled, expectedSkipLoginPageEnabled)
 }
 
 // Guard for the rancher SaaS shape (e.g. the prime-test tenant): a rancher provider that does not
 // opt in keeps both options false, so existing rancher tenants retain the default behaviour.
 func TestAuthenticationRancherLogoutFlagsDefaultDisabled(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
 }
 
 // Regression guard: the chart must not derive these options from deployment.mode. Even in Saas
 // mode they stay false unless a provider opts in; SaaS deployments enable them per provider.
 func TestAuthenticationOidcLogoutFlagsSaasDefaultDisabled(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/authentication_saas_noroles.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
 }
 
@@ -187,16 +223,22 @@ func TestAuthenticationOidcLogoutFlagsSaasDefaultDisabled(t *testing.T) {
 // stay false even when the legacy top-level stackstate.authentication.oidcLogout/skipLoginPage keys
 // are set, proving the chart reads them from the provider block and ignores the old top-level keys.
 func TestAuthenticationLogoutFlagsIgnoredForNonOidc(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/ldap_authentication.yaml", "values/authentication_logout_flags.yaml"}, expectedOidcLogoutDisabled, expectedSkipLoginPageDisabled)
 }
 
 const expectedOmitClientNameParameter = "\n  omitClientNameParameter = true\n"
 
 func TestAuthenticationOidcOmitClientNameParameter(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml", "values/oidc_omit_client_name.yaml"}, expectedOmitClientNameParameter)
 }
 
 func TestAuthenticationRancherOmitClientNameParameter(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml", "values/rancher_omit_client_name.yaml"}, expectedOmitClientNameParameter)
 }
 
@@ -221,18 +263,26 @@ var expectedRancherAuthSecret = map[string]string{
 const expectedRancherAuthEnabled = `stackstate.api.authentication.authServer.authServerType = [oidcAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationRancherSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml"}, expectedRancherAuthConfig, expectedRancherAuthEnabled)
 }
 
 func TestAuthenticationRancherSecret(t *testing.T) {
+	t.Parallel()
+
 	RunSecretTest(t, "suse-observability-auth", []string{"values/rancher_authentication.yaml"}, expectedRancherAuthSecret)
 }
 
 func TestAuthenticationRancher(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/rancher_authentication.yaml", "values/split_disabled.yaml"}, expectedRancherAuthConfig, expectedRancherAuthEnabled)
 }
 
 func TestAuthenticationRancherScope(t *testing.T) {
+	t.Parallel()
+
 	for _, component := range []string{"api", "server"} {
 		for _, tc := range []struct {
 			name     string
@@ -277,6 +327,8 @@ func TestAuthenticationRancherScope(t *testing.T) {
 }
 
 func TestAuthenticationRancherInvalid(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_multiple_oidc_providers.yaml")
 	require.Contains(t, err.Error(), "Cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher simultaneously")
 
@@ -310,18 +362,26 @@ var expectedKeycloakAuthSecret = map[string]string{
 const expectedKeycloakEnabled = `stackstate.api.authentication.authServer.authServerType = [keycloakAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationKeycloakSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/keycloak_authentication.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
 }
 
 func TestAuthenticationKeycloakSecret(t *testing.T) {
+	t.Parallel()
+
 	RunSecretTest(t, "suse-observability-auth", []string{"values/keycloak_authentication.yaml"}, expectedKeycloakAuthSecret)
 }
 
 func TestAuthenticationKeycloak(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/keycloak_authentication.yaml", "values/split_disabled.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
 }
 
 func TestAuthenticationKeycloakInvalid(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/keycloak_authentication_missing_clientid.yaml")
 	require.Contains(t, err.Error(), "the client id to be set")
 	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/keycloak_authentication_missing_secret.yaml")
@@ -357,18 +417,26 @@ var expectedFileAuthSecret = map[string]string{
 const expectedFileEnabled = `stackstate.api.authentication.authServer.authServerType = [stackstateAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationFileSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/file_authentication.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
 }
 
 func TestAuthenticationFileSecret(t *testing.T) {
+	t.Parallel()
+
 	RunSecretTest(t, "suse-observability-auth", []string{"values/file_authentication.yaml"}, expectedFileAuthSecret)
 }
 
 func TestAuthenticationFile(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/file_authentication.yaml", "values/split_disabled.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
 }
 
 func TestAuthenticationFileInvalid(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/file_authentication_no_logins.yaml")
 	require.Contains(t, err.Error(), "requires a non-empty list of logins")
 
@@ -394,18 +462,26 @@ var expectedFallbackAuthSecret = map[string]string{
 const expectedFallbackEnabled = `stackstate.api.authentication.authServer.authServerType = [stackstateAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationFallbackSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", []string{}, expectedFallbackAuthConfig, expectedFallbackEnabled)
 }
 
 func TestAuthenticationFallbackSecret(t *testing.T) {
+	t.Parallel()
+
 	RunSecretTest(t, "suse-observability-auth", []string{}, expectedFallbackAuthSecret)
 }
 
 func TestAuthenticationFallback(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/split_disabled.yaml"}, expectedFallbackAuthConfig, expectedFallbackEnabled)
 }
 
 func TestAuthenticationFallbackInvalid(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/fallback_authentication_no_password.yaml")
 	require.Contains(t, err.Error(), "Admin password is required")
 }
@@ -415,6 +491,8 @@ stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserG
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} ["guest1","guest2"]`
 
 func TestAuthenticationRolesSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-api", []string{"values/authentication_roles.yaml"}, func(stringData string) {
 		// check that the roles are added
 		require.NotContains(t, stringData, "stackstate-aad")
@@ -428,6 +506,8 @@ func TestAuthenticationRolesSplit(t *testing.T) {
 const expectedRolesWhenEmptyAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesEmptySplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-api", []string{"values/authentication_roles_empty.yaml"}, func(stringData string) {
 		require.NotContains(t, stringData, "stackstate-aad")
 	})
@@ -436,12 +516,16 @@ func TestAuthenticationRolesEmptySplit(t *testing.T) {
 const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-api", []string{"values/authentication_roles_no_admin.yaml"}, func(stringData string) {
 		require.NotContains(t, stringData, "stackstate-aad")
 	})
 }
 
 func TestNoAuthenticationRolesSaas(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
@@ -450,6 +534,8 @@ func TestNoAuthenticationRolesSaas(t *testing.T) {
 }
 
 func TestIgnoredAuthenticationRolesSaas(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
@@ -461,6 +547,8 @@ func TestIgnoredAuthenticationRolesSaas(t *testing.T) {
 }
 
 func TestCustomAuthenticationRolesSaas(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_custom.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
@@ -469,6 +557,8 @@ func TestCustomAuthenticationRolesSaas(t *testing.T) {
 }
 
 func TestAuthenticationRoles(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the roles are added
 		require.NotContains(t, stringData, "stackstate-aad")
@@ -480,6 +570,8 @@ func TestAuthenticationRoles(t *testing.T) {
 }
 
 func TestAuthenticationRolesWithDots(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_roles_dots.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.admin\"")
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.power\"")
@@ -490,6 +582,8 @@ func TestAuthenticationRolesWithDots(t *testing.T) {
 }
 
 func TestMultipleAuthConfigsNotAllowed(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/multiple_auth_configs.yaml")
 	require.Contains(t, err.Error(), "More than 1 authentication mechanism specified")
 }

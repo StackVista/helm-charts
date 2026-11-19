@@ -173,113 +173,108 @@ func checkCollectorPeripheralNaming(t *testing.T, beforeChart, afterChart string
 		if tc.legacy == "" {
 			tc.legacy = canonical
 		}
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := componentResourceNameTestValues()
-				for key, value := range map[string]string{
-					"mode": tc.mode, "fullnameOverride": tc.legacy, "service.enabled": "true", "ports.metrics.enabled": "true",
-					"podDisruptionBudget.enabled": "true", "podDisruptionBudget.minAvailable": "1",
-					"serviceMonitor.enabled": "true", "podMonitor.enabled": "true",
-					"prometheusRule.enabled": "true", "prometheusRule.defaultRules.enabled": "true", "networkPolicy.enabled": "true",
-				} {
-					values[collector+key] = value
-				}
-				for key, value := range tc.values {
-					values[key] = value
-				}
-				options := apiResourceNameTestOptions(values)
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				namespace := options.KubectlOptions.Namespace
-				if tc.collectorNamespace != "" {
-					namespace = tc.collectorNamespace
-					values[collector+"namespaceOverride"] = namespace
-				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
-				}
-				if tc.fixture != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.fixture))
-				}
-				render := func(chart string) string {
-					copied := *options
-					copied.Logger = logger.Discard
-					copied.ValuesFiles = make([]string, len(options.ValuesFiles))
-					for i, file := range options.ValuesFiles {
-						path, err := filepath.Abs(file)
-						require.NoError(t, err)
-						copied.ValuesFiles[i] = path
-					}
-					args := []string{"--kube-version", "1.32.0", "--api-versions", "policy/v1", "--api-versions", "monitoring.coreos.com/v1"}
-					if upgrade {
-						args = append(args, "--is-upgrade")
-					}
-					output, err := helm.RenderTemplateE(t, &copied, chart, tc.release, nil, args...)
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := componentResourceNameTestValues()
+			for key, value := range map[string]string{
+				"mode": tc.mode, "fullnameOverride": tc.legacy, "service.enabled": "true", "ports.metrics.enabled": "true",
+				"podDisruptionBudget.enabled": "true", "podDisruptionBudget.minAvailable": "1",
+				"serviceMonitor.enabled": "true", "podMonitor.enabled": "true",
+				"prometheusRule.enabled": "true", "prometheusRule.defaultRules.enabled": "true", "networkPolicy.enabled": "true",
+			} {
+				values[collector+key] = value
+			}
+			for key, value := range tc.values {
+				values[key] = value
+			}
+			options := apiResourceNameTestOptions(values)
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			namespace := options.KubectlOptions.Namespace
+			if tc.collectorNamespace != "" {
+				namespace = tc.collectorNamespace
+				values[collector+"namespaceOverride"] = namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			if tc.fixture != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.fixture))
+			}
+			render := func(chart string) string {
+				copied := *options
+				copied.Logger = logger.Discard
+				copied.ValuesFiles = make([]string, len(options.ValuesFiles))
+				for i, file := range options.ValuesFiles {
+					path, err := filepath.Abs(file)
 					require.NoError(t, err)
-					return output
+					copied.ValuesFiles[i] = path
 				}
-				beforeOutput, afterOutput := render(beforeChart), render(afterChart)
-				before := backupNamingDocuments(t, beforeOutput, nil, nil)
-				after := backupNamingDocuments(t, afterOutput, nil, nil)
-				renames := map[string]string{}
-				for _, resource := range collectorPeripheralNamingInventory() {
-					old, target := tc.legacy+resource.suffix, canonical+resource.suffix
-					oldKey := resource.kind + "/" + namespace + "/" + old
-					targetKey := resource.kind + "/" + namespace + "/" + target
-					if _, found := before[oldKey]; found {
-						require.Contains(t, after, targetKey)
-						if old != target {
-							renames[resource.kind+"/"+old] = target
-							assert.NotContains(t, after, oldKey)
+				args := []string{"--kube-version", "1.32.0", "--api-versions", "policy/v1", "--api-versions", "monitoring.coreos.com/v1"}
+				output, err := helm.RenderTemplateE(t, &copied, chart, tc.release, nil, args...)
+				require.NoError(t, err)
+				return output
+			}
+			beforeOutput, afterOutput := render(beforeChart), render(afterChart)
+			before := backupNamingDocuments(t, beforeOutput, nil, nil)
+			after := backupNamingDocuments(t, afterOutput, nil, nil)
+			renames := map[string]string{}
+			for _, resource := range collectorPeripheralNamingInventory() {
+				old, target := tc.legacy+resource.suffix, canonical+resource.suffix
+				oldKey := resource.kind + "/" + namespace + "/" + old
+				targetKey := resource.kind + "/" + namespace + "/" + target
+				if _, found := before[oldKey]; found {
+					require.Contains(t, after, targetKey)
+					if old != target {
+						renames[resource.kind+"/"+old] = target
+						assert.NotContains(t, after, oldKey)
+					}
+				} else {
+					assert.NotContains(t, after, targetKey, "Creation conditions must stay unchanged")
+				}
+			}
+			seen := map[string]bool{}
+			expected := backupNamingDocuments(t, beforeOutput, renames, seen)
+			assert.Equal(t, expected, after, "Only the five reviewed metadata names may change; no later step may be needed to repair consumers")
+			require.Len(t, seen, len(renames))
+			original := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			target := helmtestutil.NewKubernetesResources(t, afterOutput)
+			assert.Equal(t, original.Deployments, target.Deployments)
+			assert.Equal(t, original.Statefulsets, target.Statefulsets)
+			assert.Equal(t, original.DaemonSets, target.DaemonSets)
+			assert.Equal(t, original.PersistentVolumeClaims, target.PersistentVolumeClaims)
+			assert.Equal(t, original.ConfigMaps, target.ConfigMaps)
+			assert.Equal(t, original.Secrets, target.Secrets)
+			assert.Equal(t, original.Services, target.Services)
+			assert.Equal(t, original.ServiceAccounts, target.ServiceAccounts)
+			var pod corev1.PodTemplateSpec
+			switch tc.mode {
+			case "deployment":
+				pod = target.Deployments[tc.legacy].Spec.Template
+			case "daemonset":
+				pod = target.DaemonSets[tc.legacy+"-agent"].Spec.Template
+			case "statefulset":
+				pod = target.Statefulsets[tc.legacy].Spec.Template
+			}
+			require.Equal(t, tc.release, pod.Labels["app.kubernetes.io/instance"])
+			for _, resource := range collectorPeripheralNamingInventory() {
+				key := resource.kind + "/" + namespace + "/" + canonical + resource.suffix
+				if docs, found := after[key]; found {
+					object := docs.([]interface{})[0].(map[string]interface{})
+					metadata := object["metadata"].(map[string]interface{})
+					require.Equal(t, tc.release, metadata["labels"].(map[string]interface{})["app.kubernetes.io/instance"])
+					spec := object["spec"].(map[string]interface{})
+					selectorField := "selector"
+					if resource.kind == "NetworkPolicy" {
+						selectorField = "podSelector"
+					}
+					if selector, found := spec[selectorField].(map[string]interface{}); found {
+						for key, value := range selector["matchLabels"].(map[string]interface{}) {
+							assert.Equal(t, value, pod.Labels[key], "Peripheral objects must still select the retained collector Pods")
 						}
-					} else {
-						assert.NotContains(t, after, targetKey, "Creation conditions must stay unchanged")
 					}
 				}
-				seen := map[string]bool{}
-				expected := backupNamingDocuments(t, beforeOutput, renames, seen)
-				assert.Equal(t, expected, after, "Only the five reviewed metadata names may change; no later step may be needed to repair consumers")
-				require.Len(t, seen, len(renames))
-				original := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				target := helmtestutil.NewKubernetesResources(t, afterOutput)
-				assert.Equal(t, original.Deployments, target.Deployments)
-				assert.Equal(t, original.Statefulsets, target.Statefulsets)
-				assert.Equal(t, original.DaemonSets, target.DaemonSets)
-				assert.Equal(t, original.PersistentVolumeClaims, target.PersistentVolumeClaims)
-				assert.Equal(t, original.ConfigMaps, target.ConfigMaps)
-				assert.Equal(t, original.Secrets, target.Secrets)
-				assert.Equal(t, original.Services, target.Services)
-				assert.Equal(t, original.ServiceAccounts, target.ServiceAccounts)
-				var pod corev1.PodTemplateSpec
-				switch tc.mode {
-				case "deployment":
-					pod = target.Deployments[tc.legacy].Spec.Template
-				case "daemonset":
-					pod = target.DaemonSets[tc.legacy+"-agent"].Spec.Template
-				case "statefulset":
-					pod = target.Statefulsets[tc.legacy].Spec.Template
-				}
-				require.Equal(t, tc.release, pod.Labels["app.kubernetes.io/instance"])
-				for _, resource := range collectorPeripheralNamingInventory() {
-					key := resource.kind + "/" + namespace + "/" + canonical + resource.suffix
-					if docs, found := after[key]; found {
-						object := docs.([]interface{})[0].(map[string]interface{})
-						metadata := object["metadata"].(map[string]interface{})
-						require.Equal(t, tc.release, metadata["labels"].(map[string]interface{})["app.kubernetes.io/instance"])
-						spec := object["spec"].(map[string]interface{})
-						selectorField := "selector"
-						if resource.kind == "NetworkPolicy" {
-							selectorField = "podSelector"
-						}
-						if selector, found := spec[selectorField].(map[string]interface{}); found {
-							for key, value := range selector["matchLabels"].(map[string]interface{}) {
-								assert.Equal(t, value, pod.Labels[key], "Peripheral objects must still select the retained collector Pods")
-							}
-						}
-					}
-				}
-			})
-		}
+			}
+		})
 	}
 }

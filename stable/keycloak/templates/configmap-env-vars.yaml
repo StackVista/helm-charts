@@ -56,9 +56,18 @@ data:
   KC_CACHE: "ispn"
   KC_CACHE_STACK: {{ .Values.cache.stackName | quote }}
   KC_CACHE_CONFIG_FILE: "cache-ispn.xml"
-  JAVA_OPTS_APPEND: {{ printf "-Djgroups.dns.query=%s" (include "keycloak.jgroupsDnsQuery" .) | quote }}
   {{- else }}
   KC_CACHE: "local"
+  {{- end }}
+  {{- $javaOpts := list }}
+  {{- if .Values.cache.enabled }}
+  {{- $javaOpts = append $javaOpts (printf "-Djgroups.dns.query=%s" (include "keycloak.jgroupsDnsQuery" .)) }}
+  {{- end }}
+  {{- with .Values.javaOptsAppend }}
+  {{- $javaOpts = append $javaOpts . }}
+  {{- end }}
+  {{- if $javaOpts }}
+  JAVA_OPTS_APPEND: {{ join " " $javaOpts | quote }}
   {{- end }}
   # Logging
   {{- if .Values.logging }}

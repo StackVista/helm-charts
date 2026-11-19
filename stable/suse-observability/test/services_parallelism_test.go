@@ -10,6 +10,8 @@ import (
 )
 
 func TestSyncParalellismConfigRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -27,6 +29,8 @@ func TestSyncParalellismConfigRender(t *testing.T) {
 }
 
 func TestSyncParalellismConfigRenderOnMilliCpu(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/sync_parallelism_12001.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -44,6 +48,8 @@ func TestSyncParalellismConfigRenderOnMilliCpu(t *testing.T) {
 }
 
 func TestSyncParalellismConfigRenderOnCpu(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/sync_parallelism_12.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -64,6 +70,8 @@ func TestSyncParalellismConfigRenderOnCpu(t *testing.T) {
 // the computed parallelWorkers value via extraEnv. This is the expected behavior
 // after the duplicate env var fix, which allows users to override any env var.
 func TestSyncParalellismConfigRenderOverridable(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/sync_parallelism_12.yaml", "values/sync_env_parallel_workers.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)

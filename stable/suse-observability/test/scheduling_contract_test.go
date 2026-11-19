@@ -122,6 +122,8 @@ func backupRestoreJobSpecs(t *testing.T, resources helmtestutil.KubernetesResour
 }
 
 func TestSchedulingGlobalAppliesToEveryWorkload(t *testing.T) {
+	t.Parallel()
+
 	for name, values := range map[string][]string{"ha": schedulingHA, "nonha": schedulingNonHA, "legacy": schedulingLegacy} {
 		t.Run(name, func(t *testing.T) {
 			_, resources := renderScheduling(t, with(values, "values/scheduling_global.yaml")...)
@@ -139,6 +141,8 @@ func TestSchedulingGlobalAppliesToEveryWorkload(t *testing.T) {
 }
 
 func TestSchedulingNothingConfiguredRendersNoTolerations(t *testing.T) {
+	t.Parallel()
+
 	for name, values := range map[string][]string{"ha": schedulingHA, "nonha": schedulingNonHA} {
 		t.Run(name, func(t *testing.T) {
 			_, resources := renderScheduling(t, values...)
@@ -151,6 +155,8 @@ func TestSchedulingNothingConfiguredRendersNoTolerations(t *testing.T) {
 }
 
 func TestSchedulingMostSpecificLayerWins(t *testing.T) {
+	t.Parallel()
+
 	_, resources := renderScheduling(t, with(schedulingHA, "values/scheduling_global.yaml", "values/scheduling_component_overrides.yaml")...)
 	specs := podSpecs(resources)
 
@@ -190,6 +196,8 @@ func TestSchedulingMostSpecificLayerWins(t *testing.T) {
 }
 
 func TestSchedulingPartialOverridesKeepInheritedFields(t *testing.T) {
+	t.Parallel()
+
 	_, resources := renderScheduling(t, with(schedulingHA, "values/scheduling_global.yaml", "values/scheduling_partial_overrides.yaml")...)
 	specs := podSpecs(resources)
 
@@ -241,6 +249,8 @@ func TestSchedulingPartialOverridesKeepInheritedFields(t *testing.T) {
 }
 
 func TestSchedulingPartialOverridesNonHA(t *testing.T) {
+	t.Parallel()
+
 	_, resources := renderScheduling(t, with(schedulingNonHA, "values/scheduling_global.yaml", "values/scheduling_partial_overrides.yaml")...)
 	specs := podSpecs(resources)
 	for _, w := range []struct{ kind, name string }{
@@ -257,6 +267,8 @@ func TestSchedulingPartialOverridesNonHA(t *testing.T) {
 }
 
 func TestSchedulingEmptyValuesClearInheritedValues(t *testing.T) {
+	t.Parallel()
+
 	_, resources := renderScheduling(t, with(schedulingHA, "values/scheduling_global.yaml", "values/scheduling_clear.yaml")...)
 	specs := podSpecs(resources)
 
@@ -274,6 +286,8 @@ func TestSchedulingEmptyValuesClearInheritedValues(t *testing.T) {
 }
 
 func TestSchedulingSoftAntiAffinityIsHonoured(t *testing.T) {
+	t.Parallel()
+
 	_, resources := renderScheduling(t, with(schedulingHA, "values/scheduling_soft_antiaffinity.yaml")...)
 	specs := podSpecs(resources)
 	for _, w := range []struct{ kind, name string }{
@@ -291,6 +305,8 @@ func TestSchedulingSoftAntiAffinityIsHonoured(t *testing.T) {
 }
 
 func TestSchedulingRendersNoDuplicateKeys(t *testing.T) {
+	t.Parallel()
+
 	for name, values := range map[string][]string{
 		"ha-overrides": with(schedulingHA, "values/scheduling_global.yaml", "values/scheduling_component_overrides.yaml"),
 		"ha-partial":   with(schedulingHA, "values/scheduling_global.yaml", "values/scheduling_partial_overrides.yaml"),
@@ -312,6 +328,8 @@ func TestSchedulingRendersNoDuplicateKeys(t *testing.T) {
 }
 
 func TestSchedulingHdfsNameNodesAvoidEachOther(t *testing.T) {
+	t.Parallel()
+
 	_, resources := renderScheduling(t, schedulingHA...)
 	specs := podSpecs(resources)
 	for name, other := range map[string]string{"hbase-hdfs-nn": "hdfs-snn", "hbase-hdfs-snn": "hdfs-nn"} {

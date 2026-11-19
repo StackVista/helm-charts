@@ -121,8 +121,7 @@ func TestRetainedNodeAgentRoleDropsProcessAgentPermissions(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
 		ValuesFiles: []string{"values/minimal.yaml", "values/node-agent-disabled.yaml"},
 		SetValues: map[string]string{
-			"processAgent.podCorrelation.enabled":     "true",
-			"processAgent.podCorrelation.remoteCache": "false",
+			"processAgent.podCorrelation.enabled": "true",
 		},
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -130,18 +129,4 @@ func TestRetainedNodeAgentRoleDropsProcessAgentPermissions(t *testing.T) {
 	role, found := resources.ClusterRoles["suse-observability-agent-node-agent"]
 	require.True(t, found, "role should be retained for the checks agent")
 	assertRuleExistence(t, role.Rules, "pods+get,list,watch", false)
-}
-
-// The remote kube cache exists only to serve the node agent's process-agent pod correlation, so it
-// must not outlive the node agent. It watches the API, which is the cost of leaving it running.
-func TestRemoteKubeCacheGoesWithTheNodeAgent(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
-		ValuesFiles: []string{"values/minimal.yaml", "values/agent-fully-disabled.yaml"},
-		SetValues: map[string]string{
-			"processAgent.podCorrelation.enabled":     "true",
-			"processAgent.podCorrelation.remoteCache": "true",
-		},
-	})
-
-	assert.NotContains(t, output, "remote-kube-cache")
 }

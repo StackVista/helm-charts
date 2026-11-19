@@ -10,6 +10,8 @@ import (
 )
 
 func TestRouterSecureCookiesEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues:   map[string]string{"stackstate.components.router.secureCookies.enabled": "true"},
@@ -32,6 +34,8 @@ func TestRouterSecureCookiesEnabled(t *testing.T) {
 }
 
 func TestRouterSecureCookiesDisabledByDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})

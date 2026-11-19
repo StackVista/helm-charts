@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.13.1-pre.31`
+Current chart version is `2.13.2-pre.4`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -1258,7 +1258,7 @@ If you encounter issues not covered here:
 | stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; individual service `pullPolicy`s can be overridden (see below). |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20261116130448-master-0bb87f8"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
+| stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20261118130017-master-e197d51"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"pekko_http_requests_active\", \"stackstate*\", \"receiver*\", \"stackgraph*\", \"caffeine*\"]"` |  |
@@ -1792,13 +1792,13 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[1].repository | string | `"stackstate/core-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[1].tag | string | `"20261113080623-main-ed66497"` | Tag used for the `stackpacks` Docker image |
+| stackstate.stackpacks.images[1].tag | string | `"20261118085347-main-72657e9"` | Tag used for the `stackpacks` Docker image |
 | stackstate.stackpacks.images[2].editions | list | `["Prime"]` | Editions that include the stackpacks |
 | stackstate.stackpacks.images[2].name | string | `"suse"` | name for the init container |
 | stackstate.stackpacks.images[2].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.images[2].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.images[2].repository | string | `"stackstate/suse-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[2].tag | string | `"platform-20261105145448-main-8a6c98c"` | Tag used for the `stackpacks` Docker image |
+| stackstate.stackpacks.images[2].tag | string | `"platform-20261119151845-main-f947c2e"` | Tag used for the `stackpacks` Docker image |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.localpvc.size | string | `"1Gi"` | Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS |
 | stackstate.stackpacks.localpvc.storageClass | string | `nil` |  |

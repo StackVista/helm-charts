@@ -32,6 +32,8 @@ var exemptedGatedContainers = map[string]string{
 }
 
 func TestRestrictedSecurityContext(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/restricted_security_context.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -39,6 +41,8 @@ func TestRestrictedSecurityContext(t *testing.T) {
 }
 
 func TestRbacAgentHasNoFixedPodIdentity(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/restricted_security_context.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -64,6 +68,8 @@ func TestRbacAgentHasNoFixedPodIdentity(t *testing.T) {
 // once per `enabled: false` value in the chart and its subcharts, and the other gates produced
 // no new containers.
 func TestRestrictedSecurityContextFeatureGates(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability",
 		"values/restricted_security_context.yaml",
 		"values/restricted_security_context_gates.yaml")

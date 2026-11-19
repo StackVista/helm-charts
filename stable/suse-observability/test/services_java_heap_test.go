@@ -35,6 +35,8 @@ func epoTestServerJavaHeapRender(t *testing.T) {
 }
 
 func TestSplitServicesJavaHeapRender(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -65,6 +67,8 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/components_all_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -85,6 +89,8 @@ func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -105,6 +111,8 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/components_all_javaopts.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -126,5 +134,6 @@ func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
 }
 
 func AssertJavaOpts(t *testing.T, env []v1.EnvVar, expectedVar v1.EnvVar) {
+	expectedVar.Value = "-XX:-UseBASE64Intrinsics " + expectedVar.Value
 	assert.Contains(t, env, expectedVar)
 }

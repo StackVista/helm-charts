@@ -18,6 +18,8 @@ type expectedVCTStorage struct {
 }
 
 func TestStorageSizing(t *testing.T) {
+	t.Parallel()
+
 	expectedStatefulsetStorage := map[string]map[string]expectedVCTStorage{
 		"10-nonha": {
 			"suse-observability-clickhouse-shard0":    {vctName: "data", size: "50Gi"},

@@ -20,6 +20,8 @@ import (
 const podMetadataKey = "test.stackstate.com/pod-metadata"
 
 func TestPodMetadataEveryTemplate(t *testing.T) {
+	t.Parallel()
+
 	for _, profile := range []string{"10-nonha", "150-ha"} {
 		t.Run(profile, func(t *testing.T) {
 			values := map[string]string{
@@ -94,6 +96,8 @@ func TestPodMetadataEveryTemplate(t *testing.T) {
 }
 
 func TestPodMetadataComponentOverrides(t *testing.T) {
+	t.Parallel()
+
 	hbaseComponents := map[string]string{
 		"console":      "console",
 		"stackgraph":   "stackgraph",
@@ -186,6 +190,8 @@ func TestPodMetadataComponentOverrides(t *testing.T) {
 }
 
 func TestPodMetadataWithoutGlobalLabels(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -215,6 +221,8 @@ func TestPodMetadataWithoutGlobalLabels(t *testing.T) {
 }
 
 func TestPodMetadataScalarValues(t *testing.T) {
+	t.Parallel()
+
 	for _, profile := range []string{"10-nonha", "150-ha"} {
 		t.Run(profile, func(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "suse-observability", &helm.Options{
@@ -259,6 +267,8 @@ func TestPodMetadataScalarValues(t *testing.T) {
 }
 
 func TestPodMetadataPreservesSelectorsAndChecksums(t *testing.T) {
+	t.Parallel()
+
 	for _, profile := range []string{"10-nonha", "150-ha"} {
 		t.Run(profile, func(t *testing.T) {
 			options := &helm.Options{

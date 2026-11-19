@@ -21,6 +21,8 @@ func envVarByName(envVars []corev1.EnvVar, name string) *corev1.EnvVar {
 }
 
 func TestAiAssistantEnabledWithAiAssistant(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -92,6 +94,8 @@ func TestAiAssistantEnabledWithAiAssistant(t *testing.T) {
 }
 
 func TestAiAssistantDisabledWhenAiAssistantDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -106,6 +110,8 @@ func TestAiAssistantDisabledWhenAiAssistantDisabled(t *testing.T) {
 }
 
 func TestAiAssistantServiceAccountAnnotations(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -122,6 +128,8 @@ func TestAiAssistantServiceAccountAnnotations(t *testing.T) {
 }
 
 func TestAiAssistantAnthropicProvider(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -155,6 +163,8 @@ func TestAiAssistantAnthropicProvider(t *testing.T) {
 }
 
 func TestAiAssistantAnthropicProviderWithExternalSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -182,6 +192,8 @@ func TestAiAssistantAnthropicProviderWithExternalSecret(t *testing.T) {
 }
 
 func TestAiAssistantImageTagRequired(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability",
 		"values/full.yaml",
 		"values/ai_assistant_missing_image_tag.yaml",
@@ -190,6 +202,8 @@ func TestAiAssistantImageTagRequired(t *testing.T) {
 }
 
 func TestAiAssistantAnthropicAPIKeyRequired(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability",
 		"values/full.yaml",
 		"values/ai_assistant_anthropic_missing_api_key.yaml",

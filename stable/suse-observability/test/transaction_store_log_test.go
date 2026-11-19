@@ -28,6 +28,8 @@ var components = []string{
 }
 
 func TestFeaturesStoreTransactionLogsToPVCDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -49,6 +51,8 @@ func TestFeaturesStoreTransactionLogsToPVCDefault(t *testing.T) {
 }
 
 func TestFeaturesStoreTransactionLogsToPVCEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -71,6 +75,8 @@ func TestFeaturesStoreTransactionLogsToPVCEnabled(t *testing.T) {
 }
 
 func TestFeaturesStoreTransactionLogsToPVCExperimentalRejected(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -88,6 +94,8 @@ func TestFeaturesStoreTransactionLogsToPVCExperimentalRejected(t *testing.T) {
 }
 
 func TestFeaturesStoreTransactionLogsToPVCCustomSettings(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",

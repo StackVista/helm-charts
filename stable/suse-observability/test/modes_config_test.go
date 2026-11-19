@@ -11,14 +11,20 @@ import (
 )
 
 func TestModesDefaultApi(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-api", nil, `stackstate.applicationDomains = ["Observability"]`)
 }
 
 func TestModesDefaultServer(t *testing.T) {
+	t.Parallel()
+
 	RunConfigMapTest(t, "suse-observability-server", []string{"values/split_disabled.yaml"}, `stackstate.applicationDomains = ["Observability"]`)
 }
 
 func TestModesCustomApi(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -42,12 +48,16 @@ func TestModesCustomApi(t *testing.T) {
 }
 
 func TestModesEmptyModes(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/modes_empty.yaml")
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "global.suseObservability.applicationDomains must contain at least one application domain")
 }
 
 func TestModesInvalidMode(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -64,6 +74,8 @@ func TestModesInvalidMode(t *testing.T) {
 }
 
 func TestModesCustomServer(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",

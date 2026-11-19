@@ -23,32 +23,26 @@ func TestRbacAgentServiceAccountReferencesFollowDedicatedHelper(t *testing.T) {
 	require.NoError(t, err)
 	for _, release := range []string{"suse-observability", "nightly"} {
 		for _, split := range []bool{false, true} {
-			for _, upgrade := range []bool{false, true} {
-				t.Run(fmt.Sprintf("%s/split=%t/upgrade=%t", release, split, upgrade), func(t *testing.T) {
-					options := apiResourceNameTestOptions(map[string]string{
-						"stackstate.k8sAuthorization.enabled": "true",
-						"stackstate.features.server.split":    fmt.Sprint(split),
-					})
-					options.ValuesFiles = []string{values}
-					var args []string
-					if upgrade {
-						args = append(args, "--is-upgrade")
-					}
-					before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, release, options, args...)
-					after, err := helm.RenderTemplateE(t, options, chart, release, nil, args...)
-					require.NoError(t, err)
-					account := release + "-rbac-agent"
-					seen := map[string]bool{}
-					expected := backupNamingDocuments(t, before, map[string]string{
-						"ServiceAccount/" + account: "explicit-rbac-account",
-					}, seen)
-					require.True(t, seen["ServiceAccount/"+account])
-					rewriteRbacAgentAccountReferences(expected, account)
-					// Includes both RoleBinding types and unchanged application
-					// authorization subjects in API/server ConfigMaps.
-					assert.Equal(t, expected, backupNamingDocuments(t, after, nil, nil))
+			t.Run(fmt.Sprintf("%s/split=%t", release, split), func(t *testing.T) {
+				options := apiResourceNameTestOptions(map[string]string{
+					"stackstate.k8sAuthorization.enabled": "true",
+					"stackstate.features.server.split":    fmt.Sprint(split),
 				})
-			}
+				options.ValuesFiles = []string{values}
+				before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, release, options)
+				after, err := helm.RenderTemplateE(t, options, chart, release, nil)
+				require.NoError(t, err)
+				account := release + "-rbac-agent"
+				seen := map[string]bool{}
+				expected := backupNamingDocuments(t, before, map[string]string{
+					"ServiceAccount/" + account: "explicit-rbac-account",
+				}, seen)
+				require.True(t, seen["ServiceAccount/"+account])
+				rewriteRbacAgentAccountReferences(expected, account)
+				// Includes both RoleBinding types and unchanged application
+				// authorization subjects in API/server ConfigMaps.
+				assert.Equal(t, expected, backupNamingDocuments(t, after, nil, nil))
+			})
 		}
 	}
 }

@@ -223,6 +223,8 @@ var splitComponentPdbs = []string{
 }
 
 func TestFeaturesTracesDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -243,6 +245,8 @@ func TestFeaturesTracesDefault(t *testing.T) {
 }
 
 func TestFeaturesOtelLogsDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -276,6 +280,8 @@ func TestFeaturesOtelLogsDefault(t *testing.T) {
 }
 
 func TestFeaturesOtelLogsEnabledSplit(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -323,6 +329,8 @@ func TestFeaturesOtelLogsEnabledSplit(t *testing.T) {
 }
 
 func TestFeaturesOtelLogsEnabledNonSplit(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -358,6 +366,8 @@ func TestFeaturesOtelLogsEnabledNonSplit(t *testing.T) {
 }
 
 func TestFeaturesExperimentalRejected(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -375,6 +385,8 @@ func TestFeaturesExperimentalRejected(t *testing.T) {
 }
 
 func TestFeaturesServerSplitDefault(t *testing.T) {
+	t.Parallel()
+
 	setValues := map[string]string{
 		"stackstate.k8sAuthorization.enabled":                      "true",
 		"stackstate.components.all.metrics.servicemonitor.enabled": "true",
@@ -389,6 +401,8 @@ func TestFeaturesServerSplitDefault(t *testing.T) {
 }
 
 func TestFeaturesServerSplitEnabled(t *testing.T) {
+	t.Parallel()
+
 	setValues := map[string]string{
 		"stackstate.features.server.split":                         "true",
 		"stackstate.k8sAuthorization.enabled":                      "true",
@@ -404,6 +418,8 @@ func TestFeaturesServerSplitEnabled(t *testing.T) {
 }
 
 func TestFeaturesServerSplitDisabled(t *testing.T) {
+	t.Parallel()
+
 	setValues := map[string]string{
 		"stackstate.features.server.split":                         "false",
 		"stackstate.k8sAuthorization.enabled":                      "true",
@@ -419,6 +435,8 @@ func TestFeaturesServerSplitDisabled(t *testing.T) {
 }
 
 func TestFeaturesServerSplitExperimentalRejected(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -583,6 +601,8 @@ func assertBackupCronjobSplit(t *testing.T, resources *helmtestutil.KubernetesRe
 }
 
 func TestAiAssistantUrlMonoEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -606,6 +626,8 @@ func TestAiAssistantUrlMonoEnabled(t *testing.T) {
 }
 
 func TestAiAssistantUrlMonoDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -630,6 +652,8 @@ func TestAiAssistantUrlMonoDisabled(t *testing.T) {
 }
 
 func TestAiAssistantUrlSplitEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -652,6 +676,8 @@ func TestAiAssistantUrlSplitEnabled(t *testing.T) {
 }
 
 func TestAiAssistantUrlSplitDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -675,6 +701,8 @@ func TestAiAssistantUrlSplitDisabled(t *testing.T) {
 }
 
 func TestFeaturesExperimentalOtelClusterTopology(t *testing.T) {
+	t.Parallel()
+
 	setting := "CONFIG_FORCE_stackstate_receiver_featureSwitches_otelClusterTopology"
 	for _, tc := range []struct {
 		name      string

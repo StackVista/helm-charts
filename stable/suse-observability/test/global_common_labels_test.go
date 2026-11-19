@@ -28,6 +28,8 @@ var expectedGlobalLabelsNonHA = map[string]string{
 }
 
 func TestGlobalLabelsHAMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -36,6 +38,8 @@ func TestGlobalLabelsHAMode(t *testing.T) {
 }
 
 func TestGlobalLabelsNonHAMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

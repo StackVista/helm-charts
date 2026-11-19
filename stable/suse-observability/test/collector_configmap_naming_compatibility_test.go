@@ -149,153 +149,151 @@ func checkCollectorConfigMapNaming(t *testing.T, beforeChart, afterChart string)
 		if tc.release == "" {
 			tc.release = "nightly"
 		}
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				values := componentResourceNameTestValues()
-				values[collector+"mode"] = tc.mode
-				values[collector+"fullnameOverride"] = "customer-collector"
-				if strings.HasPrefix(tc.name, "default-") {
-					values[collector+"fullnameOverride"] = "suse-observability-otel-collector"
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			values := componentResourceNameTestValues()
+			values[collector+"mode"] = tc.mode
+			values[collector+"fullnameOverride"] = "customer-collector"
+			if strings.HasPrefix(tc.name, "default-") {
+				values[collector+"fullnameOverride"] = "suse-observability-otel-collector"
+			}
+			for key, value := range tc.values {
+				values[key] = value
+			}
+			options := apiResourceNameTestOptions(values)
+			if tc.namespace != "" {
+				options.KubectlOptions.Namespace = tc.namespace
+			}
+			if tc.sizing != "" {
+				options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
+			}
+			beforeOutput := renderCollectorConfigMapChart(t, beforeChart, tc.release, options)
+			afterOutput := renderCollectorConfigMapChart(t, afterChart, tc.release, options)
+			expected := backupNamingDocuments(t, beforeOutput, nil, nil)
+			actual := backupNamingDocuments(t, afterOutput, nil, nil)
+			oldConfig, targetConfig := "", ""
+			for key, documents := range maps.Clone(expected) {
+				for i, raw := range documents.([]interface{}) {
+					object := raw.(map[string]interface{})
+					data, _ := object["data"].(map[string]interface{})
+					if object["kind"] != "ConfigMap" || data["relay"] == nil {
+						continue
+					}
+					require.Empty(t, oldConfig, "Exactly one relay ConfigMap is generated")
+					metadata := object["metadata"].(map[string]interface{})
+					oldConfig = metadata["name"].(string)
+					targetConfig = "suse-observability-otel-collector"
+					switch tc.mode {
+					case "deployment":
+						targetConfig += "-config"
+					case "daemonset":
+						targetConfig += "-agent"
+					case "statefulset":
+						targetConfig += "-statefulset"
+					}
+					if oldConfig == targetConfig {
+						continue
+					}
+					metadata["name"] = targetConfig
+					namespace, _ := metadata["namespace"].(string)
+					newKey := "ConfigMap/" + namespace + "/" + targetConfig
+					require.NotContains(t, expected, newKey)
+					expected[newKey] = []interface{}{object}
+					remaining := append(documents.([]interface{})[:i:i], documents.([]interface{})[i+1:]...)
+					if len(remaining) == 0 {
+						delete(expected, key)
+					} else {
+						expected[key] = remaining
+					}
 				}
-				for key, value := range tc.values {
-					values[key] = value
+			}
+			generated := values[collector+"configMap.create"] != "false"
+			require.Equal(t, generated, oldConfig != "")
+			controllers := 0
+			controllerName := ""
+			for key, documents := range expected {
+				if !strings.HasPrefix(key, "Deployment/") && !strings.HasPrefix(key, "DaemonSet/") && !strings.HasPrefix(key, "StatefulSet/") {
+					continue
 				}
-				options := apiResourceNameTestOptions(values)
-				if tc.namespace != "" {
-					options.KubectlOptions.Namespace = tc.namespace
-				}
-				if tc.sizing != "" {
-					options.ValuesFiles = append(options.ValuesFiles, filepath.Join("values", tc.sizing))
-				}
-				beforeOutput := renderCollectorConfigMapChart(t, beforeChart, tc.release, options, upgrade)
-				afterOutput := renderCollectorConfigMapChart(t, afterChart, tc.release, options, upgrade)
-				expected := backupNamingDocuments(t, beforeOutput, nil, nil)
-				actual := backupNamingDocuments(t, afterOutput, nil, nil)
-				oldConfig, targetConfig := "", ""
-				for key, documents := range maps.Clone(expected) {
-					for i, raw := range documents.([]interface{}) {
-						object := raw.(map[string]interface{})
-						data, _ := object["data"].(map[string]interface{})
-						if object["kind"] != "ConfigMap" || data["relay"] == nil {
+				for _, raw := range documents.([]interface{}) {
+					object := raw.(map[string]interface{})
+					template := object["spec"].(map[string]interface{})["template"].(map[string]interface{})
+					pod := template["spec"].(map[string]interface{})
+					isCollector := false
+					for _, raw := range pod["containers"].([]interface{}) {
+						isCollector = isCollector || raw.(map[string]interface{})["name"] == "opentelemetry-collector"
+					}
+					if !isCollector {
+						continue
+					}
+					controllers++
+					controllerName = object["metadata"].(map[string]interface{})["name"].(string)
+					references := 0
+					volumes, _ := pod["volumes"].([]interface{})
+					for _, raw := range volumes {
+						volume := raw.(map[string]interface{})
+						if volume["name"] != "opentelemetry-collector-configmap" {
 							continue
 						}
-						require.Empty(t, oldConfig, "Exactly one relay ConfigMap is generated")
-						metadata := object["metadata"].(map[string]interface{})
-						oldConfig = metadata["name"].(string)
-						targetConfig = "suse-observability-otel-collector"
-						switch tc.mode {
-						case "deployment":
-							targetConfig += "-config"
-						case "daemonset":
-							targetConfig += "-agent"
-						case "statefulset":
-							targetConfig += "-statefulset"
-						}
-						if oldConfig == targetConfig {
-							continue
-						}
-						metadata["name"] = targetConfig
-						namespace, _ := metadata["namespace"].(string)
-						newKey := "ConfigMap/" + namespace + "/" + targetConfig
-						require.NotContains(t, expected, newKey)
-						expected[newKey] = []interface{}{object}
-						remaining := append(documents.([]interface{})[:i:i], documents.([]interface{})[i+1:]...)
-						if len(remaining) == 0 {
-							delete(expected, key)
+						ref := volume["configMap"].(map[string]interface{})
+						if generated {
+							require.Equal(t, oldConfig, ref["name"])
+							ref["name"] = targetConfig
 						} else {
-							expected[key] = remaining
+							require.Equal(t, values[collector+"configMap.existingName"], ref["name"])
 						}
+						references++
+					}
+					usesConfig := generated || values[collector+"configMap.existingName"] != ""
+					require.Equal(t, usesConfig, references == 1)
+					require.Contains(t, actual, key)
+					actualObject := actual[key].([]interface{})[0].(map[string]interface{})
+					annotations := template["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
+					newAnnotations := actualObject["spec"].(map[string]interface{})["template"].(map[string]interface{})["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
+					if oldConfig != targetConfig {
+						assert.NotEqual(t, annotations["checksum/config"], newAnnotations["checksum/config"])
+						annotations["checksum/config"] = newAnnotations["checksum/config"]
 					}
 				}
-				generated := values[collector+"configMap.create"] != "false"
-				require.Equal(t, generated, oldConfig != "")
-				controllers := 0
-				controllerName := ""
-				for key, documents := range expected {
-					if !strings.HasPrefix(key, "Deployment/") && !strings.HasPrefix(key, "DaemonSet/") && !strings.HasPrefix(key, "StatefulSet/") {
-						continue
-					}
-					for _, raw := range documents.([]interface{}) {
-						object := raw.(map[string]interface{})
-						template := object["spec"].(map[string]interface{})["template"].(map[string]interface{})
-						pod := template["spec"].(map[string]interface{})
-						isCollector := false
-						for _, raw := range pod["containers"].([]interface{}) {
-							isCollector = isCollector || raw.(map[string]interface{})["name"] == "opentelemetry-collector"
-						}
-						if !isCollector {
-							continue
-						}
-						controllers++
-						controllerName = object["metadata"].(map[string]interface{})["name"].(string)
-						references := 0
-						volumes, _ := pod["volumes"].([]interface{})
-						for _, raw := range volumes {
-							volume := raw.(map[string]interface{})
-							if volume["name"] != "opentelemetry-collector-configmap" {
-								continue
-							}
-							ref := volume["configMap"].(map[string]interface{})
-							if generated {
-								require.Equal(t, oldConfig, ref["name"])
-								ref["name"] = targetConfig
-							} else {
-								require.Equal(t, values[collector+"configMap.existingName"], ref["name"])
-							}
-							references++
-						}
-						usesConfig := generated || values[collector+"configMap.existingName"] != ""
-						require.Equal(t, usesConfig, references == 1)
-						require.Contains(t, actual, key)
-						actualObject := actual[key].([]interface{})[0].(map[string]interface{})
-						annotations := template["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
-						newAnnotations := actualObject["spec"].(map[string]interface{})["template"].(map[string]interface{})["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
-						if oldConfig != targetConfig {
-							assert.NotEqual(t, annotations["checksum/config"], newAnnotations["checksum/config"])
-							annotations["checksum/config"] = newAnnotations["checksum/config"]
-						}
-					}
+			}
+			require.Equal(t, 1, controllers)
+			assert.Equal(t, expected, actual, "Only generated relay names, their volume references and existing checksum annotations may change; endpoint maps and env references stay unchanged")
+			// Resolve namespace defaults when checking duplicate identities:
+			// the parent endpoint map omits metadata.namespace.
+			identities := map[string]bool{}
+			for key, documents := range actual {
+				if !strings.HasPrefix(key, "ConfigMap/") {
+					continue
 				}
-				require.Equal(t, 1, controllers)
-				assert.Equal(t, expected, actual, "Only generated relay names, their volume references and existing checksum annotations may change; endpoint maps and env references stay unchanged")
-				// Resolve namespace defaults when checking duplicate identities:
-				// the parent endpoint map omits metadata.namespace.
-				identities := map[string]bool{}
-				for key, documents := range actual {
-					if !strings.HasPrefix(key, "ConfigMap/") {
-						continue
+				for _, raw := range documents.([]interface{}) {
+					object := raw.(map[string]interface{})
+					metadata := object["metadata"].(map[string]interface{})
+					namespace, _ := metadata["namespace"].(string)
+					if namespace == "" {
+						namespace = options.KubectlOptions.Namespace
 					}
-					for _, raw := range documents.([]interface{}) {
-						object := raw.(map[string]interface{})
-						metadata := object["metadata"].(map[string]interface{})
-						namespace, _ := metadata["namespace"].(string)
-						if namespace == "" {
-							namespace = options.KubectlOptions.Namespace
-						}
-						identity := namespace + "/" + metadata["name"].(string)
-						require.False(t, identities[identity], "ConfigMap identities must be distinct after upgrade")
-						identities[identity] = true
-					}
+					identity := namespace + "/" + metadata["name"].(string)
+					require.False(t, identities[identity], "ConfigMap identities must be distinct after upgrade")
+					identities[identity] = true
 				}
-				before := helmtestutil.NewKubernetesResources(t, beforeOutput)
-				after := helmtestutil.NewKubernetesResources(t, afterOutput)
-				switch tc.mode {
-				case "deployment":
-					deployment, updated := before.Deployments[controllerName], after.Deployments[controllerName]
-					assertCollectorConfigMapPatches(t, &deployment, &updated)
-				case "daemonset":
-					daemonset, updated := before.DaemonSets[controllerName], after.DaemonSets[controllerName]
-					assertCollectorConfigMapPatches(t, &daemonset, &updated)
-				case "statefulset":
-					statefulset, updated := before.Statefulsets[controllerName], after.Statefulsets[controllerName]
-					assertCollectorConfigMapPatches(t, &statefulset, &updated)
-				}
-			})
-		}
+			}
+			before := helmtestutil.NewKubernetesResources(t, beforeOutput)
+			after := helmtestutil.NewKubernetesResources(t, afterOutput)
+			switch tc.mode {
+			case "deployment":
+				deployment, updated := before.Deployments[controllerName], after.Deployments[controllerName]
+				assertCollectorConfigMapPatches(t, &deployment, &updated)
+			case "daemonset":
+				daemonset, updated := before.DaemonSets[controllerName], after.DaemonSets[controllerName]
+				assertCollectorConfigMapPatches(t, &daemonset, &updated)
+			case "statefulset":
+				statefulset, updated := before.Statefulsets[controllerName], after.Statefulsets[controllerName]
+				assertCollectorConfigMapPatches(t, &statefulset, &updated)
+			}
+		})
 	}
 }
 
-func renderCollectorConfigMapChart(t *testing.T, chart, release string, options *helm.Options, upgrade bool) string {
+func renderCollectorConfigMapChart(t *testing.T, chart, release string, options *helm.Options) string {
 	t.Helper()
 	copied := *options
 	copied.Logger = logger.Discard
@@ -306,9 +304,6 @@ func renderCollectorConfigMapChart(t *testing.T, chart, release string, options 
 		copied.ValuesFiles[i] = path
 	}
 	args := []string{"--kube-version", "1.32.0", "--api-versions", "policy/v1", "--api-versions", "monitoring.coreos.com/v1"}
-	if upgrade {
-		args = append(args, "--is-upgrade")
-	}
 	output, err := helm.RenderTemplateE(t, &copied, chart, release, nil, args...)
 	require.NoError(t, err)
 	return output

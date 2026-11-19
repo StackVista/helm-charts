@@ -11,6 +11,8 @@ import (
 )
 
 func TestOtelRouterRouteEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -36,6 +38,8 @@ func TestOtelRouterRouteEnabled(t *testing.T) {
 // uses the subchart's stable fullnameOverride regardless of the Helm release name. A non-default
 // release name previously caused the router to reference a non-existent service (503 UH).
 func TestOtelRouterClusterNameStableAcrossReleaseNames(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "prime-test", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -53,6 +57,8 @@ func TestOtelRouterClusterNameStableAcrossReleaseNames(t *testing.T) {
 }
 
 func TestOtelRouterFullnameOverride(t *testing.T) {
+	t.Parallel()
+
 	for _, release := range []string{"suse-observability", "nightly"} {
 		t.Run(release, func(t *testing.T) {
 			const collectorName = "custom-otel-collector"

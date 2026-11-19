@@ -11,6 +11,8 @@ import (
 )
 
 func TestGatewayDisabledByDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -20,6 +22,8 @@ func TestGatewayDisabledByDefault(t *testing.T) {
 }
 
 func TestGatewayEnabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/gateway_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -59,6 +63,8 @@ func TestGatewayEnabled(t *testing.T) {
 }
 
 func TestGatewayFullConfiguration(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/gateway_full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -94,16 +100,22 @@ func TestGatewayFullConfiguration(t *testing.T) {
 }
 
 func TestGatewayAndIngressMutualExclusion(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/gateway_with_ingress.yaml")
 	require.Contains(t, err.Error(), "Cannot configure both ingress.enabled and gateway.enabled simultaneously")
 }
 
 func TestGatewayMissingParentRefs(t *testing.T) {
+	t.Parallel()
+
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/gateway_missing_parentrefs.yaml")
 	require.Contains(t, err.Error(), "Gateway API requires gateway.parentRefs to be set")
 }
 
 func TestGatewayUseBaseUrl(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/gateway_use_baseurl.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -117,6 +129,8 @@ func TestGatewayUseBaseUrl(t *testing.T) {
 }
 
 func TestGatewayOverrideBaseUrlPath(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/gateway_override_baseurl_path.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -129,6 +143,8 @@ func TestGatewayOverrideBaseUrlPath(t *testing.T) {
 }
 
 func TestGatewayOverrideBaseUrlHost(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/gateway_override_baseurl_host.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -140,6 +156,8 @@ func TestGatewayOverrideBaseUrlHost(t *testing.T) {
 }
 
 func TestIngressStillWorks(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{

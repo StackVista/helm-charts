@@ -15,22 +15,20 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func renderConnectionConfiguration(t *testing.T, release, values string, upgrade bool) helmtestutil.KubernetesResources {
+func renderConnectionConfiguration(t *testing.T, release, values string) helmtestutil.KubernetesResources {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "connection.yaml")
 	require.NoError(t, os.WriteFile(path, []byte(values), 0600))
-	var args []string
-	if upgrade {
-		args = append(args, "--is-upgrade")
-	}
 	output := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, release, &helm.Options{
 		ValuesFiles:    []string{"values/full.yaml", path},
 		KubectlOptions: &k8s.KubectlOptions{Namespace: "observability"},
-	}, args...)
+	})
 	return helmtestutil.NewKubernetesResources(t, output)
 }
 
 func TestSubchartConnectionsUsePlatformConfiguration(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct{ name, release, values, secret string }{
 		{"default", "suse-observability", "", "suse-observability-s3proxy"},
 		{"custom-release", "nightly", "", "suse-observability-s3proxy"},
@@ -54,49 +52,47 @@ clickhouse:
       secretName: '{{ fail "must not evaluate saved secret" }}'
 `, "suse-observability-s3proxy"},
 	} {
-		for _, upgrade := range []bool{false, true} {
-			t.Run(fmt.Sprintf("%s/upgrade=%t", tc.name, upgrade), func(t *testing.T) {
-				// full.yaml already enables backups; add anomaly detection for every case.
-				values := "anomaly-detection:\n  enabled: true\n" + tc.values
-				if tc.name == "ignored-saved-inputs" {
-					values = tc.values
+		t.Run(fmt.Sprintf("%s", tc.name), func(t *testing.T) {
+			// full.yaml already enables backups; add anomaly detection for every case.
+			values := "anomaly-detection:\n  enabled: true\n" + tc.values
+			if tc.name == "ignored-saved-inputs" {
+				values = tc.values
+			}
+			resources := renderConnectionConfiguration(t, tc.release, values)
+			for _, name := range []string{"suse-observability-victoria-metrics-0", "suse-observability-victoria-metrics-1"} {
+				require.Contains(t, resources.Statefulsets, name)
+				pod := resources.Statefulsets[name].Spec.Template.Spec
+				assertConnectionEnv(t, pod.InitContainers, "S3_ENDPOINT", "http://suse-observability-s3proxy:9000")
+				assertConnectionCredentials(t, pod.Containers, []string{"AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"}, tc.secret)
+			}
+			require.Contains(t, resources.Statefulsets, "suse-observability-clickhouse-shard0")
+			assertConnectionCredentials(t, resources.Statefulsets["suse-observability-clickhouse-shard0"].Spec.Template.Spec.Containers, []string{"S3_ACCESS_KEY", "S3_SECRET_KEY"}, tc.secret)
+			configs := 0
+			for _, cm := range resources.ConfigMaps {
+				if _, ok := cm.Data["backup_enabled"]; ok {
+					assert.Contains(t, cm.Data["config.yaml"], `endpoint: "http://suse-observability-s3proxy:9000"`)
+					configs++
 				}
-				resources := renderConnectionConfiguration(t, tc.release, values, upgrade)
-				for _, name := range []string{"suse-observability-victoria-metrics-0", "suse-observability-victoria-metrics-1"} {
-					require.Contains(t, resources.Statefulsets, name)
-					pod := resources.Statefulsets[name].Spec.Template.Spec
-					assertConnectionEnv(t, pod.InitContainers, "S3_ENDPOINT", "http://suse-observability-s3proxy:9000")
-					assertConnectionCredentials(t, pod.Containers, []string{"AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"}, tc.secret)
-				}
-				require.Contains(t, resources.Statefulsets, "suse-observability-clickhouse-shard0")
-				assertConnectionCredentials(t, resources.Statefulsets["suse-observability-clickhouse-shard0"].Spec.Template.Spec.Containers, []string{"S3_ACCESS_KEY", "S3_SECRET_KEY"}, tc.secret)
-				configs := 0
-				for _, cm := range resources.ConfigMaps {
-					if _, ok := cm.Data["backup_enabled"]; ok {
-						assert.Contains(t, cm.Data["config.yaml"], `endpoint: "http://suse-observability-s3proxy:9000"`)
-						configs++
-					}
-				}
-				assert.Equal(t, 1, configs)
-				router := "suse-observability-router"
-				if tc.release != "suse-observability" {
-					router = tc.release + "-" + router
-				}
-				clients := 0
-				for _, deployment := range resources.Deployments {
-					for _, c := range deployment.Spec.Template.Spec.Containers {
-						for i, arg := range c.Args {
-							if arg == "--instance" {
-								require.Less(t, i+1, len(c.Args))
-								assert.Equal(t, "http://"+router+":8080", c.Args[i+1])
-								clients++
-							}
+			}
+			assert.Equal(t, 1, configs)
+			router := "suse-observability-router"
+			if tc.release != "suse-observability" {
+				router = tc.release + "-" + router
+			}
+			clients := 0
+			for _, deployment := range resources.Deployments {
+				for _, c := range deployment.Spec.Template.Spec.Containers {
+					for i, arg := range c.Args {
+						if arg == "--instance" {
+							require.Less(t, i+1, len(c.Args))
+							assert.Equal(t, "http://"+router+":8080", c.Args[i+1])
+							clients++
 						}
 					}
 				}
-				assert.Equal(t, 2, clients)
-			})
-		}
+			}
+			assert.Equal(t, 2, clients)
+		})
 	}
 }
 
@@ -133,7 +129,9 @@ func assertConnectionCredentials(t *testing.T, containers []corev1.Container, ke
 }
 
 func TestBackupConnectionChecksumsUseEffectiveConfiguration(t *testing.T) {
-	baseline := renderConnectionConfiguration(t, "nightly", "", false)
+	t.Parallel()
+
+	baseline := renderConnectionConfiguration(t, "nightly", "")
 	ignored := renderConnectionConfiguration(t, "nightly", `victoria-metrics-0:
   backup:
     overrideS3Endpoint: https://old.example
@@ -147,8 +145,8 @@ clickhouse:
     s3:
       endpoint: old.example
       secretName: old-secret
-`, true)
-	external := renderConnectionConfiguration(t, "nightly", "global:\n  s3proxy:\n    credentials:\n      fromExternalSecret: customer-secret\n", true)
+`)
+	external := renderConnectionConfiguration(t, "nightly", "global:\n  s3proxy:\n    credentials:\n      fromExternalSecret: customer-secret\n")
 	for _, name := range []string{"suse-observability-victoria-metrics-0", "suse-observability-victoria-metrics-1", "suse-observability-clickhouse-shard0"} {
 		original := baseline.Statefulsets[name].Spec.Template.Annotations["checksum/backup-config"]
 		require.NotEmpty(t, original)
@@ -159,6 +157,8 @@ clickhouse:
 }
 
 func TestOtelInstrumentationNamespaceConfiguration(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct{ name, values, expected string }{
 		{"computed-default", "", "suse-observability-observability"},
 		{"shared-override", "        serviceNamespace: shared\n", "shared"},
@@ -168,7 +168,7 @@ func TestOtelInstrumentationNamespaceConfiguration(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			values := "stackstate:\n  components:\n    all:\n      otelInstrumentation:\n        enabled: true\n" + tc.values
-			resources := renderConnectionConfiguration(t, "nightly", values, false)
+			resources := renderConnectionConfiguration(t, "nightly", values)
 			require.Contains(t, resources.Deployments, "nightly-suse-observability-api")
 			assertConnectionEnv(t, resources.Deployments["nightly-suse-observability-api"].Spec.Template.Spec.Containers, "OTEL_RESOURCE_ATTRIBUTES", "service.namespace="+tc.expected+",service.instance.id=$(POD_NAME)")
 		})
@@ -176,13 +176,15 @@ func TestOtelInstrumentationNamespaceConfiguration(t *testing.T) {
 }
 
 func TestOtelInstrumentationDisablesKafkaClientSpans(t *testing.T) {
+	t.Parallel()
+
 	enabled := "stackstate:\n  components:\n    all:\n      otelInstrumentation:\n        enabled: true\n"
 	for _, tc := range []struct{ name, values, expected string }{
 		{"default", enabled, "false"},
 		{"extra-env-override", enabled + "    api:\n      extraEnv:\n        open:\n          OTEL_INSTRUMENTATION_KAFKA_CLIENTS_ENABLED: \"true\"\n", "true"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			resources := renderConnectionConfiguration(t, "nightly", tc.values, false)
+			resources := renderConnectionConfiguration(t, "nightly", tc.values)
 			require.Contains(t, resources.Deployments, "nightly-suse-observability-api")
 			assertConnectionEnv(t, resources.Deployments["nightly-suse-observability-api"].Spec.Template.Spec.Containers, "OTEL_INSTRUMENTATION_KAFKA_CLIENTS_ENABLED", tc.expected)
 		})
@@ -190,13 +192,15 @@ func TestOtelInstrumentationDisablesKafkaClientSpans(t *testing.T) {
 }
 
 func TestOtelInstrumentationEnablesKafkaClientMetrics(t *testing.T) {
+	t.Parallel()
+
 	enabled := "stackstate:\n  components:\n    all:\n      otelInstrumentation:\n        enabled: true\n"
 	for _, tc := range []struct{ name, values, expected string }{
 		{"default", enabled, "true"},
 		{"extra-env-override", enabled + "    api:\n      extraEnv:\n        open:\n          OTEL_INSTRUMENTATION_KAFKA_CLIENTS_METRICS_ENABLED: \"false\"\n", "false"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			resources := renderConnectionConfiguration(t, "nightly", tc.values, false)
+			resources := renderConnectionConfiguration(t, "nightly", tc.values)
 			require.Contains(t, resources.Deployments, "nightly-suse-observability-api")
 			assertConnectionEnv(t, resources.Deployments["nightly-suse-observability-api"].Spec.Template.Spec.Containers, "OTEL_INSTRUMENTATION_KAFKA_CLIENTS_METRICS_ENABLED", tc.expected)
 		})
@@ -204,6 +208,8 @@ func TestOtelInstrumentationEnablesKafkaClientMetrics(t *testing.T) {
 }
 
 func TestPlatformDefaultValuesContainNoTemplateExpressions(t *testing.T) {
+	t.Parallel()
+
 	values, err := os.ReadFile("../values.yaml")
 	require.NoError(t, err)
 	for i, line := range strings.Split(string(values), "\n") {

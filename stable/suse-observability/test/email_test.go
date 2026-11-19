@@ -21,6 +21,8 @@ type emailTestCase struct {
 }
 
 func TestEmailSecretConfiguration(t *testing.T) {
+	t.Parallel()
+
 	testCases := []emailTestCase{
 		{
 			name:           "enabled internal credentials",

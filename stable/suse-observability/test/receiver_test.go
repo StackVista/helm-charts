@@ -82,6 +82,8 @@ func assertReceiverContainerEnvVars(t *testing.T, deployment appsv1.Deployment, 
 }
 
 func TestReceiverSplitLegacy(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/receiver_split_legacy.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -89,6 +91,8 @@ func TestReceiverSplitLegacy(t *testing.T) {
 }
 
 func TestReceiverNonSplitLegacy(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/receiver_nonsplit_legacy.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -96,6 +100,8 @@ func TestReceiverNonSplitLegacy(t *testing.T) {
 }
 
 func TestReceiverSplitGlobal(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/receiver_split_global.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -103,6 +109,8 @@ func TestReceiverSplitGlobal(t *testing.T) {
 }
 
 func TestReceiverNonSplitGlobal(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/receiver_nonsplit_global.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

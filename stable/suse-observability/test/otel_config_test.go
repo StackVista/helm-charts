@@ -11,6 +11,8 @@ import (
 )
 
 func TestOtelLogsWithTracesEnabledRenders(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/otel_logs_with_traces_valid.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	var config struct {
@@ -27,6 +29,8 @@ func TestOtelLogsWithTracesEnabledRenders(t *testing.T) {
 }
 
 func TestCollectorConfigOverrides(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{

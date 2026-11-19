@@ -16,6 +16,8 @@ import (
 var expectedImagePullSecretsName = "suse-observability-pull-secret"
 
 func TestGlobalPullSecretHAMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_pull_secret_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -23,6 +25,8 @@ func TestGlobalPullSecretHAMode(t *testing.T) {
 }
 
 func TestGlobalPullSecretNonHAMode(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_pull_secret_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

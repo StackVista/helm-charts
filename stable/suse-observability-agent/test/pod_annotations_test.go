@@ -36,7 +36,6 @@ func assertPodAnnotationsAndLabels(t *testing.T, otel bool) {
 	for _, name := range []string{
 		"suse-observability-agent-cluster-agent",
 		"suse-observability-agent-checks-agent",
-		"suse-observability-agent-remote-kube-cache",
 	} {
 		deployment, exists := resources.Deployments[name]
 		require.True(t, exists, "deployment %s was not found", name)
@@ -55,11 +54,10 @@ func assertPodAnnotationsAndLabels(t *testing.T, otel bool) {
 	// Distinct owner/workload values per workload so a template wired to the wrong
 	// values key fails here instead of passing on an identical value.
 	expectedOwner := map[string]string{
-		"suse-observability-agent-cluster-agent":     "cluster-agent",
-		"suse-observability-agent-node-agent":        "node-agent",
-		"suse-observability-agent-checks-agent":      "checks-agent",
-		"suse-observability-agent-logs-agent":        "logs-agent",
-		"suse-observability-agent-remote-kube-cache": "remote-kube-cache",
+		"suse-observability-agent-cluster-agent": "cluster-agent",
+		"suse-observability-agent-node-agent":    "node-agent",
+		"suse-observability-agent-checks-agent":  "checks-agent",
+		"suse-observability-agent-logs-agent":    "logs-agent",
 	}
 	if otel {
 		expectedOwner[otelLogsAgentName] = "otel-logs-agent"

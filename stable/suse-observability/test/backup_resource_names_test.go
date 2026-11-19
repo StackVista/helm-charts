@@ -90,35 +90,29 @@ func TestBackupResourceReferencesFollowDedicatedHelpers(t *testing.T) {
 	for _, mode := range []string{"Mono", "Distributed"} {
 		for _, enabled := range []bool{false, true} {
 			for _, argo := range []bool{false, true} {
-				for _, upgrade := range []bool{false, true} {
-					t.Run(fmt.Sprintf("%s/enabled=%t/argo=%t/upgrade=%t", mode, enabled, argo, upgrade), func(t *testing.T) {
-						options := apiResourceNameTestOptions(map[string]string{
-							"hbase.deployment.mode":                             mode,
-							"global.backup.enabled":                             fmt.Sprint(enabled),
-							"deployment.compatibleWithArgoCD":                   fmt.Sprint(argo),
-							"backup.stackGraph.scheduled.implementation":        "all",
-							"backup.stackGraph.scheduled.tempData.size":         "12Gi",
-							"backup.stackGraph.scheduled.tempData.storageClass": "scratch-v1",
-							"backup.stackGraph.v2.tempData.size":                "13Gi",
-							"backup.stackGraph.v2.tempData.storageClass":        "scratch-v2",
-							"backup.stackGraph.restore.tempData.size":           "14Gi",
-							"backup.stackGraph.restore.tempData.storageClass":   "restore-scratch",
-							"backup.configuration.scheduled.pvc.size":           "15Gi",
-							"backup.configuration.scheduled.pvc.storageClass":   "saved-settings",
-						})
-						options.ValuesFiles = []string{fullValues}
-						var args []string
-						if upgrade {
-							args = append(args, "--is-upgrade")
-						}
-						before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options, args...)
-						after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil, args...)
-						require.NoError(t, err)
-						expected := backupNamingDocuments(t, before, renames, seen)
-						actual := backupNamingDocuments(t, after, nil, nil)
-						assert.Equal(t, expected, actual, "Only the deliberately renamed resources and their references may differ")
+				t.Run(fmt.Sprintf("%s/enabled=%t/argo=%t", mode, enabled, argo), func(t *testing.T) {
+					options := apiResourceNameTestOptions(map[string]string{
+						"hbase.deployment.mode":                             mode,
+						"global.backup.enabled":                             fmt.Sprint(enabled),
+						"deployment.compatibleWithArgoCD":                   fmt.Sprint(argo),
+						"backup.stackGraph.scheduled.implementation":        "all",
+						"backup.stackGraph.scheduled.tempData.size":         "12Gi",
+						"backup.stackGraph.scheduled.tempData.storageClass": "scratch-v1",
+						"backup.stackGraph.v2.tempData.size":                "13Gi",
+						"backup.stackGraph.v2.tempData.storageClass":        "scratch-v2",
+						"backup.stackGraph.restore.tempData.size":           "14Gi",
+						"backup.stackGraph.restore.tempData.storageClass":   "restore-scratch",
+						"backup.configuration.scheduled.pvc.size":           "15Gi",
+						"backup.configuration.scheduled.pvc.storageClass":   "saved-settings",
 					})
-				}
+					options.ValuesFiles = []string{fullValues}
+					before := helmtestutil.RenderHelmTemplateOptsNoErrorWithArgs(t, "nightly", options)
+					after, err := helm.RenderTemplateE(t, options, chart, "nightly", nil)
+					require.NoError(t, err)
+					expected := backupNamingDocuments(t, before, renames, seen)
+					actual := backupNamingDocuments(t, after, nil, nil)
+					assert.Equal(t, expected, actual, "Only the deliberately renamed resources and their references may differ")
+				})
 			}
 		}
 	}

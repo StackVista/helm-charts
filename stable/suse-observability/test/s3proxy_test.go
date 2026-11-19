@@ -14,6 +14,8 @@ import (
 // global.backup.enabled=false, because backup.configuration.enabled (settings backup)
 // defaults to true and gates s3proxy independently of global.backup.enabled.
 func TestS3ProxyEnabledWhenOnlySettingsBackup(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -51,6 +53,8 @@ func TestS3ProxyEnabledWhenOnlySettingsBackup(t *testing.T) {
 
 // TestS3ProxyWithBackupEnabledPVC verifies S3Proxy deployment with PVC backend when backup is enabled
 func TestS3ProxyWithBackupEnabledPVC(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -89,6 +93,8 @@ func TestS3ProxyWithBackupEnabledPVC(t *testing.T) {
 
 // TestS3ProxyWithBackupEnabledS3 verifies S3Proxy deployment with S3 backend
 func TestS3ProxyWithBackupEnabledS3(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -148,6 +154,8 @@ func TestS3ProxyWithBackupEnabledS3(t *testing.T) {
 
 // TestS3ProxyWithBackupEnabledAzure verifies S3Proxy deployment with Azure backend
 func TestS3ProxyWithBackupEnabledAzure(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -190,6 +198,8 @@ func TestS3ProxyWithBackupEnabledAzure(t *testing.T) {
 
 // TestS3ProxyLegacyS3GatewayBackwardCompatibility verifies backward compatibility with minio.s3gateway values
 func TestS3ProxyLegacyS3GatewayBackwardCompatibility(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -224,6 +234,8 @@ func TestS3ProxyLegacyS3GatewayBackwardCompatibility(t *testing.T) {
 
 // TestS3ProxyLegacyAzureGatewayBackwardCompatibility verifies backward compatibility with minio.azuregateway values
 func TestS3ProxyLegacyAzureGatewayBackwardCompatibility(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -258,6 +270,8 @@ func TestS3ProxyLegacyAzureGatewayBackwardCompatibility(t *testing.T) {
 // TestS3ProxyCredentialsFallbackToMinioAccessKey verifies that when minio.accessKey/secretKey are set
 // and global.s3proxy.credentials are at their defaults, the minio values are used as fallback
 func TestS3ProxyCredentialsFallbackToMinioAccessKey(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -277,6 +291,8 @@ func TestS3ProxyCredentialsFallbackToMinioAccessKey(t *testing.T) {
 // TestS3ProxyCredentialsExplicitOverridesMinioFallback verifies that when global.s3proxy.credentials
 // are explicitly set, they take precedence over minio.accessKey/secretKey
 func TestS3ProxyCredentialsExplicitOverridesMinioFallback(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -297,6 +313,8 @@ func TestS3ProxyCredentialsExplicitOverridesMinioFallback(t *testing.T) {
 
 // TestS3ProxyConfigMapBuckets verifies the bucket-locator configuration in the ConfigMap
 func TestS3ProxyConfigMapBuckets(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -322,6 +340,8 @@ func TestS3ProxyConfigMapBuckets(t *testing.T) {
 }
 
 func TestS3ProxyJettyMaxThreads(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name       string
 		maxThreads string
@@ -363,6 +383,8 @@ func TestS3ProxyJettyMaxThreads(t *testing.T) {
 
 // TestS3ProxyService verifies the S3Proxy service configuration
 func TestS3ProxyService(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -376,6 +398,8 @@ func TestS3ProxyService(t *testing.T) {
 
 // TestS3ProxyResources verifies resource configuration
 func TestS3ProxyResources(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -399,6 +423,8 @@ func TestS3ProxyResources(t *testing.T) {
 
 // TestS3ProxyDefaultArgs verifies the exact default commandline arguments for the s3proxy container
 func TestS3ProxyDefaultArgs(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -425,6 +451,8 @@ func TestS3ProxyDefaultArgs(t *testing.T) {
 
 // TestS3ProxyDeploymentArgs verifies the deployment args based on backup.enabled
 func TestS3ProxyDeploymentArgs(t *testing.T) {
+	t.Parallel()
+
 	t.Run("backup disabled", func(t *testing.T) {
 		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 			ValuesFiles: []string{"values/full.yaml"},
@@ -465,6 +493,8 @@ func TestS3ProxyDeploymentArgs(t *testing.T) {
 
 // TestS3ProxyFromExternalSecret verifies using an externally-managed secret
 func TestS3ProxyFromExternalSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -497,6 +527,8 @@ func TestS3ProxyFromExternalSecret(t *testing.T) {
 // TestS3ProxyFromExternalSecretCredentialsNotRequired verifies that when fromExternalSecret is set,
 // the accessKey and secretKey values are not required and can be empty
 func TestS3ProxyFromExternalSecretCredentialsNotRequired(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -538,6 +570,8 @@ func TestS3ProxyFromExternalSecretCredentialsNotRequired(t *testing.T) {
 // TestS3ProxyS3BackendFromExternalSecret verifies that when fromExternalSecret is set for the S3 backend,
 // the managed secret does not contain backend credentials and the deployment references the external secret
 func TestS3ProxyS3BackendFromExternalSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -584,6 +618,8 @@ func TestS3ProxyS3BackendFromExternalSecret(t *testing.T) {
 // TestS3ProxyS3BackendFromExternalSecretCredentialsNotRequired verifies that when fromExternalSecret
 // is set for the S3 backend, the accessKey and secretKey values are not required
 func TestS3ProxyS3BackendFromExternalSecretCredentialsNotRequired(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -630,6 +666,8 @@ func TestS3ProxyS3BackendFromExternalSecretCredentialsNotRequired(t *testing.T) 
 // TestS3ProxyAzureBackendFromExternalSecret verifies that when fromExternalSecret is set for the Azure backend,
 // the managed secret does not contain Azure credentials and the deployment references the external secret
 func TestS3ProxyAzureBackendFromExternalSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -676,6 +714,8 @@ func TestS3ProxyAzureBackendFromExternalSecret(t *testing.T) {
 // TestS3ProxyAzureBackendFromExternalSecretCredentialsNotRequired verifies that when fromExternalSecret
 // is set for the Azure backend, the accountName and accountKey values are not required
 func TestS3ProxyAzureBackendFromExternalSecretCredentialsNotRequired(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -721,6 +761,8 @@ func TestS3ProxyAzureBackendFromExternalSecretCredentialsNotRequired(t *testing.
 
 // TestS3ProxyNodeSelector verifies node selector configuration
 func TestS3ProxyNodeSelector(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -736,6 +778,8 @@ func TestS3ProxyNodeSelector(t *testing.T) {
 
 // TestS3ProxyTolerations verifies tolerations configuration
 func TestS3ProxyTolerations(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -763,6 +807,8 @@ func TestS3ProxyTolerations(t *testing.T) {
 
 // TestS3ProxySettingsPVCSize verifies custom settings PVC size
 func TestS3ProxySettingsPVCSize(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -778,6 +824,8 @@ func TestS3ProxySettingsPVCSize(t *testing.T) {
 
 // TestS3ProxyMainPVCSize verifies custom main PVC size
 func TestS3ProxyMainPVCSize(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -794,6 +842,8 @@ func TestS3ProxyMainPVCSize(t *testing.T) {
 
 // TestS3ProxyInitContainerBackupDisabled verifies init container creates only settings bucket when backup is disabled
 func TestS3ProxyInitContainerBackupDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -833,6 +883,8 @@ func TestS3ProxyInitContainerBackupDisabled(t *testing.T) {
 
 // TestS3ProxyInitContainerBackupEnabledPVC verifies init container creates all bucket directories with PVC backend
 func TestS3ProxyInitContainerBackupEnabledPVC(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -878,6 +930,8 @@ func TestS3ProxyInitContainerBackupEnabledPVC(t *testing.T) {
 
 // TestS3ProxyInitContainerBackupEnabledS3 verifies init container creates only settings bucket with S3 backend
 func TestS3ProxyInitContainerBackupEnabledS3(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -920,6 +974,8 @@ func TestS3ProxyInitContainerBackupEnabledS3(t *testing.T) {
 
 // TestS3ProxyInitContainerBackupEnabledAzure verifies init container creates only settings bucket with Azure backend
 func TestS3ProxyInitContainerBackupEnabledAzure(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -957,6 +1013,8 @@ func TestS3ProxyInitContainerBackupEnabledAzure(t *testing.T) {
 
 // TestS3ProxyInitContainerCustomBucketNames verifies init container uses custom bucket names
 func TestS3ProxyInitContainerCustomBucketNames(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -989,6 +1047,8 @@ func TestS3ProxyInitContainerCustomBucketNames(t *testing.T) {
 
 // TestS3ProxyInitContainerImage verifies init container uses the correct container-tools image
 func TestS3ProxyInitContainerImage(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -1003,6 +1063,8 @@ func TestS3ProxyInitContainerImage(t *testing.T) {
 
 // TestS3ProxyBackendValidationPVCAndS3 verifies that enabling both PVC and S3 backends fails
 func TestS3ProxyBackendValidationPVCAndS3(t *testing.T) {
+	t.Parallel()
+
 	// Now test with both PVC and S3 enabled
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
@@ -1021,6 +1083,8 @@ func TestS3ProxyBackendValidationPVCAndS3(t *testing.T) {
 
 // TestS3ProxyBackendValidationPVCAndAzure verifies that enabling both PVC and Azure backends fails
 func TestS3ProxyBackendValidationPVCAndAzure(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1037,6 +1101,8 @@ func TestS3ProxyBackendValidationPVCAndAzure(t *testing.T) {
 
 // TestS3ProxyBackendValidationS3AndAzure verifies that enabling both S3 and Azure backends fails
 func TestS3ProxyBackendValidationS3AndAzure(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1057,6 +1123,8 @@ func TestS3ProxyBackendValidationS3AndAzure(t *testing.T) {
 
 // TestS3ProxyBackendValidationAllThree verifies that enabling all three backends fails
 func TestS3ProxyBackendValidationAllThree(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1077,6 +1145,8 @@ func TestS3ProxyBackendValidationAllThree(t *testing.T) {
 
 // TestS3ProxyBackendValidationSingleBackendAllowed verifies that enabling a single backend works
 func TestS3ProxyBackendValidationSingleBackendAllowed(t *testing.T) {
+	t.Parallel()
+
 	t.Run("PVC only", func(t *testing.T) {
 		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 			ValuesFiles: []string{"values/full.yaml"},
@@ -1126,6 +1196,8 @@ func TestS3ProxyBackendValidationSingleBackendAllowed(t *testing.T) {
 
 // TestS3ProxyBackendValidationNotAppliedWhenBackupDisabled verifies validation is skipped when backup is disabled
 func TestS3ProxyBackendValidationNotAppliedWhenBackupDisabled(t *testing.T) {
+	t.Parallel()
+
 	// When backup is disabled, the validation should not fail even if multiple backends are "enabled"
 	// because the backend settings are irrelevant
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
@@ -1143,6 +1215,8 @@ func TestS3ProxyBackendValidationNotAppliedWhenBackupDisabled(t *testing.T) {
 
 // TestS3ProxyJavaHeapDefaultValues verifies that JVM heap is calculated correctly with default values
 func TestS3ProxyJavaHeapDefaultValues(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -1173,6 +1247,8 @@ func TestS3ProxyJavaHeapDefaultValues(t *testing.T) {
 
 // TestS3ProxyJavaHeapCustomValues verifies that JVM heap is calculated correctly with custom values
 func TestS3ProxyJavaHeapCustomValues(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1209,6 +1285,8 @@ func TestS3ProxyJavaHeapCustomValues(t *testing.T) {
 
 // TestS3ProxyJavaHeapHighFraction verifies that JVM heap calculation handles high heap fractions
 func TestS3ProxyJavaHeapHighFraction(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1242,6 +1320,8 @@ func TestS3ProxyJavaHeapHighFraction(t *testing.T) {
 
 // TestS3ProxyCustomCATrustStore verifies that custom CA truststore is mounted and configured in JAVA_OPTS
 func TestS3ProxyCustomCATrustStore(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml", "values/dummy_trust_store.yaml"},
 	})
@@ -1320,6 +1400,8 @@ func TestS3ProxyCustomCATrustStore(t *testing.T) {
 
 // TestS3ProxyCustomCATrustStoreBase64NoPassword verifies that base64-encoded truststore without password works
 func TestS3ProxyCustomCATrustStoreBase64NoPassword(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1373,6 +1455,8 @@ func TestS3ProxyCustomCATrustStoreBase64NoPassword(t *testing.T) {
 
 // TestS3ProxyNoCustomCA verifies that no truststore configuration is added when no custom CA is set
 func TestS3ProxyNoCustomCA(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -1416,6 +1500,8 @@ func TestS3ProxyNoCustomCA(t *testing.T) {
 
 // TestS3ProxySecurityContextDefault verifies the default securityContext configuration
 func TestS3ProxySecurityContextDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -1456,6 +1542,8 @@ func TestS3ProxySecurityContextDefault(t *testing.T) {
 
 // TestS3ProxySecurityContextDisabled verifies that pod-level securityContext can be disabled
 func TestS3ProxySecurityContextDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1484,6 +1572,8 @@ func TestS3ProxySecurityContextDisabled(t *testing.T) {
 
 // TestS3ProxySecurityContextCustomValues verifies custom securityContext values
 func TestS3ProxySecurityContextCustomValues(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1508,6 +1598,8 @@ func TestS3ProxySecurityContextCustomValues(t *testing.T) {
 
 // TestS3ProxyServiceAccountDefault verifies the default service account uses the S3Proxy name.
 func TestS3ProxyServiceAccountDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -1525,6 +1617,8 @@ func TestS3ProxyServiceAccountDefault(t *testing.T) {
 
 // TestS3ProxyServiceAccountCustomName verifies a custom service account name can be set
 func TestS3ProxyServiceAccountCustomName(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1545,6 +1639,8 @@ func TestS3ProxyServiceAccountCustomName(t *testing.T) {
 }
 
 func TestS3ProxyServiceAccountCustomReleaseOverrides(t *testing.T) {
+	t.Parallel()
+
 	for _, tc := range []struct {
 		name       string
 		customName string
@@ -1585,6 +1681,8 @@ func TestS3ProxyServiceAccountCustomReleaseOverrides(t *testing.T) {
 
 // TestS3ProxyServiceAccountAnnotations verifies annotations can be set on the service account (e.g. for IAM roles)
 func TestS3ProxyServiceAccountAnnotations(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1600,6 +1698,8 @@ func TestS3ProxyServiceAccountAnnotations(t *testing.T) {
 
 // TestS3ProxyServiceAccountDisabled verifies the service account is not created when disabled
 func TestS3ProxyServiceAccountDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1620,6 +1720,8 @@ func TestS3ProxyServiceAccountDisabled(t *testing.T) {
 
 // TestS3ProxyServiceAccountLegacyMinioName verifies backward compatibility with minio.serviceAccount.name
 func TestS3ProxyServiceAccountLegacyMinioName(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1641,6 +1743,8 @@ func TestS3ProxyServiceAccountLegacyMinioName(t *testing.T) {
 
 // TestS3ProxyServiceAccountS3ProxyOverridesLegacyMinio verifies that s3proxy.serviceAccount.name takes precedence over minio.serviceAccount.name
 func TestS3ProxyServiceAccountS3ProxyOverridesLegacyMinio(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1667,6 +1771,8 @@ func TestS3ProxyServiceAccountS3ProxyOverridesLegacyMinio(t *testing.T) {
 
 // TestS3ProxyServiceAccountLegacyMinioCreateFalse verifies backward compatibility with minio.serviceAccount.create=false
 func TestS3ProxyServiceAccountLegacyMinioCreateFalse(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1687,6 +1793,8 @@ func TestS3ProxyServiceAccountLegacyMinioCreateFalse(t *testing.T) {
 
 // TestS3ProxyServiceAccountCreateOverridesLegacyMinioCreate verifies s3proxy.serviceAccount.create=false takes precedence over minio.serviceAccount.create=true
 func TestS3ProxyServiceAccountCreateOverridesLegacyMinioCreate(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1703,6 +1811,8 @@ func TestS3ProxyServiceAccountCreateOverridesLegacyMinioCreate(t *testing.T) {
 
 // TestS3ProxyServiceAccountLegacyMinioAnnotations verifies backward compatibility with minio.serviceAccount.annotations
 func TestS3ProxyServiceAccountLegacyMinioAnnotations(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1718,6 +1828,8 @@ func TestS3ProxyServiceAccountLegacyMinioAnnotations(t *testing.T) {
 
 // TestS3ProxyServiceAccountAnnotationsMerge verifies that s3proxy and legacy minio annotations are merged correctly
 func TestS3ProxyServiceAccountAnnotationsMerge(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1744,6 +1856,8 @@ func TestS3ProxyServiceAccountAnnotationsMerge(t *testing.T) {
 
 // TestS3ProxyExtraEnvOpenDefault verifies no extra env vars are present by default
 func TestS3ProxyExtraEnvOpenDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
@@ -1766,6 +1880,8 @@ func TestS3ProxyExtraEnvOpenDefault(t *testing.T) {
 
 // TestS3ProxyExtraEnvOpen verifies that extraEnv.open values are injected as plain env vars
 func TestS3ProxyExtraEnvOpen(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1788,6 +1904,8 @@ func TestS3ProxyExtraEnvOpen(t *testing.T) {
 
 // TestS3ProxyExtraEnvSecret verifies that extraEnv.secret values are injected via secretKeyRef
 func TestS3ProxyExtraEnvSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1837,6 +1955,8 @@ func TestS3ProxyExtraEnvSecret(t *testing.T) {
 
 // TestS3ProxyExtraEnvOpenAndSecret verifies that both open and secret extra env vars work together
 func TestS3ProxyExtraEnvOpenAndSecret(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -1878,6 +1998,8 @@ func TestS3ProxyExtraEnvOpenAndSecret(t *testing.T) {
 // pods include a checksum annotation for s3proxy credentials when backup is enabled,
 // so they restart when credentials change.
 func TestS3ProxyCredentialsChecksumAnnotation(t *testing.T) {
+	t.Parallel()
+
 	outputEnabled := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{

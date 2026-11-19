@@ -305,6 +305,8 @@ var expectedRoleBindings = map[string]v1.RoleBinding{
 }
 
 func TestK8sAuthzDefault(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -338,6 +340,8 @@ func TestK8sAuthzDefault(t *testing.T) {
 }
 
 func TestK8sAuthzSaas(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -367,6 +371,8 @@ func TestK8sAuthzSaas(t *testing.T) {
 }
 
 func TestK8sAuthzFeatureFlagDisabled(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -403,6 +409,8 @@ func TestK8sAuthzFeatureFlagDisabled(t *testing.T) {
 }
 
 func TestK8sAuthzExperimentalRejectedDisabled(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -420,6 +428,8 @@ func TestK8sAuthzExperimentalRejectedDisabled(t *testing.T) {
 }
 
 func TestK8sAuthzExperimentalRejectedEnabled(t *testing.T) {
+	t.Parallel()
+
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
@@ -437,6 +447,8 @@ func TestK8sAuthzExperimentalRejectedEnabled(t *testing.T) {
 }
 
 func TestK8sAuthzFeatureFlagEnabledSelfHosted(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",

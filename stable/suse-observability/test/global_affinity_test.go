@@ -11,6 +11,8 @@ import (
 
 // TestGlobalHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in HA mode
 func TestGlobalHAAffinityNodeAffinity(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_ha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -19,6 +21,8 @@ func TestGlobalHAAffinityNodeAffinity(t *testing.T) {
 
 // TestGlobalNonHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in non-HA mode
 func TestGlobalNonHAAffinityNodeAffinity(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_nonha.yaml", "values/replication_checker_enabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -27,6 +31,8 @@ func TestGlobalNonHAAffinityNodeAffinity(t *testing.T) {
 
 // TestGlobalNonHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in non-HA mode
 func TestGlobalAffinityNodeAffinityInBackupRestoreScriptsConfigMap(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_ha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -129,6 +135,8 @@ func validateGlobalNodeAffinity(t *testing.T, resources helmtestutil.KubernetesR
 
 // TestGlobalAffinityComponentOverride tests that component-specific affinity overrides global affinity
 func TestGlobalAffinityComponentOverride(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_with_override.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -160,6 +168,8 @@ func TestGlobalAffinityComponentOverride(t *testing.T) {
 // TestGlobalAffinityAppComponentsNoPodAntiAffinity tests that application components don't get podAntiAffinity
 // from the simplified format (only infrastructure components get it)
 func TestGlobalAffinityAppComponentsNoPodAntiAffinity(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_infrastructure.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -176,6 +186,8 @@ func TestGlobalAffinityAppComponentsNoPodAntiAffinity(t *testing.T) {
 
 // TestLegacyAffinityBackwardsCompatibility tests that legacy stackstate.components.*.affinity still works
 func TestLegacyAffinityBackwardsCompatibility(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -190,6 +202,8 @@ func TestLegacyAffinityBackwardsCompatibility(t *testing.T) {
 
 // TestGlobalAffinityInfrastructureNodeAffinity tests that nodeAffinity is applied to infrastructure components
 func TestGlobalAffinityInfrastructureNodeAffinity(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_infrastructure.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -227,6 +241,8 @@ func TestGlobalAffinityInfrastructureNodeAffinity(t *testing.T) {
 
 // TestGlobalAffinityInfrastructureCustomTopologyKey tests that custom topologyKey is applied to infrastructure podAntiAffinity
 func TestGlobalAffinityInfrastructureCustomTopologyKey(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_infrastructure.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -260,6 +276,8 @@ func TestGlobalAffinityInfrastructureCustomTopologyKey(t *testing.T) {
 
 // TestGlobalAffinitySoftAntiAffinity tests that soft (preferred) anti-affinity is applied when configured
 func TestGlobalAffinitySoftAntiAffinity(t *testing.T) {
+	t.Parallel()
+
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_soft_antiaffinity.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

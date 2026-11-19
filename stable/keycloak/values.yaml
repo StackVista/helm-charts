@@ -104,6 +104,8 @@ httpRelativePath: "/"
 command: []
 # args -- Override the default container args. Defaults to ["start", "--optimized"] when empty.
 args: []
+# javaOptsAppend -- Extra JVM options appended to JAVA_OPTS_APPEND
+javaOptsAppend: ""
 # extraEnvVars -- Extra environment variables for the Keycloak container (list of name/value). The StackState image reads KEYCLOAK_BASE_URL and USERCREATE_EVENT_LISTENER_CLIENT_NAME_PREFIX from here.
 extraEnvVars: []
 # extraEnvVarsConfigMapData -- Extra key/value pairs merged into the chart-managed env-vars ConfigMap
