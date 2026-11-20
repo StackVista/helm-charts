@@ -38,6 +38,7 @@ data:
         snapshot_interval: {{ .Values.otel.k8sResourceCollector.crDiscovery.snapshotInterval }}
         discovery_mode: {{ .Values.otel.k8sResourceCollector.crDiscovery.discoveryMode }}
         max_cr_total_data_size_bytes: {{ .Values.otel.k8sResourceCollector.dataLimits.maxCrTotalDataSizeBytes | int }}
+        max_declaration_watches: {{ .Values.otel.k8sResourceCollector.maxDeclarationWatches | int }}
 {{- if $topologyCompat }}
         # Objects dropped by the payload budget would be deleted from the legacy topology.
         max_object_total_data_size_bytes: 0
@@ -61,13 +62,14 @@ data:
 {{- if and (has "*" $includes) (gt (len $includes) 1) }}
 {{- $includes = without $includes "*" }}
 {{- end }}
-{{- if not $includes }}
-{{- fail "otel.k8sResourceCollector.crDiscovery.apiGroups.include must have at least one truthy entry when discoveryMode is 'api_groups' (e.g. \"*\": true)" }}
-{{- end }}
         cr_api_groups:
+{{- if not $includes }}
+          include: []
+{{- else }}
           include:
 {{- range $includes }}
             - {{ . | quote }}
+{{- end }}
 {{- end }}
 {{- $excludes := list }}
 {{- range $pattern, $enabled := $rcfg.crDiscovery.apiGroups.exclude }}

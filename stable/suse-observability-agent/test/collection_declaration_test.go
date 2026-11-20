@@ -1,0 +1,336 @@
+package test
+
+import (
+	"context"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"slices"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/gruntwork-io/terratest/modules/helm"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	rbacv1 "k8s.io/api/rbac/v1"
+	"sigs.k8s.io/yaml"
+)
+
+const collectionDeclarationCRDName = "collectiondeclarations.observability.suse.com"
+const collectionDeclarationCollectorName = "suse-observability-agent-k8s-resource-collector"
+
+func renderCollectionDeclarations(t *testing.T, overrides map[string]string, fixtures ...string) helmtestutil.KubernetesResources {
+	t.Helper()
+	values := map[string]string{"otel.enabled": "true", "otel.prometheusScraping.enabled": "false"}
+	for key, value := range overrides {
+		values[key] = value
+	}
+	files := append([]string{"values/minimal.yaml"}, fixtures...)
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: files,
+		SetValues:   values,
+	})
+	return helmtestutil.NewKubernetesResources(t, output)
+}
+
+func collectionDeclarationReceiver(t *testing.T, resources helmtestutil.KubernetesResources) map[string]any {
+	t.Helper()
+	configMap, exists := resources.ConfigMaps[collectionDeclarationCollectorName+"-config"]
+	require.True(t, exists)
+	var config struct {
+		Receivers map[string]map[string]any `yaml:"receivers"`
+	}
+	require.NoError(t, yaml.Unmarshal([]byte(configMap.Data["config.yaml"]), &config))
+	require.Contains(t, config.Receivers, "k8sresource")
+	return config.Receivers["k8sresource"]
+}
+
+func TestCollectionDeclarationGates(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		overrides map[string]string
+		collector bool
+		enabled   bool
+	}{
+		{"enabled-default", nil, true, true},
+		{"crd-install-disabled", map[string]string{"installCrds": "false"}, true, false},
+		{"collector-disabled", map[string]string{"otel.k8sResourceCollector.enabled": "false"}, false, true},
+		{"otel-disabled", map[string]string{"otel.enabled": "false"}, false, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			resources := renderCollectionDeclarations(t, tc.overrides)
+			_, exists := resources.Unmapped[collectionDeclarationCRDName]
+			assert.Equal(t, tc.enabled, exists)
+			_, exists = resources.Deployments[collectionDeclarationCollectorName]
+			assert.Equal(t, tc.collector, exists)
+			if tc.collector {
+				receiver := collectionDeclarationReceiver(t, resources)
+				assert.NotContains(t, receiver, "collection_declarations")
+				role := resources.ClusterRoles[collectionDeclarationCollectorName]
+				var declarationRules int
+				for _, rule := range role.Rules {
+					if slices.Contains(rule.APIGroups, "observability.suse.com") {
+						declarationRules++
+					}
+				}
+				assert.Equal(t, 2, declarationRules, "externally installed APIs still need declaration reads and status writes")
+			}
+		})
+	}
+}
+
+func TestCollectionDeclarationKeepCanBeDisabled(t *testing.T) {
+	resources := renderCollectionDeclarations(t, map[string]string{"otel.k8sResourceCollector.collectionDeclarations.keep": "false"})
+	var definition struct {
+		Metadata struct{ Annotations map[string]string }
+	}
+	require.NoError(t, yaml.Unmarshal([]byte(resources.Unmapped[collectionDeclarationCRDName]), &definition))
+	assert.NotContains(t, definition.Metadata.Annotations, "helm.sh/resource-policy")
+}
+
+func TestCollectionDeclarationInstallFlagPreservesBaselineConfiguration(t *testing.T) {
+	enabled := collectionDeclarationReceiver(t, renderCollectionDeclarations(t, nil))
+	disabled := collectionDeclarationReceiver(t, renderCollectionDeclarations(t,
+		map[string]string{"installCrds": "false"}))
+	assert.Equal(t, enabled, disabled)
+}
+
+func TestCollectionDeclarationWatchBudget(t *testing.T) {
+	receiver := collectionDeclarationReceiver(t, renderCollectionDeclarations(t, nil))
+	assert.Equal(t, float64(256), receiver["max_declaration_watches"])
+	receiver = collectionDeclarationReceiver(t, renderCollectionDeclarations(t, map[string]string{
+		"otel.k8sResourceCollector.maxDeclarationWatches": "8",
+		"installCrds":                        "false",
+	}))
+	assert.Equal(t, float64(8), receiver["max_declaration_watches"],
+		"the budget also applies when the API is installed externally")
+}
+
+func TestCollectionDeclarationDefinition(t *testing.T) {
+	resources := renderCollectionDeclarations(t, nil)
+	definition, exists := resources.Unmapped[collectionDeclarationCRDName]
+	require.True(t, exists)
+	var crd struct {
+		Metadata struct {
+			Annotations map[string]string
+		}
+		Spec struct {
+			Group    string
+			Scope    string
+			Names    struct{ Kind string }
+			Versions []struct {
+				Name         string
+				Served       bool
+				Storage      bool
+				Subresources map[string]any
+				Schema       struct{ OpenAPIV3Schema map[string]any }
+			}
+		}
+	}
+	require.NoError(t, yaml.Unmarshal([]byte(definition), &crd))
+	assert.Equal(t, "keep", crd.Metadata.Annotations["helm.sh/resource-policy"])
+	assert.Equal(t, "observability.suse.com", crd.Spec.Group)
+	assert.Equal(t, "Cluster", crd.Spec.Scope)
+	assert.Equal(t, "CollectionDeclaration", crd.Spec.Names.Kind)
+	require.Len(t, crd.Spec.Versions, 1)
+	version := crd.Spec.Versions[0]
+	assert.Equal(t, "v1alpha1", version.Name)
+	assert.True(t, version.Served)
+	assert.True(t, version.Storage)
+	assert.Contains(t, version.Subresources, "status")
+	properties := version.Schema.OpenAPIV3Schema["properties"].(map[string]any)
+	spec := properties["spec"].(map[string]any)
+	specProperties := spec["properties"].(map[string]any)
+	selection := specProperties["resources"].(map[string]any)["items"].(map[string]any)
+	selectionProperties := selection["properties"].(map[string]any)
+	assert.Len(t, selectionProperties, 5)
+	for _, field := range []string{"group", "resource", "namespaces", "labelSelector", "fieldSelector"} {
+		assert.Contains(t, selectionProperties, field)
+	}
+	assert.NotContains(t, selectionProperties, "version")
+	assert.Equal(t, float64(1), selectionProperties["group"].(map[string]any)["minLength"])
+	labelProperties := selectionProperties["labelSelector"].(map[string]any)["properties"].(map[string]any)
+	expressionProperties := labelProperties["matchExpressions"].(map[string]any)["items"].(map[string]any)["properties"].(map[string]any)
+	assert.Equal(t, []any{"In", "NotIn", "Exists", "DoesNotExist"}, expressionProperties["operator"].(map[string]any)["enum"])
+	statusProperties := properties["status"].(map[string]any)["properties"].(map[string]any)
+	selectionStatus := statusProperties["resources"].(map[string]any)["items"].(map[string]any)["properties"].(map[string]any)
+	assert.NotContains(t, selectionStatus, "version")
+}
+
+func TestCollectionDeclarationRBAC(t *testing.T) {
+	for _, wildcard := range []string{"true", "false"} {
+		t.Run("wildcard-"+wildcard, func(t *testing.T) {
+			resources := renderCollectionDeclarations(t, map[string]string{"otel.k8sResourceCollector.rbac.useWildcard": wildcard})
+			role := resources.ClusterRoles[collectionDeclarationCollectorName]
+			declarationRules := map[string][]string{}
+			for _, rule := range role.Rules {
+				if slices.Contains(rule.APIGroups, "observability.suse.com") {
+					require.Len(t, rule.Resources, 1)
+					declarationRules[rule.Resources[0]] = rule.Verbs
+				}
+				for _, verb := range rule.Verbs {
+					if verb == "create" || verb == "delete" || verb == "update" || verb == "patch" {
+						assert.Equal(t, []string{"collectiondeclarations/status"}, rule.Resources)
+						assert.Equal(t, []string{"observability.suse.com"}, rule.APIGroups)
+					}
+				}
+				if wildcard == "false" {
+					assert.NotContains(t, rule.APIGroups, "*")
+				}
+			}
+			require.Len(t, declarationRules, 2)
+			assert.ElementsMatch(t, []string{"get", "list", "watch"}, declarationRules["collectiondeclarations"])
+			assert.ElementsMatch(t, []string{"patch", "update"}, declarationRules["collectiondeclarations/status"])
+			binding := resources.ClusterRoleBindings[collectionDeclarationCollectorName]
+			assert.Equal(t, rbacv1.RoleRef{APIGroup: "rbac.authorization.k8s.io", Kind: "ClusterRole", Name: role.Name}, binding.RoleRef)
+			require.Len(t, binding.Subjects, 1)
+			assert.Equal(t, resources.Deployments[collectionDeclarationCollectorName].Spec.Template.Spec.ServiceAccountName, binding.Subjects[0].Name)
+			assert.Equal(t, "ServiceAccount", binding.Subjects[0].Kind)
+			assert.NotEmpty(t, binding.Subjects[0].Namespace)
+			assert.NotContains(t, resources.Deployments, "suse-observability-agent-collection-declaration-controller")
+		})
+	}
+}
+
+func TestCollectionDeclarationDeclarationsOnly(t *testing.T) {
+	resources := renderCollectionDeclarations(t, map[string]string{"otel.k8sResourceCollector.rbac.useWildcard": "false"}, "values/collection-declarations-only.yaml")
+	receiver := collectionDeclarationReceiver(t, resources)
+	groups := receiver["cr_api_groups"].(map[string]any)
+	assert.Equal(t, []any{}, groups["include"], "empty must remain an explicit list, not null/default-all")
+	assert.NotContains(t, receiver, "objects")
+	role := resources.ClusterRoles[collectionDeclarationCollectorName]
+	require.Len(t, role.Rules, 3, "CR-only restricted mode grants only the source/status and CRD reads")
+	for _, rule := range role.Rules {
+		assert.NotContains(t, rule.APIGroups, "*")
+	}
+
+	disabled := renderCollectionDeclarations(t,
+		map[string]string{
+			"installCrds":                   "false",
+			"otel.k8sResourceCollector.rbac.useWildcard": "false",
+		},
+		"values/collection-declarations-only.yaml")
+	assert.Equal(t, receiver, collectionDeclarationReceiver(t, disabled))
+	assert.Equal(t, role.Rules, disabled.ClusterRoles[collectionDeclarationCollectorName].Rules)
+}
+
+func TestCollectionDeclarationInstallFlagPreservesMonitorOptIn(t *testing.T) {
+	for _, install := range []string{"true", "false"} {
+		for _, monitors := range []string{"true", "false"} {
+			t.Run(install+"/"+monitors, func(t *testing.T) {
+				resources := renderCollectionDeclarations(t, map[string]string{
+					"installCrds":                    install,
+					"otel.prometheusScraping.enabled":             "true",
+					"otel.prometheusScraping.monitorCrds.enabled": monitors,
+				})
+				for _, name := range []string{"servicemonitors", "podmonitors", "probes"} {
+					_, exists := resources.Unmapped[name+".monitoring.coreos.com"]
+					assert.Equal(t, monitors == "true", exists, "%s uses the separate monitor opt-in", name)
+				}
+				_, exists := resources.Unmapped[collectionDeclarationCRDName]
+				assert.Equal(t, install == "true", exists)
+				_, exists = resources.Unmapped["suseobservabilityagents.observability.suse.com"]
+				assert.Equal(t, install == "true", exists, "the Observability install flag also controls the agent capability marker")
+			})
+		}
+	}
+}
+
+func TestCollectionDeclarationPreservesIntegrationBaseline(t *testing.T) {
+	for _, enabled := range []string{"true", "false"} {
+		t.Run(enabled, func(t *testing.T) {
+			resources := renderCollectionDeclarations(t, map[string]string{"installCrds": enabled})
+			receiver := collectionDeclarationReceiver(t, resources)
+			groups := receiver["cr_api_groups"].(map[string]any)
+			assert.Contains(t, groups["include"], "kubevirt.io")
+			objects := receiver["objects"].([]any)
+			require.Len(t, objects, 1)
+			pods := objects[0].(map[string]any)
+			assert.Equal(t, "pods", pods["name"])
+			assert.Equal(t, "kubevirt.io in (virt-launcher, virt-controller, virt-api, virt-operator, virt-handler)", pods["label_selector"])
+		})
+	}
+}
+
+func TestCollectionDeclarationCanonicalArtifact(t *testing.T) {
+	canonical := os.Getenv("COLLECTION_DECLARATION_CANONICAL_CRD")
+	if canonical == "" {
+		t.Skip("set COLLECTION_DECLARATION_CANONICAL_CRD to the collector's canonical export")
+	}
+	schema, err := os.ReadFile("../files/crds/" + collectionDeclarationCRDName + ".yaml")
+	require.NoError(t, err)
+	upstream, err := os.ReadFile(canonical)
+	require.NoError(t, err)
+	assert.Equal(t, upstream, schema, "chart schema must be the unchanged canonical artifact")
+}
+
+func TestCollectionDeclarationBinaryValidation(t *testing.T) {
+	binary := os.Getenv("OTEL_AGENT_BINARY")
+	if binary == "" {
+		if os.Getenv("COLLECTION_DECLARATION_REQUIRE_BINARY") == "true" {
+			t.Fatal("OTEL_AGENT_BINARY is required for candidate CollectionDeclaration validation")
+		}
+		t.Skip("set OTEL_AGENT_BINARY to validate rendered resource-collector configuration")
+	}
+	binary, err := exec.LookPath(binary)
+	require.NoError(t, err)
+	binary, err = filepath.Abs(binary)
+	require.NoError(t, err)
+
+	for _, tc := range []struct {
+		name      string
+		overrides map[string]string
+		fixtures  []string
+	}{
+		{"disabled", map[string]string{"installCrds": "false"}, nil},
+		{"enabled", nil, nil},
+		{"declarations-only", nil, []string{"values/collection-declarations-only.yaml"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			resources := renderCollectionDeclarations(t, tc.overrides, tc.fixtures...)
+			config := resources.ConfigMaps[collectionDeclarationCollectorName+"-config"].Data["config.yaml"]
+			dir := t.TempDir()
+			configPath := filepath.Join(dir, "config.yaml")
+			require.NoError(t, os.WriteFile(configPath, []byte(config), 0600))
+			container := resources.Deployments[collectionDeclarationCollectorName].Spec.Template.Spec.Containers[0]
+			env := []string{"PATH=/usr/bin:/bin", "TMPDIR=" + dir, "KUBECONFIG=/dev/null", "KUBERNETES_SERVICE_HOST=127.0.0.1"}
+			for _, variable := range container.Env {
+				value := variable.Value
+				if variable.ValueFrom != nil {
+					switch {
+					case variable.ValueFrom.SecretKeyRef != nil:
+						ref := variable.ValueFrom.SecretKeyRef
+						secret, found := resources.Secrets[ref.Name]
+						require.True(t, found, "missing fixture Secret %s", ref.Name)
+						if data, found := secret.Data[ref.Key]; found {
+							value = string(data)
+						} else {
+							value, found = secret.StringData[ref.Key]
+							require.True(t, found, "missing fixture Secret key %s", ref.Key)
+						}
+					case variable.ValueFrom.FieldRef != nil:
+						fields := map[string]string{
+							"status.podIP": "127.0.0.1", "metadata.uid": "validation-uid", "metadata.namespace": "validation",
+						}
+						var found bool
+						value, found = fields[variable.ValueFrom.FieldRef.FieldPath]
+						require.True(t, found, "unsupported field %s", variable.ValueFrom.FieldRef.FieldPath)
+					default:
+						t.Fatalf("unsupported environment source for %s", variable.Name)
+					}
+				}
+				value = strings.ReplaceAll(value, "$(STS_URL)", "https://127.0.0.1:18443/receiver")
+				env = append(env, variable.Name+"="+value)
+			}
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			command := exec.CommandContext(ctx, binary, "validate", "--config="+configPath)
+			command.Dir = dir
+			command.Env = env
+			output, err := command.CombinedOutput()
+			require.NoError(t, err, "rendered resource-collector validate: %s", output)
+		})
+	}
+}

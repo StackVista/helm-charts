@@ -68,6 +68,9 @@
     }
   ],
   "properties": {
+    "installCrds": {
+      "type": "boolean"
+    },
     "stackstate": {
       "type": "object",
       "required": [
@@ -242,6 +245,25 @@
     "otel": {
       "type": "object",
       "properties": {
+        "k8sResourceCollector": {
+          "type": "object",
+          "properties": {
+            "maxDeclarationWatches": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum distinct declaration watches beyond YAML baseline collection. Zero uses the collector default."
+            },
+            "collectionDeclarations": {
+              "type": "object",
+              "properties": {
+                "keep": {
+                  "type": "boolean",
+                  "description": "Retain the installed CollectionDeclaration CRD and declarations on uninstall or when disabling installation. Setting false allows Helm to delete all declarations, including those created by integration charts."
+                }
+              }
+            }
+          }
+        },
         "telemetryGateway": {
           "type": "object",
           "properties": {

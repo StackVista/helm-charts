@@ -11,6 +11,12 @@ metadata:
   annotations:
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
 rules:
+  - apiGroups: ["observability.suse.com"]
+    resources: ["collectiondeclarations"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["observability.suse.com"]
+    resources: ["collectiondeclarations/status"]
+    verbs: ["patch", "update"]
   # Permission to watch CustomResourceDefinitions
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]

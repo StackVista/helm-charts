@@ -313,6 +313,41 @@ jobs:
             echo "::notice::no tests for ${{ matrix.chart }}, skipping"
           fi
 
+  collection_declaration_validation:
+    name: CollectionDeclaration canonical schema and agent configuration
+    needs: [detect_changes, build_stable]
+    if: |
+      github.repository == 'StackVista/helm-charts-internal' &&
+      contains(fromJson(needs.detect_changes.outputs.stable), 'suse-observability-agent')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Download the candidate chart dependencies
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-suse-observability-agent
+          path: stable/suse-observability-agent/
+      - name: Set up the chart's Go toolchain
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        env:
+          GOPATH: ${{ runner.temp }}/collectiondeclaration-go
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Validate the canonical CRD and rendered configurations with the pinned agent
+        env:
+          GOPATH: ${{ runner.temp }}/collectiondeclaration-go
+        run: |
+          helm version --short
+          yq --version
+          python3 stable/suse-observability-agent/test/collection_declaration_ci.py
+
   # Same as `test_stable`, scoped to `./local/<chart>/test/...`.
   test_local:
     needs: [detect_changes, build_local]
@@ -413,6 +448,7 @@ jobs:
       - validate_stable_images
       - check_chart_version
       - test_stable
+      - collection_declaration_validation
     # `always()` lets us treat `validate_stable_images: skipped` as OK (it correctly skips when
     # neither suse-observability nor agent is in the diff). The rest must have succeeded.
     if: |
@@ -423,6 +459,8 @@ jobs:
       (needs.validate_stable_images.result == 'success' || needs.validate_stable_images.result == 'skipped') &&
       needs.check_chart_version.result == 'success' &&
       needs.test_stable.result == 'success' &&
+      (!contains(fromJson(needs.detect_changes.outputs.stable || '[]'), 'suse-observability-agent') ||
+        needs.collection_declaration_validation.result == 'success') &&
       (github.event_name == 'workflow_dispatch'
         || github.ref == 'refs/heads/master'
         || startsWith(github.ref, 'refs/tags/suse-observability/')) &&

@@ -1,0 +1,196 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: collectiondeclarations.observability.suse.com
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  group: observability.suse.com
+  scope: Cluster
+  names:
+    plural: collectiondeclarations
+    singular: collectiondeclaration
+    kind: CollectionDeclaration
+    listKind: CollectionDeclarationList
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              required: [resources]
+              properties:
+                resources:
+                  description: Positive selections of CRD-backed custom resources, combined by union with other declarations and the agent baseline. Each type uses its served storage version; declarations do not select an API version.
+                  type: array
+                  minItems: 1
+                  maxItems: 32
+                  x-kubernetes-list-type: atomic
+                  items:
+                    type: object
+                    required: [group, resource]
+                    properties:
+                      group:
+                        description: Exact custom-resource API group. Collection verifies that the selected type is CRD-backed.
+                        type: string
+                        minLength: 1
+                        maxLength: 253
+                        pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$'
+                      resource:
+                        description: Plural CRD-backed resource name, or "*" for all CRD-backed types in the exact group.
+                        type: string
+                        minLength: 1
+                        maxLength: 63
+                        pattern: '^\*$|^[a-z]([-a-z0-9]*[a-z0-9])?$'
+                      namespaces:
+                        description: Omit to select every namespace. Incompatible filters on cluster-scoped types are reported in status.
+                        type: array
+                        minItems: 1
+                        maxItems: 128
+                        x-kubernetes-list-type: set
+                        items:
+                          type: string
+                          minLength: 1
+                          maxLength: 63
+                          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+                      labelSelector:
+                        description: Standard Kubernetes label selector; all clauses inside this selection are ANDed.
+                        type: object
+                        properties:
+                          matchLabels:
+                            type: object
+                            maxProperties: 16
+                            additionalProperties:
+                              type: string
+                              maxLength: 63
+                              pattern: '^$|^[A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?$'
+                            x-kubernetes-validations:
+                              - rule: >-
+                                  self.all(k, k.size() <= 317 &&
+                                  k.matches('^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$') &&
+                                  (!k.contains('/') || k.split('/')[0].size() <= 253))
+                                message: Label keys must be valid Kubernetes qualified names.
+                          matchExpressions:
+                            type: array
+                            maxItems: 16
+                            x-kubernetes-list-type: atomic
+                            items:
+                              type: object
+                              required: [key, operator]
+                              x-kubernetes-validations:
+                                - rule: >-
+                                    self.operator in ['In', 'NotIn']
+                                    ? has(self.values) && size(self.values) > 0
+                                    : !has(self.values) || size(self.values) == 0
+                                  message: In and NotIn require values; Exists and DoesNotExist require no values.
+                              properties:
+                                key:
+                                  type: string
+                                  minLength: 1
+                                  maxLength: 317
+                                  pattern: '^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]{0,61}[A-Za-z0-9])?$'
+                                  x-kubernetes-validations:
+                                    - rule: "!self.contains('/') || self.split('/')[0].size() <= 253"
+                                      message: A label key's DNS prefix must not exceed 253 characters.
+                                operator:
+                                  type: string
+                                  enum: [In, NotIn, Exists, DoesNotExist]
+                                values:
+                                  type: array
+                                  maxItems: 32
+                                  x-kubernetes-list-type: atomic
+                                  items:
+                                    type: string
+                                    maxLength: 63
+                                    pattern: '^$|^[A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?$'
+                      fieldSelector:
+                        description: Kubernetes field-selector string using =, ==, or != and comma-separated AND clauses. Values may escape commas, equals signs, and backslashes. Supported fields depend on the selected API and are checked at collection time.
+                        type: string
+                        maxLength: 2048
+                        pattern: '^(([^,=\\]|\\[^=])*\\?(==|!=|=)([^,=\\]|\\[\\,=])*)?(,(([^,=\\]|\\[^=])*\\?(==|!=|=)([^,=\\]|\\[\\,=])*)?)*$'
+                        x-kubernetes-validations:
+                          - rule: "!self.contains('!==')"
+                            message: A field-selector value must escape an equals sign following !=.
+            status:
+              description: Collector-local progress for the observed generation; not backend delivery or topology creation.
+              type: object
+              properties:
+                observedGeneration:
+                  type: integer
+                  format: int64
+                  minimum: 0
+                conditions:
+                  type: array
+                  maxItems: 1
+                  x-kubernetes-list-type: map
+                  x-kubernetes-list-map-keys: [type]
+                  items:
+                    type: object
+                    required: [type, status, reason, message, lastTransitionTime]
+                    properties:
+                      type:
+                        type: string
+                        enum: [Ready]
+                      status:
+                        type: string
+                        enum: ["True", "False", Unknown]
+                      observedGeneration:
+                        type: integer
+                        format: int64
+                        minimum: 0
+                      reason:
+                        type: string
+                        minLength: 1
+                        maxLength: 128
+                        pattern: '^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$'
+                      message:
+                        type: string
+                        maxLength: 2048
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                resources:
+                  description: One result per zero-based index in spec.resources, for this observed generation.
+                  type: array
+                  maxItems: 32
+                  x-kubernetes-list-type: map
+                  x-kubernetes-list-map-keys: [selectionIndex]
+                  items:
+                    type: object
+                    required: [selectionIndex, group, resource, state, reason]
+                    properties:
+                      selectionIndex:
+                        type: integer
+                        minimum: 0
+                        maximum: 31
+                      group:
+                        type: string
+                        maxLength: 253
+                      resource:
+                        type: string
+                        minLength: 1
+                        maxLength: 63
+                      state:
+                        description: Active after initial sync; Pending while waiting or retrying; Blocked by policy, access, or an incompatible filter.
+                        type: string
+                        enum: [Active, Pending, Blocked]
+                      reason:
+                        type: string
+                        minLength: 1
+                        maxLength: 128
+                      message:
+                        type: string
+                        maxLength: 2048

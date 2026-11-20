@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.70`
+Current chart version is `1.7.71`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -240,6 +240,77 @@ stackstate/suse-observability-agent
 ```
 
 Overlays use map-shaped values, so combining multiple overlays (or layering them on top of your own `apiGroupFilters` / `crdApiGroups` entries) is additive. Listing an API group on a cluster that does not have the corresponding CRDs installed is harmless — the receiver only watches resources that actually exist.
+
+## CollectionDeclaration declarations
+
+Top-level `installCrds` controls installation of SUSE Observability CRDs when OTel
+is enabled. It defaults to `true` and covers CollectionDeclaration and the agent's
+capability marker, SUSEObservabilityAgent. The marker is installed only when
+Prometheus scraping or the telemetry gateway is enabled; it has no keep flag.
+Prometheus Operator CRDs have a separate
+`otel.prometheusScraping.monitorCrds.enabled` opt-in. The collector retains
+permission to read declarations and write status when `installCrds: false`, so
+it can use an externally installed CRD.
+
+With `rbac.useWildcard: false`, declarations do not grant access to their selected
+types. An administrator must grant the collector's ServiceAccount `get`, `list`
+and `watch` on those types. Separate Roles or ClusterRoles and bindings can be
+managed as GitOps manifests; no additional chart is required. The
+[upcoming customer guide](https://github.com/rancher/stackstate-product-docs/pull/496)
+includes exact KubeVirt grants, namespace bindings and authorization checks.
+API group includes also select baseline resources, so they are not a
+permissions-only setting.
+
+The default lifecycle settings are:
+
+```yaml
+installCrds: true
+otel:
+  k8sResourceCollector:
+    collectionDeclarations:
+      keep: true
+```
+
+`otel.k8sResourceCollector.collectionDeclarations.keep: true` preserves the CRD
+on uninstall or when disabling installation. It does not prevent schema upgrades.
+If an existing release used `keep: false`, first upgrade it with `keep: true`,
+then disable installation in a second upgrade. Helm uses the previous release's
+keep annotation when removing the CRD.
+Helm's `--skip-crds` does not skip this CRD because it is installed as a template.
+For an externally managed CRD or another agent release, set top-level
+`installCrds: false`.
+Declaration reads and status writes remain granted. One release should own the
+cluster-wide CRD.
+
+To move ownership of a retained or manually installed CRD, first verify that its
+schema is compatible and that the previous owning release no longer manages it.
+Then assign the intended release name and namespace before installing:
+
+```shell
+kubectl label crd collectiondeclarations.observability.suse.com \
+  app.kubernetes.io/managed-by=Helm --overwrite
+kubectl annotate crd collectiondeclarations.observability.suse.com \
+  meta.helm.sh/release-name=<release-name> \
+  meta.helm.sh/release-namespace=<release-namespace> --overwrite
+```
+
+Setting `otel.k8sResourceCollector.collectionDeclarations.keep: false` allows Helm to delete the CRD and
+all its declarations, including those created by integration charts.
+
+### Upgrade permissions
+
+Upgrading with OTel enabled now installs the CollectionDeclaration CRD by default.
+The installer needs cluster-scoped CRD permissions. Helm checks whether the CRD
+already exists, so an installer without read permissions receives:
+
+```text
+customresourcedefinitions.apiextensions.k8s.io "collectiondeclarations.observability.suse.com" is forbidden: User "<installer>" cannot get resource "customresourcedefinitions" in API group "apiextensions.k8s.io" at the cluster scope
+```
+
+Ask a cluster administrator to grant the installer CRD permissions, or upgrade
+with `--set installCrds=false` and have the administrator manage the CRD separately.
+The collector retains declaration read/status permissions and existing YAML
+collection. Prometheus Operator CRDs remain a separate opt-in.
 
 ## OTel Prometheus scraping
 
@@ -487,6 +558,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"1.0.0-so15"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"42992faf-1134-release"` |  |
+| installCrds | bool | `true` | Install SUSE Observability CRDs when OTel is enabled. Prometheus Operator CRDs remain controlled separately by otel.prometheusScraping.monitorCrds.enabled. |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
@@ -597,8 +669,9 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.integrations.suseSbomScanner | bool | `false` | Enable pre-configured API group filters for the SUSE SBOM Scanner stackpack. |
 | otel.integrations.suseVirtualization | bool | `true` | Enable pre-configured API group filters for the SUSE Virtualization (KubeVirt) stackpack. |
 | otel.k8sResourceCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
+| otel.k8sResourceCollector.collectionDeclarations.keep | bool | `true` | Retain the installed CRD and declarations on uninstall or when disabling CRD installation. Only applies when installCrds=true. Setting false allows Helm to delete the CRD and all declarations, including those created by integration charts. |
 | otel.k8sResourceCollector.crDiscovery.apiGroups.exclude | object | `{}` | Map of API group patterns (key) -> bool (enabled). Empty by default. |
-| otel.k8sResourceCollector.crDiscovery.apiGroups.include | object | `{}` | Map of API group patterns (key) -> bool (enabled). Used for both CR filtering and restricted RBAC. Supports wildcards like "*.suse.com" for filtering, but restricted RBAC (rbac.useWildcard=false) can only render exact API groups or "*". Set a key to false in an override values file to disable a default. Must have at least one truthy entry when discoveryMode is "api_groups". Common SUSE integration API groups are added by the enabled integrations. |
+| otel.k8sResourceCollector.crDiscovery.apiGroups.include | object | `{}` | Map of API group patterns (key) -> bool (enabled). Used for both CR filtering and restricted RBAC. Supports wildcards like "*.suse.com" for filtering, but restricted RBAC (rbac.useWildcard=false) can only render exact API groups or "*". Set a key to false in an override values file to disable a default. An empty include disables group-based baseline CR collection. Common SUSE integration API groups are added by the enabled integrations. |
 | otel.k8sResourceCollector.crDiscovery.discoveryMode | string | `"api_groups"` | CR discovery mode: "api_groups" (filtered custom resources) or "all" (watch all custom resources). CRDs are always watched and forwarded. |
 | otel.k8sResourceCollector.crDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
 | otel.k8sResourceCollector.dataLimits.maxCrTotalDataSizeBytes | int | `10485760` | Total serialized payload budget, in bytes, for CR-discovered Custom Resources per collection cycle. Default: 10 MiB. CRs are considered smallest-first, then by stable identity; CRs that do not fit are dropped and counted in receiver metrics. |
@@ -607,7 +680,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.debug.enabled | bool | `false` | Enable the debug exporter for this collector. |
 | otel.k8sResourceCollector.debug.pipelines | list | `["logs"]` | Pipelines (by signal) to attach the debug exporter to. Must be a subset of {traces, logs, metrics}. |
 | otel.k8sResourceCollector.debug.verbosity | string | `"basic"` | Debug exporter verbosity: basic, normal, or detailed. |
-| otel.k8sResourceCollector.deniedObjects | object | `{}` | Map of resource name (plural, used as the key) -> spec of resources that must not appear under otel.k8sResourceCollector.objects. Spec needs only `group`. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are allowed because the collector sanitizes them; with global.features.experimentalOtelKubernetesClusterAgent, turn their clusterAgent.collection.kubernetesResources switches off instead of denying them. |
+| otel.k8sResourceCollector.deniedObjects | object | `{}` | Map of exact plural resource name -> API `group` to block collection across namespaces and versions, including automatic CR discovery and CollectionDeclaration declarations. Matching explicit `objects` entries fail validation. Use to block third-party resources with sensitive contents. Core Secrets and ConfigMaps are sanitized; with global.features.experimentalOtelKubernetesClusterAgent, use their clusterAgent.collection.kubernetesResources switches to disable them. |
 | otel.k8sResourceCollector.enabled | bool | `true` | Enable / disable the OpenTelemetry cluster collector for CRD discovery. Requires otel.enabled=true. |
 | otel.k8sResourceCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | otel.k8sResourceCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
@@ -625,8 +698,9 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.k8sResourceCollector.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | otel.k8sResourceCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | otel.k8sResourceCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
+| otel.k8sResourceCollector.maxDeclarationWatches | int | `256` | Maximum distinct watches added by CollectionDeclaration declarations beyond YAML baseline collection. Exact shared watches count once. Excess resolved types report Blocked/WatchBudgetExceeded. Zero uses the collector default. This limits watch count, not cache bytes. |
 | otel.k8sResourceCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| otel.k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Entries that overlap a CRD covered by cr_api_groups are rejected at startup. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
+| otel.k8sResourceCollector.objects | object | `{}` | Map of resource name (plural, used as the key) -> spec for additional Kubernetes resources to watch alongside CRD-discovered custom resources. Spec fields: group (empty for core), version (preferred if empty), namespaces (cluster-wide if empty), labelSelector, fieldSelector. Set a value to null or false in an override values file to disable a default entry. Overlapping CRD discovery and object selections combine by union. When useWildcard=false, get/list/watch RBAC for each entry is auto-derived (deduped per group). |
 | otel.k8sResourceCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
 | otel.k8sResourceCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
 | otel.k8sResourceCollector.podDisruptionBudget.unhealthyPodEvictionPolicy | string | `"AlwaysAllow"` |  |
