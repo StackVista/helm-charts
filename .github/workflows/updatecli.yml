@@ -1,22 +1,16 @@
-# Updatecli: all updatecli-related CI in one file.
-#
-# Push (paths: updatecli/**) → validate_config + validate_diff (read-only, surface what an
-# updatecli config edit WOULD do before it merges).
-#
-# workflow_dispatch → apply + follow_up. apply runs `updatecli pipeline apply` for the chosen
-# pipeline (docker_images / stackstate / stackpacks). follow_up branches on the apply output:
-# direct squash-push to target branch (stackstate, stackpacks) OR signed squash-commit
-# onto the updatecli branch and open a PR (docker_images).
-# apply + follow_up are job-level-gated on `!inputs.dry_run` — operator must explicitly opt in.
 name: Updatecli
 run-name: >-
-  ${{ github.event_name == 'workflow_dispatch'
+  ${{ github.event_name == 'schedule'
+    && 'Updatecli scheduled apply'
+    || github.event_name == 'workflow_dispatch'
     && (inputs.dry_run == false
         && format('Updatecli apply — {0} → {1}', inputs.pipeline, inputs.target_branch)
         || format('Updatecli dry-run — {0} → {1}', inputs.pipeline, inputs.target_branch))
     || format('Updatecli validate — {0}', github.ref_name) }}
 
 on:
+  schedule:
+    - cron: '37 15 * * *'
   push:
     paths:
       - 'updatecli/**'
@@ -61,10 +55,11 @@ permissions:
   contents: read
 
 env:
-  # GH-expression gotcha: STRING 'false' is truthy, BOOLEAN false is falsy — hence the coercion.
-  # Validate-only jobs ignore DRY_RUN; only the apply + follow_up jobs check the input directly.
+  PIPELINE: ${{ github.event_name == 'schedule' && 'docker_images' || inputs.pipeline }}
+  TARGET_BRANCH: ${{ github.event_name == 'schedule' && 'master' || inputs.target_branch }}
   DRY_RUN: >-
-    ${{ github.event_name == 'workflow_dispatch'
+    ${{ github.event_name == 'schedule' && 'false'
+        || github.event_name == 'workflow_dispatch'
         && (inputs.dry_run && 'true' || 'false')
         || 'true' }}
 
@@ -80,7 +75,7 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
       options: --user 0:0   # root — avoids /__w/_temp EACCES (runner fsGroup 1001 ≠ image user)
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           persist-credentials: false
       - run: |
@@ -108,7 +103,7 @@ jobs:
       STACKPACKS_CORE_SOURCE_BRANCH: main
       STACKPACKS_SUSE_SOURCE_BRANCH: main
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           persist-credentials: false
       - env:
@@ -119,19 +114,15 @@ jobs:
           done
 
   summarize:
-    if: ${{ github.repository == 'StackVista/helm-charts-internal' && github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
     runs-on: small
     steps:
       - name: Write step summary
         env:
-          PIPELINE:                         ${{ inputs.pipeline }}
-          TARGET_BRANCH:                    ${{ inputs.target_branch }}
           STACKSTATE_SOURCE_BRANCH:         ${{ inputs.stackstate_source_branch }}
           STACKPACKS_SOURCE_BRANCH:         ${{ inputs.stackpacks_source_branch }}
           STACKPACKS_CORE_SOURCE_BRANCH: ${{ inputs.stackpacks_core_source_branch }}
           STACKPACKS_SUSE_SOURCE_BRANCH:    ${{ inputs.stackpacks_suse_source_branch }}
-          DRY_RUN: >-
-            ${{ inputs.dry_run && 'true' || 'false' }}
         run: |
           {
             echo "### Updatecli inputs"
@@ -156,10 +147,7 @@ jobs:
   # Runs `updatecli pipeline apply` against the chosen pipeline. Outputs feed follow_up.
   # `working_branch` follows updatecli's `updatecli-<target>-<pipelineid>` naming convention.
   apply:
-    # Job-level `if:` can't reference `env.DRY_RUN` (env context unavailable at job scope —
-    # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability),
-    # so check the boolean input directly.
-    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'workflow_dispatch' && !inputs.dry_run) }}
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)) }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-c30c515e
@@ -175,25 +163,21 @@ jobs:
       pr_title:       ${{ steps.meta.outputs.pr_title }}
       working_branch: ${{ steps.meta.outputs.working_branch }}
     env:
-      TARGET_BRANCH:                    ${{ inputs.target_branch }}
       STACKSTATE_SOURCE_BRANCH:         ${{ inputs.stackstate_source_branch }}
       STACKPACKS_SOURCE_BRANCH:         ${{ inputs.stackpacks_source_branch }}
       STACKPACKS_CORE_SOURCE_BRANCH: ${{ inputs.stackpacks_core_source_branch }}
       STACKPACKS_SUSE_SOURCE_BRANCH:    ${{ inputs.stackpacks_suse_source_branch }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           persist-credentials: false
       - id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
           permission-contents: write
       - id: meta
-        env:
-          PIPELINE: ${{ inputs.pipeline }}
-          TARGET: ${{ inputs.target_branch }}
         run: |
           case "$PIPELINE" in
             docker_images)
@@ -224,7 +208,7 @@ jobs:
             echo "direct_push=$direct_push"
             echo "pr_title=$pr_title"
             echo "commit_msg=$commit_msg"
-            echo "working_branch=updatecli-${TARGET}-${pipelineid}"
+            echo "working_branch=updatecli-${TARGET_BRANCH}-${pipelineid}"
           } >> "$GITHUB_OUTPUT"
       - name: Apply updatecli pipeline
         env:
@@ -245,8 +229,7 @@ jobs:
   # for docker_images.
   follow_up:
     needs: apply
-    # See `apply` job for why we check `!inputs.dry_run` here instead of env.DRY_RUN.
-    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'workflow_dispatch' && !inputs.dry_run) }}
+    if: ${{ github.repository == 'StackVista/helm-charts-internal' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.dry_run)) }}
     runs-on: docker
     container:
       image: ${{ vars.REGISTRY_QUAY_URL }}/stackstate/sts-ci-images:stackstate-devops-c30c515e
@@ -255,15 +238,14 @@ jobs:
         username: ${{ vars.REGISTRY_USER }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     env:
-      TARGET_BRANCH:    ${{ inputs.target_branch }}
       UPDATECLI_BRANCH: ${{ needs.apply.outputs.working_branch }}
       DIRECT_PUSH:      ${{ needs.apply.outputs.direct_push }}
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           persist-credentials: false
       - id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_CLIENT_ID }}
           private-key: ${{ secrets.HELM_CHARTS_INTERNAL_GH_APP_PRIVATE_KEY }}
