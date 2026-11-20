@@ -256,9 +256,9 @@
             "collectionDeclarations": {
               "type": "object",
               "properties": {
-                "enabled": {
+                "keep": {
                   "type": "boolean",
-                  "description": "Install the CollectionDeclaration CRD and grant declaration/status permissions when the OTel resource collector is enabled."
+                  "description": "Retain the installed CollectionDeclaration CRD and declarations on uninstall or when disabling installation. Setting false allows Helm to delete all declarations, including those created by integration charts."
                 }
               }
             }

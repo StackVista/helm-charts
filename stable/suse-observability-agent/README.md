@@ -247,7 +247,7 @@ Top-level `installCrds` controls installation of SUSE Observability CRDs when OT
 is enabled. It defaults to `true` and covers CollectionDeclaration and the agent's
 capability marker, SUSEObservabilityAgent. The marker is installed only when
 Prometheus scraping or the telemetry gateway is enabled; it has no keep flag.
-Prometheus Operator CRDs keep their separate
+Prometheus Operator CRDs have a separate
 `otel.prometheusScraping.monitorCrds.enabled` opt-in. The collector retains
 permission to read declarations and write status when `installCrds: false`, so
 it can use an externally installed CRD.
