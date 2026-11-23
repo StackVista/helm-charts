@@ -76,10 +76,6 @@
       value: {{ .Values.processAgent.podCorrelation.exporter.endpoint | quote }}
     - name: STS_POD_CORRELATION_EXPORTER_INTERVAL
       value: {{ .Values.processAgent.podCorrelation.exporter.interval | quote }}
-    {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
-    - name: STS_CRI_SOCKET_PATH
-      value: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
-    {{- end }}
     {{- if .Values.global.proxy.url }}
     - name: STS_PROXY_HTTPS
       value: {{ .Values.global.proxy.url | quote }}
@@ -106,30 +102,12 @@
     {{- toYaml (omit . "override") | nindent 12 }}
   {{- end }}
   volumeMounts:
-  {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
-  - name: customcrisocket
-    mountPath: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
-    readOnly: true
-  {{- end }}
-  {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
-  - name: crisocket
-    mountPath: /var/run/crio/crio.sock
-    readOnly: true
-  - name: containerdsocket
-    mountPath: /var/run/containerd/containerd.sock
-    readOnly: true
-  {{- end }}
   - name: sys-kernel-debug
     mountPath: /sys/kernel/debug
     # Having sys-kernel-debug as read only breaks specific monitors from receiving metrics
     # readOnly: true
   - name: sys-kernel-tracing
     mountPath: /sys/kernel/tracing
-  {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
-  - name: dockersocket
-    mountPath: /var/run/docker.sock
-    readOnly: true
-  {{- end }}
   # The agent needs access to /etc to figure out what os it is running on.
   - name: etcdir
     mountPath: /host/etc

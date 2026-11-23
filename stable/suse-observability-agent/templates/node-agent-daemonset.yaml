@@ -68,14 +68,6 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-    {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
-      - hostPath:
-          path: {{ .Values.nodeAgent.containerRuntime.customSocketPath | quote }}
-        {{- if not .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
-          type: Socket
-        {{- end }}
-        name: customcrisocket
-    {{- end }}
       - hostPath:
           path: /var/lib/kubelet
         name: kubelet
@@ -83,30 +75,11 @@ spec:
           path: /var/lib/nfs
         name: nfs
       - hostPath:
-          path: /var/lib/docker/overlay2
-        name: dockeroverlay2
-      - hostPath:
-          path: /run/docker/netns
-        name: dockernetns
-    {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
-      - hostPath:
-          path: /var/run/crio/crio.sock
-        name: crisocket
-      - hostPath:
-          path: /var/run/containerd/containerd.sock
-        name: containerdsocket
-    {{- end }}
-      - hostPath:
           path: /sys/kernel/debug
         name: sys-kernel-debug
       - hostPath:
           path: /sys/kernel/tracing
         name: sys-kernel-tracing
-    {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
-      - hostPath:
-          path: /var/run/docker.sock
-        name: dockersocket
-    {{- end }}
       - hostPath:
           path: {{ .Values.nodeAgent.containerRuntime.hostProc }}
         name: procdir
