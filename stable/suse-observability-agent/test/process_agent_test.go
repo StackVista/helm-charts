@@ -7,6 +7,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 )
 
@@ -239,4 +240,37 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 
 		})
 	}
+}
+
+func TestProcessAgentTracingMounts(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", &helm.Options{
+		ValuesFiles: []string{"values/minimal.yaml"},
+		SetValues:   map[string]string{processAgentEnabledKey: "true"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	ds, ok := resources.DaemonSets[fullNodeAgentName]
+	require.True(t, ok)
+
+	hostPaths := map[string]string{}
+	for _, v := range ds.Spec.Template.Spec.Volumes {
+		if v.HostPath != nil {
+			hostPaths[v.Name] = v.HostPath.Path
+			if v.Name == "sys-kernel-tracing" {
+				// A Directory check would block the whole pod on kernels without tracefs.
+				assert.Nil(t, v.HostPath.Type)
+			}
+		}
+	}
+	assert.Equal(t, "/sys/kernel/debug", hostPaths["sys-kernel-debug"])
+	assert.Equal(t, "/sys/kernel/tracing", hostPaths["sys-kernel-tracing"])
+
+	processAgentContainer := ds.Spec.Template.Spec.Containers[1]
+	require.Equal(t, processAgentName, processAgentContainer.Name)
+	mounts := map[string]bool{}
+	for _, m := range processAgentContainer.VolumeMounts {
+		mounts[m.Name+"="+m.MountPath] = !m.ReadOnly
+	}
+	assert.True(t, mounts["sys-kernel-debug=/sys/kernel/debug"], "debugfs mount must be read-write")
+	assert.True(t, mounts["sys-kernel-tracing=/sys/kernel/tracing"], "tracefs mount must be read-write")
 }

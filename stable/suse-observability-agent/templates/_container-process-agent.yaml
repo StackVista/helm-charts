@@ -123,6 +123,8 @@
     mountPath: /sys/kernel/debug
     # Having sys-kernel-debug as read only breaks specific monitors from receiving metrics
     # readOnly: true
+  - name: sys-kernel-tracing
+    mountPath: /sys/kernel/tracing
   {{- if .Values.nodeAgent.containerRuntime.mountDefaultSockets }}
   - name: dockersocket
     mountPath: /var/run/docker.sock
