@@ -1,6 +1,6 @@
 # keycloak
 
-![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 26.7.0](https://img.shields.io/badge/AppVersion-26.7.0-informational?style=flat-square)
+![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![AppVersion: 26.8.2](https://img.shields.io/badge/AppVersion-26.8.2-informational?style=flat-square)
 
 Keycloak is a high performance Java-based identity and access management solution, packaged for SUSE Observability on top of the upstream Keycloak image.
 
@@ -115,7 +115,7 @@ Keycloak is a high performance Java-based identity and access management solutio
 | image.pullSecrets | list | `["registry-credentials"]` | Docker registry secret names as an array (e.g. registry-credentials) |
 | image.registry | string | `"quay.io"` | Keycloak image registry |
 | image.repository | string | `"stackstate/keycloak"` | Keycloak image repository (StackState build FROM the upstream/Rancher Keycloak image) |
-| image.tag | string | `"26.7.0-main-af703171"` | Keycloak image tag |
+| image.tag | string | `"26.8.2-main-d13347b0"` | Keycloak image tag |
 | ingress.annotations | object | `{}` | Additional annotations for the Ingress (e.g. cert-manager or a Traefik middleware annotation set by the consumer) |
 | ingress.apiVersion | string | `""` | Force Ingress API version (auto-detected if not set) |
 | ingress.controller | string | `"default"` | Ingress controller type. Values: default or gce |

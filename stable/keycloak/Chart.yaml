@@ -2,8 +2,8 @@ apiVersion: v2
 name: keycloak
 description: Keycloak is a high performance Java-based identity and access management
   solution, packaged for SUSE Observability on top of the upstream Keycloak image.
-appVersion: 26.7.0
-version: 0.1.6
+appVersion: 26.8.2
+version: 0.1.7
 keywords:
   - keycloak
   - access-management
