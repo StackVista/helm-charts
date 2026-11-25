@@ -4,6 +4,7 @@ data:
     resources:
     - "@type": type.googleapis.com/envoy.config.listener.v3.Listener
       name: listener_0
+      {{- with include "stackstate.router.listener.buffers" . }}{{ . | nindent 6 }}{{ end }}
       address:
         socket_address:
           protocol: TCP
@@ -226,6 +227,7 @@ data:
           explicit_http_config:
             http_protocol_options: {}
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
         endpoints:
@@ -243,6 +245,7 @@ data:
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver-logs"
         endpoints:
@@ -257,6 +260,7 @@ data:
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver-process-agent"
         endpoints:
@@ -271,6 +275,7 @@ data:
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver-base"
         endpoints:
@@ -286,6 +291,7 @@ data:
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver"
         endpoints:
@@ -301,6 +307,7 @@ data:
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ include "stackstate.otelCollector.fullname" . }}"
         endpoints:
@@ -320,6 +327,7 @@ data:
           explicit_http_config:
             http_protocol_options: {}
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-ui"
         endpoints:
@@ -340,6 +348,7 @@ data:
           explicit_http_config:
             http_protocol_options: {}
       connect_timeout: 2s
+      {{- with include "stackstate.router.cluster.buffers" $ }}{{ . | nindent 6 }}{{ end }}
       load_assignment:
         cluster_name: "{{ template "stackstate.mcp.fullname" . }}"
         endpoints:
@@ -350,4 +359,67 @@ data:
                   address: "{{ include "stackstate.mcp.service.fullname" . }}"
                   port_value: {{ include "stackstate.mcp.port" . }}
     {{- end }}
+{{- end -}}
+
+{{/*
+Kernel socket buffers are charged to the router's memory cgroup but not to Envoy's own accounting. Autotuned send
+buffers towards slow receivers, and receive buffers for concurrent uploads, grow faster than the overload manager reacts.
+*/}}
+{{- define "stackstate.router.listener.buffers" -}}
+per_connection_buffer_limit_bytes: 65536
+socket_options:
+- description: SO_RCVBUF, inherited by accepted connections
+  level: 1
+  name: 8
+  int_value: 65536
+  state: STATE_PREBIND
+{{- end -}}
+
+{{- define "stackstate.router.cluster.buffers" -}}
+per_connection_buffer_limit_bytes: 65536
+upstream_bind_config:
+  socket_options:
+  - description: SO_SNDBUF
+    level: 1
+    name: 7
+    int_value: 65536
+    state: STATE_PREBIND
+{{- end -}}
+
+{{/*
+Driven by the container's cgroup memory, which includes the kernel socket buffers that Envoy's heap accounting misses.
+Rejecting connections closes them at once; stop_accepting_connections leaves clients hanging in the kernel backlog.
+*/}}
+{{- define "stackstate.router.overloadManager" -}}
+overload_manager:
+  refresh_interval: 0.25s
+  resource_monitors:
+  - name: envoy.resource_monitors.cgroup_memory
+    typed_config:
+      "@type": type.googleapis.com/envoy.extensions.resource_monitors.cgroup_memory.v3.CgroupMemoryConfig
+  - name: envoy.resource_monitors.global_downstream_max_connections
+    typed_config:
+      "@type": type.googleapis.com/envoy.extensions.resource_monitors.downstream_connections.v3.DownstreamConnectionsConfig
+      max_active_downstream_connections: 50000
+  actions:
+  - name: envoy.overload_actions.shrink_heap
+    triggers:
+    - name: envoy.resource_monitors.cgroup_memory
+      threshold:
+        value: 0.5
+  - name: envoy.overload_actions.disable_http_keepalive
+    triggers:
+    - name: envoy.resource_monitors.cgroup_memory
+      threshold:
+        value: 0.8
+  - name: envoy.overload_actions.stop_accepting_requests
+    triggers:
+    - name: envoy.resource_monitors.cgroup_memory
+      threshold:
+        value: 0.8
+  - name: envoy.overload_actions.reject_incoming_connections
+    triggers:
+    - name: envoy.resource_monitors.cgroup_memory
+      threshold:
+        value: 0.9
 {{- end -}}

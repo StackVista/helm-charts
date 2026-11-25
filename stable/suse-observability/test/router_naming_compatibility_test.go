@@ -34,7 +34,24 @@ func TestRouterDeploymentNamingFrozenCompatibility(t *testing.T) {
 	// Isolate the earlier Deployment rename from the later ConfigMap rename.
 	// Keep the frozen snapshots intact; the latter has its own baseline tests.
 	restorePeripheralConfigMapNames(t, chart)
+	removeRouterOverloadProtection(t, chart)
 	checkRouterNamingFixtures(t, chart, true)
+}
+
+// The frozen snapshots predate the router buffer limits and overload manager.
+func removeRouterOverloadProtection(t *testing.T, chart string) {
+	t.Helper()
+	path := filepath.Join(chart, "templates/router/_helper-router-config.tpl")
+	data, err := os.ReadFile(path)
+	require.NoError(t, err)
+	content := string(data)
+	for _, helper := range []string{"stackstate.router.listener.buffers", "stackstate.router.cluster.buffers", "stackstate.router.overloadManager"} {
+		header := `{{- define "` + helper + `" -}}`
+		pattern := regexp.MustCompile(`(?s)` + regexp.QuoteMeta(header) + `.*?\{\{- end -\}\}`)
+		require.Len(t, pattern.FindAllString(content, -1), 1, helper)
+		content = pattern.ReplaceAllString(content, header+`{{- end -}}`)
+	}
+	require.NoError(t, os.WriteFile(path, []byte(content), 0600))
 }
 
 // Optional independent reproduction; never rewrite historical snapshots from
@@ -195,6 +212,9 @@ func routerNamingFixtureValues(mode string) map[string]string {
 		"stackstate.components.router.mode.status":                    mode,
 		"stackstate.components.router.extraEnv.open.ROUTER_PUBLIC":    "fixture-public",
 		"stackstate.components.router.extraEnv.secret.ROUTER_PRIVATE": "fixture-private",
+		// The frozen snapshots predate the larger router memory sizing.
+		"stackstate.components.router.resources.requests.memory": "128Mi",
+		"stackstate.components.router.resources.limits.memory":   "128Mi",
 	}
 }
 

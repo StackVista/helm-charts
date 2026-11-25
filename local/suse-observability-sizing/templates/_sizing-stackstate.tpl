@@ -462,11 +462,11 @@ Usage: {{ include "common.sizing.stackstate.router.resources" . }}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") }}
 requests:
   cpu: "120m"
-  memory: "128Mi"
+  memory: "256Mi"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "240m"
-  memory: "128Mi"
+  memory: "256Mi"
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
@@ -489,11 +489,11 @@ limits:
 {{- else }}
 requests:
   cpu: "100m"
-  memory: "128Mi"
+  memory: "256Mi"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "100m"
-  memory: "128Mi"
+  memory: "256Mi"
   ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}

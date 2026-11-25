@@ -139,8 +139,10 @@ stackstate:
       resources:
         requests:
           cpu: "120m"
+          memory: "256Mi"
         limits:
           cpu: "240m"
+          memory: "256Mi"
     slicing:
       resources:
         requests:
