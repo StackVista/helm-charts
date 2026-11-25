@@ -37,7 +37,7 @@ requiredDropCapabilities: null
 runAsUser:
   type: MustRunAsRange
 # Use the `spc_t` selinux type to access the
-# docker socket + proc and cgroup stats
+# proc and cgroup stats
 seLinuxContext:
   type: RunAsAny
   seLinuxOptions:
@@ -51,7 +51,7 @@ supplementalGroups:
   type: RunAsAny
 users:
 - system:serviceaccount:{{ .Release.Namespace }}:{{ .Release.Name }}-node-agent
-# Allow hostPath for docker / process metrics
+# Allow hostPath for process metrics
 volumes:
   - configMap
   - downwardAPI

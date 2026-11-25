@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.7.76`
+Current chart version is `1.8.0`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -108,29 +108,13 @@ Every agent component mounts custom CA certificates at `/etc/pki/tls/certs`, alo
 
 ## Container runtime sockets
 
-By default, both agents mount the standard Docker, containerd and CRI-O socket
-paths. Setting `nodeAgent.containerRuntime.customSocketPath` adds a custom mount
-alongside them. Existing configurations retain this behavior.
+The agents do not mount the Docker, containerd or CRI-O sockets. Container
+metrics, process-to-container mapping and pod metadata come from cgroups, `/proc`
+and the kubelet. The former `nodeAgent.containerRuntime.customSocketPath` and
+`nodeAgent.containerRuntime.mountDefaultSockets` values are ignored.
 
-To mount only a selected runtime socket, set
-`nodeAgent.containerRuntime.mountDefaultSockets` to `false`:
-
-```yaml
-nodeAgent:
-  containerRuntime:
-    customSocketPath: /custom/containerd.sock
-    mountDefaultSockets: false
-```
-
-This removes all three default socket mounts from both agents. Keep
-`mountDefaultSockets: true` when additional runtime sockets are needed, such as
-cri-dockerd together with Docker metadata from `docker.sock`. With default mounts
-disabled and no custom path configured, neither agent mounts a runtime socket.
-
-When default mounts are disabled, the custom path must be an existing UNIX socket
-on every node running the agent. Kubernetes retries mounting it if it is not
-ready; it does not create a directory there. Upgrading does not remove directories
-left by previous installations.
+Upgrading does not remove directories that previous chart versions left at the
+default socket paths on the nodes.
 
 ## Telemetry gateway trace sampling
 
@@ -597,9 +581,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |
 | nodeAgent.config | object | `{"override":[]}` |  |
 | nodeAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
-| nodeAgent.containerRuntime.customSocketPath | string | `""` | If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path. |
 | nodeAgent.containerRuntime.hostProc | string | `"/proc"` |  |
-| nodeAgent.containerRuntime.mountDefaultSockets | bool | `true` |  |
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
