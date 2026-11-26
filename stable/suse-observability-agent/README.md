@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.8.0`
+Current chart version is `1.8.1`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -534,20 +534,20 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | global.url.fromSecret | string | `""` | Name of an existing Secret containing STS_URL. Supports Helm templating. When set, takes precedence over stackstate.url. |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so58"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-so60"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxy.image.tag | string | `"1.39.6-so7"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"1.0.0-so15"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"42992faf-1136-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"a99778e2-1139-release"` |  |
 | installCrds | bool | `true` | Install SUSE Observability CRDs when OTel is enabled. Prometheus Operator CRDs remain controlled separately by otel.prometheusScraping.monitorCrds.enabled. |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"6355e705-1134-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"16a67d18-1138-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -562,7 +562,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | logsAgent.enabled | bool | `true` | Enable Promtail pod-log collection when the experimental OTel logs selector is false. |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.11-so40"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.11-so41"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.podAnnotations | object | `{}` | Additional annotations on the logs agent pods. |
 | logsAgent.podLabels | object | `{}` | Additional labels on the logs agent pods. |
@@ -608,7 +608,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
 | nodeAgent.containers.processAgent.image.registry | string | `nil` |  |
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
-| nodeAgent.containers.processAgent.image.tag | string | `"6c6a1989"` | Default process-agent container image tag. |
+| nodeAgent.containers.processAgent.image.tag | string | `"84d9b00d"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
 | nodeAgent.containers.processAgent.procVolumeReadOnly | bool | `true` | Configure whether /host/proc is read only for the process agent container |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | CPU resource limits. |
@@ -738,7 +738,7 @@ Repeat the `Role`+`RoleBinding` per namespace listed in `secretNamespaces`. The 
 | otel.prometheusScraping.targetAllocator.image.pullPolicy | string | `"IfNotPresent"` | Container image pull policy for the Target Allocator. |
 | otel.prometheusScraping.targetAllocator.image.registry | string | `nil` | Override registry for the Target Allocator image. Defaults to global.imageRegistry. |
 | otel.prometheusScraping.targetAllocator.image.repository | string | `"stackstate/opentelemetry-target-allocator"` | SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release. |
-| otel.prometheusScraping.targetAllocator.image.tag | string | `"0.161.0-so7"` | SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>). |
+| otel.prometheusScraping.targetAllocator.image.tag | string | `"0.161.0-so8"` | SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>). |
 | otel.prometheusScraping.targetAllocator.mtlsEnabled | bool | `false` | Enable mTLS between scraper collectors and the Target Allocator. When true, credentials referenced by ServiceMonitors and PodMonitors are fetched over a mutually authenticated TLS connection. Requires cert-manager to be installed. See the README for details. |
 | otel.prometheusScraping.targetAllocator.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | otel.prometheusScraping.targetAllocator.podAnnotations | object | `{}` | Additional annotations for Target Allocator pods. |

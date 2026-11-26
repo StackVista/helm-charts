@@ -1195,7 +1195,7 @@ stackstate:
         repository: stackstate/suse-observability-mcp
         # stackstate.components.mcp.image.tag -- Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "20261124051849-f2dbdace"
+        tag: "20261126032702-f2dbdace"
       # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       # @section -- Public
       replicaCount: 1
@@ -1648,7 +1648,7 @@ stackstate:
           repository: stackstate/container-tools
           # stackstate.components.router.mode.image.tag -- Container image tag for router mode containers.
           # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-          tag: "1.8.6-so58"
+          tag: "1.8.6-so60"
           # stackstate.components.router.mode.image.pullPolicy -- Image pull policy for router mode containers.
           # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
           pullPolicy:
@@ -2046,7 +2046,7 @@ stackstate:
         repository: stackstate/clickhouse
         # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "26.8.38.9-so1"
+        tag: "26.8.40.7-so1"
         # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
         pullPolicy: IfNotPresent
@@ -2109,7 +2109,7 @@ stackstate:
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "3.9.2-so41"
+        tag: "3.9.2-so42"
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
         pullPolicy: IfNotPresent
@@ -2159,7 +2159,7 @@ stackstate:
         repository: stackstate/nginx-prometheus-exporter
         # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "1.5.3-so10"
+        tag: "1.5.3-so11"
         # stackstate.components.nginxPrometheusExporter.image.pullPolicy -- Image pull policy for nginx-prometheus-exporter containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
         pullPolicy: IfNotPresent
@@ -2173,7 +2173,7 @@ stackstate:
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "1.8.6-so58"
+        tag: "1.8.6-so60"
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
         pullPolicy: IfNotPresent
@@ -2198,7 +2198,7 @@ stackstate:
         repository: stackstate/vmagent
         # stackstate.components.vmagent.image.tag -- Tag of the `vmagent` Docker image. Updated by updatecli.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "1.155.0-so3"
+        tag: "1.155.0-so4"
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       # @section -- Public
       poddisruptionbudget:
@@ -2289,7 +2289,7 @@ stackstate:
         repository: stackstate/workload-observer
         # stackstate.components.workloadObserver.image.tag -- Tag used for the `workloadObserver` component Docker image..
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "0cc726a7-1123-release"
+        tag: "9842f89d-1127-release"
       # stackstate.components.workloadObserver.podAnnotations -- Extra annotations
       # @section -- Public
       podAnnotations: {}
@@ -2594,7 +2594,7 @@ elasticsearch:
   maxUnavailable: 1
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
   # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-  imageTag: "8.19.25-so6"
+  imageTag: "8.19.26-so1"
   # elasticsearch.esJavaOpts -- JVM options of the Elasticsearch nodes, mainly the heap (`-Xmx`/`-Xms`). When unset, the sizing profile sets `-Xmx1500m -Xms1500m` on `trial`, `10-nonha` and `20-nonha` and `-Xmx3g -Xms3g` otherwise, each with `-Des.allow_insecure_settings=true`. A value replaces these options entirely: keep `-Des.allow_insecure_settings=true`, which backups need, and raise the `elasticsearch.resources` memory with the heap.
   # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
   esJavaOpts: null
@@ -2625,7 +2625,7 @@ elasticsearch:
     image:
       # elasticsearch.prometheus-elasticsearch-exporter.image.tag -- Elasticsearch Prometheus exporter image tag. Updated by updatecli.
       # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-      tag: "1.11.0-so5"
+      tag: "1.11.0-so6"
     # elasticsearch.prometheus-elasticsearch-exporter.resources -- Resource allocation for the Elasticsearch Prometheus exporter.
     # @section -- Public
     resources: {}
@@ -2693,7 +2693,7 @@ hbase:
       resources: {}
     # hbase.hdfs.version -- Full HDFS image tag. Updated by updatecli.
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-    version: "3.5.0-so36"
+    version: "3.5.0-so38"
     datanode:
       # hbase.hdfs.datanode.podAnnotations -- Extra annotations on the HDFS datanode pods. Override `hbase.all.podAnnotations`.
       # @section -- Public
@@ -2880,7 +2880,7 @@ kafka:
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-    tag: "3.9.2-so41"
+    tag: "3.9.2-so42"
   metrics:
     jmx:
       image:
@@ -2892,7 +2892,7 @@ kafka:
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "0.20.0-so29"
+        tag: "0.20.0-so30"
       # kafka.metrics.jmx.resources -- Resource allocation for the Kafka JMX exporter container.
       # @section -- Public
       resources:
@@ -2994,7 +2994,7 @@ s3proxy:
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-    tag: "3.2.0-so38"
+    tag: "3.2.0-so39"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
     pullPolicy: IfNotPresent
@@ -3110,7 +3110,7 @@ zookeeper:
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-    tag: "3.9.7-so6"
+    tag: "3.9.7-so7"
   # zookeeper.resources -- Resource allocation for ZooKeeper pods. Fields left unset are taken from the sizing profile.
   # @section -- Public
   resources: {}
@@ -3154,7 +3154,7 @@ anomaly-detection:
   image:
     # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.3-latest
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-    tag: "5.2.0-snapshot.247.rebuild.97"
+    tag: "5.2.0-snapshot.247.rebuild.98"
     # anomaly-detection.image.registry -- Base container image registry for all containers, except for the wait container
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
     registry: quay.io
@@ -3192,7 +3192,7 @@ victoria-metrics-0:
     image:
       # victoria-metrics-0.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
       # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-      tag: "1.155.0-so3"
+      tag: "1.155.0-so4"
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
     fullnameOverride: suse-observability-victoria-metrics-0
@@ -3229,7 +3229,7 @@ victoria-metrics-0:
       image:
         # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "1.8.6-so58"
+        tag: "1.8.6-so60"
       # victoria-metrics-0.backup.setupCron.resources -- Resources of the container that sets up the backup cron schedule.
       # @section -- Public
       resources:
@@ -3243,7 +3243,7 @@ victoria-metrics-0:
       image:
         # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "1.155.0-so11"
+        tag: "1.155.0-so13"
       # victoria-metrics-0.backup.vmbackup.resources -- Resources of the Victoria Metrics backup container.
       # @section -- Public
       resources:
@@ -3289,7 +3289,7 @@ victoria-metrics-1:
     image:
       # victoria-metrics-1.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
       # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-      tag: "1.155.0-so3"
+      tag: "1.155.0-so4"
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
     fullnameOverride: suse-observability-victoria-metrics-1
@@ -3326,7 +3326,7 @@ victoria-metrics-1:
       image:
         # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "1.8.6-so58"
+        tag: "1.8.6-so60"
       # victoria-metrics-1.backup.setupCron.resources -- Resources of the container that sets up the backup cron schedule.
       # @section -- Public
       resources:
@@ -3340,7 +3340,7 @@ victoria-metrics-1:
       image:
         # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "1.155.0-so11"
+        tag: "1.155.0-so13"
       # victoria-metrics-1.backup.vmbackup.resources -- Resources of the Victoria Metrics backup container.
       # @section -- Public
       resources:
@@ -3380,7 +3380,7 @@ victoria-metrics:
       repository: stackstate/vmrestore
       # victoria-metrics.restore.image.tag -- Container image tag for 'vmrestore' containers.
       # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-      tag: "1.155.0-so4"
+      tag: "1.155.0-so5"
       # victoria-metrics.restore.image.pullPolicy -- Image pull policy for `vmrestore` containers.
       # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
       pullPolicy: IfNotPresent
@@ -3422,7 +3422,7 @@ clickhouse:
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-    tag: "26.8.38.9-so1"
+    tag: "26.8.40.7-so1"
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha).
   # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
   replicaCount: null
@@ -3449,7 +3449,7 @@ clickhouse:
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
       # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-      tag: "2.7.2-so43"
+      tag: "2.7.2-so44"
     # clickhouse.backup.bucketName -- Name of the storage bucket where ClickHouse backups are stored.
     # @section -- Public
     bucketName: "sts-clickhouse-backup"
@@ -3576,7 +3576,7 @@ kubernetes-rbac-agent:
         repository: stackstate/kubernetes-rbac-agent
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "6355e705-1134-release"
+        tag: "16a67d18-1138-release"
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.

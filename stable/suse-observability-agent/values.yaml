@@ -229,7 +229,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: "6c6a1989"
+        tag: "84d9b00d"
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
@@ -540,7 +540,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: "3.6.11-so40"
+    tag: "3.6.11-so41"
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -1027,7 +1027,7 @@ otel:
         # otel.prometheusScraping.targetAllocator.image.repository -- SUSE Observability Target Allocator image repository, rebuilt from the OpenTelemetry Operator source on SUSE BCI so we can patch Go-stdlib and golang.org/x/* CVEs without waiting for an upstream operator release.
         repository: stackstate/opentelemetry-target-allocator
         # otel.prometheusScraping.targetAllocator.image.tag -- SUSE Observability Target Allocator image tag (<upstream-version>-so<release-increment>).
-        tag: "0.161.0-so7"
+        tag: "0.161.0-so8"
         # otel.prometheusScraping.targetAllocator.image.pullPolicy -- Container image pull policy for the Target Allocator.
         pullPolicy: IfNotPresent
 
@@ -1230,7 +1230,7 @@ httpHeaderInjectorWebhook:
       # sidecarInjector.image.repository - Repository for the docker image
       repository: "stackstate/generic-sidecar-injector"
       # sidecarInjector.image.tag - Tag for the docker image
-      tag: "42992faf-1136-release"
+      tag: "a99778e2-1139-release"
 
   # certificatePrehook -- Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook
   certificatePrehook:
@@ -1238,7 +1238,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: "1.8.6-so58"
+      tag: "1.8.6-so60"
 
 ########################
 # Rbac Agent variables #
@@ -1264,7 +1264,7 @@ kubernetes-rbac-agent:
         # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
         # pullPolicy:
         # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        tag: "6355e705-1134-release"
+        tag: "16a67d18-1138-release"
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
