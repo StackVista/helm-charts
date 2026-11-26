@@ -528,7 +528,7 @@ stackstate:
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
         # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-        tag: "7.0.0-snapshot.20261125130552-master-1ed43df"
+        tag: "7.0.0-snapshot.20261126105247-master-f57fe84"
       # stackstate.components.all.podAnnotations -- Extra annotations
       # @section -- Public
       podAnnotations: {}
@@ -2768,7 +2768,7 @@ hbase:
     podLabels: {}
     # hbase.stackgraph.version -- StackGraph version used in the StackGraph and HBase image tags. Updated by updatecli.
     # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
-    version: "8.3.31"
+    version: "8.4.0"
     persistence:
       # hbase.stackgraph.persistence.size -- Size of the StackGraph volume (non-HA profiles). When unset, the sizing profile sets it.
       # @section -- Public
