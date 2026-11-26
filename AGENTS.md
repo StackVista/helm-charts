@@ -119,12 +119,29 @@ pre-commit run helmlint --all-files
 ### Helm Templates
 
 - Use `.helmignore` to exclude test files from packaged charts
-- Document values in `values.yaml` using helm-docs comment format:
+- Document values in `values.yaml` using helm-docs comment format. In `stable/` charts
+  that are classified (#429; currently `suse-observability`), every value also needs a
+  support level on the line after its description:
   ```yaml
-  # key.subkey -- Description of the value.
   key:
-    subkey: "default-value"
+    # key.public -- Description of the value.
+    # @section -- Public
+    public: "default-value"
+    # key.internal -- Description of the value.
+    # @ignored Internal: overriding it is not supported, and it may change or be removed in any release without notice.
+    internal: "default-value"
   ```
+  - `@section -- Public`: a supported setting, listed in the README. Renames and removals
+    need a deprecation period and a release note.
+  - `@ignored ...`: internal (wiring, per-image settings, most replica counts, JVM sizing,
+    deprecated and debug values), hidden from the README.
+  - Describe a block such as `resources` once with one marker, or describe and mark each
+    value inside it, never both.
+  - A subchart value users are told to set must be declared in the parent `values.yaml`
+    with the subchart's default, or helm-docs drops its description.
+  - The marker meanings are in the header of `stable/suse-observability/values.yaml`; which
+    values are public (resources, scheduling, pod metadata, PDBs, log levels, documented
+    settings) is defined in #429.
 - README.md files are auto-generated from `README.md.gotmpl` using helm-docs
 - Do NOT manually edit README.md files in chart directories
 

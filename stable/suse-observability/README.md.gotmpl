@@ -22,10 +22,6 @@ and Tephra. The AI assistant and anomaly detection use the same policy because
 the assistant stores conversations in SQLite and the anomaly detection manager
 owns persistent model state. ClickHouse has no PDB template.
 
-The bundled OTel collector uses the same default when its Deployment PDB is
-enabled. Override it through
-`opentelemetry-collector.podDisruptionBudget.unhealthyPodEvictionPolicy`.
-
 ## Pod metadata
 
 Pod annotations for HBase workloads can be set through
@@ -927,7 +923,22 @@ If you encounter issues not covered here:
 2. Review Helm release status: `helm status suse-observability -n <namespace>`
 3. Compare rendered templates: `helm template suse-observability . -f values.yaml > rendered.yaml`
 
-{{ template "chart.valuesSection" . }}
+## Values
+
+Values are documented by support level.
+
+**Public values**, listed below, are safe to set. They keep working across upgrades. When one is renamed, changes meaning or is removed, the release notes say so first and the old form keeps working for a deprecation period.
+
+**Internal values** are everything in `values.yaml` that is not listed here. They cover chart wiring, per-image settings (the global registry and pull secrets are public), most replica counts, the JVM memory split (`sizing` blocks), deprecated values and debug settings, and may change or disappear in any release without notice. Overriding one is not supported. To size an installation, use `global.suseObservability.sizing.profile` and the public `resources` values.
+{{ range .Sections.Sections }}
+### {{ .SectionName }}
+
+| Key | Description | Type | Default |
+|-----|-------------|------|---------|
+{{- range .SectionItems }}
+| {{ .Key }} | {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} | {{ .Type }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+{{- end }}
+{{- end }}
 
 ## Authentication
 

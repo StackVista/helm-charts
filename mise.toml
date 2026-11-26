@@ -2,7 +2,7 @@
 go = "1.26.4"
 go-jsonnet = "latest"
 helm = "latest"
-helm-docs = "latest"
+helm-docs = "1.14.2"
 pipx = "latest"
 pre-commit = "latest"
 shellcheck = "latest"

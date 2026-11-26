@@ -40,10 +40,6 @@ and Tephra. The AI assistant and anomaly detection use the same policy because
 the assistant stores conversations in SQLite and the anomaly detection manager
 owns persistent model state. ClickHouse has no PDB template.
 
-The bundled OTel collector uses the same default when its Deployment PDB is
-enabled. Override it through
-`opentelemetry-collector.podDisruptionBudget.unhealthyPodEvictionPolicy`.
-
 ## Pod metadata
 
 Pod annotations for HBase workloads can be set through
@@ -947,913 +943,660 @@ If you encounter issues not covered here:
 
 ## Values
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| ai | object | `{"assistant":{"anthropic":{"apiKey":"","fromExternalSecret":{"key":"ANTHROPIC_API_KEY","name":""}},"bedrock":{"awsRegion":"eu-west-1"},"enabled":false,"provider":"bedrock"},"mcp":{"enabled":false},"platformOptimization":{"enabled":false}}` | Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them. |
-| ai.assistant | object | `{"anthropic":{"apiKey":"","fromExternalSecret":{"key":"ANTHROPIC_API_KEY","name":""}},"bedrock":{"awsRegion":"eu-west-1"},"enabled":false,"provider":"bedrock"}` | AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime) |
-| ai.assistant.anthropic.apiKey | string | `""` | Anthropic API key used when `ai.assistant.provider=anthropic`. |
-| ai.assistant.anthropic.fromExternalSecret.key | string | `"ANTHROPIC_API_KEY"` | Key in the external secret that contains the Anthropic API key. |
-| ai.assistant.anthropic.fromExternalSecret.name | string | `""` | Existing secret name that contains the Anthropic API key. When set, the chart will not create an internal secret for `ANTHROPIC_API_KEY`. |
-| ai.assistant.bedrock.awsRegion | string | `"eu-west-1"` | AWS region used when `ai.assistant.provider=bedrock`. |
-| ai.assistant.enabled | bool | `false` | Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. Enabling the AI Assistant always enables the MCP Server. |
-| ai.assistant.provider | string | `"bedrock"` | LLM provider for AI Assistant. Possible values: `bedrock` or `anthropic`. |
-| ai.mcp | object | `{"enabled":false}` | MCP (Model Context Protocol) Server for use with external code assistants. Entitlement: Included with SUSE Observability (Rancher Prime) |
-| ai.mcp.enabled | bool | `false` | Enables the MCP Server for use with external code assistants, without enabling the AI Assistant or configuring an LLM provider. The MCP Server is also enabled automatically when `ai.assistant.enabled=true`. |
-| ai.platformOptimization | object | `{"enabled":false}` | Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization. |
-| ai.platformOptimization.enabled | bool | `false` | Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution. |
-| anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
-| anomaly-detection.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
-| anomaly-detection.image.spotlightRepository | string | `"stackstate/spotlight"` | Repository of the spotlight Docker image. |
-| anomaly-detection.image.tag | string | `"5.2.0-snapshot.247.rebuild.97"` | the chart image tag, e.g. 4.1.3-latest |
-| backup.additionalLogging | string | `""` | Additional logback config for backup components |
-| backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
-| backup.configuration.enabled | bool | `true` | Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled. |
-| backup.configuration.maxLocalFiles | int | `10` | The maximum number of configuration backups stored on the settings PVC (see backup.storage.settingsPvc.size). Each backup consists of a settings file and a StackPacks archive; StackPacks archives without a matching settings file are removed. |
-| backup.configuration.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
-| backup.configuration.scheduled.backupRetentionTimeDelta | string | `"365 days ago"` | Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted. |
-| backup.configuration.scheduled.pvc.accessModes | list | `["ReadWriteOnce"]` | Access mode for settings backup data. |
-| backup.configuration.scheduled.pvc.size | string | `"1Gi"` | Size of volume for settings backup |
-| backup.configuration.scheduled.pvc.storageClass | string | `nil` | Storage class of the volume for settings backup data. |
-| backup.configuration.scheduled.schedule | string | `"0 4 * * *"` | Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
-| backup.configuration.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| backup.configuration.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
-| backup.configuration.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
-| backup.configuration.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| backup.configuration.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| backup.configuration.yaml.maxSizeLimit | string | `"100Mi"` | Max size of the settings backup or installed via a stackpack |
-| backup.elasticsearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the storage bucket where ElasticSearch snapshots are stored. |
-| backup.elasticsearch.enabled | bool | `true` | Enable scheduled ElasticSearch snapshots (creation of the SLM policy). Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
-| backup.elasticsearch.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
-| backup.elasticsearch.scheduled.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html). |
-| backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | string | `"30d"` | Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
-| backup.elasticsearch.scheduled.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
-| backup.elasticsearch.scheduled.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
-| backup.elasticsearch.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| backup.elasticsearch.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
-| backup.elasticsearch.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
-| backup.elasticsearch.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| backup.elasticsearch.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| backup.enabled | bool | `false` | Enables backup/restore for all data |
-| backup.initJobAnnotations | object | `{}` | Annotations for Backup-init Job. |
-| backup.manualJobs.containerSecurityContext | object | `{}` | Container security overrides for all manual Elasticsearch, StackGraph, configuration and VictoriaMetrics backup/restore Jobs embedded in the backup scripts ConfigMap, including their init containers. Merged over common.container.securityContext; explicit false and zero override inherited values. Does not affect scheduled backups, the settings-PVC initializer, or other workloads. Pod security remains controlled by the component's securityContext. |
-| backup.poddisruptionbudget.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable during the backup. |
-| backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the storage bucket to store StackGraph backups. |
-| backup.stackGraph.enabled | bool | `true` | Enable scheduled StackGraph backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
-| backup.stackGraph.restore.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| backup.stackGraph.restore.tempData.size | string | `nil` |  |
-| backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
-| backup.stackGraph.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
-| backup.stackGraph.scheduled.backupRetentionTimeDelta | string | `"30 days ago"` | Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted. |
-| backup.stackGraph.scheduled.implementation | string | `"all"` | Allows choosing the backup implementation to run on a schedule, can be "v1", "v2" or "all". For now the default is "v1", due to the v2 system not declared 'stable' yet. Not-schedule jobs will be suspended. |
-| backup.stackGraph.scheduled.schedule | string | `"0 3 * * *"` | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
-| backup.stackGraph.scheduled.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| backup.stackGraph.scheduled.tempData.size | string | `nil` |  |
-| backup.stackGraph.scheduled.tempData.storageClass | string | `nil` |  |
-| backup.stackGraph.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| backup.stackGraph.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
-| backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
-| backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| backup.stackGraph.v2.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| backup.stackGraph.v2.tempData.size | string | `"20Gi"` |  |
-| backup.stackGraph.v2.tempData.storageClass | string | `nil` |  |
-| backup.storage.backend.azure | object | `{"accountKey":"","accountName":"","enabled":false,"endpoint":"","fromExternalSecret":""}` | Use Azure Blob Storage |
-| backup.storage.backend.azure.accountKey | string | `""` | Azure storage account key (optional, falls back to managed identity) |
-| backup.storage.backend.azure.accountName | string | `""` | Azure storage account name |
-| backup.storage.backend.azure.enabled | bool | `false` | Enable Azure backend |
-| backup.storage.backend.azure.endpoint | string | `""` | Azure blob endpoint (auto-derived from accountName if not set) |
-| backup.storage.backend.azure.fromExternalSecret | string | `""` | Use an externally-managed secret for Azure backend credentials (keys: azureAccountName, azureAccountKey). When set, accountName/accountKey values are not required. |
-| backup.storage.backend.pvc | object | `{"accessModes":["ReadWriteOnce"],"enabled":false,"size":"500Gi","storageClass":""}` | Use local PVC storage (default when no other backend configured) |
-| backup.storage.backend.pvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
-| backup.storage.backend.pvc.enabled | bool | `false` | Enable PVC backend |
-| backup.storage.backend.pvc.size | string | `"500Gi"` | Size of the PVC for S3Proxy data |
-| backup.storage.backend.pvc.storageClass | string | `""` | Storage class for the PVC |
-| backup.storage.backend.s3 | object | `{"accessKey":"","enabled":false,"endpoint":"","fromExternalSecret":"","region":null,"secretKey":""}` | Use external S3-compatible storage |
-| backup.storage.backend.s3.accessKey | string | `""` | AWS access key (optional, falls back to instance profile/IRSA) |
-| backup.storage.backend.s3.enabled | bool | `false` | Enable S3 backend |
-| backup.storage.backend.s3.endpoint | string | `""` | S3 endpoint URL (optional, defaults to AWS) |
-| backup.storage.backend.s3.fromExternalSecret | string | `""` | Use an externally-managed secret for S3 backend credentials (keys: backendAccessKey, backendSecretKey). When set, accessKey/secretKey values are not required. |
-| backup.storage.backend.s3.region | string | `nil` | AWS region (defaults to us-east-1) |
-| backup.storage.backend.s3.secretKey | string | `""` | AWS secret key (optional) |
-| backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
-| backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
-| backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
-| backup.storage.settingsPvc.storageClass | string | `""` | Storage class for the settings PVC |
-| clickhouse.backup.enabled | bool | `true` | Enable scheduled ClickHouse backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
-| clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
-| clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.7.2-so43"` | Container image tag for 'clickhouse' backup containers. |
-| clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
-| clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| clickhouse.image.tag | string | `"26.8.38.9-so1"` | Container image tag for 'clickhouse' containers. |
-| clickhouse.persistence.size | string | `nil` | Size of persistent volume for each clickhouse pod |
-| clickhouse.replicaCount | string | `nil` | Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha). |
-| clickhouse.resources | object | `{}` |  |
-| cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
-| commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
-| deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
-| elasticsearch.esJavaOpts | string | `nil` | JVM options |
-| elasticsearch.imageTag | string | `"8.19.25-so6"` | Elasticsearch image tag. Updated by updatecli. |
-| elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"1.11.0-so5"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
-| elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
-| elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
-| elasticsearch.resources | object | `{}` | Override Elasticsearch resources |
-| elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":null}}}` | PVC template defaulting to 250Gi default volumes |
-| gateway | object | `{"annotations":{},"enabled":false,"filters":[],"hostnames":[],"parentRefs":[],"path":"","timeouts":{}}` | Gateway API configuration for exposing SUSE Observability via HTTPRoute. |
-| gateway.annotations | object | `{}` | Annotations for HTTPRoute objects. |
-| gateway.enabled | bool | `false` | Enable Gateway API HTTPRoute for SUSE Observability. |
-| gateway.filters | list | `[]` | Optional filters for the HTTPRoute rule. |
-| gateway.hostnames | list | `[]` | List of hostnames for the HTTPRoute. If not specified, derived from baseUrl. |
-| gateway.parentRefs | list | `[]` | List of parent Gateway references (required when gateway.enabled is true). |
-| gateway.path | string | `""` | Path prefix for the HTTPRoute rule. If not specified, derived from baseUrl or defaults to "/". |
-| gateway.timeouts | object | `{}` | Optional timeouts for the HTTPRoute rule. |
-| global.backup.enabled | bool | `false` |  |
-| global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
-| global.features | object | `{"experimentalOtelClusterTopology":false,"experimentalOtelLogs":false}` | Feature switches for SUSE Observability. |
-| global.features.experimentalOtelClusterTopology | bool | `false` | Tell agents that the platform maps OTel cluster topology. Agents with the OTel Kubernetes topology exporter then stop sending legacy topology; older agents are unaffected. This is a preproduction feature: enable only once the Kubernetes StackPack has feature parity with Kubernetes-V2. |
-| global.features.experimentalOtelLogs | bool | `false` | Enable OpenTelemetry-based log ingestion to signal to all components that they should support it alongside legacy Elasticsearch-based log ingestion, preserving backwards compatibility between the two while OTel-based logs are rolled out. This is a preproduction feature, usage may change in upcoming releases. |
-| global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
-| global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. When using global.suseObservability (global mode), set this to "registry.rancher.com" to match the default behavior of the suse-observability-values chart. |
-| global.receiverApiKey | string | `""` | Deprecated. Use global.suseObservability.receiverApiKey instead. |
-| global.s3proxy.credentials.accessKey | string | `"default-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
-| global.s3proxy.credentials.fromExternalSecret | string | `""` | Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required. |
-| global.s3proxy.credentials.secretKey | string | `"default-secret-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
-| global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
-| global.suseObservability | object | `{"adminPassword":"","adminPasswordBcrypt":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"applicationDomains":["Observability"],"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""},"tolerations":null}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). IMPORTANT: When using this section, also set global.imageRegistry to "registry.rancher.com" for SUSE Observability images. |
-| global.suseObservability.adminPassword | string | `""` | Admin password for the default 'admin' user (plain text). Mutually exclusive with adminPasswordBcrypt. Required (one of the two) when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. |
-| global.suseObservability.adminPasswordBcrypt | string | `""` | Admin password as bcrypt hash. Mutually exclusive with adminPassword. |
-| global.suseObservability.affinity | object | `{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}}` | Affinity configuration for all SUSE Observability components including infrastructure. Resolved per field (nodeAffinity, podAffinity, podAntiAffinity): a component value, then `stackstate.components.all`, then this global value; set a field to `{}` to clear it. |
-| global.suseObservability.affinity.nodeAffinity | string | `nil` | Node affinity configuration applied to all components (application and infrastructure). Standard Kubernetes nodeAffinity spec. |
-| global.suseObservability.affinity.podAffinity | string | `nil` | Pod affinity configuration for application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec. |
-| global.suseObservability.affinity.podAntiAffinity | object | `{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}` | Simplified pod anti-affinity configuration for HA profiles. Applied to all infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) for HA profiles. |
-| global.suseObservability.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution | bool | `true` | Enable required (hard) pod anti-affinity. When true, pods must be scheduled on different nodes. When false, soft anti-affinity is used (preferred but not required). |
-| global.suseObservability.affinity.podAntiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | Topology key for pod anti-affinity. Determines the domain for spreading pods (e.g., kubernetes.io/hostname for node-level, topology.kubernetes.io/zone for zone-level). |
-| global.suseObservability.applicationDomains | list | `["Observability"]` | Enabled application domains. Default is ["Observability"]. Only "Observability" is currently supported. |
-| global.suseObservability.baseUrl | string | `""` | Base URL for SUSE Observability (required when using global.suseObservability). |
-| global.suseObservability.license | string | `""` | SUSE Observability license key (required when using global.suseObservability). |
-| global.suseObservability.pullSecret | object | `{"password":"","username":""}` | Image pull secret configuration. |
-| global.suseObservability.pullSecret.password | string | `""` | Password for image pull secret. |
-| global.suseObservability.pullSecret.username | string | `""` | Username for image pull secret. |
-| global.suseObservability.receiverApiKey | string | `""` | Optional, prefer to use Service Tokens instead for more control and better security. Will use stackstate.apiKey.key if not provided, stackstate.apiKey can also be used to provide the apiKey via an external secret. Please see the documentation on how to use Service Tokens instead. |
-| global.suseObservability.sizing | object | `{"profile":""}` | Sizing profile configuration. |
-| global.suseObservability.sizing.profile | string | `""` | Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values. |
-| global.suseObservability.tolerations | string | `nil` | Tolerations applied to every SUSE Observability workload, including subcharts, hooks, backup and restore jobs and CronJobs. A component's own tolerations (or `stackstate.components.all.tolerations`) replace this list rather than extending it; set them to `[]` to clear. |
-| global.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
-| global.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
-| global.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| global.wait.image.tag | string | `"1.0.12-so25"` | Container image tag for wait containers. |
-| hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.version | string | `"3.5.0-so36"` | Full HDFS image tag. Updated by updatecli. |
-| hbase.stackgraph.version | string | `"8.3.31"` |  |
-| hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| ingress.annotations | object | `{}` | Annotations for ingress objects. |
-| ingress.enabled | bool | `false` | Enable use of ingress controllers. |
-| ingress.hosts | list | `[]` | List of ingress hostnames; the paths are fixed to StackState backend services |
-| ingress.ingressClassName | string | `""` |  |
-| ingress.path | string | `"/"` |  |
-| ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
-| kafka.image.registry | string | `"quay.io"` | Kafka image registry |
-| kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"3.9.2-so41"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
-| kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
-| kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
-| kafka.metrics.jmx.image.tag | string | `"0.20.0-so29"` | Kafka JMX exporter image tag |
-| kafka.metrics.jmx.resources.limits.cpu | string | `"1"` |  |
-| kafka.metrics.jmx.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
-| kafka.metrics.jmx.resources.requests.cpu | string | `"200m"` |  |
-| kafka.metrics.jmx.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| kafka.metrics.jmx.resources.requests.memory | string | `"300Mi"` |  |
-| kafka.persistence.size | string | `nil` | Size of persistent volume for each Kafka pod |
-| kafka.replicaCount | string | `nil` | Number of Kafka replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| kafka.resources | object | `{}` | Kafka resources per pods. |
-| kafkaup-operator.enabled | bool | `true` |  |
-| kafkaup-operator.image.pullPolicy | string | `""` |  |
-| kafkaup-operator.image.registry | string | `"quay.io"` |  |
-| kafkaup-operator.image.repository | string | `"stackstate/kafkaup-operator"` |  |
-| kafkaup-operator.image.tag | string | `"0.0.18"` |  |
-| kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
-| kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
-| kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |
-| kafkaup-operator.startVersion | string | `"2.3.1"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
-| kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
-| kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"6355e705-1134-release"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
-| kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Additional annotations on the pod |
-| kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
-| kubernetes-rbac-agent.containers.rbacAgent.priorityClassName | string | `""` | Set priorityClassName |
-| kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
-| kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
-| kubernetes-rbac-agent.containers.rbacAgent.tolerations | string | `nil` | Set tolerations |
-| minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","persistence":{"enabled":false},"s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
-| minio.accessKey | string | `""` | DEPRECATED: Use global.s3proxy.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
-| minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |
-| minio.azuregateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.azure.enabled instead. |
-| minio.fullnameOverride | string | `""` | DEPRECATED: Used for backward compatibility with existing deployments. |
-| minio.persistence | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.pvc |
-| minio.persistence.enabled | bool | `false` | DEPRECATED: Use backup.storage.pvc.enabled instead. |
-| minio.s3gateway | object | `{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""}` | DEPRECATED: Use backup.storage.backend.s3 instead. When minio.s3gateway.enabled is true, S3Proxy will be configured to use S3 as the backend. |
-| minio.s3gateway.accessKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.accessKey instead. |
-| minio.s3gateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.s3.enabled instead. |
-| minio.s3gateway.secretKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.secretKey instead. |
-| minio.s3gateway.serviceEndpoint | string | `""` | DEPRECATED: Use backup.storage.backend.s3.endpoint instead. |
-| minio.secretKey | string | `""` | DEPRECATED: Use global.s3proxy.credentials.secretKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
-| minio.serviceAccount | object | `{"annotations":{},"create":true,"name":""}` | DEPRECATED: Use s3proxy.serviceAccount instead. |
-| minio.serviceAccount.annotations | object | `{}` | DEPRECATED: Use s3proxy.serviceAccount.annotations instead. If set, will be merged into the S3Proxy service account annotations (s3proxy values take precedence). |
-| minio.serviceAccount.create | bool | `true` | DEPRECATED: Use s3proxy.serviceAccount.create instead. |
-| minio.serviceAccount.name | string | `""` | DEPRECATED: Use s3proxy.serviceAccount.name instead. If set, will be used as fallback for the S3Proxy service account name. |
-| networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
-| networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
-| opentelemetry-collector.image.registry | string | `"quay.io"` | Base container image registry. |
-| opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.80"` | Container image tag for 'opentelemetry-collector' containers. |
-| opentelemetry-collector.resources.limits.cpu | string | `"500m"` |  |
-| opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
-| opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
-| opentelemetry-collector.resources.requests.memory | string | `"512Mi"` |  |
-| pull-secret.credentials | list | `[]` | Registry and associated credentials (username, password) that will be stored in the pull-secret |
-| pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
-| pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
-| s3proxy.affinity | object | `{}` | Affinity settings for the S3Proxy pod. Each field set here replaces the same field from `stackstate.components.all.affinity` and global affinity. |
-| s3proxy.extraEnv.open | object | `{}` | Extra open environment variables to inject into the S3Proxy pod. |
-| s3proxy.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into the S3Proxy pod via a `Secret` object. |
-| s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
-| s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
-| s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.2.0-so38"` | Image tag for S3Proxy |
-| s3proxy.jetty.maxThreads | int | `32` |  |
-| s3proxy.logLevel | string | `"info"` |  |
-| s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
-| s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
-| s3proxy.metrics.enabled | bool | `true` | Enable / disable S3Proxy Prometheus metrics. |
-| s3proxy.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
-| s3proxy.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
-| s3proxy.nodeSelector | object | `{}` | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) |
-| s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
-| s3proxy.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"700Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"700Mi"}}` | Resource limits and requests for S3Proxy container |
-| s3proxy.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| s3proxy.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
-| s3proxy.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
-| s3proxy.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| s3proxy.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
-| s3proxy.serviceAccount.annotations | object | `{}` | Annotations for the S3Proxy service account (e.g. for IAM roles). |
-| s3proxy.serviceAccount.create | bool | `true` | Whether to create the service account for S3Proxy. |
-| s3proxy.serviceAccount.name | string | `""` | Override the service account name. Falls back to the deprecated minio.serviceAccount.name if set, otherwise "suse-observability-s3proxy". Set an explicit name to preserve existing IAM role bindings. |
-| s3proxy.sizing.baseMemoryConsumption | string | `"250Mi"` | Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc) |
-| s3proxy.sizing.javaHeapMemoryFraction | string | `"70"` | Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap |
-| s3proxy.tolerations | string | `nil` | Tolerations for the S3Proxy pod. Replaces `stackstate.components.all.tolerations` and global tolerations when set. |
-| scc.enabled | bool | `false` | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. Has to be enabled when installing to Openshift >= 4.12 The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment. Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed. |
-| stackstate.allowedOrigins | list | `[]` | Third-party web domains allowed to make cross-origin requests |
-| stackstate.apiKey | object | `{"fromExternalSecret":null,"key":null}` | Optional, API key configuration for StackState. prefer to use Service Tokens instead for more control and better security. |
-| stackstate.apiKey.fromExternalSecret | string | `nil` | Use an external secret for the api key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
-| stackstate.apiKey.key | string | `nil` | API key to be used by the Receiver. |
-| stackstate.authentication | object | `{"adminPassword":null,"file":{},"fromExternalSecret":null,"keycloak":{},"ldap":{},"oidc":{},"rancher":{},"roles":{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]},"serviceToken":{"bootstrap":{"dedicatedSubject":"","roles":[],"token":"","ttl":"24h"}},"sessionLifetime":""}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
-| stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
-| stackstate.authentication.file | object | `{}` | Configure users, their passwords and roles from (config) file |
-| stackstate.authentication.fromExternalSecret | string | `nil` | Use an external secret for the authenticated secrets. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
-| stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Keycloak (both default false). |
-| stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
-| stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to the provider (both default false). |
-| stackstate.authentication.rancher | object | `{}` | Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). Optional `scope` array defaults to `[openid, profile, offline_access]`; add `groups` for Rancher 2.14 or later after allowing it on the OIDCClient. Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Rancher (both default false). |
-| stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]}` | Extend the default role names in StackState |
-| stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
-| stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], resourcePermissions: {}, viewPermissions: [], topologyScope: ""}} |
-| stackstate.authentication.roles.guest | list | `[]` | Extend the role names that have guest permissions (default: 'stackstate-guest') |
-| stackstate.authentication.roles.k8sTroubleshooter | list | `[]` | Extend the role names that have troubleshooter permissions (default: 'stackstate-k8s-troubleshooter') |
-| stackstate.authentication.roles.powerUser | list | `[]` | Extend the role names that have power user permissions (default: 'stackstate-power-user') |
-| stackstate.authentication.serviceToken.bootstrap.dedicatedSubject | string | `""` | Subject solely created for usage with this token and cleaned up with the token |
-| stackstate.authentication.serviceToken.bootstrap.roles | list | `[]` | The roles the service token assumes when it’s used for authentication |
-| stackstate.authentication.serviceToken.bootstrap.token | string | `""` | The service token to set as bootstrap token |
-| stackstate.authentication.serviceToken.bootstrap.ttl | string | `"24h"` | The amount of time the service token is valid for |
-| stackstate.authentication.sessionLifetime | string | `""` | Amount of time to keep a session when a user does not log in |
-| stackstate.baseUrl | string | `nil` | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState. |
-| stackstate.components.aiAssistant.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.aiAssistant.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: secret-key - name: MY_OTHER_SECRET_ENV_VAR   secretName: my-other-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.aiAssistant.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.aiAssistant.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.aiAssistant.image.imageRegistry | string | `""` | `imageRegistry` used for the `ai-assistant` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.aiAssistant.image.pullPolicy | string | `""` | `pullPolicy` used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.aiAssistant.image.repository | string | `"stackstate/suse-observability-borg"` | Repository of the ai-assistant component Docker image. |
-| stackstate.components.aiAssistant.image.tag | string | `"20261123034211-0612c638"` | Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.aiAssistant.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.aiAssistant.persistence | object | `{"size":"1Gi","storageClass":""}` | Persistence settings for the SQLite database. |
-| stackstate.components.aiAssistant.persistence.size | string | `"1Gi"` | Size of the PVC for the SQLite database. |
-| stackstate.components.aiAssistant.persistence.storageClass | string | `""` | Storage class for the SQLite database PVC. |
-| stackstate.components.aiAssistant.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.aiAssistant.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ai-assistant` pods. |
-| stackstate.components.aiAssistant.resources | object | `{}` | Resource allocation for `ai-assistant` pods. |
-| stackstate.components.aiAssistant.serviceAccount.annotations | object | `{}` | Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`. |
-| stackstate.components.aiAssistant.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
-| stackstate.components.all.clickHouse.hostnames | string | `"suse-observability-clickhouse-headless"` |  |
-| stackstate.components.all.deploymentStrategy.type | string | `"RecreateSingletonsOnly"` | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. |
-| stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
-| stackstate.components.all.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
-| stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
-| stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; individual service `pullPolicy`s can be overridden (see below). |
-| stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
-| stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20261125130552-master-1ed43df"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
-| stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
-| stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"pekko_http_requests_active\", \"stackstate*\", \"receiver*\", \"stackgraph*\", \"caffeine*\"]"` |  |
-| stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
-| stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
-| stackstate.components.all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
-| stackstate.components.all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
-| stackstate.components.all.otelInstrumentation.enabled | bool | `false` |  |
-| stackstate.components.all.otelInstrumentation.otlpExporterEndpoint | string | `""` |  |
-| stackstate.components.all.otelInstrumentation.otlpExporterProtocol | string | `"grpc"` |  |
-| stackstate.components.all.otelInstrumentation.serviceNamespace | string | `""` | Instrumentation service namespace. Empty uses <chart-name>-<release-namespace>. Components can override this value. |
-| stackstate.components.all.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| stackstate.components.all.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
-| stackstate.components.all.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
-| stackstate.components.all.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| stackstate.components.all.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| stackstate.components.all.tolerations | string | `nil` | Toleration labels for pod assignment on all components. |
-| stackstate.components.all.zookeeperEndpoint | string | `""` | **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes. |
-| stackstate.components.api.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.api.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.api.docslink | string | `""` | Documentation URL root to use in the product help page & tooltips. |
-| stackstate.components.api.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.api.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.api.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.api.image.imageRegistry | string | `""` | `imageRegistry` used for the `api` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.api.image.pullPolicy | string | `""` | `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.api.image.repository | string | `"stackstate/stackstate-server"` | Repository of the api component Docker image. |
-| stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.api.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `api` pods. |
-| stackstate.components.api.replicaCount | int | `1` | Number of `api` replicas. |
-| stackstate.components.api.resources | object | `{}` | Resource allocation for `api` pods. |
-| stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"45"` |  |
-| stackstate.components.api.supportMode | string | `""` | Mode of support, either Documentation or ContactStackstate |
-| stackstate.components.api.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.api.yaml | object | `{}` |  |
-| stackstate.components.authorizationSync.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.authorizationSync.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.authorizationSync.config | string | `""` | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.authorizationSync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.authorizationSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.authorizationSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.authorizationSync.image.imageRegistry | string | `""` | `imageRegistry` used for the `notification` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.authorizationSync.image.pullPolicy | string | `""` | `pullPolicy` used for the `notification` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.authorizationSync.image.repository | string | `"stackstate/stackstate-server"` |  |
-| stackstate.components.authorizationSync.image.tag | string | `""` | Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.authorizationSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.authorizationSync.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.authorizationSync.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `notification` pods. |
-| stackstate.components.authorizationSync.replicaCount | int | `1` | Number of `notification` replicas. |
-| stackstate.components.authorizationSync.resources | object | `{}` | Resource allocation for `notification` pods. |
-| stackstate.components.authorizationSync.sizing.baseMemoryConsumption | string | `"25Mi"` |  |
-| stackstate.components.authorizationSync.sizing.javaHeapMemoryFraction | string | `"70"` |  |
-| stackstate.components.authorizationSync.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.backup.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.backup.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.backup.podAnnotations | object | `{}` | Extra annotations for backup pods. |
-| stackstate.components.backup.podLabels | object | `{}` | Extra labels for backup pods. |
-| stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |
-| stackstate.components.backup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| stackstate.components.backup.resources.limits.memory | string | `"4000Mi"` |  |
-| stackstate.components.backup.resources.requests.cpu | string | `"1000m"` |  |
-| stackstate.components.backup.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| stackstate.components.backup.resources.requests.memory | string | `"4000Mi"` |  |
-| stackstate.components.backup.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.checks.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.checks.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.checks.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.checks.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.checks.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.checks.image.imageRegistry | string | `""` | `imageRegistry` used for the `checks` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.checks.image.pullPolicy | string | `""` | `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.checks.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
-| stackstate.components.checks.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.checks.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.checks.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.checks.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `checks` pods. |
-| stackstate.components.checks.replicaCount | int | `1` | Number of `checks` replicas. |
-| stackstate.components.checks.resources | object | `{}` | Resource allocation for `state` pods. |
-| stackstate.components.checks.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"60"` |  |
-| stackstate.components.checks.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
-| stackstate.components.checks.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
-| stackstate.components.checks.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.checks.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.clickhouseCleanup.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.clickhouseCleanup.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
-| stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy `clickhouseCleanup` containers. |
-| stackstate.components.clickhouseCleanup.image.registry | string | `"quay.io"` | Registry where to get the image from |
-| stackstate.components.clickhouseCleanup.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| stackstate.components.clickhouseCleanup.image.tag | string | `"26.8.38.9-so1"` | Container image tag for 'clickhouseCleanup' containers. |
-| stackstate.components.clickhouseCleanup.jobAnnotations | object | `{}` | Annotations for clickhouseCleanup job. |
-| stackstate.components.clickhouseCleanup.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.clickhouseCleanup.podAnnotations | object | `{}` | Extra annotations for clickhouse cleanup job pods. |
-| stackstate.components.clickhouseCleanup.podLabels | object | `{}` | Extra labels for clickhouse cleanup job pods. |
-| stackstate.components.clickhouseCleanup.resources | object | `{"limits":{"cpu":"100m","ephemeral-storage":"1Gi","memory":"200Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"200Mi"}}` | Resource allocation for `clickhouseCleanup` pods. |
-| stackstate.components.clickhouseCleanup.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| stackstate.components.clickhouseCleanup.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
-| stackstate.components.clickhouseCleanup.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
-| stackstate.components.clickhouseCleanup.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| stackstate.components.clickhouseCleanup.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
-| stackstate.components.clickhouseCleanup.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.configurationBackup.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.configurationBackup.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.configurationBackup.podAnnotations | object | `{}` | Extra annotations for configuration backup pods. |
-| stackstate.components.configurationBackup.podLabels | object | `{}` | Extra labels for configuration backup pods. |
-| stackstate.components.configurationBackup.resources.limits.cpu | string | `"1000m"` |  |
-| stackstate.components.configurationBackup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| stackstate.components.configurationBackup.resources.limits.memory | string | `"1000Mi"` |  |
-| stackstate.components.configurationBackup.resources.requests.cpu | string | `"1000m"` |  |
-| stackstate.components.configurationBackup.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
-| stackstate.components.configurationBackup.resources.requests.memory | string | `"1000Mi"` |  |
-| stackstate.components.configurationBackup.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
-| stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
-| stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.8.6-so58"` | Container image tag for container-tools containers. |
-| stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
-| stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.correlate.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.correlate.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.correlate.image.imageRegistry | string | `""` | `imageRegistry` used for the `correlate` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.correlate.image.pullPolicy | string | `""` | `pullPolicy` used for the `correlate` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.correlate.image.repository | string | `"stackstate/stackstate-correlate"` | Repository of the correlate component Docker image. |
-| stackstate.components.correlate.image.tag | string | `""` | Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.correlate.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `correlate` pods. |
-| stackstate.components.correlate.replicaCount | string | `nil` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{}` | Resource allocation for `correlate` pods. |
-| stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
-| stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.correlate.split.aggregator.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
-| stackstate.components.correlate.split.aggregator.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
-| stackstate.components.correlate.split.aggregator.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
-| stackstate.components.correlate.split.aggregator.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
-| stackstate.components.correlate.split.aggregator.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.split.aggregator.replicaCount | int | `1` | Number of `aggregator correlate` replicas. |
-| stackstate.components.correlate.split.aggregator.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
-| stackstate.components.correlate.split.aggregator.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.correlate.split.aggregator.sizing.logsMemoryConsumption | string | `nil` |  |
-| stackstate.components.correlate.split.aggregator.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
-| stackstate.components.correlate.split.connection.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
-| stackstate.components.correlate.split.connection.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
-| stackstate.components.correlate.split.connection.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
-| stackstate.components.correlate.split.connection.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
-| stackstate.components.correlate.split.connection.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.split.connection.replicaCount | int | `1` | Number of `connection correlate` replicas. |
-| stackstate.components.correlate.split.connection.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
-| stackstate.components.correlate.split.connection.sizing.baseMemoryConsumption | string | `nil` |  |
-| stackstate.components.correlate.split.connection.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.correlate.split.connection.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
-| stackstate.components.correlate.split.enabled | bool | `false` | Split the correlate into the connection connection correlator, http correlator and aggregator |
-| stackstate.components.correlate.split.httpTracing.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
-| stackstate.components.correlate.split.httpTracing.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"3"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
-| stackstate.components.correlate.split.httpTracing.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
-| stackstate.components.correlate.split.httpTracing.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
-| stackstate.components.correlate.split.httpTracing.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.split.httpTracing.replicaCount | int | `1` | Number of `httpTracing correlate` replicas. |
-| stackstate.components.correlate.split.httpTracing.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
-| stackstate.components.correlate.split.httpTracing.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.correlate.split.httpTracing.sizing.processAgentMemoryConsumption | string | `nil` |  |
-| stackstate.components.correlate.split.httpTracing.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
-| stackstate.components.correlate.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.e2es.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.e2es.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.e2es.esDiskSpaceShare | string | `"10"` | How much disk space from ElasticSearch can use for k8s events ingestion |
-| stackstate.components.e2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.e2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.e2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `e2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.e2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the e2es component Docker image. |
-| stackstate.components.e2es.image.tag | string | `""` | Tag used for the `e2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.e2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.e2es.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.e2es.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `e2es` pods. |
-| stackstate.components.e2es.replicaCount | int | `1` | Number of `e2es` replicas. |
-| stackstate.components.e2es.resources | object | `{}` | Resource allocation for `e2es` pods. |
-| stackstate.components.e2es.retention | int | `30` | Number of days to keep the events data on Es |
-| stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.e2es.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.healthSync.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.healthSync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.healthSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.healthSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.healthSync.image.imageRegistry | string | `""` | `imageRegistry` used for the `healthSync` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.healthSync.image.pullPolicy | string | `""` | `pullPolicy` used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.healthSync.image.repository | string | `"stackstate/stackstate-server"` | Repository of the healthSync component Docker image. |
-| stackstate.components.healthSync.image.tag | string | `""` | Tag used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.healthSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.healthSync.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `healthSync` pods. |
-| stackstate.components.healthSync.replicaCount | int | `1` | Number of `healthSync` replicas. |
-| stackstate.components.healthSync.resources | object | `{}` | Resource allocation for `healthSync` pods. |
-| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"450Mi"` |  |
-| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"45"` |  |
-| stackstate.components.healthSync.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
-| stackstate.components.healthSync.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
-| stackstate.components.healthSync.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.healthSync.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.initializer.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.initializer.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.initializer.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.initializer.image.imageRegistry | string | `""` | `imageRegistry` used for the `initializer` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.initializer.image.pullPolicy | string | `""` | `pullPolicy` used for the `initializer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the initializer component Docker image. |
-| stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.initializer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.initializer.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.initializer.resources | object | `{}` | Resource allocation for `initializer` pods. |
-| stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
-| stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.initializer.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.kafkaTopicCreate.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.kafkaTopicCreate.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
-| stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.9.2-so41"` | Container image tag for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.jobAnnotations | object | `{}` | Annotations for KafkaTopicCreate job. |
-| stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.kafkaTopicCreate.podAnnotations | object | `{}` | Extra annotations for kafka topic create job pods. |
-| stackstate.components.kafkaTopicCreate.podLabels | object | `{}` | Extra labels for kafka topic create job pods. |
-| stackstate.components.kafkaTopicCreate.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
-| stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| stackstate.components.kafkaTopicCreate.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
-| stackstate.components.kafkaTopicCreate.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
-| stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
-| stackstate.components.kafkaTopicCreate.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.mcp.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.mcp.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: secret-key - name: MY_OTHER_SECRET_ENV_VAR   secretName: my-other-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.mcp.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.mcp.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.mcp.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
-| stackstate.components.mcp.image.tag | string | `"20261124051849-f2dbdace"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `mcp` pods. |
-| stackstate.components.mcp.replicaCount | int | `1` | Number of `mcp` replicas. |
-| stackstate.components.mcp.resources | object | `{}` | Resource allocation for `mcp` pods. |
-| stackstate.components.mcp.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
-| stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
-| stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
-| stackstate.components.nginxPrometheusExporter.image.tag | string | `"1.5.3-so10"` | Container image tag for nginx-prometheus-exporter containers. |
-| stackstate.components.notification.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.notification.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.notification.config | string | `""` | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.notification.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.notification.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.notification.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.notification.image.imageRegistry | string | `""` | `imageRegistry` used for the `notification` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.notification.image.pullPolicy | string | `""` | `pullPolicy` used for the `notification` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.notification.image.repository | string | `"stackstate/stackstate-server"` | Repository of the notification component Docker image. |
-| stackstate.components.notification.image.tag | string | `""` | Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.notification.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.notification.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.notification.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `notification` pods. |
-| stackstate.components.notification.replicaCount | int | `1` | Number of `notification` replicas. |
-| stackstate.components.notification.resources | object | `{}` | Resource allocation for `notification` pods. |
-| stackstate.components.notification.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
-| stackstate.components.notification.sizing.javaHeapMemoryFraction | string | `"55"` |  |
-| stackstate.components.notification.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.receiver.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.receiver.esDiskSpaceShare | string | `"90"` | How much disk space from ElasticSearch can use for k8s log ingestion |
-| stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.receiver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.receiver.image.imageRegistry | string | `""` | `imageRegistry` used for the `receiver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.receiver.image.pullPolicy | string | `""` | `pullPolicy` used for the `receiver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.receiver.image.repository | string | `"stackstate/stackstate-receiver"` | Repository of the receiver component Docker image. |
-| stackstate.components.receiver.image.tag | string | `""` | Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.receiver.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `receiver` pods. |
-| stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{}` | Resource allocation for `receiver` pods. |
-| stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
-| stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.receiver.split.base.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
-| stackstate.components.receiver.split.base.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
-| stackstate.components.receiver.split.base.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
-| stackstate.components.receiver.split.base.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
-| stackstate.components.receiver.split.base.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.receiver.split.base.replicaCount | int | `1` | Number of `base receiver` replicas. |
-| stackstate.components.receiver.split.base.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
-| stackstate.components.receiver.split.base.sizing.baseMemoryConsumption | string | `nil` |  |
-| stackstate.components.receiver.split.base.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.receiver.split.base.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
-| stackstate.components.receiver.split.enabled | bool | `false` | Split the receiver into functional units for logs, intake and agent |
-| stackstate.components.receiver.split.logs.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
-| stackstate.components.receiver.split.logs.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
-| stackstate.components.receiver.split.logs.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
-| stackstate.components.receiver.split.logs.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
-| stackstate.components.receiver.split.logs.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.receiver.split.logs.replicaCount | int | `1` | Number of `logs receiver` replicas. |
-| stackstate.components.receiver.split.logs.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
-| stackstate.components.receiver.split.logs.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.receiver.split.logs.sizing.logsMemoryConsumption | string | `nil` |  |
-| stackstate.components.receiver.split.logs.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
-| stackstate.components.receiver.split.processAgent.affinity | object | `{}` | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. |
-| stackstate.components.receiver.split.processAgent.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
-| stackstate.components.receiver.split.processAgent.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
-| stackstate.components.receiver.split.processAgent.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
-| stackstate.components.receiver.split.processAgent.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.receiver.split.processAgent.replicaCount | int | `1` | Number of `processAgent receiver` replicas. |
-| stackstate.components.receiver.split.processAgent.resources | object | `{}` | Resource allocation for pods. If not defined, will take from sizing profile defaults. |
-| stackstate.components.receiver.split.processAgent.sizing.javaHeapMemoryFraction | string | `nil` |  |
-| stackstate.components.receiver.split.processAgent.sizing.processAgentMemoryConsumption | string | `nil` |  |
-| stackstate.components.receiver.split.processAgent.tolerations | string | `nil` | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. |
-| stackstate.components.receiver.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.replicationChecker.affinity | object | `{}` | Affinity settings for replication checker Pod assignment. |
-| stackstate.components.replicationChecker.enabled | bool | `nil` | Enable the stateless replication checker. Null enables it only for built-in HA sizing profiles; true or false overrides the profile default. |
-| stackstate.components.replicationChecker.nodeSelector | object | `{}` | Node labels for replication checker Pod assignment. |
-| stackstate.components.replicationChecker.podAnnotations | object | `{}` | Extra annotations for replication checker Pods. |
-| stackstate.components.replicationChecker.replicaCount | int | `1` | Number of replication checker Pods. |
-| stackstate.components.replicationChecker.resources.limits.cpu | string | `"500m"` | CPU limit for the replication checker. |
-| stackstate.components.replicationChecker.resources.limits.memory | string | `"256Mi"` | Memory limit for the replication checker. |
-| stackstate.components.replicationChecker.resources.requests.cpu | string | `"10m"` | Requested CPU for the replication checker. |
-| stackstate.components.replicationChecker.resources.requests.memory | string | `"64Mi"` | Requested memory for the replication checker. |
-| stackstate.components.replicationChecker.tolerations | string | `nil` | Tolerations for replication checker Pod assignment. |
-| stackstate.components.router.accesslog.enabled | bool | `false` | Enable access logging on the router |
-| stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.router.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.router.errorlog.enabled | bool | `true` | Enable error logging on the router |
-| stackstate.components.router.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.router.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.router.image.pullPolicy | string | `""` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.router.image.registry | string | `"quay.io"` | Registry of the router component Docker image. |
-| stackstate.components.router.image.repository | string | `"stackstate/envoy"` | Repository of the router component Docker image. |
-| stackstate.components.router.image.tag | string | `"1.39.6-so7"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.router.mode.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.router.mode.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
-| stackstate.components.router.mode.image.pullPolicy | string | `nil` | Image pull policy for router mode containers. |
-| stackstate.components.router.mode.image.registry | string | `"quay.io"` | Base container image registry for router mode containers. |
-| stackstate.components.router.mode.image.repository | string | `"stackstate/container-tools"` | Base container image repository for router mode containers. |
-| stackstate.components.router.mode.image.tag | string | `"1.8.6-so58"` | Container image tag for router mode containers. |
-| stackstate.components.router.mode.jobAnnotations | object | `{}` | Annotations for the router mode jobs. |
-| stackstate.components.router.mode.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.router.mode.podAnnotations | object | `{}` | Extra annotations for router mode job pods. |
-| stackstate.components.router.mode.podLabels | object | `{}` | Extra labels for router mode job pods. |
-| stackstate.components.router.mode.resources | object | `{"limits":{"cpu":"200m","memory":"400Mi"},"requests":{"cpu":"100m","memory":"400Mi"}}` | Resource allocation for `router.mode` pods. |
-| stackstate.components.router.mode.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| stackstate.components.router.mode.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
-| stackstate.components.router.mode.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
-| stackstate.components.router.mode.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| stackstate.components.router.mode.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
-| stackstate.components.router.mode.status | string | `"active"` | Determines the mode being deployed. Possible values:  "maintenance": puts the system to maintenance mode, not serving the API  "active": puts the system in active mode, serving API requests  "automatic": puts the system in maintenance during helm upgrade (use a pre-hook) and activates the system using a post-hook               if deployment.compatibleWithArgoCD is set,doest the same but using PreSync PostSync from argocd               !!! This feature is considered experimental and should not be used in mission-critical setup by end-users !!! |
-| stackstate.components.router.mode.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.router.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `router` pods. |
-| stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
-| stackstate.components.router.resources | object | `{}` | Resource allocation for `router` pods. |
-| stackstate.components.router.secureCookies.enabled | bool | `false` | When enabled, the router appends the `Secure` attribute to `Set-Cookie` response headers for requests that reached the edge over HTTPS (detected via the `X-Forwarded-Proto: https` header set by a TLS-terminating proxy such as Traefik or an ingress controller). Plain-HTTP deployments are left untouched. |
-| stackstate.components.router.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.server.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.server.config | string | `""` | Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.server.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.server.image.imageRegistry | string | `""` | `imageRegistry` used for the `server` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.server.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.server.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
-| stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.server.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `server` pods. |
-| stackstate.components.server.replicaCount | int | `1` | Number of `server` replicas. |
-| stackstate.components.server.resources | object | `{}` | Resource allocation for `server` pods. |
-| stackstate.components.server.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.server.sizing.javaHeapMemoryFraction | string | `"45"` |  |
-| stackstate.components.server.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.slicing.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.slicing.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.slicing.config | string | `""` | Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.slicing.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.slicing.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.slicing.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.slicing.image.imageRegistry | string | `""` | `imageRegistry` used for the `slicing` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.slicing.image.pullPolicy | string | `""` | `pullPolicy` used for the `slicing` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.slicing.image.repository | string | `"stackstate/stackstate-server"` | Repository of the slicing component Docker image. |
-| stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.slicing.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.slicing.replicaCount | int | `1` | Number of `slicing` replicas. |
-| stackstate.components.slicing.resources | object | `{}` | Resource allocation for `slicing` pods. |
-| stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.slicing.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.state.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.state.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.state.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.state.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.state.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.state.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.state.image.imageRegistry | string | `""` | `imageRegistry` used for the `state` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.state.image.pullPolicy | string | `""` | `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.state.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
-| stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.state.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `state` pods. |
-| stackstate.components.state.replicaCount | int | `1` | Number of `state` replicas. |
-| stackstate.components.state.resources | object | `{}` | Resource allocation for `state` pods. |
-| stackstate.components.state.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.state.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
-| stackstate.components.state.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
-| stackstate.components.state.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.state.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.sync.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.sync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.sync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.sync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.sync.image.imageRegistry | string | `""` | `imageRegistry` used for the `sync` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.sync.image.pullPolicy | string | `""` | `pullPolicy` used for the `sync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.sync.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
-| stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.sync.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `sync` pods. |
-| stackstate.components.sync.replicaCount | int | `1` | Number of `sync` replicas. |
-| stackstate.components.sync.resources | object | `{}` | Resource allocation for `sync` pods. |
-| stackstate.components.sync.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
-| stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
-| stackstate.components.sync.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
-| stackstate.components.sync.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
-| stackstate.components.sync.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
-| stackstate.components.sync.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.ui.agentMetricsFilter | string | `"[\"nginx*\"]"` |  |
-| stackstate.components.ui.debug | bool | `false` |  |
-| stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.ui.image.imageRegistry | string | `""` | `imageRegistry` used for the `ui` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.ui.image.pullPolicy | string | `""` | `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.ui.image.repository | string | `"stackstate/stackstate-ui"` | Repository of the ui component Docker image. |
-| stackstate.components.ui.image.tag | string | `""` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.ui.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.ui.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `ui` pods. |
-| stackstate.components.ui.replicaCount | string | `nil` | Number of `ui` replicas. |
-| stackstate.components.ui.resources | object | `{}` | Resource allocation for `ui` pods. |
-| stackstate.components.ui.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| stackstate.components.ui.securityContext.fsGroup | int | `101` | The GID (group ID) used to mount volumes |
-| stackstate.components.ui.securityContext.runAsGroup | int | `101` | The GID (group ID) of the owning user of the process |
-| stackstate.components.ui.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| stackstate.components.ui.securityContext.runAsUser | int | `101` | The UID (user ID) of the owning user of the process |
-| stackstate.components.ui.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
-| stackstate.components.vmagent.extraArgs | object | `{}` |  |
-| stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
-| stackstate.components.vmagent.image.tag | string | `"1.155.0-so3"` |  |
-| stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
-| stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
-| stackstate.components.vmagent.podAnnotations | object | `{}` | Extra annotations for vmagent pods. Override stackstate.components.all.podAnnotations and metrics annotations; the generated configuration checksum is preserved. |
-| stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | PodDisruptionBudget settings for `vmagent` pods. |
-| stackstate.components.vmagent.resources | object | `{}` | Resource allocation for vmagent pod. |
-| stackstate.components.workloadObserver.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.workloadObserver.enabled | bool | `true` | Enable/disable the workload observer |
-| stackstate.components.workloadObserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.workloadObserver.image.imageRegistry | string | `""` | `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.workloadObserver.image.pullPolicy | string | `""` | `pullPolicy` used for the `workloadObserver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.workloadObserver.image.repository | string | `"stackstate/workload-observer"` | Repository of the workloadObserver component Docker image. |
-| stackstate.components.workloadObserver.image.tag | string | `"0cc726a7-1123-release"` | Tag used for the `workloadObserver` component Docker image.. |
-| stackstate.components.workloadObserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.workloadObserver.persistence.size | string | `"1Gi"` |  |
-| stackstate.components.workloadObserver.persistence.storageClass | string | `nil` |  |
-| stackstate.components.workloadObserver.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.workloadObserver.poddisruptionbudget | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` | Number of `workloadObserver` replicas. |
-| stackstate.components.workloadObserver.resources | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"128Mi"},"requests":{"cpu":"20m","ephemeral-storage":"1Mi","memory":"24Mi"}}` | Resource allocation for `workloadObserver` pods. |
-| stackstate.components.workloadObserver.tolerations | string | `nil` | Toleration labels for pod assignment. |
-| stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |
-| stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted' |
-| stackstate.email | object | `{"additionalProperties":{"mail.smtp.auth":"true","mail.smtp.starttls.enable":"true"},"enabled":false,"sender":"","server":{"auth":{"fromExternalSecret":null,"password":"","username":""},"host":"","port":587,"protocol":"smtp"}}` | Email configuration for StackState |
-| stackstate.email.enabled | bool | `false` | Enable email notifications |
-| stackstate.email.sender | string | `""` | Email sender mail address |
-| stackstate.email.server.auth.fromExternalSecret | string | `nil` | Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
-| stackstate.email.server.auth.password | string | `""` | Email server password |
-| stackstate.email.server.auth.username | string | `""` | Email server username |
-| stackstate.email.server.host | string | `""` | Email server host |
-| stackstate.email.server.port | int | `587` | Email server port |
-| stackstate.email.server.protocol | string | `"smtp"` | Email server protocol |
-| stackstate.features.role-k8s-authz | boolean | `true` | Deploy the Role(s) to populate permissions on Suse Observability |
-| stackstate.features.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
-| stackstate.features.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
-| stackstate.features.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
-| stackstate.features.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
-| stackstate.instanceDebugApi.enabled | bool | `false` |  |
-| stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStoreFromExternalSecret":{"key":"java-cacerts","name":"","passwordKey":""},"trustStorePassword":null}` | Extra Java configuration for StackState |
-| stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret. |
-| stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret. |
-| stackstate.java.trustStoreFromExternalSecret.key | string | `"java-cacerts"` | Key in the external secret holding the Java TrustStore (cacerts) file. |
-| stackstate.java.trustStoreFromExternalSecret.name | string | `""` | Name of an existing secret holding the Java TrustStore (cacerts) file. This is the preferred way to configure the trust store: it keeps the trust store out of the Helm release secret, which has a 1MB size limit. Takes precedence over `stackstate.java.trustStore` and `stackstate.java.trustStoreBase64Encoded`. |
-| stackstate.java.trustStoreFromExternalSecret.passwordKey | string | `""` | Optional key in the external secret holding the trust store password. When empty, `stackstate.java.trustStorePassword` is used instead. |
-| stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
-| stackstate.k8sAuthorization.enabled | bool | `true` |  |
-| stackstate.license.fromExternalSecret | string | `nil` | Use an external secret for the license key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
-| stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
-| stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
-| stackstate.silencing.maxSilenceTime | string | `"24 hours"` | The maximum duration a monitor check state can be silenced for. Accepts any HOCON duration, for example "24 hours" or "30 minutes". |
-| stackstate.stackpacks.extraImages | list | `[]` | Additional stackpack Docker images to mount after the built-in stackpack images. |
-| stackstate.stackpacks.images[0].deploymentModeOverride | string | `""` | Use the stackpacks from another deployment mode than StackState is running in |
-| stackstate.stackpacks.images[0].name | string | `"v1"` | name for the init container |
-| stackstate.stackpacks.images[0].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.stackpacks.images[0].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.stackpacks.images[0].repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[0].version | string | `"20261105145246-master-4ef2487"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
-| stackstate.stackpacks.images[1].name | string | `"core"` | name for the init container |
-| stackstate.stackpacks.images[1].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.stackpacks.images[1].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.stackpacks.images[1].repository | string | `"stackstate/core-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[1].tag | string | `"20261120143952-main-9033cdd"` | Tag used for the `stackpacks` Docker image |
-| stackstate.stackpacks.images[2].editions | list | `["Prime"]` | Editions that include the stackpacks |
-| stackstate.stackpacks.images[2].name | string | `"suse"` | name for the init container |
-| stackstate.stackpacks.images[2].pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.stackpacks.images[2].registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.stackpacks.images[2].repository | string | `"stackstate/suse-stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.images[2].tag | string | `"platform-20261120135422-main-f1d430b"` | Tag used for the `stackpacks` Docker image |
-| stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
-| stackstate.stackpacks.localpvc.size | string | `"1Gi"` | Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS |
-| stackstate.stackpacks.localpvc.storageClass | string | `nil` |  |
-| stackstate.stackpacks.pvc.size | string | `"1Gi"` | Size of the Persistent Volume Claim (PVC) used to copy stackpacks from the Docker image. |
-| stackstate.stackpacks.pvc.storageClass | string | `nil` |  |
-| stackstate.stackpacks.source | string | `"docker-image"` | Source of the stackpacks, for now just the docker-image. |
-| stackstate.stackpacks.updateInterval | string | `"5 minutes"` |  |
-| stackstate.stackpacks.upgradeOnStartup | list | `[]` | Specify additional stackpacks that will, on startup only, be upgraded to the latest version available. The following StackPacks are always upgraded on startup: kubernetes-v2, open-telemetry, stackstate-k8s-agent-v2, aad-v2, otel-k8s-crd, suse-observability, plus prime-kubernetes or community-kubernetes (based on stackstate.deployment.edition). The suse-observability StackPack replaces the stackstate StackPack and migrates an existing stackstate installation; do not add stackstate to this list. StackPacks listed here are added to these defaults. |
-| stackstate.topology.retentionHours | integer | `nil` | Number of hours topology will be retained. |
-| stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
-| victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
-| victoria-metrics-0.backup.enabled | bool | `true` | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
-| victoria-metrics-0.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
-| victoria-metrics-0.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
-| victoria-metrics-0.backup.minHistorySeconds | int | `86400` | Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted. |
-| victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
-| victoria-metrics-0.backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
-| victoria-metrics-0.backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.6-so58"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-0.backup.vmbackup.image.tag | string | `"1.155.0-so11"` | VM backup image tag. Updated by updatecli. |
-| victoria-metrics-0.enabled | bool | `true` |  |
-| victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
-| victoria-metrics-0.server.image.tag | string | `"1.155.0-so3"` | Victoria Metrics server image tag. Updated by updatecli. |
-| victoria-metrics-0.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
-| victoria-metrics-0.server.resources | object | `{}` |  |
-| victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
-| victoria-metrics-1.backup.enabled | bool | `true` | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. |
-| victoria-metrics-1.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
-| victoria-metrics-1.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
-| victoria-metrics-1.backup.minHistorySeconds | int | `86400` | Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted. |
-| victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
-| victoria-metrics-1.backup.scheduled.daily | string | `"5 1 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
-| victoria-metrics-1.backup.scheduled.hourly | string | `"35 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.6-so58"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-1.backup.vmbackup.image.tag | string | `"1.155.0-so11"` | VM backup image tag. Updated by updatecli. |
-| victoria-metrics-1.enabled | bool | `true` |  |
-| victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |
-| victoria-metrics-1.server.image.tag | string | `"1.155.0-so3"` | Victoria Metrics server image tag. Updated by updatecli. |
-| victoria-metrics-1.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
-| victoria-metrics-1.server.resources | object | `{}` |  |
-| victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
-| victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
-| victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
-| victoria-metrics.restore.image.tag | string | `"1.155.0-so4"` | Container image tag for 'vmrestore' containers. |
-| victoria-metrics.restore.securityContext.enabled | bool | `true` |  |
-| victoria-metrics.restore.securityContext.fsGroup | int | `65534` |  |
-| victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |
-| victoria-metrics.restore.securityContext.runAsNonRoot | bool | `true` |  |
-| victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
-| zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
-| zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.9.7-so6"` | ZooKeeper image tag |
-| zookeeper.persistence.size | string | `nil` | Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| zookeeper.replicaCount | string | `nil` | Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| zookeeper.resources | object | `{}` |  |
+Values are documented by support level.
+
+**Public values**, listed below, are safe to set. They keep working across upgrades. When one is renamed, changes meaning or is removed, the release notes say so first and the old form keeps working for a deprecation period.
+
+**Internal values** are everything in `values.yaml` that is not listed here. They cover chart wiring, per-image settings (the global registry and pull secrets are public), most replica counts, the JVM memory split (`sizing` blocks), deprecated values and debug settings, and may change or disappear in any release without notice. Overriding one is not supported. To size an installation, use `global.suseObservability.sizing.profile` and the public `resources` values.
+
+### Public
+
+| Key | Description | Type | Default |
+|-----|-------------|------|---------|
+| ai.assistant.anthropic.apiKey | Anthropic API key used when `ai.assistant.provider=anthropic`. | string | `""` |
+| ai.assistant.anthropic.fromExternalSecret.key | Key in the external secret that contains the Anthropic API key. | string | `"ANTHROPIC_API_KEY"` |
+| ai.assistant.anthropic.fromExternalSecret.name | Existing secret name that contains the Anthropic API key. When set, the chart will not create an internal secret for `ANTHROPIC_API_KEY`. | string | `""` |
+| ai.assistant.bedrock.awsRegion | AWS region used when `ai.assistant.provider=bedrock`. | string | `"eu-west-1"` |
+| ai.assistant.enabled | Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. Enabling the AI Assistant always enables the MCP Server. | bool | `false` |
+| ai.assistant.provider | LLM provider for AI Assistant. Possible values: `bedrock` or `anthropic`. | string | `"bedrock"` |
+| ai.mcp.enabled | Enables the MCP Server for use with external code assistants, without enabling the AI Assistant or configuring an LLM provider. The MCP Server is also enabled automatically when `ai.assistant.enabled=true`. | bool | `false` |
+| ai.platformOptimization.enabled | Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution. | bool | `false` |
+| anomaly-detection.enabled | Enables anomaly detection chart | bool | `false` |
+| anomaly-detection.pdb | PodDisruptionBudget of the anomaly detection pods. | object | `{"maxUnavailable":0}` |
+| anomaly-detection.podAnnotations | Extra annotations for the anomaly detection manager and worker pods. Configuration checksum annotations are preserved. | object | `{}` |
+| backup.additionalLogging | Additional logback config for backup components | string | `""` |
+| backup.configuration.bucketName | Name of the storage bucket to store configuration backups. | string | `"sts-configuration-backup"` |
+| backup.configuration.enabled | Enable scheduled configuration/settings backups. Set to false to disable (do NOT use an invalid cron schedule). Runs independently of global.backup.enabled (writes a local settings snapshot); the remote upload step is separately gated by global.backup.enabled. | bool | `true` |
+| backup.configuration.maxLocalFiles | The maximum number of configuration backups stored on the settings PVC (see backup.storage.settingsPvc.size). Each backup consists of a settings file and a StackPacks archive; StackPacks archives without a matching settings file are removed. | int | `10` |
+| backup.configuration.s3Prefix | Prefix (dir name) used to store backup files. | string | `""` |
+| backup.configuration.scheduled.backupRetentionTimeDelta | Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted. | string | `"365 days ago"` |
+| backup.configuration.scheduled.pvc.accessModes | Access mode for settings backup data. | list | `["ReadWriteOnce"]` |
+| backup.configuration.scheduled.pvc.size | Size of volume for settings backup | string | `"1Gi"` |
+| backup.configuration.scheduled.pvc.storageClass | Storage class of the volume for settings backup data. | string | `nil` |
+| backup.configuration.scheduled.schedule | Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). | string | `"0 4 * * *"` |
+| backup.configuration.securityContext.enabled | Whether or not to enable the securityContext | bool | `true` |
+| backup.configuration.securityContext.fsGroup | The GID (group ID) of all files on all mounted volumes | int | `65534` |
+| backup.configuration.securityContext.runAsGroup | The GID (group ID) of the owning user of the process | int | `65534` |
+| backup.configuration.securityContext.runAsNonRoot | Ensure that the user is not root (!= 0) | bool | `true` |
+| backup.configuration.securityContext.runAsUser | The UID (user ID) of the owning user of the process | int | `65534` |
+| backup.configuration.yaml.maxSizeLimit | Max size of the settings backup or installed via a stackpack | string | `"100Mi"` |
+| backup.elasticsearch.bucketName | Name of the storage bucket where ElasticSearch snapshots are stored. | string | `"sts-elasticsearch-backup"` |
+| backup.elasticsearch.enabled | Enable scheduled ElasticSearch snapshots (creation of the SLM policy). Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. | bool | `true` |
+| backup.elasticsearch.s3Prefix | Prefix (dir name) used to store backup files. | string | `""` |
+| backup.elasticsearch.scheduled.schedule | Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html). | string | `"0 0 3 * * ?"` |
+| backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). | string | `"30d"` |
+| backup.elasticsearch.scheduled.snapshotRetentionMaxCount | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). | string | `"30"` |
+| backup.elasticsearch.scheduled.snapshotRetentionMinCount | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). | string | `"5"` |
+| backup.elasticsearch.securityContext.enabled | Whether or not to enable the securityContext | bool | `true` |
+| backup.elasticsearch.securityContext.fsGroup | The GID (group ID) of all files on all mounted volumes | int | `65534` |
+| backup.elasticsearch.securityContext.runAsGroup | The GID (group ID) of the owning user of the process | int | `65534` |
+| backup.elasticsearch.securityContext.runAsNonRoot | Ensure that the user is not root (!= 0) | bool | `true` |
+| backup.elasticsearch.securityContext.runAsUser | The UID (user ID) of the owning user of the process | int | `65534` |
+| backup.enabled | Enables backup/restore for all data | bool | `false` |
+| backup.initJobAnnotations | Annotations for Backup-init Job. | object | `{}` |
+| backup.manualJobs.containerSecurityContext | Container security overrides for all manual Elasticsearch, StackGraph, configuration and VictoriaMetrics backup/restore Jobs embedded in the backup scripts ConfigMap, including their init containers. Merged over common.container.securityContext; explicit false and zero override inherited values. Does not affect scheduled backups, the settings-PVC initializer, or other workloads. Pod security remains controlled by the component's securityContext. | object | `{}` |
+| backup.poddisruptionbudget.maxUnavailable | Maximum number of pods that can be unavailable during the backup. | int | `0` |
+| backup.stackGraph.bucketName | Name of the storage bucket to store StackGraph backups. | string | `"sts-stackgraph-backup"` |
+| backup.stackGraph.enabled | Enable scheduled StackGraph backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. | bool | `true` |
+| backup.stackGraph.restore.tempData.accessModes | Access mode for temporary backup data. | list | `["ReadWriteOnce"]` |
+| backup.stackGraph.restore.tempData.size | Size of volume for temporary backup data; must be large enough to store a single backup. It defaults to a datanode size on Distributed Mode and to the stackgraph size on Mono mode. | string | `nil` |
+| backup.stackGraph.restore.tempData.storageClass | Storage class of the volume for temporary backup data. | string | `nil` |
+| backup.stackGraph.s3Prefix | Prefix (dir name) used to store backup files. | string | `""` |
+| backup.stackGraph.scheduled.backupRetentionTimeDelta | Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted. | string | `"30 days ago"` |
+| backup.stackGraph.scheduled.implementation | Allows choosing the backup implementation to run on a schedule, can be "v1", "v2" or "all". For now the default is "v1", due to the v2 system not declared 'stable' yet. Not-schedule jobs will be suspended. | string | `"all"` |
+| backup.stackGraph.scheduled.schedule | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). | string | `"0 3 * * *"` |
+| backup.stackGraph.scheduled.tempData.accessModes | Access mode for temporary backup data. | list | `["ReadWriteOnce"]` |
+| backup.stackGraph.scheduled.tempData.size | Size of volume for temporary backup data; must be large enough to store a single backup. It defaults to a datanode size on Distributed Mode and to the stackgraph size on Mono mode. | string | `nil` |
+| backup.stackGraph.scheduled.tempData.storageClass | Storage class of the volume for temporary backup data. | string | `nil` |
+| backup.stackGraph.securityContext.enabled | Whether or not to enable the securityContext | bool | `true` |
+| backup.stackGraph.securityContext.fsGroup | The GID (group ID) of all files on all mounted volumes | int | `65534` |
+| backup.stackGraph.securityContext.runAsGroup | The GID (group ID) of the owning user of the process | int | `65534` |
+| backup.stackGraph.securityContext.runAsNonRoot | Ensure that the user is not root (!= 0) | bool | `true` |
+| backup.stackGraph.securityContext.runAsUser | The UID (user ID) of the owning user of the process | int | `65534` |
+| backup.stackGraph.v2.tempData.accessModes | Access mode for temporary backup data. | list | `["ReadWriteOnce"]` |
+| backup.stackGraph.v2.tempData.size | Size of volume for temporary backup data; only used as a buffer for sending data to s3, so does not need to fit a complete backup. | string | `"20Gi"` |
+| backup.stackGraph.v2.tempData.storageClass | Storage class of the volume for temporary backup data. | string | `nil` |
+| backup.storage.backend.azure.accountKey | Azure storage account key (optional, falls back to managed identity) | string | `""` |
+| backup.storage.backend.azure.accountName | Azure storage account name | string | `""` |
+| backup.storage.backend.azure.enabled | Enable Azure backend | bool | `false` |
+| backup.storage.backend.azure.endpoint | Azure blob endpoint (auto-derived from accountName if not set) | string | `""` |
+| backup.storage.backend.azure.fromExternalSecret | Use an externally-managed secret for Azure backend credentials (keys: azureAccountName, azureAccountKey). When set, accountName/accountKey values are not required. | string | `""` |
+| backup.storage.backend.pvc.accessModes | Access modes for the PVC | list | `["ReadWriteOnce"]` |
+| backup.storage.backend.pvc.enabled | Enable PVC backend | bool | `false` |
+| backup.storage.backend.pvc.size | Size of the PVC for S3Proxy data | string | `"500Gi"` |
+| backup.storage.backend.pvc.storageClass | Storage class for the PVC | string | `""` |
+| backup.storage.backend.s3.accessKey | AWS access key (optional, falls back to instance profile/IRSA) | string | `""` |
+| backup.storage.backend.s3.enabled | Enable S3 backend | bool | `false` |
+| backup.storage.backend.s3.endpoint | S3 endpoint URL (optional, defaults to AWS) | string | `""` |
+| backup.storage.backend.s3.fromExternalSecret | Use an externally-managed secret for S3 backend credentials (keys: backendAccessKey, backendSecretKey). When set, accessKey/secretKey values are not required. | string | `""` |
+| backup.storage.backend.s3.region | AWS region (defaults to us-east-1) | string | `nil` |
+| backup.storage.backend.s3.secretKey | AWS secret key (optional) | string | `""` |
+| backup.storage.settingsPvc.accessModes | Access modes for the settings PVC | list | `["ReadWriteOnce"]` |
+| backup.storage.settingsPvc.size | Size of the settings backup PVC | string | `"2Gi"` |
+| backup.storage.settingsPvc.storageClass | Storage class for the settings PVC | string | `""` |
+| clickhouse.affinity | Affinity for the ClickHouse pods. Each field set here replaces the same field from the global affinity. | object | `{}` |
+| clickhouse.backup.affinity | Affinity for the ClickHouse backup CronJob. Each field set here replaces the same field from the global affinity. | object | `{}` |
+| clickhouse.backup.bucketName | Name of the storage bucket where ClickHouse backups are stored. | string | `"sts-clickhouse-backup"` |
+| clickhouse.backup.config.keep_remote | Number of ClickHouse backups, full and incremental, to keep in remote storage. `0` keeps all. | int | `308` |
+| clickhouse.backup.enabled | Enable scheduled ClickHouse backups. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. | bool | `true` |
+| clickhouse.backup.nodeSelector | Node labels for pod assignment of the ClickHouse backup CronJob. `stackstate.components.backup` and `stackstate.components.all` do not apply to it. | object | `{}` |
+| clickhouse.backup.podAnnotations | Extra annotations on the ClickHouse backup CronJob pods. | object | `{}` |
+| clickhouse.backup.podLabels | Extra labels on the ClickHouse backup CronJob pods. | object | `{}` |
+| clickhouse.backup.resources | Resources of the ClickHouse backup container. Limits use the key `limit`, not `limits`. | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` |
+| clickhouse.backup.s3Prefix | Prefix (directory) for ClickHouse backup files in the bucket. | string | `""` |
+| clickhouse.backup.scheduled.full_schedule | Cron schedule for full ClickHouse backups. | string | `"45 0 * * *"` |
+| clickhouse.backup.scheduled.incremental_schedule | Cron schedule for incremental ClickHouse backups. | string | `"45 3-23 * * *"` |
+| clickhouse.backup.tolerations | Tolerations for the ClickHouse backup CronJob. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| clickhouse.logLevel | ClickHouse server log level, for example `information`, `debug` or `trace`. | string | `"information"` |
+| clickhouse.nodeSelector | Node labels for pod assignment of the ClickHouse pods. | object | `{}` |
+| clickhouse.persistence.size | Size of persistent volume for each clickhouse pod | string | `nil` |
+| clickhouse.persistence.storageClass | Storage class of the ClickHouse volumes. Falls back to `global.storageClass`. | string | `""` |
+| clickhouse.podAnnotations | Extra annotations on the ClickHouse pods. Merged with the chart's own annotations. | object | `{}` |
+| clickhouse.podLabels | Extra labels on the ClickHouse pods. Merged with the chart's own labels. | object | `{}` |
+| clickhouse.priorityClassName | PriorityClass of the ClickHouse pods. | string | `""` |
+| clickhouse.resources | Resource allocation for ClickHouse pods. Fields left unset are taken from the sizing profile. | object | `{}` |
+| clickhouse.tolerations | Tolerations for the ClickHouse pods. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| clickhouse.volumePermissions.enabled | Run a root init container that fixes the ownership of the ClickHouse volumes. Not compatible with the restricted Pod Security Standard. | bool | `false` |
+| cluster-role.enabled | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. | bool | `true` |
+| commonLabels | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) | object | `{}` |
+| deployment.compatibleWithArgoCD | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) | bool | `false` |
+| elasticsearch.antiAffinity | Pod anti-affinity of the Elasticsearch pods: `hard` or `soft`. When unset, follows `global.suseObservability.affinity.podAntiAffinity` on HA profiles, and is `hard` otherwise. | string | `""` |
+| elasticsearch.maxUnavailable | `maxUnavailable` of the Elasticsearch PodDisruptionBudget. Set to `0` to remove the PodDisruptionBudget. | int | `1` |
+| elasticsearch.nodeAffinity | Node affinity for the Elasticsearch pods. When unset, the global node affinity is used. | string | `nil` |
+| elasticsearch.nodeSelector | Node labels for pod assignment of the Elasticsearch pods. | object | `{}` |
+| elasticsearch.podAnnotations | Extra annotations on the Elasticsearch pods. Merged with the chart's own annotations. | object | `{}` |
+| elasticsearch.podLabels | Extra labels on the Elasticsearch pods. Merged with the chart's own labels. | object | `{}` |
+| elasticsearch.priorityClassName | PriorityClass of the Elasticsearch pods. | string | `""` |
+| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations | Extra annotations on the Elasticsearch Prometheus exporter pods. Merged with the chart's own annotations. | object | `{}` |
+| elasticsearch.prometheus-elasticsearch-exporter.podLabels | Extra labels on the Elasticsearch Prometheus exporter pods. Merged with the chart's own labels. | object | `{}` |
+| elasticsearch.prometheus-elasticsearch-exporter.podSecurityContext | Pod security context of the Elasticsearch Prometheus exporter. On OpenShift set it to `""` so the SCC assigns the user. | object | `{"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| elasticsearch.prometheus-elasticsearch-exporter.priorityClassName | PriorityClass of the Elasticsearch Prometheus exporter pods. | string | `""` |
+| elasticsearch.prometheus-elasticsearch-exporter.resources | Resource allocation for the Elasticsearch Prometheus exporter. | object | `{}` |
+| elasticsearch.resources | Override Elasticsearch resources | object | `{}` |
+| elasticsearch.sysctlInitContainer.enabled | Run a privileged init container that sets `vm.max_map_count` on the node. Disable on OpenShift or under the restricted Pod Security Standard, and set the sysctl on the nodes instead. | bool | `true` |
+| elasticsearch.tolerations | Tolerations for the Elasticsearch pods. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| elasticsearch.volumeClaimTemplate | PVC template defaulting to 250Gi default volumes | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":null}}}` |
+| gateway.annotations | Annotations for HTTPRoute objects. | object | `{}` |
+| gateway.backendWeight | Optional weight for traffic splitting. | string | `nil` |
+| gateway.enabled | Enable Gateway API HTTPRoute for SUSE Observability. | bool | `false` |
+| gateway.filters | Optional filters for the HTTPRoute rule. | list | `[]` |
+| gateway.hostnames | List of hostnames for the HTTPRoute. If not specified, derived from baseUrl. | list | `[]` |
+| gateway.parentRefs | List of parent Gateway references (required when gateway.enabled is true). | list | `[]` |
+| gateway.path | Path prefix for the HTTPRoute rule. If not specified, derived from baseUrl or defaults to "/". | string | `""` |
+| gateway.timeouts | Optional timeouts for the HTTPRoute rule. | object | `{}` |
+| global.backup.enabled | Enables backup/restore for all data | bool | `false` |
+| global.commonLabels | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods | object | `{}` |
+| global.imagePullSecrets | List of image pull secret names to be used by all images across all charts. | list | `[]` |
+| global.imageRegistry | Image registry to be used by all images across all charts. When using global.suseObservability (global mode), set this to "registry.rancher.com" to match the default behavior of the suse-observability-values chart. | string | `nil` |
+| global.s3proxy.credentials.accessKey | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) | string | `"default-for-settings-only"` |
+| global.s3proxy.credentials.fromExternalSecret | Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required. | string | `""` |
+| global.s3proxy.credentials.secretKey | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) | string | `"default-secret-for-settings-only"` |
+| global.storageClass | StorageClass for all PVCs created by the chart. Can be overridden per PVC. | string | `nil` |
+| global.suseObservability.adminPassword | Admin password for the default 'admin' user (plain text). Mutually exclusive with adminPasswordBcrypt. Required (one of the two) when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. | string | `""` |
+| global.suseObservability.adminPasswordBcrypt | Admin password as bcrypt hash. Mutually exclusive with adminPassword. | string | `""` |
+| global.suseObservability.affinity.nodeAffinity | Node affinity configuration applied to all components (application and infrastructure). Standard Kubernetes nodeAffinity spec. | string | `nil` |
+| global.suseObservability.affinity.podAffinity | Pod affinity configuration for application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec. | string | `nil` |
+| global.suseObservability.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution | Enable required (hard) pod anti-affinity. When true, pods must be scheduled on different nodes. When false, soft anti-affinity is used (preferred but not required). | bool | `true` |
+| global.suseObservability.affinity.podAntiAffinity.topologyKey | Topology key for pod anti-affinity. Determines the domain for spreading pods (e.g., kubernetes.io/hostname for node-level, topology.kubernetes.io/zone for zone-level). | string | `"kubernetes.io/hostname"` |
+| global.suseObservability.applicationDomains | Enabled application domains. Default is ["Observability"]. Only "Observability" is currently supported. | list | `["Observability"]` |
+| global.suseObservability.baseUrl | Base URL for SUSE Observability (required when using global.suseObservability). | string | `""` |
+| global.suseObservability.license | SUSE Observability license key (required when using global.suseObservability). | string | `""` |
+| global.suseObservability.pullSecret.password | Password for image pull secret. | string | `""` |
+| global.suseObservability.pullSecret.username | Username for image pull secret. | string | `""` |
+| global.suseObservability.receiverApiKey | Optional, prefer to use Service Tokens instead for more control and better security. Will use stackstate.apiKey.key if not provided, stackstate.apiKey can also be used to provide the apiKey via an external secret. Please see the documentation on how to use Service Tokens instead. | string | `""` |
+| global.suseObservability.sizing.profile | Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values. | string | `""` |
+| global.suseObservability.tolerations | Tolerations applied to every SUSE Observability workload, including subcharts, hooks, backup and restore jobs and CronJobs. A component's own tolerations (or `stackstate.components.all.tolerations`) replace this list rather than extending it; set them to `[]` to clear. | string | `nil` |
+| hbase.all.affinity | Affinity for all HBase components. Each field set on a component replaces the same field here. Falls back to `global.suseObservability` when unset. | object | `{}` |
+| hbase.all.nodeSelector | Node labels for pod assignment on all HBase, HDFS, Tephra, StackGraph and console pods. | object | `{}` |
+| hbase.all.podAnnotations | Extra annotations on all HBase component pods. | object | `{}` |
+| hbase.all.podLabels | Extra labels on all HBase component pods. | object | `{}` |
+| hbase.all.tolerations | Tolerations for all HBase components. A component's own `tolerations` replace this list. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| hbase.console.enabled | Deploy the StackGraph console Deployment. Its pods only run when `hbase.console.replicaCount` is above 0. | bool | `true` |
+| hbase.console.podAnnotations | Extra annotations on the HBase console and integrity CronJob pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.console.podLabels | Extra labels on the HBase console and integrity CronJob pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.console.replicaCount | Number of StackGraph console replicas. Set to 1 to run maintenance commands such as an immediate retention cleanup. | int | `0` |
+| hbase.console.resources | Resource allocation for the StackGraph console pod (HA profiles). Fields left unset are taken from the sizing profile. | object | `{}` |
+| hbase.hbase.master.podAnnotations | Extra annotations on the HBase master pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.hbase.master.podLabels | Extra labels on the HBase master pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.hbase.master.resources | Resource allocation for the HBase master pods (HA profiles). Fields left unset are taken from the sizing profile. | object | `{}` |
+| hbase.hbase.regionserver.podAnnotations | Extra annotations on the HBase region server pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.hbase.regionserver.podLabels | Extra labels on the HBase region server pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.hbase.regionserver.resources | Resource allocation for the HBase region server pods (HA profiles). Fields left unset are taken from the sizing profile. | object | `{}` |
+| hbase.hdfs.datanode.extraEnv.open | Extra environment variables for the HDFS datanode pods, for example `HDFS_CONF_*` settings. | object | `{}` |
+| hbase.hdfs.datanode.persistence.size | Size of each HDFS datanode volume (HA profiles). When unset, the sizing profile sets it. | string | `nil` |
+| hbase.hdfs.datanode.persistence.storageClass | Storage class of the HDFS datanode volumes. Falls back to `global.storageClass`. | string | `nil` |
+| hbase.hdfs.datanode.podAnnotations | Extra annotations on the HDFS datanode pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.hdfs.datanode.podLabels | Extra labels on the HDFS datanode pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.hdfs.datanode.replicaCount | Number of HDFS datanode replicas. When unset, the sizing profile sets it. | string | `nil` |
+| hbase.hdfs.datanode.resources | Resource allocation for the HDFS datanode pods (HA profiles). Fields left unset are taken from the sizing profile. | object | `{}` |
+| hbase.hdfs.minReplication | Minimum number of HDFS block replicas a write needs to succeed (HA profiles). Capped at the number of datanodes. | int | `2` |
+| hbase.hdfs.namenode.persistence.size | Size of the HDFS namenode volume (HA profiles). | string | `"20Gi"` |
+| hbase.hdfs.namenode.podAnnotations | Extra annotations on the HDFS namenode pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.hdfs.namenode.podLabels | Extra labels on the HDFS namenode pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.hdfs.namenode.resources | Resource allocation for the HDFS namenode pod (HA profiles). Fields left unset are taken from the sizing profile. | object | `{}` |
+| hbase.hdfs.replication | HDFS block replication factor (HA profiles). When unset, the sizing profile sets it. Must be lower than `hbase.hdfs.datanode.replicaCount` and at least `hbase.hdfs.minReplication`. | string | `nil` |
+| hbase.hdfs.secondarynamenode.podAnnotations | Extra annotations on the HDFS secondary namenode pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.hdfs.secondarynamenode.podLabels | Extra labels on the HDFS secondary namenode pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.hdfs.secondarynamenode.resources | Resource allocation for the HDFS secondary namenode pod (HA profiles). Fields left unset are taken from the sizing profile. | object | `{}` |
+| hbase.hdfs.volumePermissions.enabled | Run a root init container that fixes the ownership of the HDFS data volumes. Not compatible with the restricted Pod Security Standard. | bool | `false` |
+| hbase.stackgraph.persistence.size | Size of the StackGraph volume (non-HA profiles). When unset, the sizing profile sets it. | string | `nil` |
+| hbase.stackgraph.podAnnotations | Extra annotations on the StackGraph pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.stackgraph.podLabels | Extra labels on the StackGraph pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.stackgraph.resources | Resource allocation for the StackGraph pod (non-HA profiles). Fields left unset are taken from the sizing profile. | object | `{}` |
+| hbase.tephra.persistence.size | Size of the Tephra snapshot volume (non-HA profiles). | string | `"1Gi"` |
+| hbase.tephra.podAnnotations | Extra annotations on the Tephra pods. Override `hbase.all.podAnnotations`. | object | `{}` |
+| hbase.tephra.podLabels | Extra labels on the Tephra pods. Override `hbase.all.podLabels`; selector labels are preserved. | object | `{}` |
+| hbase.tephra.resources | Resource allocation for the Tephra pods. Fields left unset are taken from the sizing profile. | object | `{}` |
+| ingress.annotations | Annotations for ingress objects. | object | `{}` |
+| ingress.enabled | Enable use of ingress controllers. | bool | `false` |
+| ingress.hosts | List of ingress hostnames; the paths are fixed to StackState backend services | list | `[]` |
+| ingress.ingressClassName | Ingress class name for the ingress object. | string | `""` |
+| ingress.path | Path of the ingress rule for each host. | string | `"/"` |
+| ingress.tls | List of ingress TLS certificates to use. | list | `[]` |
+| kafka.affinity | Affinity for the Kafka pods. Each field set here replaces the same field from the global affinity. | object | `{}` |
+| kafka.metrics.jmx.resources | Resource allocation for the Kafka JMX exporter container. | object | `{"limits":{"cpu":"1","ephemeral-storage":"1Gi","memory":"300Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"300Mi"}}` |
+| kafka.nodeSelector | Node labels for pod assignment of the Kafka pods. | object | `{}` |
+| kafka.pdb | PodDisruptionBudget of the Kafka pods. Only created on HA profiles. | object | `{"create":true,"maxUnavailable":1,"minAvailable":""}` |
+| kafka.persistence.size | Size of persistent volume for each Kafka pod | string | `nil` |
+| kafka.persistence.storageClass | Storage class of the Kafka volumes. Falls back to `global.storageClass`. | string | `""` |
+| kafka.podAnnotations | Extra annotations on the Kafka pods. Merged with the chart's own annotations. | object | `{}` |
+| kafka.podLabels | Extra labels on the Kafka pods. Merged with the chart's own labels. | object | `{}` |
+| kafka.priorityClassName | PriorityClass of the Kafka pods. | string | `""` |
+| kafka.resources | Kafka resources per pods. | object | `{}` |
+| kafka.tolerations | Tolerations for the Kafka pods. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| kafka.volumePermissions.enabled | Run a root init container that fixes the ownership of the Kafka volumes. Not compatible with the restricted Pod Security Standard. | bool | `false` |
+| kafkaup-operator.podAnnotations | Extra annotations for the KafkaUp operator pod. The configuration checksum annotation is preserved. | object | `{}` |
+| kafkaup-operator.podLabels | Extra labels for the KafkaUp operator pod. Selector labels are preserved. | object | `{}` |
+| kafkaup-operator.resources | Resources of the KafkaUp operator pod. Fields left unset are taken from the sizing profile. | object | `{"limits":{"cpu":"50m","memory":"64Mi"},"requests":{"cpu":"25m","memory":"32Mi"}}` |
+| kubernetes-rbac-agent.containers.rbacAgent.affinity | Set affinity | object | `{}` |
+| kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | Set a nodeSelector | object | `{}` |
+| kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | Additional annotations on the pod | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` |
+| kubernetes-rbac-agent.containers.rbacAgent.podLabels | Additional labels on the pod | object | `{}` |
+| kubernetes-rbac-agent.containers.rbacAgent.priorityClassName | PriorityClass of the RBAC agent pod. | string | `""` |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | Memory resource limits. | string | `"40Mi"` |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | Memory resource requests. | string | `"25Mi"` |
+| kubernetes-rbac-agent.containers.rbacAgent.tolerations | Set tolerations | string | `nil` |
+| networkPolicy.enabled | Enable creating of `NetworkPolicy` object and associated rules for StackState. | bool | `false` |
+| networkPolicy.spec | `NetworkPolicy` rules for StackState. | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` |
+| opentelemetry-collector.affinity | Affinity for the OpenTelemetry collector pods. Each field set here replaces the same field from the global affinity. | object | `{}` |
+| opentelemetry-collector.extraEnvs | Extra environment variables for the OpenTelemetry collector, as a list of Kubernetes `EnvVar`. Cannot override `MY_POD_IP`, `K8S_NODE_NAME`, `API_URL`, `INTAKE_URL`, or a chart-generated `GOMEMLIMIT`. | list | `[]` |
+| opentelemetry-collector.gateway | Gateway API route for the OpenTelemetry collector: `enabled`, `kind` (`HTTPRoute` or `GRPCRoute`), `parentRefs` (required when enabled), `hostnames`, `annotations`, `path`, `pathType`, `filters`, `timeouts`, `port`, and `additionalGateways`. | object | `{"additionalGateways":[],"annotations":{},"enabled":false,"filters":[],"hostnames":[],"kind":"HTTPRoute","parentRefs":[],"path":"/","pathType":"PathPrefix","timeouts":{}}` |
+| opentelemetry-collector.ingress | Ingress for the OpenTelemetry collector OTLP endpoints: `enabled`, `annotations`, `ingressClassName`, `hosts` (each path takes `path`, `pathType`, `port` and an optional `serviceName`), `tls`, and `additionalIngresses` (each with a unique `name`). Cannot be enabled together with `opentelemetry-collector.gateway`. | object | `{"additionalIngresses":[],"enabled":false}` |
+| opentelemetry-collector.nodeSelector | Node labels for pod assignment of the OpenTelemetry collector pods. | object | `{}` |
+| opentelemetry-collector.podAnnotations | Extra annotations on the OpenTelemetry collector pods. Merged with the chart's own annotations. | object | `{}` |
+| opentelemetry-collector.podLabels | Extra labels on the OpenTelemetry collector pods. Merged with the chart's own labels. | object | `{}` |
+| opentelemetry-collector.priorityClassName | PriorityClass of the OpenTelemetry collector pods. | string | `""` |
+| opentelemetry-collector.resources | Resource allocation for the OpenTelemetry collector pods. | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"512Mi"}}` |
+| opentelemetry-collector.tolerations | Tolerations for the OpenTelemetry collector pods. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| pull-secret.credentials | Registry and associated credentials (username, password) that will be stored in the pull-secret | list | `[]` |
+| pull-secret.enabled | Deploy the ImagePullSecret for the chart. | bool | `false` |
+| s3proxy.affinity | Affinity settings for the S3Proxy pod. Each field set here replaces the same field from `stackstate.components.all.affinity` and global affinity. | object | `{}` |
+| s3proxy.extraEnv.open | Extra open environment variables to inject into the S3Proxy pod. | object | `{}` |
+| s3proxy.extraEnv.secret | Extra secret environment variables to inject into the S3Proxy pod via a `Secret` object. | object | `{}` |
+| s3proxy.logLevel | Log level of S3Proxy. | string | `"info"` |
+| s3proxy.metrics.agentAnnotationsEnabled | Put annotations on each pod to instruct the stackstate agent to scrape the metrics | bool | `true` |
+| s3proxy.metrics.enabled | Enable / disable S3Proxy Prometheus metrics. | bool | `true` |
+| s3proxy.metrics.servicemonitor.additionalLabels | Additional labels for targeting Prometheus operator instances. | object | `{}` |
+| s3proxy.metrics.servicemonitor.enabled | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. | bool | `false` |
+| s3proxy.nodeSelector | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) | object | `{}` |
+| s3proxy.podAnnotations | Annotations for S3Proxy pod | object | `{}` |
+| s3proxy.resources | Resource limits and requests for S3Proxy container | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"700Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"700Mi"}}` |
+| s3proxy.serviceAccount.annotations | Annotations for the S3Proxy service account (e.g. for IAM roles). | object | `{}` |
+| s3proxy.tolerations | Tolerations for the S3Proxy pod. Replaces `stackstate.components.all.tolerations` and global tolerations when set. | string | `nil` |
+| scc.enabled | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. Has to be enabled when installing to Openshift >= 4.12 The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment. Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed. | bool | `false` |
+| stackstate.allowedOrigins | Third-party web domains allowed to make cross-origin requests | list | `[]` |
+| stackstate.apiKey.fromExternalSecret | Use an external secret for the api key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. | string | `nil` |
+| stackstate.apiKey.key | API key to be used by the Receiver. | string | `nil` |
+| stackstate.authentication.adminPassword | Password for the 'admin' user that StackState creates by default | string | `nil` |
+| stackstate.authentication.file | Configure users, their passwords and roles from (config) file | object | `{}` |
+| stackstate.authentication.fromExternalSecret | Use an external secret for the authenticated secrets. This suppresses secret creation by StackState and gets the data from the secret with the provided name. | string | `nil` |
+| stackstate.authentication.keycloak | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Keycloak (both default false). | object | `{}` |
+| stackstate.authentication.ldap | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). | object | `{}` |
+| stackstate.authentication.oidc | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to the provider (both default false). | object | `{}` |
+| stackstate.authentication.rancher | Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). Optional `scope` array defaults to `[openid, profile, offline_access]`; add `groups` for Rancher 2.14 or later after allowing it on the OIDCClient. Set `oidcLogout: true` inside this block to enable OIDC RP-initiated logout and `skipLoginPage: true` to redirect straight to Rancher (both default false). | object | `{}` |
+| stackstate.authentication.roles.admin | Extend the role names that have admin permissions (default: 'stackstate-admin') | list | `[]` |
+| stackstate.authentication.roles.custom | Extend the authorization with custom roles {roleName: {systemPermissions: [], resourcePermissions: {}, viewPermissions: [], topologyScope: ""}} | object | `{}` |
+| stackstate.authentication.roles.guest | Extend the role names that have guest permissions (default: 'stackstate-guest') | list | `[]` |
+| stackstate.authentication.roles.k8sTroubleshooter | Extend the role names that have troubleshooter permissions (default: 'stackstate-k8s-troubleshooter') | list | `[]` |
+| stackstate.authentication.roles.powerUser | Extend the role names that have power user permissions (default: 'stackstate-power-user') | list | `[]` |
+| stackstate.authentication.serviceToken.bootstrap.dedicatedSubject | Subject solely created for usage with this token and cleaned up with the token | string | `""` |
+| stackstate.authentication.serviceToken.bootstrap.roles | The roles the service token assumes when it’s used for authentication | list | `[]` |
+| stackstate.authentication.serviceToken.bootstrap.token | The service token to set as bootstrap token | string | `""` |
+| stackstate.authentication.serviceToken.bootstrap.ttl | The amount of time the service token is valid for | string | `"24h"` |
+| stackstate.authentication.sessionLifetime | Amount of time to keep a session when a user does not log in | string | `""` |
+| stackstate.baseUrl | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState. | string | `nil` |
+| stackstate.components.aiAssistant.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.aiAssistant.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: secret-key - name: MY_OTHER_SECRET_ENV_VAR   secretName: my-other-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.aiAssistant.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.aiAssistant.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.aiAssistant.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.aiAssistant.persistence.size | Size of the PVC for the SQLite database. | string | `"1Gi"` |
+| stackstate.components.aiAssistant.persistence.storageClass | Storage class for the SQLite database PVC. | string | `""` |
+| stackstate.components.aiAssistant.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.aiAssistant.poddisruptionbudget | PodDisruptionBudget settings for `ai-assistant` pods. | object | `{"maxUnavailable":1}` |
+| stackstate.components.aiAssistant.resources | Resource allocation for `ai-assistant` pods. | object | `{}` |
+| stackstate.components.aiAssistant.serviceAccount.annotations | Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`. | object | `{}` |
+| stackstate.components.aiAssistant.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.all.affinity | Affinity settings for pod assignment on all components. | object | `{}` |
+| stackstate.components.all.deploymentStrategy.type | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. | string | `"RecreateSingletonsOnly"` |
+| stackstate.components.all.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.all.extraEnv.open | Extra open environment variables to inject into pods for all components. | object | `{}` |
+| stackstate.components.all.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object for all components. | object | `{}` |
+| stackstate.components.all.metrics.agentAnnotationsEnabled | Put annotations on each pod to instruct the stackstate agent to scrape the metrics | bool | `true` |
+| stackstate.components.all.metrics.enabled | Enable metrics port. | bool | `true` |
+| stackstate.components.all.metrics.servicemonitor.additionalLabels | Additional labels for targeting Prometheus operator instances. | object | `{}` |
+| stackstate.components.all.metrics.servicemonitor.enabled | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. | bool | `false` |
+| stackstate.components.all.nodeSelector | Node labels for pod assignment on all components. | object | `{}` |
+| stackstate.components.all.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.all.tolerations | Toleration labels for pod assignment on all components. | string | `nil` |
+| stackstate.components.api.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.api.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.api.config | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.api.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.api.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.api.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.api.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.api.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.api.poddisruptionbudget | PodDisruptionBudget settings for `api` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.api.resources | Resource allocation for `api` pods. | object | `{}` |
+| stackstate.components.api.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.api.yaml.maxSizeLimit | Max size of the sty file that will be imported or installed via a stackpack, e.g. "1Mi". | string | `nil` |
+| stackstate.components.authorizationSync.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.authorizationSync.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.authorizationSync.config | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.authorizationSync.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.authorizationSync.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.authorizationSync.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.authorizationSync.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.authorizationSync.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.authorizationSync.poddisruptionbudget | PodDisruptionBudget settings for `authorizationSync` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.authorizationSync.resources | Resource allocation for `notification` pods. | object | `{}` |
+| stackstate.components.authorizationSync.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.backup.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.backup.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.backup.podAnnotations | Extra annotations for backup pods. | object | `{}` |
+| stackstate.components.backup.podLabels | Extra labels for backup pods. | object | `{}` |
+| stackstate.components.backup.resources | Resource allocation for `backup` pods. | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4000Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4000Mi"}}` |
+| stackstate.components.backup.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.checks.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.checks.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.checks.config | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.checks.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.checks.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.checks.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.checks.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.checks.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.checks.poddisruptionbudget | PodDisruptionBudget settings for `checks` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.checks.resources | Resource allocation for `state` pods. | object | `{}` |
+| stackstate.components.checks.tmpToPVC.storageClass | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. | string | `nil` |
+| stackstate.components.checks.tmpToPVC.volumeSize | The size of the PersistentVolume for "/tmp" directory. | string | `"2Gi"` |
+| stackstate.components.checks.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.clickhouseCleanup.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.clickhouseCleanup.extraEnv.open | Add additional environment variables to the pod | object | `{}` |
+| stackstate.components.clickhouseCleanup.jobAnnotations | Annotations for clickhouseCleanup job. | object | `{}` |
+| stackstate.components.clickhouseCleanup.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.clickhouseCleanup.podAnnotations | Extra annotations for clickhouse cleanup job pods. | object | `{}` |
+| stackstate.components.clickhouseCleanup.podLabels | Extra labels for clickhouse cleanup job pods. | object | `{}` |
+| stackstate.components.clickhouseCleanup.resources | Resource allocation for `clickhouseCleanup` pods. | object | `{"limits":{"cpu":"100m","ephemeral-storage":"1Gi","memory":"200Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"200Mi"}}` |
+| stackstate.components.clickhouseCleanup.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.configurationBackup.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.configurationBackup.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.configurationBackup.podAnnotations | Extra annotations for configuration backup pods. | object | `{}` |
+| stackstate.components.configurationBackup.podLabels | Extra labels for configuration backup pods. | object | `{}` |
+| stackstate.components.configurationBackup.resources | Resource allocation for `configurationBackup` pods. | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1000Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"100Mi","memory":"1000Mi"}}` |
+| stackstate.components.configurationBackup.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.containerTools.resources | Resource allocation for `kafkaTopicCreate` pods. | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` |
+| stackstate.components.correlate.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.correlate.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.correlate.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.correlate.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.correlate.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.correlate.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.correlate.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.correlate.poddisruptionbudget | PodDisruptionBudget settings for `correlate` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.correlate.resources | Resource allocation for `correlate` pods. | object | `{}` |
+| stackstate.components.correlate.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.e2es.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.e2es.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.e2es.esDiskSpaceShare | How much disk space from ElasticSearch can use for k8s events ingestion | string | `"10"` |
+| stackstate.components.e2es.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.e2es.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.e2es.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.e2es.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.e2es.poddisruptionbudget | PodDisruptionBudget settings for `e2es` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.e2es.resources | Resource allocation for `e2es` pods. | object | `{}` |
+| stackstate.components.e2es.retention | Number of days to keep the events data on Es | int | `30` |
+| stackstate.components.e2es.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.healthSync.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.healthSync.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.healthSync.config | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.healthSync.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.healthSync.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.healthSync.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.healthSync.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.healthSync.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.healthSync.poddisruptionbudget | PodDisruptionBudget settings for `healthSync` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.healthSync.resources | Resource allocation for `healthSync` pods. | object | `{}` |
+| stackstate.components.healthSync.tmpToPVC.storageClass | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. | string | `nil` |
+| stackstate.components.healthSync.tmpToPVC.volumeSize | The size of the PersistentVolume for "/tmp" directory. | string | `"2Gi"` |
+| stackstate.components.healthSync.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.initializer.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.initializer.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.initializer.config | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.initializer.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.initializer.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.initializer.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.initializer.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.initializer.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.initializer.resources | Resource allocation for `initializer` pods. | object | `{}` |
+| stackstate.components.initializer.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.kafkaTopicCreate.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.kafkaTopicCreate.extraEnv.open | Add additional environment variables to the pod | object | `{}` |
+| stackstate.components.kafkaTopicCreate.jobAnnotations | Annotations for KafkaTopicCreate job. | object | `{}` |
+| stackstate.components.kafkaTopicCreate.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.kafkaTopicCreate.podAnnotations | Extra annotations for kafka topic create job pods. | object | `{}` |
+| stackstate.components.kafkaTopicCreate.podLabels | Extra labels for kafka topic create job pods. | object | `{}` |
+| stackstate.components.kafkaTopicCreate.resources | Resource allocation for `kafkaTopicCreate` pods. | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` |
+| stackstate.components.kafkaTopicCreate.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.mcp.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.mcp.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: secret-key - name: MY_OTHER_SECRET_ENV_VAR   secretName: my-other-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.mcp.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.mcp.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.mcp.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.mcp.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.mcp.poddisruptionbudget | PodDisruptionBudget settings for `mcp` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.mcp.replicaCount | Number of `mcp` replicas. | int | `1` |
+| stackstate.components.mcp.resources | Resource allocation for `mcp` pods. | object | `{}` |
+| stackstate.components.mcp.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.notification.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.notification.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.notification.config | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.notification.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.notification.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.notification.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.notification.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.notification.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.notification.poddisruptionbudget | PodDisruptionBudget settings for `notification` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.notification.resources | Resource allocation for `notification` pods. | object | `{}` |
+| stackstate.components.notification.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.receiver.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.receiver.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.receiver.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.receiver.esDiskSpaceShare | How much disk space from ElasticSearch can use for k8s log ingestion | string | `"90"` |
+| stackstate.components.receiver.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.receiver.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.receiver.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.receiver.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.receiver.poddisruptionbudget | PodDisruptionBudget settings for `receiver` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.receiver.resources | Resource allocation for `receiver` pods. | object | `{}` |
+| stackstate.components.receiver.retention | Number of days to keep the logs data on Es | int | `7` |
+| stackstate.components.receiver.split.base.affinity | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. | object | `{}` |
+| stackstate.components.receiver.split.base.extraEnv.open | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open | object | `{}` |
+| stackstate.components.receiver.split.base.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret | object | `{}` |
+| stackstate.components.receiver.split.base.nodeSelector | Additional node labels for pod assignment. | object | `{}` |
+| stackstate.components.receiver.split.base.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.receiver.split.base.resources | Resource allocation for pods. If not defined, will take from sizing profile defaults. | object | `{}` |
+| stackstate.components.receiver.split.base.tolerations | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. | string | `nil` |
+| stackstate.components.receiver.split.logs.affinity | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. | object | `{}` |
+| stackstate.components.receiver.split.logs.extraEnv.open | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open | object | `{}` |
+| stackstate.components.receiver.split.logs.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret | object | `{}` |
+| stackstate.components.receiver.split.logs.nodeSelector | Additional node labels for pod assignment. | object | `{}` |
+| stackstate.components.receiver.split.logs.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.receiver.split.logs.resources | Resource allocation for pods. If not defined, will take from sizing profile defaults. | object | `{}` |
+| stackstate.components.receiver.split.logs.tolerations | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. | string | `nil` |
+| stackstate.components.receiver.split.processAgent.affinity | Affinity settings for pod assignment. Each field set here replaces the same field from the component, `all` and global affinity. | object | `{}` |
+| stackstate.components.receiver.split.processAgent.extraEnv.open | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open | object | `{}` |
+| stackstate.components.receiver.split.processAgent.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret | object | `{}` |
+| stackstate.components.receiver.split.processAgent.nodeSelector | Additional node labels for pod assignment. | object | `{}` |
+| stackstate.components.receiver.split.processAgent.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.receiver.split.processAgent.resources | Resource allocation for pods. If not defined, will take from sizing profile defaults. | object | `{}` |
+| stackstate.components.receiver.split.processAgent.tolerations | Toleration labels for pod assignment. Replaces the component, `all` and global tolerations when set. | string | `nil` |
+| stackstate.components.receiver.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.replicationChecker.affinity | Affinity settings for replication checker Pod assignment. | object | `{}` |
+| stackstate.components.replicationChecker.enabled | Enable the stateless replication checker. Null enables it only for built-in HA sizing profiles; true or false overrides the profile default. | bool | `nil` |
+| stackstate.components.replicationChecker.nodeSelector | Node labels for replication checker Pod assignment. | object | `{}` |
+| stackstate.components.replicationChecker.podAnnotations | Extra annotations for replication checker Pods. | object | `{}` |
+| stackstate.components.replicationChecker.resources.limits.cpu | CPU limit for the replication checker. | string | `"500m"` |
+| stackstate.components.replicationChecker.resources.limits.memory | Memory limit for the replication checker. | string | `"256Mi"` |
+| stackstate.components.replicationChecker.resources.requests.cpu | Requested CPU for the replication checker. | string | `"10m"` |
+| stackstate.components.replicationChecker.resources.requests.memory | Requested memory for the replication checker. | string | `"64Mi"` |
+| stackstate.components.replicationChecker.tolerations | Tolerations for replication checker Pod assignment. | string | `nil` |
+| stackstate.components.router.accesslog.enabled | Enable access logging on the router | bool | `false` |
+| stackstate.components.router.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.router.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.router.errorlog.enabled | Enable error logging on the router | bool | `true` |
+| stackstate.components.router.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.router.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.router.mode.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.router.mode.extraEnv.open | Add additional environment variables to the pod | object | `{}` |
+| stackstate.components.router.mode.jobAnnotations | Annotations for the router mode jobs. | object | `{}` |
+| stackstate.components.router.mode.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.router.mode.podAnnotations | Extra annotations for router mode job pods. | object | `{}` |
+| stackstate.components.router.mode.podLabels | Extra labels for router mode job pods. | object | `{}` |
+| stackstate.components.router.mode.resources | Resource allocation for `router.mode` pods. | object | `{"limits":{"cpu":"200m","memory":"400Mi"},"requests":{"cpu":"100m","memory":"400Mi"}}` |
+| stackstate.components.router.mode.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.router.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.router.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.router.poddisruptionbudget | PodDisruptionBudget settings for `router` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.router.resources | Resource allocation for `router` pods. | object | `{}` |
+| stackstate.components.router.secureCookies.enabled | When enabled, the router appends the `Secure` attribute to `Set-Cookie` response headers for requests that reached the edge over HTTPS (detected via the `X-Forwarded-Proto: https` header set by a TLS-terminating proxy such as Traefik or an ingress controller). Plain-HTTP deployments are left untouched. | bool | `false` |
+| stackstate.components.router.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.server.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.server.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.server.config | Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.server.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.server.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.server.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.server.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.server.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.server.poddisruptionbudget | PodDisruptionBudget settings for `server` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.server.resources | Resource allocation for `server` pods. | object | `{}` |
+| stackstate.components.server.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.slicing.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.slicing.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.slicing.config | Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.slicing.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.slicing.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.slicing.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.slicing.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.slicing.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.slicing.resources | Resource allocation for `slicing` pods. | object | `{}` |
+| stackstate.components.slicing.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.state.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.state.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.state.config | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.state.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.state.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.state.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.state.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.state.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.state.poddisruptionbudget | PodDisruptionBudget settings for `state` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.state.resources | Resource allocation for `state` pods. | object | `{}` |
+| stackstate.components.state.tmpToPVC.storageClass | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. | string | `nil` |
+| stackstate.components.state.tmpToPVC.volumeSize | The size of the PersistentVolume for "/tmp" directory. | string | `"2Gi"` |
+| stackstate.components.state.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.sync.additionalLogging | Additional logback config | string | `""` |
+| stackstate.components.sync.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.sync.config | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. | string | `""` |
+| stackstate.components.sync.envsFromExistingSecrets | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key | list | `[]` |
+| stackstate.components.sync.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.sync.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.sync.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.sync.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.sync.poddisruptionbudget | PodDisruptionBudget settings for `sync` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.sync.resources | Resource allocation for `sync` pods. | object | `{}` |
+| stackstate.components.sync.tmpToPVC.storageClass | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. | string | `nil` |
+| stackstate.components.sync.tmpToPVC.volumeSize | The size of the PersistentVolume for "/tmp" directory. | string | `"2Gi"` |
+| stackstate.components.sync.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.ui.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.ui.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.ui.extraEnv.secret | Extra secret environment variables to inject into pods via a `Secret` object. | object | `{}` |
+| stackstate.components.ui.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.ui.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.ui.poddisruptionbudget | PodDisruptionBudget settings for `ui` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.ui.resources | Resource allocation for `ui` pods. | object | `{}` |
+| stackstate.components.ui.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.components.vmagent.affinity | Affinity settings for vmagent pod. | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` |
+| stackstate.components.vmagent.persistence.size | Size of the `vmagent` buffer volume. | string | `"10Gi"` |
+| stackstate.components.vmagent.persistence.storageClass | Storage class of the `vmagent` buffer volume. | string | `nil` |
+| stackstate.components.vmagent.podAnnotations | Extra annotations for vmagent pods. Override stackstate.components.all.podAnnotations and metrics annotations; the generated configuration checksum is preserved. | object | `{}` |
+| stackstate.components.vmagent.poddisruptionbudget | PodDisruptionBudget settings for `vmagent` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.vmagent.resources | Resource allocation for vmagent pod. | object | `{}` |
+| stackstate.components.workloadObserver.affinity | Affinity settings for pod assignment. | object | `{}` |
+| stackstate.components.workloadObserver.enabled | Enable/disable the workload observer | bool | `true` |
+| stackstate.components.workloadObserver.extraEnv.open | Extra open environment variables to inject into pods. | object | `{}` |
+| stackstate.components.workloadObserver.nodeSelector | Node labels for pod assignment. | object | `{}` |
+| stackstate.components.workloadObserver.persistence.size | Size of the `workloadObserver` volume. | string | `"1Gi"` |
+| stackstate.components.workloadObserver.persistence.storageClass | Storage class of the `workloadObserver` volume. | string | `nil` |
+| stackstate.components.workloadObserver.podAnnotations | Extra annotations | object | `{}` |
+| stackstate.components.workloadObserver.poddisruptionbudget | PodDisruptionBudget settings for `workloadObserver` pods. | object | `{"maxUnavailable":1,"unhealthyPodEvictionPolicy":"AlwaysAllow"}` |
+| stackstate.components.workloadObserver.resources | Resource allocation for `workloadObserver` pods. | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"128Mi"},"requests":{"cpu":"20m","ephemeral-storage":"1Mi","memory":"24Mi"}}` |
+| stackstate.components.workloadObserver.tolerations | Toleration labels for pod assignment. | string | `nil` |
+| stackstate.email.additionalProperties | Additional JavaMail properties for the SMTP connection. | object | `{"mail.smtp.auth":"true","mail.smtp.starttls.enable":"true"}` |
+| stackstate.email.enabled | Enable email notifications | bool | `false` |
+| stackstate.email.sender | Email sender mail address | string | `""` |
+| stackstate.email.server.auth.fromExternalSecret | Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name. | string | `nil` |
+| stackstate.email.server.auth.password | Email server password | string | `""` |
+| stackstate.email.server.auth.username | Email server username | string | `""` |
+| stackstate.email.server.host | Email server host | string | `""` |
+| stackstate.email.server.port | Email server port | int | `587` |
+| stackstate.email.server.protocol | Email server protocol | string | `"smtp"` |
+| stackstate.features.role-k8s-authz | Deploy the Role(s) to populate permissions on Suse Observability | boolean | `true` |
+| stackstate.features.server.split | Run a single service server or split in multiple sub services as api, state .... | boolean | `true` |
+| stackstate.features.storeTransactionLogsToPVC.enabled | Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. | boolean | `false` |
+| stackstate.features.storeTransactionLogsToPVC.storageClass | Storage class name of PersistentVolume used by transaction logs. | string | `nil` |
+| stackstate.features.storeTransactionLogsToPVC.volumeSize | The size of the persistent volume for the transaction logs. | string | `"600Mi"` |
+| stackstate.java.trustStore | Java TrustStore (cacerts) file to use. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret. | string | `nil` |
+| stackstate.java.trustStoreBase64Encoded | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. Prefer `stackstate.java.trustStoreFromExternalSecret`, which keeps the trust store out of the size-limited Helm release secret. | string | `nil` |
+| stackstate.java.trustStoreFromExternalSecret.key | Key in the external secret holding the Java TrustStore (cacerts) file. | string | `"java-cacerts"` |
+| stackstate.java.trustStoreFromExternalSecret.name | Name of an existing secret holding the Java TrustStore (cacerts) file. This is the preferred way to configure the trust store: it keeps the trust store out of the Helm release secret, which has a 1MB size limit. Takes precedence over `stackstate.java.trustStore` and `stackstate.java.trustStoreBase64Encoded`. | string | `""` |
+| stackstate.java.trustStoreFromExternalSecret.passwordKey | Optional key in the external secret holding the trust store password. When empty, `stackstate.java.trustStorePassword` is used instead. | string | `""` |
+| stackstate.java.trustStorePassword | Password to access the Java TrustStore (cacerts) file | string | `nil` |
+| stackstate.k8sAuthorization.enabled | Whether we use k8s RBAC as authorization authority | boolean | `true` |
+| stackstate.license.fromExternalSecret | Use an external secret for the license key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. | string | `nil` |
+| stackstate.license.key | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. | string | `nil` |
+| stackstate.silencing.maxSilenceTime | The maximum duration a monitor check state can be silenced for. Accepts any HOCON duration, for example "24 hours" or "30 minutes". | string | `"24 hours"` |
+| stackstate.stackpacks.extraImages | Additional stackpack Docker images to mount after the built-in stackpack images. | list | `[]` |
+| stackstate.stackpacks.installed | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) | list | `[]` |
+| stackstate.stackpacks.localpvc.size | Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS | string | `"1Gi"` |
+| stackstate.stackpacks.localpvc.storageClass | Storage class of the PVC used to persist stackpacks when there is no HDFS. | string | `nil` |
+| stackstate.stackpacks.pvc.size | Size of the Persistent Volume Claim (PVC) used to copy stackpacks from the Docker image. | string | `"1Gi"` |
+| stackstate.stackpacks.pvc.storageClass | Storage class of the PVC used to copy stackpacks from the Docker image. | string | `nil` |
+| stackstate.stackpacks.updateInterval | Interval at which StackState checks for StackPack updates. | string | `"5 minutes"` |
+| stackstate.stackpacks.upgradeOnStartup | Specify additional stackpacks that will, on startup only, be upgraded to the latest version available. The following StackPacks are always upgraded on startup: kubernetes-v2, open-telemetry, stackstate-k8s-agent-v2, aad-v2, otel-k8s-crd, suse-observability, plus prime-kubernetes or community-kubernetes (based on stackstate.deployment.edition). The suse-observability StackPack replaces the stackstate StackPack and migrates an existing stackstate installation; do not add stackstate to this list. StackPacks listed here are added to these defaults. | list | `[]` |
+| stackstate.topology.retentionHours | Number of hours topology will be retained. | integer | `nil` |
+| stackstate.ui.defaultTimeRange | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. | string | `nil` |
+| victoria-metrics-0.backup.bucketName | Name of the storage bucket where Victoria Metrics backups are stored. | string | `"sts-victoria-metrics-backup"` |
+| victoria-metrics-0.backup.enabled | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. | bool | `true` |
+| victoria-metrics-0.backup.keepLastDaily | Number of daily backups to retain | int | `7` |
+| victoria-metrics-0.backup.keepLastWeekly | Number of weekly backups to retain | int | `4` |
+| victoria-metrics-0.backup.minHistorySeconds | Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted. | int | `86400` |
+| victoria-metrics-0.backup.s3Prefix | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. | string | `"victoria-metrics-0"` |
+| victoria-metrics-0.backup.scheduled.daily | Cron schedule for daily snapshot backups of Victoria Metrics | string | `"55 0 * * *"` |
+| victoria-metrics-0.backup.scheduled.hourly | Cron schedule for hourly incremental backups of Victoria Metrics | string | `"25 * * * *"` |
+| victoria-metrics-0.backup.setupCron.resources | Resources of the container that sets up the backup cron schedule. | object | `{"limits":{"cpu":"20m","memory":"64Mi"},"requests":{"cpu":"20m","memory":"64Mi"}}` |
+| victoria-metrics-0.backup.vmbackup.resources | Resources of the Victoria Metrics backup container. | object | `{"limits":{"cpu":"100m","memory":"512Mi"},"requests":{"cpu":"10m","memory":"512Mi"}}` |
+| victoria-metrics-0.server.affinity | Affinity for this Victoria Metrics instance. Each field set here replaces the same field from the global affinity. | object | `{}` |
+| victoria-metrics-0.server.nodeSelector | Node labels for pod assignment of this Victoria Metrics instance. | object | `{}` |
+| victoria-metrics-0.server.persistentVolume.size | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times | string | `nil` |
+| victoria-metrics-0.server.persistentVolume.storageClass | Storage class of this Victoria Metrics volume. Falls back to `global.storageClass`. | string | `""` |
+| victoria-metrics-0.server.podAnnotations | Extra annotations on the first Victoria Metrics instance pods. Merged with the chart's own annotations. | object | `{}` |
+| victoria-metrics-0.server.podLabels | Extra labels on the first Victoria Metrics instance pods. Merged with the chart's own labels. | object | `{}` |
+| victoria-metrics-0.server.priorityClassName | PriorityClass of the first Victoria Metrics instance pods. | string | `""` |
+| victoria-metrics-0.server.resources | CPU/Memory requests and limits | object | `{}` |
+| victoria-metrics-0.server.retentionPeriod | Metrics retention of this instance. A number without suffix is in months; `h`, `d`, `w` and `y` suffixes are supported. Set the same value on both instances. Ignored with the `trial` sizing profile, which sets 3d. | int | `1` |
+| victoria-metrics-0.server.tolerations | Tolerations for this Victoria Metrics instance. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| victoria-metrics-1.backup.bucketName | Name of the storage bucket where Victoria Metrics backups are stored. | string | `"sts-victoria-metrics-backup"` |
+| victoria-metrics-1.backup.enabled | Enable scheduled backups of this Victoria Metrics instance. Set to false to disable (do NOT use an invalid cron schedule). Only takes effect when global.backup.enabled is true. | bool | `true` |
+| victoria-metrics-1.backup.keepLastDaily | Number of daily backups to retain | int | `7` |
+| victoria-metrics-1.backup.keepLastWeekly | Number of weekly backups to retain | int | `4` |
+| victoria-metrics-1.backup.minHistorySeconds | Whole number of seconds; refuse the hourly backup when local storage holds no data older than this while the destination already holds a completed backup, so a rebuilt instance cannot overwrite a backup it has not restored from. `0` disables the check. Must stay below this instance's retention (above it, no data can ever be that old and backups are refused permanently, not only after a redeploy) and at or under 40 days (above that VictoriaMetrics ignores the query time range and the check silently passes). Durations such as `1d` are not accepted. | int | `86400` |
+| victoria-metrics-1.backup.s3Prefix | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. | string | `"victoria-metrics-1"` |
+| victoria-metrics-1.backup.scheduled.daily | Cron schedule for daily snapshot backups of Victoria Metrics | string | `"5 1 * * *"` |
+| victoria-metrics-1.backup.scheduled.hourly | Cron schedule for hourly incremental backups of Victoria Metrics | string | `"35 * * * *"` |
+| victoria-metrics-1.backup.setupCron.resources | Resources of the container that sets up the backup cron schedule. | object | `{"limits":{"cpu":"20m","memory":"64Mi"},"requests":{"cpu":"20m","memory":"64Mi"}}` |
+| victoria-metrics-1.backup.vmbackup.resources | Resources of the Victoria Metrics backup container. | object | `{"limits":{"cpu":"100m","memory":"512Mi"},"requests":{"cpu":"10m","memory":"512Mi"}}` |
+| victoria-metrics-1.server.affinity | Affinity for this Victoria Metrics instance. Each field set here replaces the same field from the global affinity. | object | `{}` |
+| victoria-metrics-1.server.nodeSelector | Node labels for pod assignment of this Victoria Metrics instance. | object | `{}` |
+| victoria-metrics-1.server.persistentVolume.size | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times | string | `nil` |
+| victoria-metrics-1.server.persistentVolume.storageClass | Storage class of this Victoria Metrics volume. Falls back to `global.storageClass`. | string | `""` |
+| victoria-metrics-1.server.podAnnotations | Extra annotations on the second Victoria Metrics instance pods. Merged with the chart's own annotations. | object | `{}` |
+| victoria-metrics-1.server.podLabels | Extra labels on the second Victoria Metrics instance pods. Merged with the chart's own labels. | object | `{}` |
+| victoria-metrics-1.server.priorityClassName | PriorityClass of the second Victoria Metrics instance pods. | string | `""` |
+| victoria-metrics-1.server.resources | CPU/Memory requests and limits | object | `{}` |
+| victoria-metrics-1.server.retentionPeriod | Metrics retention of this instance. A number without suffix is in months; `h`, `d`, `w` and `y` suffixes are supported. Set the same value on both instances. Ignored with the `trial` sizing profile, which sets 3d. | int | `1` |
+| victoria-metrics-1.server.tolerations | Tolerations for this Victoria Metrics instance. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| zookeeper.affinity | Affinity for the ZooKeeper pods. Each field set here replaces the same field from the global affinity. | object | `{}` |
+| zookeeper.nodeSelector | Node labels for pod assignment of the ZooKeeper pods. | object | `{}` |
+| zookeeper.pdb | PodDisruptionBudget of the ZooKeeper pods. Only created on HA profiles. | object | `{"create":true,"maxUnavailable":1,"minAvailable":""}` |
+| zookeeper.persistence.size | Size of the PVC for ZooKeeper data. When unset, the sizing profile sets it. | string | `nil` |
+| zookeeper.persistence.storageClass | Storage class of the ZooKeeper volumes. Falls back to `global.storageClass`. | string | `""` |
+| zookeeper.podAnnotations | Extra annotations on the ZooKeeper pods. Merged with the chart's own annotations. | object | `{}` |
+| zookeeper.podLabels | Extra labels on the ZooKeeper pods. Merged with the chart's own labels. | object | `{}` |
+| zookeeper.priorityClassName | PriorityClass of the ZooKeeper pods. | string | `""` |
+| zookeeper.resources | Resource allocation for ZooKeeper pods. Fields left unset are taken from the sizing profile. | object | `{}` |
+| zookeeper.tolerations | Tolerations for the ZooKeeper pods. Falls back to `global.suseObservability` when unset. | string | `nil` |
+| zookeeper.volumePermissions.enabled | Run an init container that fixes the ownership of the ZooKeeper volumes. It sets no security context, so it runs as the image's default user. Not compatible with the restricted Pod Security Standard. | bool | `false` |
 
 ## Authentication
 
