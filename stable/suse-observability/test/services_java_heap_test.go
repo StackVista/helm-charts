@@ -134,6 +134,5 @@ func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
 }
 
 func AssertJavaOpts(t *testing.T, env []v1.EnvVar, expectedVar v1.EnvVar) {
-	expectedVar.Value = "-XX:-UseBASE64Intrinsics " + expectedVar.Value
 	assert.Contains(t, env, expectedVar)
 }

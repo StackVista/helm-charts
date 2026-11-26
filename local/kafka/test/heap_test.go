@@ -111,7 +111,7 @@ func TestKafkaHeapFromMemoryRequest(t *testing.T) {
 			for _, statefulset := range resources.Statefulsets {
 				container := statefulset.Spec.Template.Spec.Containers[0]
 				assert.Equal(t, resource.MustParse(test.memoryRequest), container.Resources.Requests[corev1.ResourceMemory])
-				assert.Contains(t, container.Env, corev1.EnvVar{Name: "KAFKA_HEAP_OPTS", Value: test.heapOpts + " -XX:-UseBASE64Intrinsics"})
+				assert.Contains(t, container.Env, corev1.EnvVar{Name: "KAFKA_HEAP_OPTS", Value: test.heapOpts})
 			}
 		})
 	}

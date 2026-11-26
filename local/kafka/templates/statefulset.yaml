@@ -277,7 +277,7 @@ spec:
             - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
               value: {{ .Values.autoCreateTopicsEnable | quote }}
             - name: KAFKA_HEAP_OPTS
-              value: {{ include "kafka.heapOpts" (dict "heapOpts" .Values.heapOpts "resources" $evaluatedResources) | printf "%s -XX:-UseBASE64Intrinsics" | quote }}
+              value: {{ include "kafka.heapOpts" (dict "heapOpts" .Values.heapOpts "resources" $evaluatedResources) | quote }}
             - name: KAFKA_LOG_FLUSH_INTERVAL_MESSAGES
               value: {{ .Values.logFlushIntervalMessages | replace "_" "" | quote }}
             - name: KAFKA_LOG_FLUSH_INTERVAL_MS
@@ -452,7 +452,6 @@ spec:
           args:
             - -Xmx{{ .Values.metrics.kafka.heapSizeMB }}m
             - -XshowSettings:vm
-            - -XX:-UseBASE64Intrinsics
             - -jar
             - jmx_prometheus_httpserver.jar
             - "5556"

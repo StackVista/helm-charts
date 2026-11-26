@@ -101,7 +101,7 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
 {{- $otelInstrumentationServiceConfig := .ServiceConfig.otelInstrumentation | default dict }}
 {{- $otelJavaAgentOpt := or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled | default false | ternary " -javaagent:/opt/docker/opentelemetry-javaagent.jar" "" }}
-{{- $defaultJavaOpts := printf "-XX:-UseBASE64Intrinsics %s %s%s" $directMemParam $heapParams $otelJavaAgentOpt | trim }}
+{{- $defaultJavaOpts := printf "%s %s%s" $directMemParam $heapParams $otelJavaAgentOpt | trim }}
 
 {{/* Start with chart defaults - these can be overridden by user extraEnv */}}
 {{- $openEnvVars := dict }}

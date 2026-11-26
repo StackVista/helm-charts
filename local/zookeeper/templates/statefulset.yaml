@@ -200,8 +200,10 @@ spec:
               value: {{ .Values.dataLogDir | default .Values.dataDir | quote }}
             - name: ZK_SERVER_HEAP
               value: {{ include "common.sizing.zookeeper.heapSize" . | trim | default .Values.heapSize | quote }}
+            {{- if .Values.jvmFlags }}
             - name: SERVER_JVMFLAGS
-              value: {{ printf "%s -XX:-UseBASE64Intrinsics" (.Values.jvmFlags | default "") | trim | quote }}
+              value: {{ .Values.jvmFlags | quote }}
+            {{- end }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:

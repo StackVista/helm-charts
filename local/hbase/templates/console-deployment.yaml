@@ -17,7 +17,7 @@ env:
   value: {{ template "common.fullname.short" . }}-stackgraph:2182
 {{- end }}
 - name: "JAVA_TOOL_OPTIONS"
-  value: "-XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0 -XX:-UseBASE64Intrinsics"
+  value: "-XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0"
 {{- $sizingResources := include "common.sizing.hbase.console.resources" . | trim -}}
 {{- $sizingResourcesDict := fromYaml $sizingResources }}
 {{- $evaluatedResources := merge (dict) .Values.console.resources $sizingResourcesDict }}

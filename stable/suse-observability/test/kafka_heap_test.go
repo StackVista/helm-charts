@@ -43,7 +43,7 @@ func TestKafkaHeapBySizingProfile(t *testing.T) {
 			require.True(t, ok)
 			container := statefulset.Spec.Template.Spec.Containers[0]
 			assert.Equal(t, resource.MustParse(test.memoryRequest), container.Resources.Requests[corev1.ResourceMemory])
-			assert.Contains(t, container.Env, corev1.EnvVar{Name: "KAFKA_HEAP_OPTS", Value: test.heapOpts + " -XX:-UseBASE64Intrinsics"})
+			assert.Contains(t, container.Env, corev1.EnvVar{Name: "KAFKA_HEAP_OPTS", Value: test.heapOpts})
 		})
 	}
 }
@@ -91,7 +91,7 @@ func TestKafkaHeapOverrides(t *testing.T) {
 			statefulset, ok := resources.Statefulsets["suse-observability-kafka"]
 			require.True(t, ok)
 			assert.Contains(t, statefulset.Spec.Template.Spec.Containers[0].Env,
-				corev1.EnvVar{Name: "KAFKA_HEAP_OPTS", Value: test.heapOpts + " -XX:-UseBASE64Intrinsics"})
+				corev1.EnvVar{Name: "KAFKA_HEAP_OPTS", Value: test.heapOpts})
 		})
 	}
 }

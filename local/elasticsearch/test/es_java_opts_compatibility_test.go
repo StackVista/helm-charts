@@ -28,7 +28,7 @@ func TestEsJavaOptsFix(t *testing.T) {
 	for _, envVar := range container.Env {
 		if envVar.Name == "ES_JAVA_OPTS" {
 			esJavaOptsFound = true
-			assert.Equal(t, "-Xmx1500m -Xms1500m -Des.allow_insecure_settings=true -XX:-UseBASE64Intrinsics", envVar.Value, "Container ES_JAVA_OPTS should have correct value")
+			assert.Equal(t, "-Xmx1500m -Xms1500m -Des.allow_insecure_settings=true", envVar.Value, "Container ES_JAVA_OPTS should have correct value")
 			break
 		}
 	}
